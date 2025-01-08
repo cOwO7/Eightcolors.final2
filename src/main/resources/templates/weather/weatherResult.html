@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{/layouts/main_layout}">
+<!-- <meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge"> -->
+<title>이번주 날씨</title>
+<th:block layout:fragment="content">
+	<style>
+		#weatherContainer {
+			display: flex;
+			justify-content: space-around;
+			flex-wrap: wrap;
+			margin-top: 20px;
+		}
+
+		.day-card {
+			width: 120px;
+			padding: 10px;
+			margin: 5px;
+			border: 1px solid #ddd;
+			border-radius: 8px;
+			text-align: center;
+			background-color: #f9f9f9;
+		}
+
+		.day-card.today {
+			background-color: #ffe4b5;
+		}
+
+		.day-card img.icon {
+			width: 50px;
+			height: 50px;
+		}
+
+
+	</style>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12 pt-5">
+				<div class="card mb-4">
+					<h5 class="card-header text-center">이번주 날씨</h5>
+					<div class="card-body">
+						<div>
+							<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+							<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=36a75517ce82693ff837cc79c740e197&libraries=services,clusterer"></script>
+						</div>
+						<form th:action="@{/processAllWeather}" method="post">
+							<div class="row">
+								<div class="row-cols-md-6">
+							<tr>
+								<!-- <td>날짜(baseDate)</td> -->
+								<td>
+									<label for="regId">단기 발표 날짜:</label>
+									<input width="auto" type="text" id="baseDate" name="baseDate" th:value="${baseDate}" />
+								</td>
+								<!-- <td>시간(baseTime)</td> -->
+								<td>
+									<label for="regId">단기 발표 시간:</label>
+									<input width="auto" type="text" id="baseTime" name="baseTime" th:value="${baseTime}" />
+								</td>
+							</tr>
+							<tr>
+							<!-- <td>예보지점 x값</td> -->
+							<td>
+								<label for="regId">단기 nx좌표:</label>
+								<input type="text" id="nx" name="nx" th:value="${gridX}" /><br />
+							</td>
+							<!-- <td>예보지점 y값</td> -->
+							<td>
+								<label for="regId">단기 ny좌표:</label>
+								<input type="text" id="ny" name="ny" th:value="${gridY}" /><br />
+							</td>
+						</tr>
+								</div>
+							</div>
+							<div class="row">
+							<div class="col-md-6">
+						<tr>
+							<!-- <td>위도(latitude)</td> -->
+							<td>
+								<input width="auto" type="hidden" id="latitudeNum" name="latitudeNum" th:value="${latitudeNum}" /><br/>
+							<!-- <td>경도(longitude)</td> -->
+								<input width="auto" type="hidden" id="longitudeNum" name="longitudeNum" th:value="${longitudeNum}" /><br/>
+							</td>
+
+						</tr><br />
+						<label for="regId">육상 지역 코드:</label>
+						<input type="text" id="regId" name="regId" placeholder="예: 11B00000" required> <br>
+						<label for="regIdTemp">기온 지역 코드:</label>
+						<input type="text" id="regIdTemp" name="regIdTemp" placeholder="예: 11B10101" required> <br>
+							</div>
+							</div>
+						<label for="tmFc">발표 시각:</label>
+						<input type="text" id="tmFc" name="tmFc" placeholder="예: 202312230600" required> <br>
+						<button type="submit">Submit</button>
+						</form>
+						<table>
+							<thead>
+							<tr>
+								<th>일자</th>
+								<th>구분</th>
+								<th>날씨</th>
+								<th>습도</th>
+								<th>최저기온</th>
+								<th>최고기온</th>
+							</tr>
+							</thead>
+							<tbody id="combinedWeatherTableBody"></tbody>
+							<!-- 테이블 데이터가 들어갈 위치 -->
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/proj4"></script>
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+	<link href="bootstrap/bootstrap.min.css" rel="stylesheet">
+	<link href="/css/longWeatherstyles.css" rel="stylesheet" />
+	<script th:src="@{js/jquery-3.7.1.min.js}"></script>
+	<!--<script th:src="@{js/weather.js}"></script>-->
+	<script th:src="@{js/allWeather.js}"></script>
+	<!--<script th:src="@{js/geolocation.js}"></script>
+	<script th:src="@{js/longchoice.js}"></script>
+	<script th:src="@{js/kakaomap.js}"></script>-->
+	<!-- Luxon 라이브러리 추가 -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/3.0.4/luxon.min.js"></script>
+</th:block>
+</html>
