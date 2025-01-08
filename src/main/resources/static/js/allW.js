@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	const weatherForm = document.querySelector("form");
 	const weatherContainer = document.getElementById("weatherContainer");
 
+
 	// 로드 상태 플래그 추가
 	let isDateReady = false;
 
@@ -166,14 +167,10 @@ document.addEventListener("DOMContentLoaded", () => {
 			console.error("weatherContainer 요소가 존재하지 않습니다.");
 			return;
 		}
-
 		const row1 = document.getElementById("row1");
 		const row2 = document.getElementById("row2");
-		const row3 = document.getElementById("row3");
-
 		row1.innerHTML = '';
 		row2.innerHTML = '';
-		row3.innerHTML = '';
 
 		//weatherContainer.innerHTML = '';
 
@@ -226,14 +223,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="morning">
                         <span>오전</span>
                         <img src="${data.morningIcon}" alt="Morning Weather Icon" class="icon">
-                        <span>강수<br />확률<br />🌧: ${data.morningRain}%</span>
-                        <span class="on">${data.tempMorning}</span>
+                        <span>강수 확률<br/>🌧: ${data.morningRain}%　</span>
+                        <span class="on">🌡️: ${data.tempMorning}</span>
                     </div>
                     <div class="afternoon">
                         <span>오후</span>
                         <img src="${data.afternoonIcon}" alt="Afternoon Weather Icon" class="icon">
-                        <span>강수<br />확률<br />🌧: ${data.afternoonRain}%</span>
-                        <span class="on2">${data.tempAfternoon}</span>
+                        <span>강수 확률<br />🌧: ${data.afternoonRain}%　</span>
+                        <span class="on2">🌡️: ${data.tempAfternoon}</span>
                     </div>
                 </div>
             `;
@@ -272,13 +269,21 @@ document.addEventListener("DOMContentLoaded", () => {
 					const lineBreak = document.createElement("br");
 					row1.appendChild(lineBreak);
 				}
-			} else if (index >= 1 && index <= 5) {
-				row2.appendChild(card);
 			} else {
-				row3.appendChild(card);
+				row2.appendChild(card);
 			}
 			//weatherContainer.appendChild(card);
 		});
+	}
+	// 날씨 가로 스크롤
+	function scrollLeft() {
+		const row2 = document.getElementById("row2");
+		row2.scrollBy({ left: -300, behavior: "smooth" }); // 300px 좌측 이동
+	}
+
+	function scrollRight() {
+		const row2 = document.getElementById("row2");
+		row2.scrollBy({ left: 300, behavior: "smooth" }); // 300px 우측 이동
 	}
 
 	// 폼 제출 이벤트 처리

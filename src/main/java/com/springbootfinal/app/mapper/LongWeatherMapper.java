@@ -1,10 +1,9 @@
 package com.springbootfinal.app.mapper;
 
-import java.util.*;
-
+import com.springbootfinal.app.domain.LongWeatherDto;
 import org.apache.ibatis.annotations.Mapper;
 
-import com.springbootfinal.app.domain.LongWeatherDto;
+import java.util.List;
 
 @Mapper
 public interface LongWeatherMapper {

@@ -1,0 +1,235 @@
+@charset "UTF-8";
+/* 전체 카드 레이아웃 */
+
+/* 도시와 구/시 선택을 위한 좌측 부분 */
+#addressChoice {
+	flex: 1; /* 50% 너비로 설정 */
+}
+
+/* 주소 입력란 및 현재 위치 입력을 위한 우측 부분 */
+#currentLocation {
+	flex: 1; /* 50% 너비로 설정 */
+}
+
+.weather {
+	display: flex;
+	justify-content: space-around;
+	margin: 10px 0;
+	width: 100%;
+}
+
+.weather-today {
+	display: flex;
+	justify-content: space-around;
+	margin: 10px 0;
+	width: 100%;
+}
+.weather-today div {
+	flex: 1;
+	text-align: center;
+	padding: 20px;
+}
+
+/* 오전/오후 정보 */
+.morning, .afternoon {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	font-size: 12px;
+}
+
+/* 날씨 아이콘 */
+.icon {
+	width: 50px;
+	height: 50px;
+	margin: 5px 0;
+}
+
+/* 온도 정보 */
+.temperature {
+	font-size: 14px;
+	font-weight: bold;
+	text-align: center;
+}
+
+.form-container {
+	max-width: 800px;
+	margin: 20px auto;
+	padding: 20px;
+	background-color: #ffffff;
+	border-radius: 8px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-title {
+	text-align: center;
+	font-size: 24px;
+	font-weight: bold;
+	margin-bottom: 20px;
+	color: #333;
+}
+
+.form-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 16px;
+}
+
+.form-grid label {
+	font-size: 14px;
+	color: #555;
+}
+
+.form-grid input {
+	padding: 8px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.form-grid .full-width {
+	grid-column: span 2;
+}
+
+.submit-button-container {
+	display: flex;
+	justify-content: center;
+	margin-top: 20px;
+}
+
+.submit-button {
+	background-color: #4CAF50;
+	color: white;
+	border: none;
+	padding: 10px 20px;
+	font-size: 16px;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.submit-button:hover {
+	background-color: #45a049;
+}
+
+.row, .row1, .row2, .row3 {
+	display: flex;
+	padding: 5px;
+	flex-direction: row;
+	justify-content: center;
+	gap: 10px;
+	width: 100%;
+	margin-bottom: 20px;
+}
+
+.day-card {
+	flex: 1;
+	max-width: 100%;
+	text-align: center;
+	background-color: #f9f9f9;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	padding: 10px;
+}
+
+.day-card img {
+	max-width: 50px;
+	margin: 5px 0;
+}
+
+/* today개별 스타일링 */
+.today {
+	background-color: rgba(19, 150, 229, 0.67) !important; /* 오늘 카드를 강조 */
+	color: #ffffff !important;
+	font-weight: bold !important;
+	width: 100% !important;
+	height: auto !important;
+	display: flex;
+	align-items: end;
+	justify-content: space-between;
+	/*padding: 20px;*/
+	border-radius: 8px;
+	box-sizing: border-box;
+	/*margin-bottom: 15px;*/
+}
+
+.today h3 {
+	color: #E9E1D8;
+	font-size: 30px;
+	font-weight: bold;
+	text-shadow:
+			-1px -1px 1px rgba(250, 235, 215), /* 왼쪽 위 */
+			1px -1px 1px rgba(233, 225, 216), /* 오른쪽 위 */
+			-1px  1px 1px rgba(249, 235, 218), /* 왼쪽 아래 */
+			1px  1px 1px rgba(237, 234, 227); /* 오른쪽 아래 */
+}
+
+.today .weather {
+	display: flex; /* 가로 정렬 */
+	align-items: center; /* 세로 정렬 */
+	width: 100%; /* 내부 요소를 가로로 배치 */
+	justify-content: space-evenly; /* 요소 간 간격 균등 */
+}
+
+.center {
+	height: 100%;
+	width: 100%;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	font-size: 15px;
+}
+
+.morning-str, .afternoon-str {
+	height: 100%;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+}
+.morning-stt, .afternoon-stt {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+}
+
+.morning-stt .icon, .afternoon-stt .icon {
+	width: 80px;
+	height: 80px;
+	margin: 15px 0;
+}
+
+.cq {
+	font-size: 16px; /* 텍스트 크기 */
+	font-weight: bold; /* 텍스트 굵기 */
+	margin-bottom: 5px; /* 이미지와의 간격 */
+}
+
+
+.morning img, .afternoon img {
+	width: 60px; /* 아이콘 크기 */
+	height: 60px;
+}
+
+
+.tomorrow {
+	background-color: rgba(112, 112, 112, 0.67) !important; /* 내일 카드를 강조 */
+	color: #ffffff !important;
+	font-weight: bold !important;
+}
+
+.on {
+	font-weight: bold;
+	font-size: 20px;
+	color: #0a53be;
+}
+
+.on2 {
+	font-weight: bold;
+	font-size: 20px;
+	color: #c00000;
+}

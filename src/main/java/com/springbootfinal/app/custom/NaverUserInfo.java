@@ -1,18 +1,17 @@
 package com.springbootfinal.app.custom;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-
+import jakarta.servlet.http.HttpSession;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import jakarta.servlet.http.HttpSession;
-import lombok.Getter;
-import lombok.Setter;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 
 @Getter
 @Setter
