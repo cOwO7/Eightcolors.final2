@@ -2,6 +2,32 @@ document.addEventListener("DOMContentLoaded", () => {
 	const weatherForm = document.querySelector("form");
 	const weatherContainer = document.getElementById("weatherContainer");
 
+	// 스크롤
+	window.scrollToLeft = function () {
+		const row2 = document.getElementById("row2");
+		row2.scrollBy({ left: -300, behavior: "smooth" }); // 300px 좌측 이동
+	};
+
+	window.scrollToRight = function () {
+		const row2 = document.getElementById("row2");
+		row2.scrollBy({ left: 300, behavior: "smooth" }); // 300px 우측 이동
+	};
+
+	// 스크롤 버튼 마우스 hover 이벤트
+	const weatherScrollContainer = document.querySelector(".weather-scroll-container");
+	const scrollButtons = document.querySelectorAll(".scroll-btn");
+
+	weatherScrollContainer.addEventListener("mouseenter", () => {
+		scrollButtons.forEach(button => {
+			button.style.opacity = "1";
+		});
+	});
+
+	weatherScrollContainer.addEventListener("mouseleave", () => {
+		scrollButtons.forEach(button => {
+			button.style.opacity = "0";
+		});
+	});
 
 	// 로드 상태 플래그 추가
 	let isDateReady = false;
@@ -223,14 +249,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="morning">
                         <span>오전</span>
                         <img src="${data.morningIcon}" alt="Morning Weather Icon" class="icon">
-                        <span>강수 확률<br/>🌧: ${data.morningRain}%　</span>
-                        <span class="on">🌡️: ${data.tempMorning}</span>
+                        <span class="on">🌡️: ${data.tempMorning}</span><br/>
+                        <span>강수 확률🌧: ${data.morningRain}%</span>
                     </div>
                     <div class="afternoon">
                         <span>오후</span>
                         <img src="${data.afternoonIcon}" alt="Afternoon Weather Icon" class="icon">
-                        <span>강수 확률<br />🌧: ${data.afternoonRain}%　</span>
-                        <span class="on2">🌡️: ${data.tempAfternoon}</span>
+                        <span class="on2">🌡️: ${data.tempAfternoon}</span><br/>
+                        <span>강수 확률🌧: ${data.afternoonRain}%</span>
                     </div>
                 </div>
             `;
@@ -245,22 +271,22 @@ document.addEventListener("DOMContentLoaded", () => {
 						<div class="morning-stt">
 							<img src="${data.morningIcon}" alt="Morning Weather Icon" class="icon">
 							<p>강수 확률: 🌧${data.morningRain}%</p>
-							<span class="on">최저: ${data.tempMorning}</span>
+							<span class="on">최저 기온: ${data.tempMorning}</span>
 						</div>
 					</div>
 					<div class="center">
 					<h3>${data.day}</h3>
 							<img src="${windDirectionData.image}" style="width: 80px; height: 100px; transform: rotate(${windDirectionData.rotation}deg); margin-left: 5px;" alt="Wind Direction">
 							<br>
-							<span>풍속: ${data.WSD} m/s</span><br>
-							<span>습도: ${data.REH} %</span>
+							<span>💨풍속: ${data.WSD} m/s</span><br>
+							<span>💧습도: ${data.REH} %</span>
 					</div>	
 					<div class="afternoon-str">
 						<span class="cq">오후</span>
 						<div class="afternoon-stt">
 							<img src="${data.afternoonIcon}" alt="Afternoon Weather Icon" class="icon">
 							<p>강수 확률: 🌧${data.afternoonRain}%</p>
-							<span class="on2">최고: ${data.tempAfternoon}</span>
+							<span class="on2">최고 기온: ${data.tempAfternoon}</span>
 						</div>
 					</div>
 				</div>`;
@@ -272,18 +298,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			} else {
 				row2.appendChild(card);
 			}
-			//weatherContainer.appendChild(card);
 		});
-	}
-	// 날씨 가로 스크롤
-	function scrollLeft() {
-		const row2 = document.getElementById("row2");
-		row2.scrollBy({ left: -300, behavior: "smooth" }); // 300px 좌측 이동
-	}
-
-	function scrollRight() {
-		const row2 = document.getElementById("row2");
-		row2.scrollBy({ left: 300, behavior: "smooth" }); // 300px 우측 이동
 	}
 
 	// 폼 제출 이벤트 처리
