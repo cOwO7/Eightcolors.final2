@@ -22,11 +22,9 @@
                                 <table width="85%" style="margin: auto; text-align: center;">
                                     <tr>
                                         <!-- <td>날짜(baseDate)</td> -->
-                                        <td><input width="auto" type="hidden" id="baseDate" name="baseDate"
-                                                   th:value="${baseDate}"/></td>
+                                        <td><input width="auto" type="hidden" id="baseDate" name="baseDate" th:value="${baseDate}"/></td>
                                         <!-- <td>시간(baseTime)</td> -->
-                                        <td><input width="auto" type="hidden" id="baseTime" name="baseTime"
-                                                   th:value="${baseTime}"/></td>
+                                        <td><input width="auto" type="hidden" id="baseTime" name="baseTime" th:value="${baseTime}"/></td>
                                     </tr>
                                     <tr>
                                         <!-- <td>예보지점 x값</td> -->
@@ -36,11 +34,9 @@
                                     </tr>
                                     <tr>
                                         <!-- <td>위도(latitude)</td> -->
-                                        <td><input width="auto" type="hidden" id="latitudeNum"
-                                                   name="latitudeNum" th:value="${latitudeNum}"/></td>
+                                        <td><input width="auto" type="hidden" id="latitudeNum" name="latitudeNum" th:value="${latitudeNum}"/></td>
                                         <!-- <td>경도(longitude)</td> -->
-                                        <td><input width="auto" type="hidden" id="longitudeNum"
-                                                   name="longitudeNum" th:value="${longitudeNum}"/></td>
+                                        <td><input width="auto" type="hidden" id="longitudeNum" name="longitudeNum" th:value="${longitudeNum}"/></td>
                                     </tr>
                                 </table>
                                 <br/>
@@ -51,8 +47,7 @@
                                         <!-- 도시 선택 -->
                                         <div class="mb-3">
                                             <label for="city-selector" class="form-label">도시 선택</label>
-                                            <select id="city-selector"
-                                                    class="btn btn-outline-primary form-select w-100">
+                                            <select id="city-selector" class="btn btn-outline-primary form-select w-100">
                                                 <option value="">도시를 선택하세요</option>
                                                 <!-- 도시 옵션은 JavaScript로 동적으로 변경 -->
                                             </select>
@@ -62,14 +57,10 @@
                                         <div class="mb-3">
                                             <label for="district-selector" class="form-label">구/시 선택</label>
                                             <div class="dropdown">
-                                                <button class="btn btn-outline-primary dropdown-toggle w-100"
-                                                        type="button" id="district-selector"
-                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" id="district-selector" data-bs-toggle="dropdown" aria-expanded="false">
                                                     구/시를 선택하세요
                                                 </button>
-                                                <ul class="dropdown-menu w-100"
-                                                    aria-labelledby="district-selector"
-                                                    style="max-height: 200px; overflow-y: auto;">
+                                                <ul class="dropdown-menu w-100" aria-labelledby="district-selector" style="max-height: 200px; overflow-y: auto;">
                                                     <!-- 구/시 옵션은 JavaScript로 동적으로 변경 -->
                                                 </ul>
                                             </div>
@@ -82,12 +73,9 @@
                                             <label for="town-selector" class="form-label">주소 검색</label>
                                             <div class="d-flex">
                                                 <!-- input 필드 -->
-                                                <input type="text" id="address" value="" placeholder="검색 버튼을 눌러주세요."
-                                                       class="form-control me-2" style="flex: 1;">
+                                                <input type="text" id="address" value="" placeholder="검색 버튼을 눌러주세요." class="form-control me-2" style="flex: 1;">
                                                 <!-- 도시와 구/시만 표시하는 필드 -->
-                                                <input type="hidden" id="address-hidden" value=""
-                                                       placeholder="좌표 조회는 여기서" class="form-control me-2"
-                                                       style="flex: 1;">
+                                                <input type="hidden" id="address-hidden" value="" placeholder="좌표 조회는 여기서" class="form-control me-2" style="flex: 1;">
                                                 <!-- 버튼 -->
                                                 <button type="button" id="addressBtn" class="btn btn-outline-primary">
                                                     검색
@@ -99,11 +87,9 @@
                                             <label for="town-selector" class="form-label">현재 위치</label>
                                             <div class="d-flex">
                                                 <!-- input 필드 -->
-                                                <input type="text" id="localaddrese" value="현재 위치 정보(주간)"
-                                                       class="form-control me-2" readonly style="flex: 1;">
+                                                <input type="text" id="localaddrese" value="현재 위치 정보(주간)" class="form-control me-2" readonly style="flex: 1;">
                                                 <!-- 버튼 -->
-                                                <button id="getWeatherButton" type="button"
-                                                        class="btn btn-outline-primary">
+                                                <button id="getWeatherButton" type="button" class="btn btn-outline-primary">
                                                     현재 위치 입력
                                                 </button>
                                             </div>

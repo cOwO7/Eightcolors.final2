@@ -37,10 +37,8 @@ public class WeatherService {
 	private WeatherService weatherService;
 	private LongWeatherService longWeatherService;
 
-	public WeatherService(RestTemplate restTemplate
-			/*,WeatherService weatherService*/) {
+	public WeatherService(RestTemplate restTemplate) {
 		this.restTemplate = restTemplate;
-		//this.weatherService = weatherService;
 	}
 
 	
@@ -66,7 +64,6 @@ public class WeatherService {
                 break;
             }
         }
-
         return nextUpdateTime;
     }
 
@@ -83,8 +80,6 @@ public class WeatherService {
         LocalTime nextUpdate = service.getNextUpdateTime();
         System.out.println("다음 갱신 시간: " + nextUpdate);
     }
-	
-	// 여기까지
 
 	/* *
 	 * 초단기실황조회
@@ -129,8 +124,6 @@ public class WeatherService {
 
 	    return ultraSrtNcstData;
 	}
-
-
 
 	/* *
 	 * 초단기예보조회
@@ -198,7 +191,6 @@ public class WeatherService {
 
 	    return groupedData;
 	}
-
 	
 	/* *
 	 * 단기예보조회

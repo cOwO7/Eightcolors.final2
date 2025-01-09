@@ -28,7 +28,6 @@ public class AllWeatherController {
 
     @GetMapping("/processAllWeather")
     public String processAllWeatherDataForGet() {
-        //return "redirect:/weather/form"; // 적절한 경로로 리다이렉트
         return "redirect:/weatherResult"; // 적절한 경로로 리다이렉트
     }
 
@@ -48,7 +47,6 @@ public class AllWeatherController {
                 allWeatherDto.getNx(),
                 allWeatherDto.getNy()
         );
-
         Map<String, Map<String, String>> mergedWeatherData = allWeatherService.getMergedWeatherData(
                 weatherDto,
                 allWeatherDto.getRegId(),

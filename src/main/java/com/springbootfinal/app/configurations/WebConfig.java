@@ -14,12 +14,6 @@ public class WebConfig implements WebMvcConfigurer{
 	
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		// 기존 핸들러
-		/*registry.addResourceHandler("/resources/files/**")
-			.addResourceLocations("file:./src/main/resources/static/files/")
-			.addResourceLocations("file:./src/main/resources/static/image1Files/")
-			.setCachePeriod(1);*/
-		
 		// CSS 및 다른 정적 리소스를 위한 기본 핸들러 추가
 	    registry.addResourceHandler("/css/**")
 	        .addResourceLocations("classpath:/static/css/");
