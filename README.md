@@ -116,4 +116,5 @@
 ### iCON
 + Rian Maulana - Flaticon
 
-
+## DataBase ERD
+<img src="readme/ERD.ver1.png">
