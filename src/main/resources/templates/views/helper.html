@@ -88,7 +88,13 @@
           </tr>
           </thead>
           <tbody id="inquiryBoardList">
-          <!-- JavaScript를 통해 목록 데이터를 추가 -->
+          <tr th:block th:each="helper, status: ${helperBList}">
+            <td>[[${helperBList.no]]</td>
+            <td th:href="@{helperDetail(no=${helper.no})}">[[${helper.title}]]</td>
+            <td th:text="${helper.status}"></td>
+            <td th:text="${helper.writer}"></td>
+            <td>[[${ #dates.format(helper.regDate, 'yyyy-MM-dd')}]]</td>
+          </tr>
           </tbody>
         </table>
 

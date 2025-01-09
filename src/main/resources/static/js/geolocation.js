@@ -51,7 +51,9 @@ $(function () {
                         console.log("현재 위치 주소:", fullAddress);
 
                         // 서버로 데이터 전송 (이 부분을 여기로 이동)
-                        sendWeatherData(nx, ny);
+                        // 단일로 사용할때 사용 통합버전은 주석 처리
+                        /*sendWeatherData(nx, ny);*/
+
                     } else {
                         console.error("주소 변환 실패");
                         alert("주소를 가져오지 못했습니다.");
@@ -64,7 +66,8 @@ $(function () {
     }
 
     // 서버로 데이터 전송 함수
-    function sendWeatherData(nx, ny) {
+    // 단일로 사용할때 사용 통합버전은 주석 처리
+    /*function sendWeatherData(nx, ny) {
         const weatherDto = {
             baseDate: $("#baseDate").val(),
             baseTime: $("#baseTime").val(),
@@ -94,7 +97,7 @@ $(function () {
             .catch((error) => {
                 console.error("에러:", error);
             });
-    }
+    }*/
 
     // 버튼 클릭 이벤트 리스너 등록
     $("#getWeatherButton").on("click", getLocationAndSubmit);
