@@ -1,0 +1,285 @@
+-- 고객센터
+-- helper View layout--
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<!-- 페이지 타이틀 아이콘 -->
+<link rel="icon" type="image/png" href="/images/favicon/mainfavicon.png" sizes="32x32">
+<!-- 페이지 타이틀 아이콘 END -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>오늘 어때?</title>
+<style>
+</style>
+<link th:href="@{bootstrap/bootstrap.min.css}" rel="stylesheet">
+<script th:src="@{js/jquery-3.7.1.min.js}"></script>
+</head>
+<body>
+ 	<!--/* header */-->
+	<div th:replace="~{fragments/header::header}"></div>
+	    <div class="container">
+  		    <!--/* content : 요청 마다 변경되는 부분 */-->
+  		    <div layout:fragment="content"></div>
+  	        <!-- FAQ Form -->
+            <div class="accordion mb-5" id="faqAccordion"><br/><br/>
+                <h3 class="mb-3">자주 묻는 질문 (FAQ)</h3>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="faq1Header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="false" aria-controls="faq1">
+                            Q1: 회원가입은 어떻게 하나요?
+                        </button>
+                    </h2>
+                    <div id="faq1" class="accordion-collapse collapse" aria-labelledby="faq1Header" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            회원가입은 홈페이지 상단의 '회원가입' 버튼을 클릭하시면 간단히 진행할 수 있습니다.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="faq2Header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false" aria-controls="faq2">
+                            Q2: 비밀번호를 잊어버렸습니다.
+                        </button>
+                    </h2>
+                    <div id="faq2" class="accordion-collapse collapse" aria-labelledby="faq2Header" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            로그인 페이지의 '비밀번호 찾기'를 통해 비밀번호를 재설정할 수 있습니다.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="faq3Header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false" aria-controls="faq3">
+                            Q3: 환불 정책이 어떻게 되나요?
+                        </button>
+                    </h2>
+                    <div id="faq3" class="accordion-collapse collapse" aria-labelledby="faq3Header" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            구매하신 숙박권(티켓)의 사용일자 <br />
+                            7일전 : 결제 금액 전액 환불   ※ 카드 결제시 : 결제 취소 ※ <br />
+                            5일전 : 결제 금액 60% 환불   ※ 카드 결제시 : 문의로 기재하신 계좌로 결재 금액 50% 환불※ <br />
+                            3일전 : 결제 금액 40% 환불   ※ 카드 결제시 : 문의로 기재하신 계좌로 결재 금액 30% 환불※ <br />
+                            1일전 : 결제 금액 20% 환불   ※ 카드 결제시 : 문의로 기재하신 계좌로 결재 금액 10% 환불※ <br />
+                            0일전 : 결제 금액 0.99% 환불 ※ 카드 결제시 : 문의로 기재하신 계좌로 결재 금액 0.99% 환불※ <br />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-5">
+                <h3 class="mb-3">문의하기</h3>
+                <!-- 검색 폼 -->
+                <form id="searchForm" class="mb-3">
+                    <div class="input-group row g-2 align-content-center">
+                        <div class="col-md-3">
+                            <select id="searchType" class="form-select flex-grow-2" aria-label="검색 옵션">
+                                <option value="all" selected>제목 & 내용</option>
+                                <option value="author">작성자</option>
+                            </select>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" id="searchKeyword" class="form-control flex-grow-8" placeholder="검색어를 입력하세요">
+                        </div>
+                        <div class="col-md-1 text-end">
+                            <button class="btn btn-primary" type="button" id="searchBtn">검색</button>
+                        </div>
+                    </div>
+                </form>
+                <!-- 여기는 inpuiryBoardList -->
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th scope="col">번호</th>
+                        <th scope="col">제목</th>
+                        <th scope="col">상태</th>
+                        <th scope="col">작성자</th>
+                        <th scope="col">작성일</th>
+                    </tr>
+                    </thead>
+                    <tbody id="inquiryBoardList">
+                    <tr th:block th:each="helper, status: ${helperBList}">
+                        <td>[[${helperBList.no]]</td>
+                        <td th:href="@{helperDetail(no=${helper.no})}">[[${helper.title}]]</td>
+                        <td th:text="${helper.status}"></td>
+                        <td th:text="${helper.writer}"></td>
+                        <td>[[${ #dates.format(helper.regDate, 'yyyy-MM-dd')}]]</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <!-- 문의 작성 폼 (숨김 처리) -->
+                <div id="inquiryFormContainer" style="display: none; margin-top: 20px;">
+                    <form id="inquiryForm">
+                        <div class="mb-3">
+                        <label for="name" class="form-label">이름</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="이름을 입력하세요" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">이메일</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="답변받으실 이메일 주소를 입력하세요" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="accountNum" class="form-label">환불 계좌번호</label>
+                            <input type="text" class="form-control" id="accountNum" name="accountNum" placeholder="환불 받으실 계좌번호를 입력해주세요." required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">문의 내용</label>
+                            <textarea class="form-control" id="message" name="message" rows="4" placeholder="문의 내용을 작성하세요" required></textarea>
+                        </div>
+                            <button type="button" class="btn btn-primary text-end" id="submitInquiry">문의 등록</button>
+                            <button type="button" class="btn btn-secondary" id="cancelInquiry">취소</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+	</div>
+	<!--/* footer */-->
+	<div th:replace="~{fragments/footer::footer}"></div>
+	<script th:src="@{bootstrap/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
+-- 고객센터 기능명세
+1. FAQ 관리 - 자주 묻는 질문을 상단에 띄어서 문의하기전에
+    손쉽게 비슷한 유형의 질문을 손쉽게 찾아볼 수 있는 기능
+
+2. 문의조회 - 고객이 작성한 문의 내역을 확인하는 기능
+    문의 목록을 게시판 형태로 출력
+    List.No, Title, Status, Writer, SYSDATE
+    Title을 클릭하면 해당 문의글의 Detail View로 이동
+
+3. 문의검색 - 작성된 문의를 검색하는 기능
+
+4. 문의등록 - 유저가 예약취소 및 사이트 이용 문의등록
+    입력 필드 : 아이디, 이름, 연락처, 이메일, 환불 계좌번호, 문의내용
+    문의 등록시 이름, 연락처, 이메일, 환불 계좌번호는 관리자만 볼 수 있게끔 숨김폼 검색x
+
+5. 답변 작성 - 관리자가 특정 문의에 대한 답변을 작성하는 기능
+    입력 필드 : 답변 내용
+    답변 등록시 Status의 상태가 Answered로 변경
+
+6. DB 설계
+Inquiries 문의하기
+-- 6. 고객센터 테이블
+CREATE TABLE IF NOT EXISTS inquiries (
+    inquiry_no BIGINT AUTO_INCREMENT PRIMARY KEY,            -- 문의 번호 (PK)
+    user_no BIGINT NOT NULL,                                 -- 회원 번호 (FK)
+    title VARCHAR(255) NOT NULL,                             -- 제목
+    content TEXT NOT NULL,                                   -- 문의 내용
+    inquiry_date DATETIME DEFAULT CURRENT_TIMESTAMP,         -- 문의 작성일
+    status ENUM('pending', 'answered') DEFAULT 'pending',    -- 상태
+    FOREIGN KEY (user_no) REFERENCES users(user_no) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+Answers 답변하기
+-- 8. 답변 테이블
+CREATE TABLE IF NOT EXISTS answers (
+    answer_no BIGINT AUTO_INCREMENT PRIMARY KEY,      -- 답변 번호 (PK)
+    inquiry_no BIGINT NOT NULL,                       -- 문의 번호 (FK)
+    admin_user_no BIGINT NOT NULL,                    -- 관리자 번호 (FK)
+    content TEXT NOT NULL,                            -- 답변 내용
+    answer_date DATETIME DEFAULT CURRENT_TIMESTAMP,   -- 답변 작성일
+    FOREIGN KEY (inquiry_no) REFERENCES inquiries(inquiry_no) ON DELETE CASCADE,
+    FOREIGN KEY (admin_user_no) REFERENCES admin_users(admin_user_no) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+7. 기능 우선순위
+문의등록, 문의 조회, 답변 작성, FAQ
+
+-- CRUD 숙박업소 등록 기능명세
+1. 기능 이름 : 숙박업소 등록(업자)
+    기능 목적: 숙박업소의 기본 정보와 사진을 시스템에 등록하고 관리할 수 있는 기능.
+    주요 사용자: 관리자 또는 숙박업소 운영자.
+    목표: 숙박업소 정보를 입력하고, 숙소 사진을 첨부하여 상세 페이지에서 확인할 수 있도록 함.
+
+2. 등록 항목 :
+    숙소 주소, 숙소 이름, 숙소 유형(예: 리조트, 호텔, 펜션),
+    체크인 날짜 체크인 날짜, 체크아웃 날짜 체크아웃 날짜,
+    할인율: 할인율(0~100), 원가: 숙박 가격,
+    평균 평점: 숙소의 평균 평점 (0~5, 소수점 한 자리),
+    등록일: 등록 날짜, 시스템이 자동으로 설정,
+    숙소 설명 숙소에 대한 상세 설명
+
+3. 등록 프로세스:
+    사용자가 필수 항목을 입력하고, 선택 항목을 작성한 뒤 "등록" 버튼을 클릭.
+    데이터베이스에 숙박업소 정보를 저장하고, 숙소 번호(resid_no)가 반환됨.
+    반환된 숙소 번호는 나중에 숙소 사진 등록 시 사용됨.
+
+4. 숙소 사진 등록
+    설명: 숙박업소에 관련된 사진을 등록하는 기능입니다.
+    등록 항목:
+    사진 URL(photo_url01 ~ photo_url10): 숙소의 사진들을 최대 10개까지 등록 가능.
+    썸네일 이미지(thumbnailUrls): 숙소 사진의 썸네일 URL.
+        등록 프로세스:
+        사용자가 숙박업소에 대한 사진을 업로드하면, 사진 URL을 데이터베이스에 저장.
+        사진이 등록되면 해당 숙소 번호(resid_no)와 연결되어 숙소의 상세 페이지에서
+        사진들을 조회할 수 있음.
+
+5. 할인율 계산
+    설명: 숙소의 할인율에 따라 최종 숙박 요금을 자동으로 계산하는 기능입니다.
+        세부 사항:
+        할인율이 입력되면, 총 가격에서 할인된 가격(discounted_price)을 자동으로 계산하여 표시.
+        계산 방식:
+        discounted_price = total_price * (1 - discount_rate / 100)
+        할인율을 0으로 설정하면, 할인된 가격은 원가와 동일하게 표시.
+
+6. 숙소 상세 페이지
+    설명: 등록된 숙소 정보를 상세하게 조회할 수 있는 페이지입니다.
+    출력 항목:
+    숙소 이름, 숙소 주소, 숙소 유형
+    체크인/체크아웃 날짜, 원가, 할인율, 할인된 가격
+    숙소 사진 (최대 10개, 썸네일 포함), 평점 (평균 평점 표시)
+    숙소 설명
+
+7. 숙소 정보 수정
+    설명: 등록된 숙소 정보를 수정할 수 있는 기능입니다.
+        기능 상세:
+        숙소 이름, 설명, 가격, 할인율 등 정보를 수정하고 업데이트.
+        숙소 사진을 새로 추가하거나, 기존 사진을 삭제할 수 있음.
+
+8. DB 설계
+-- 3. 숙소 상세페이지 테이블
+CREATE TABLE IF NOT EXISTS residence (
+    resid_no BIGINT AUTO_INCREMENT PRIMARY KEY,             -- 숙소 번호 (PK)
+    resid_name VARCHAR(255) NOT NULL,                       -- 숙소 이름
+    resid_description TEXT,                                 -- 숙소 상세 설명
+    resid_address VARCHAR(255),                             -- 숙소 주소
+    resid_type ENUM('resort', 'hotel', 'pension') NOT NULL, -- 숙소 유형
+    checkin_date DATE,                                      -- 체크인 날짜
+    checkout_date DATE,                                     -- 체크아웃 날짜
+    total_price DECIMAL(10, 2),                             -- 원가
+    discount_rate INT DEFAULT 0,                        	-- 할인율
+    discounted_price DECIMAL(10, 2) AS (total_price * (1 - discount_rate / 100)) STORED,-- 할인된 가격
+    rating DECIMAL(2, 1),                                   -- 평균 평점
+    resid_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP        	-- 등록일
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- 7. 숙소 사진 테이블
+CREATE TABLE IF NOT EXISTS property_photos (
+    photo_no BIGINT AUTO_INCREMENT PRIMARY KEY,       -- 사진 ID (PK)
+    resid_no BIGINT NOT NULL,                         -- 숙소 번호 (FK)
+    thumbnailUrls VARCHAR(255) DEFAULT NULL,
+    photo_url01 VARCHAR(255) DEFAULT NULL,            -- 사진 URL
+    photo_url02 VARCHAR(255) DEFAULT NULL,            -- 사진 URL
+    photo_url03 VARCHAR(255) DEFAULT NULL,            -- 사진 URL
+    photo_url04 VARCHAR(255) DEFAULT NULL,            -- 사진 URL
+    photo_url05 VARCHAR(255) DEFAULT NULL,            -- 사진 URL
+    photo_url06 VARCHAR(255) DEFAULT NULL,            -- 사진 URL
+    photo_url07 VARCHAR(255) DEFAULT NULL,            -- 사진 URL
+    photo_url08 VARCHAR(255) DEFAULT NULL,            -- 사진 URL
+    photo_url09 VARCHAR(255) DEFAULT NULL,            -- 사진 URL
+    photo_url10 VARCHAR(255) DEFAULT NULL,            -- 사진 URL
+    FOREIGN KEY (resid_no) REFERENCES residence(resid_no) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+9. 숙소 등록
+    관리자는 숙소 등록 화면에 접속합니다.
+    숙소 이름, 설명, 가격, 체크인/체크아웃 날짜, 숙소 유형 등을 입력합니다.
+    할인율을 입력하고, 최종 가격(할인된 가격)이 자동으로 계산됩니다.
+    숙소 사진을 최대 10개까지 등록하고, 썸네일을 설정합니다.
+    "등록" 버튼을 클릭하여 숙소 정보를 저장합니다.
+    5.2. 숙소 상세 조회
+    등록된 숙소의 목록을 확인합니다.
+    각 숙소의 제목을 클릭하여 상세 정보를 조회합니다.
+    상세 페이지에서 숙소의 기본 정보와 함께 사진, 가격, 평점 등을 확인합니다.
+
+10. 기능 우선순위
+    숙소 등록, 사진 등록, 할인율 계산, 숙소 상세 조회, 수정 및 업데이트 기능, 숙소 상태 관리
+
+-- 날씨

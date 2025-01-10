@@ -2,17 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.springbootfinal.app.mapper.AnswersMapper" >
+<mapper namespace="com.springbootfinal.app.mapper.helper.AnswersMapper" >
+
     <!-- 답변 등록 -->
-    <insert id="insertAnswer" parameterType="com.springbootfinal.app.domain.AnswerDto">
+    <insert id="insertAnswer" parameterType="com.springbootfinal.app.domain.helper.AnswerDto">
         INSERT INTO answers (inquiry_no, admin_user_no, content, answer_date)
         VALUES (#{inquiryNo}, #{adminUserNo}, #{content}, NOW())
     </insert>
 
-    <!-- 특정 문의에 대한 답변 조회 -->
-    <select id="getAnswerByInquiryId" parameterType="long" resultType="com.springbootfinal.app.domain.AnswerDto">
-        SELECT answer_no, inquiry_no, admin_user_no, content, answer_date
-        FROM answers
-        WHERE inquiry_no = #{inquiryNo}
+    <!-- 특정 문의에 대한 답변 조회 (관리자 정보 포함) -->
+    <select id="getAnswerByInquiryId" parameterType="long" resultType="com.springbootfinal.app.domain.helper.AnswerDto">
+        SELECT
+        a.answer_no,
+        a.inquiry_no,
+        a.admin_user_no,
+        au.admin_id AS adminId,  <!-- 관리자 ID -->
+        au.admin_name AS adminName, <!-- 관리자 이름 -->
+        a.content,
+        a.answer_date
+        FROM answers a
+        JOIN admin_users au ON a.admin_user_no = au.admin_user_no
+        WHERE a.inquiry_no = #{inquiryNo}
     </select>
 </mapper>
