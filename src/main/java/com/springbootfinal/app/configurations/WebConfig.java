@@ -37,7 +37,8 @@ public class WebConfig implements WebMvcConfigurer{
 		registry.addViewController("/writeBoard").setViewName("views/writeForm");
 		// 단기예보
 		registry.addViewController("/weather").setViewName("weather/index");
-		//registry.addViewController("/longWeather").setViewName("weather/longWeather");
+		// 숙소
+		registry.addViewController("/Residence").setViewName("views/Residence/Residence");
 		// 통합 예보(단기+중기)
 		registry.addViewController("/weather/form").setViewName("weather/weatherResult");
 		// 기본페이지 폼 뷰 전용 컨트롤러 설정
