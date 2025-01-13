@@ -2,9 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.springbootfinal.app.mapper.LongWeatherMapper">
+<mapper namespace="com.springbootfinal.app.mapper.weather.LongWeatherMapper">
 
-	<select id="getLongWeatherData" resultType="com.springbootfinal.app.domain.LongWeatherDto">
+	<select id="getLongWeatherData" resultType="com.springbootfinal.app.domain.weather.LongWeatherDto">
         SELECT 
             * 
         FROM long_weather 

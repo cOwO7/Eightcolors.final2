@@ -17,9 +17,8 @@ $(function() {
 		$("#checkForm").submit();
 	});
 	
-	/* 게시글 상세보기에서 게시글 삭제 요청 처리
-	 * 아래와 같이 hidden 폼을 통해 post 방식으로 처리 할 수 있다.
-	 **/
+	// 게시글 상세보기에서 게시글 삭제 요청 처리
+	// 아래와 같이 hidden 폼을 통해 post 방식으로 처리 할 수 있다.
 	$("#detailDelete").on("click", function() {
 			
 		let pass = $("#pass").val();

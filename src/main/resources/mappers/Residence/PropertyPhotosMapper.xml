@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springbootfinal.app.mapper.residence.PropertyPhotosMapper">
+
+    <!-- 숙소 사진 등록 -->
+    <insert id="insertPropertyPhoto" parameterType="com.springbootfinal.app.domain.residence.PropertyPhotosDto">
+        INSERT INTO property_photos (
+        resid_no,
+        thumbnailUrls,
+        photo_url01,
+        photo_url02,
+        photo_url03,
+        photo_url04,
+        photo_url05,
+        photo_url06,
+        photo_url07,
+        photo_url08,
+        photo_url09,
+        photo_url10
+        ) VALUES (
+        #{residNo},
+        #{thumbnailUrls},
+        #{photoUrl01},
+        #{photoUrl02},
+        #{photoUrl03},
+        #{photoUrl04},
+        #{photoUrl05},
+        #{photoUrl06},
+        #{photoUrl07},
+        #{photoUrl08},
+        #{photoUrl09},
+        #{photoUrl10}
+        );
+    </insert>
+
+    <!-- 숙소의 모든 사진 조회 -->
+    <select id="getPhotosByResidenceId" resultType="com.springbootfinal.app.domain.residence.PropertyPhotosDto">
+        SELECT * FROM property_photos WHERE resid_no = #{residNo};
+    </select>
+
+    <!-- 숙소 사진 수정 -->
+    <update id="updatePropertyPhoto" parameterType="com.springbootfinal.app.domain.residence.PropertyPhotosDto">
+        UPDATE property_photos
+        SET
+        thumbnailUrls = #{thumbnailUrls},
+        photo_url01 = #{photoUrl01},
+        photo_url02 = #{photoUrl02},
+        photo_url03 = #{photoUrl03},
+        photo_url04 = #{photoUrl04},
+        photo_url05 = #{photoUrl05},
+        photo_url06 = #{photoUrl06},
+        photo_url07 = #{photoUrl07},
+        photo_url08 = #{photoUrl08},
+        photo_url09 = #{photoUrl09},
+        photo_url10 = #{photoUrl10}
+        WHERE photo_no = #{photoNo};
+    </update>
+
+    <!-- 숙소 사진 삭제 -->
+    <delete id="deletePropertyPhoto" parameterType="Long">
+        DELETE FROM property_photos WHERE photo_no = #{photoNo};
+    </delete>
+
+    <!-- 숙소의 모든 사진 삭제 (숙소 삭제 시) -->
+    <delete id="deletePhotosByResidenceId" parameterType="Long">
+        DELETE FROM property_photos WHERE resid_no = #{residNo};
+    </delete>
+
+</mapper>

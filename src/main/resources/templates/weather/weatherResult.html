@@ -22,11 +22,9 @@
                                 <table width="85%" style="margin: auto; text-align: center;">
                                     <tr>
                                         <!-- <td>날짜(baseDate)</td> -->
-                                        <td><input width="auto" type="hidden" id="baseDate" name="baseDate"
-                                                   th:value="${baseDate}"/></td>
+                                        <td><input width="auto" type="hidden" id="baseDate" name="baseDate" th:value="${baseDate}"/></td>
                                         <!-- <td>시간(baseTime)</td> -->
-                                        <td><input width="auto" type="hidden" id="baseTime" name="baseTime"
-                                                   th:value="${baseTime}"/></td>
+                                        <td><input width="auto" type="hidden" id="baseTime" name="baseTime" th:value="${baseTime}"/></td>
                                     </tr>
                                     <tr>
                                         <!-- <td>예보지점 x값</td> -->
@@ -36,11 +34,9 @@
                                     </tr>
                                     <tr>
                                         <!-- <td>위도(latitude)</td> -->
-                                        <td><input width="auto" type="hidden" id="latitudeNum"
-                                                   name="latitudeNum" th:value="${latitudeNum}"/></td>
+                                        <td><input width="auto" type="hidden" id="latitudeNum" name="latitudeNum" th:value="${latitudeNum}"/></td>
                                         <!-- <td>경도(longitude)</td> -->
-                                        <td><input width="auto" type="hidden" id="longitudeNum"
-                                                   name="longitudeNum" th:value="${longitudeNum}"/></td>
+                                        <td><input width="auto" type="hidden" id="longitudeNum" name="longitudeNum" th:value="${longitudeNum}"/></td>
                                     </tr>
                                 </table>
                                 <br/>
@@ -51,8 +47,7 @@
                                         <!-- 도시 선택 -->
                                         <div class="mb-3">
                                             <label for="city-selector" class="form-label">도시 선택</label>
-                                            <select id="city-selector"
-                                                    class="btn btn-outline-primary form-select w-100">
+                                            <select id="city-selector" class="btn btn-outline-primary form-select w-100">
                                                 <option value="">도시를 선택하세요</option>
                                                 <!-- 도시 옵션은 JavaScript로 동적으로 변경 -->
                                             </select>
@@ -62,14 +57,10 @@
                                         <div class="mb-3">
                                             <label for="district-selector" class="form-label">구/시 선택</label>
                                             <div class="dropdown">
-                                                <button class="btn btn-outline-primary dropdown-toggle w-100"
-                                                        type="button" id="district-selector"
-                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" id="district-selector" data-bs-toggle="dropdown" aria-expanded="false">
                                                     구/시를 선택하세요
                                                 </button>
-                                                <ul class="dropdown-menu w-100"
-                                                    aria-labelledby="district-selector"
-                                                    style="max-height: 200px; overflow-y: auto;">
+                                                <ul class="dropdown-menu w-100" aria-labelledby="district-selector" style="max-height: 200px; overflow-y: auto;">
                                                     <!-- 구/시 옵션은 JavaScript로 동적으로 변경 -->
                                                 </ul>
                                             </div>
@@ -123,9 +114,6 @@
         </div>
         <table>
             <tbody id="combinedWeatherTableBody"></tbody>
-            <!-- 테이블 데이터가 들어갈 위치 -->
-
-
             <div id="weatherContainer" class="weather-container">
                 <!--<div id="row1" class="row1"></div>
                 <div id="row2" class="row"></div>
@@ -133,26 +121,26 @@
                 <div id="row1" class="row1">
                 </div>
             </div>
-                <div class="weather-scroll-container">
-                    <button class="scroll-btn left" onclick="scrollLeft()">&#10094;</button>
-                    <div id="row2" class="weather-row"></div>
-                    <button class="scroll-btn right" onclick="scrollRight()">&#10095;</button>
-                </div>
-        </div>
+            <div class="weather-scroll-container">
+                <button class="scroll-btn left" onclick="scrollToLeft()">&#10094;</button>
+                <div id="row2" class="weather-row"></div>
+                <button class="scroll-btn right" onclick="scrollToRight()">&#10095;</button>
+            </div>
         </table>
+    </div>
     </div>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/proj4"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <link href="bootstrap/bootstrap.min.css" rel="stylesheet">
-    <!--<link href="/css/allWeather.css" rel="stylesheet"/>-->
-    <link href="/css/allW.css" rel="stylesheet"/>
+    <!--<link href="/css/weather/allWeather.css" rel="stylesheet"/>-->
+    <link href="/css/weather/allW.css" rel="stylesheet"/>
     <script th:src="@{js/jquery-3.7.1.min.js}"></script>
-    <script th:src="@{js/weather.js}"></script>
-    <!--<script th:src="@{js/allWeather.js}"></script>-->
-    <script th:src="@{js/allW.js}"></script>
-    <script th:src="@{js/geolocation.js}"></script>
-    <script th:src="@{js/allMapChoice.js}"></script>
+    <script th:src="@{js/weather/weather.js}"></script>
+    <!--<script th:src="@{js/weather/allWeather.js}"></script>-->
+    <script th:src="@{js/weather/allW.js}"></script>
+    <script th:src="@{js/map/geolocation.js}"></script>
+    <script th:src="@{js/weather/allMapChoice.js}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/3.0.4/luxon.min.js"></script>
 </th:block>
 </html>

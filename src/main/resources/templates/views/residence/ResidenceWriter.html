@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/main_layout}">
+<head>
+    <link href="bootstrap/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>숙소 등록</title>
+<body>
+<th:block layout:fragment="content">
+    <div class="container">
+        <h1>숙소 등록</h1>
+        <form th:action="@{/residence/add}" th:object="${residence}" method="post">
+            <label for="residName">숙소 이름:</label>
+            <input type="text" id="residName" th:field="*{residName}" required><br><br>
+
+            <label for="residAddress">숙소 주소:</label>
+            <input type="text" id="residAddress" th:field="*{residAddress}" required><br><br>
+
+            <label for="residType">숙소 유형:</label>
+            <select id="residType" th:field="*{residType}">
+                <option value="resort">리조트</option>
+                <option value="hotel">호텔</option>
+                <option value="pension">펜션</option>
+            </select><br><br>
+
+            <label for="totalPrice">원가:</label>
+            <input type="number" id="totalPrice" th:field="*{totalPrice}" step="0.01" required><br><br>
+            <h3>사진 추가</h3>
+            <form th:action="@{/residence/{residNo}/add-photo(residNo=${residence.residNo})}" method="post">
+                <label for="photoUrl01">사진 1:</label>
+                <input type="text" id="photoUrl01" th:field="*{photoUrl01}"><br><br>
+                <button type="submit">사진 추가</button>
+            </form>
+        </form>
+
+        <button type="submit">등록</button>
+        <a href="/residence/list">뒤로 가기</a>
+    </div>
+</th:block>
+</body>
+</html>
