@@ -88,12 +88,24 @@
           </tr>
           </thead>
           <tbody id="inquiryBoardList">
-          <tr th:block th:each="helper, status: ${helperBList}">
-            <td>[[${helperBList.no]]</td>
-            <td th:href="@{helperDetail(no=${helper.no})}">[[${helper.title}]]</td>
-            <td th:text="${helper.status}"></td>
-            <td th:text="${helper.writer}"></td>
-            <td>[[${ #dates.format(helper.regDate, 'yyyy-MM-dd')}]]</td>
+          <tr th:block th:each="inquiry : ${inquiryBList}">
+            <!-- 문의글 출력 -->
+            <td th:text="${inquiry.inquiryNo}"></td>
+            <td th:href="@{inquiryDetail(no=${inquiry.inquiryNo})}" th:text="${inquiry.title}"></td>
+            <td th:text="${inquiry.status}"></td>
+            <td th:text="${inquiry.userName}"></td> <!-- 작성자 수정 -->
+            <td th:text="${#dates.format(inquiry.inquiryDate, 'yyyy-MM-dd')}"></td>
+          </tr>
+
+          <!-- 답글이 있을 경우 답글을 표시 -->
+          <tr th:block th:each="answer : ${inquiry.answers}">
+            <td colspan="5">
+              <!-- 답글 제목 표시 -->
+              <strong>답변:</strong>
+              <a th:href="@{answerDetail(no=${answer.answerNo})}" th:text="${answer.content}"></a><br />
+              <span th:text="'작성자: ' + ${answer.adminName}"></span><br />
+              <span th:text="'작성일: ' + ${#dates.format(answer.answerDate, 'yyyy-MM-dd')}"></span>
+            </td>
           </tr>
           </tbody>
         </table>

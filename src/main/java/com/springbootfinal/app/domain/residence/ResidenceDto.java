@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.List;
 
 @Setter
 @Getter
@@ -26,5 +27,7 @@ public class ResidenceDto {
     private BigDecimal discountedPrice; // 할인된 가격
     private BigDecimal rating;          // 평균 평점
     private Date residDate;             // 등록일 (TIMESTAMP)
+
+    private List<PropertyPhotosDto> propertyPhotos;
 
 }

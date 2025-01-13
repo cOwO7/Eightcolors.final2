@@ -9,7 +9,26 @@
 <body>
 <th:block layout:fragment="content">
   <div class="container">
+    <div class="container mt-5">
+      <h1 th:text="${residence.title}">숙소 제목</h1>
+      <p th:text="${residence.description}">숙소 설명</p>
 
+      <!-- 숙소 사진들 -->
+      <h3>숙소 사진</h3>
+      <div>
+        <div th:each="photo : ${photos}">
+          <img th:src="@{'/images/' + ${photo.fileName}}" alt="숙소 사진" class="img-fluid mb-3" />
+        </div>
+      </div>
+
+      <!-- 삭제 버튼 -->
+      <form th:action="@{/residence/{residNo}/delete(residNo=${residence.residNo})}" method="post">
+        <button type="submit" class="btn btn-danger">숙소 삭제</button>
+      </form>
+
+      <!-- 목록으로 돌아가기 -->
+      <a href="/residence" class="btn btn-secondary mt-3">목록으로 돌아가기</a>
+    </div>
   </div>
 </th:block>
 </body>

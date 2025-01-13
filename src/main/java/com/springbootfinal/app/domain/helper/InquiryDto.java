@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,4 +24,5 @@ public class InquiryDto {
 	private String answerContent;  // 답변 내용 (추가)
 	private String adminId;        // 답변 작성자 ID (추가)
 	private String adminName;      // 답변 작성자 이름 (추가)
+	private List<AnswerDto> answers;   // 답변 리스트
 }

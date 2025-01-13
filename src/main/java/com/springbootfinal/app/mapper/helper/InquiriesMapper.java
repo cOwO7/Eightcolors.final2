@@ -21,5 +21,7 @@ public interface InquiriesMapper {
     Map<String, Object> getInquiryWithAnswer(@Param("inquiryNo") Long inquiryNo);
 
     void updateInquiryStatus(@Param("inquiryNo") Long inquiryNo, @Param("status") String status);
+
+    List<InquiryDto> getInquiriesByUser(String username);
 }
 
