@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springbootfinal.app.mapper.transfer.TransferMapper">
+
+    <!-- 양도 등록 -->
+    <select id="transferList" resultType="com.springbootfinal.app.domain.transfer.TransferDto">
+        SELECT
+            t.transfer_no,
+            t.transfer_title,
+            t.seller_user_no,
+            t.buyer_user_no,
+            t.reservation_no,
+            t.transfer_price,
+            t.status,
+            t.created_at,
+            s.id AS seller_id,  -- 양도자 아이디
+            b.id AS buyer_id,   -- 양수자 아이디
+            r.resid_name AS reservation_resid_name -- 예약한 숙소명 (residence 테이블의 resid_name)
+        FROM transfers t
+                 LEFT JOIN users s ON t.seller_user_no = s.user_no
+                 LEFT JOIN users b ON t.buyer_user_no = b.user_no
+                 LEFT JOIN reservations re ON t.reservation_no = re.reservation_no
+                 LEFT JOIN residence_rooms rr ON re.room_no = rr.room_no
+                 LEFT JOIN residence r ON rr.resid_no = r.resid_no
+    </select>
+
+
+
+
+</mapper>
