@@ -76,7 +76,6 @@
         <th>원가</th>
         <th>할인%</th>
         <th>할인 가격</th>
-        <th>평점</th>
         <th>체크인</th>
         <th>체크아웃</th>
         <th>등록일</th>
@@ -84,25 +83,31 @@
       </thead>
       <tbody>
       <tr th:each="residence : ${residences}">
+        <!-- 숙소 번호 -->
         <td th:text="${residence.residNo}"></td>
+        <!-- 숙소 사진 -->
         <th:block th:if="${residence.propertyPhotos != null and not #lists.isEmpty(residence.propertyPhotos)}">
-          <img th:src="@{|/resources/files/${residence.propertyPhotos[0].photoUrl01}|}" alt="숙소 사진" class="img-fluid"/>
+          <td><img th:src="@{|/resources/files/${residence.propertyPhotos[0]}|}" alt="숙소 사진" class="img-fluid"/></td>
         </th:block>
         <th:block th:unless="${residence.propertyPhotos != null and not #lists.isEmpty(residence.propertyPhotos)}">
           <td>사진 없음</td>
         </th:block>
+        <!-- 숙소 이름 -->
         <td th:text="${residence.residName}"></td>
+        <!-- 숙소 유형 -->
         <td th:text="${residence.residType}"></td>
+        <!-- 원가 (전체 가격) -->
         <td th:text="${residence.totalPrice}"></td>
-        <td th:text="${residence.discountRate}"></td>
-        <td th:text="${residence.discountedPrice}"></td>
-        <td th:text="${residence.rating}"></td>
-        <td th:text="${#dates.format(residence.checkinDate, 'yyyy-MM-dd')}"></td>
-        <td th:text="${#dates.format(residence.checkoutDate, 'yyyy-MM-dd')}"></td>
+        <td th:text="${residence.discountRate}"></td>  <!-- 할인율 -->
+        <td th:text="${residence.discountedPrice}"></td>  <!-- 할인된 가격 -->
+        <td th:text="${#dates.format(residence.checkinDate, 'yyyy-MM-dd')}"></td>  <!-- 체크인 날짜 -->
+        <td th:text="${#dates.format(residence.checkoutDate, 'yyyy-MM-dd')}"></td>  <!-- 체크아웃 날짜 -->
+        <!-- 등록일 -->
         <td th:text="${#dates.format(residence.residDate, 'yyyy-MM-dd')}"></td>
       </tr>
       </tbody>
     </table>
+
 
     <!-- 페이지 네비게이션 -->
     <!--<div th:if="${pageCount > 1}">
