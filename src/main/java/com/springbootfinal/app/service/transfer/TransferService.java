@@ -13,6 +13,14 @@ public class TransferService {
 
     private final TransferMapper transferMapper;
 
+    // no에 해당하는 게시글을 읽어와 반환하는 메서드
+    public TransferDto getTransfer(int no) {
+        log.info("Fetching transfer record with no: {}", no);
+        TransferDto transfer = transferMapper.transferRead(no);
+        log.info("Fetched transfer record: {}", transfer);
+        return transfer;
+    }
+
     // 생성자 주입 방식
     public TransferService(TransferMapper transferMapper) {
         this.transferMapper = transferMapper;

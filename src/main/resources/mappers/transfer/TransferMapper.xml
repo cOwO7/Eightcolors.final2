@@ -5,6 +5,33 @@
 
 <mapper namespace="com.springbootfinal.app.mapper.transfer.TransferMapper">
 
+
+    <!-- transferRead에 해당하는 SQL 문 -->
+    <select id="transferRead" resultType="com.springbootfinal.app.domain.transfer.TransferDto">
+        SELECT
+            t.transfer_no,
+            t.transfer_title,
+            t.seller_user_no,
+            t.buyer_user_no,
+            t.reservation_no,
+            t.transfer_price,
+            t.status,
+            t.created_at,
+            s.id AS seller_id,
+            b.id AS buyer_id,
+            r.resid_name AS reservation_resid_name,
+            re.checkin_date,
+            re.checkout_date
+        FROM transfers t
+                 LEFT JOIN users s ON t.seller_user_no = s.user_no
+                 LEFT JOIN users b ON t.buyer_user_no = b.user_no
+                 LEFT JOIN reservations re ON t.reservation_no = re.reservation_no
+                 LEFT JOIN residence_rooms rr ON re.room_no = rr.room_no
+                 LEFT JOIN residence r ON rr.resid_no = r.resid_no
+        WHERE t.transfer_no = #{transfer_no}
+    </select>
+
+
     <!-- 양도 등록 -->
     <select id="transferList" resultType="com.springbootfinal.app.domain.transfer.TransferDto">
         SELECT
@@ -25,6 +52,7 @@
                  LEFT JOIN reservations re ON t.reservation_no = re.reservation_no
                  LEFT JOIN residence_rooms rr ON re.room_no = rr.room_no
                  LEFT JOIN residence r ON rr.resid_no = r.resid_no
+        ORDER BY t.transfer_no DESC
     </select>
 
 

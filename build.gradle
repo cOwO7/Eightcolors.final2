@@ -2,6 +2,16 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.4.0'
     id 'io.spring.dependency-management' version '1.1.6'
+
+    //추가-2025.01.14
+    id 'idea'
+    id 'jacoco'
+    id 'org.asciidoctor.jvm.convert' version "3.3.2"
+}
+
+jar { //추가-2025.01.14
+    archiveVersion = '0.0.1-SNAPSHOT'
+    archiveBaseName = 'kakaopay-sample-master'
 }
 
 group = 'com.springbootfinal'
@@ -10,6 +20,7 @@ version = '0.0.1-SNAPSHOT'
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
+
     }
 }
 
@@ -82,6 +93,10 @@ dependencies {
 
     implementation 'org.springframework.security:spring-security-web:6.0.0'
     implementation 'org.springframework.security:spring-security-config:6.0.0'
+
+    // 2025.1.14 추가
+    implementation 'commons-codec:commons-codec:1.15'
+
 
 
 }

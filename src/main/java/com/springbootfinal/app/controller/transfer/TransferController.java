@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -14,6 +16,13 @@ public class TransferController {
 
     @Autowired
     private TransferService transferService;
+
+    // 게시글 상세보기 요청처리 메서드
+    @GetMapping("/transferDetail")
+    public String getTransferDetail(Model model, @RequestParam("no") int no) {
+        model.addAttribute("transfer", transferService.getTransfer(no));
+        return "views/transfer/transferDetail";  // 반환할 뷰 이름 (transferDetail.html)
+    }
 
     @GetMapping("/transfers")
     public String getTransferList(Model model) {

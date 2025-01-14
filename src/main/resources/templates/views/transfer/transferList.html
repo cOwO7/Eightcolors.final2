@@ -28,7 +28,9 @@
         <th:block th:each="transfer : ${transfers}">
             <tr>
                 <td th:text="${transfer.transferNo}"></td>
-                <td th:text="${transfer.transferTitle}"></td> <!-- 제목 출력 -->
+              <!--  <td th:text="${transfer.transferTitle}"></td>--> <!-- 제목 출력 -->
+             <!--  제목을 클릭하면 해당 글의 상세보기 페이지로 이동한는 맵핑-->
+                <td><a th:href="@{/transferDetail(no=${transfer.transferNo})}" th:text="${transfer.transferTitle}"></a></td>
                 <td th:text="${transfer.reservationResidName}"></td>
                 <td th:text="${transfer.sellerId}"></td>
                 <td th:text="${transfer.formattedTransferPrice}"></td>
