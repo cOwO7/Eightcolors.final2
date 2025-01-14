@@ -8,10 +8,7 @@ import java.util.List;
 @Mapper
 public interface AnswersMapper {
 
-    void insertAnswer(AnswerDto answerDto);
-
-    AnswerDto getAnswerByInquiryId(Long inquiryNo);
-
-    List<AnswerDto> getAnswersByInquiryId(Long inquiryNo);
+    // 답변 추가
+    void insertAnswer(AnswerDto answer);
 }
 

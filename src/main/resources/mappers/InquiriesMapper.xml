@@ -4,69 +4,32 @@
 
 <mapper namespace="com.springbootfinal.app.mapper.helper.InquiriesMapper" >
 
-	<select id="getAnswersByInquiryId" resultType="com.springbootfinal.app.domain.helper.AnswerDto">
-		SELECT
-			a.answer_no,
-			a.inquiry_no,
-			a.content AS answer_content,
-			a.admin_name,
-			a.answer_date
-		FROM answers a
-		WHERE a.inquiry_no = #{inquiryNo}
+	<!-- 문의 목록 조회 -->
+	<select id="selectAllInquiries" resultType="com.springbootfinal.app.domain.helper.InquiryDto">
+		SELECT * FROM inquiries;
 	</select>
-	<!-- 문의 등록 -->
-	<insert id="insertInquiry" parameterType="com.springbootfinal.app.domain.helper.InquiryDto">
-		INSERT INTO inquiries (user_no, title, content, inquiry_date, status)
-		VALUES (#{userNo}, #{title}, #{content}, NOW(), #{status})
+
+	<!-- 특정 문의 조회 -->
+	<select id="selectInquiryById" resultType="com.springbootfinal.app.domain.helper.InquiryDto">
+		SELECT * FROM inquiries WHERE inquiry_no = #{inquiryNo};
+	</select>
+
+	<!-- 문의 추가 -->
+	<insert id="insertInquiry" useGeneratedKeys="true" keyProperty="inquiryNo">
+		INSERT INTO inquiries (user_no, title, content, status)
+		VALUES (#{userNo}, #{title}, #{content}, #{status});
 	</insert>
 
-
-	<!-- 문의 목록 조회 -->
-	<select id="getAllInquiries" resultType="com.springbootfinal.app.domain.helper.InquiryDto">
-		SELECT inquiry_no, user_no, title, content, inquiry_date, status
-		FROM inquiries
-	</select>
-
-	<!-- 특정 문의 조회 (작성자 정보 포함) -->
-	<select id="getInquiryWithUser" parameterType="long" resultType="map">
-		SELECT
-			i.inquiry_no,
-			i.title,
-			i.content,
-			i.inquiry_date,
-			i.status,
-			u.id AS user_id,
-			u.name AS user_name
-		FROM inquiries i
-				 JOIN users u ON i.user_no = u.user_no
-		WHERE i.inquiry_no = #{inquiryNo}
-	</select>
-
-	<!-- 특정 문의 및 답변 조회 (작성자, 답변 작성자 포함) -->
-	<select id="getInquiryWithAnswer" parameterType="long" resultType="map">
-		SELECT
-			i.inquiry_no,
-			i.title,
-			i.content,
-			i.inquiry_date,
-			i.status,
-			u.id AS user_id, -- 작성자 ID
-			u.name AS user_name, -- 작성자 이름
-			a.content AS answer_content, -- 답변 내용
-			a.answer_date, -- 답변 작성일
-			au.admin_id AS admin_id, -- 답변 작성자 (관리자 ID)
-			au.admin_name AS admin_name -- 답변 작성자 이름
-		FROM inquiries i
-				 LEFT JOIN users u ON i.user_no = u.user_no
-				 LEFT JOIN answers a ON i.inquiry_no = a.inquiry_no
-				 LEFT JOIN admin_users au ON a.admin_user_no = au.admin_user_no
-		WHERE i.inquiry_no = #{inquiryNo}
-	</select>
-
-	<!-- 문의 상태 업데이트 -->
-	<update id="updateInquiryStatus" parameterType="map">
+	<!-- 문의 업데이트 -->
+	<update id="updateInquiry">
 		UPDATE inquiries
-		SET status = #{status}
-		WHERE inquiry_no = #{inquiryNo}
+		SET title = #{title}, content = #{content}, status = #{status}
+		WHERE inquiry_no = #{inquiryNo};
 	</update>
+
+	<!-- 문의 삭제 -->
+	<delete id="deleteInquiry">
+		DELETE FROM inquiries WHERE inquiry_no = #{inquiryNo};
+	</delete>
+
 </mapper>

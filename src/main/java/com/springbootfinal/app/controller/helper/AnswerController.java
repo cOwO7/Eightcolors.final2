@@ -7,7 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+/*@RestController
 @RequestMapping("/answers")
 public class AnswerController {
 
@@ -30,5 +30,5 @@ public class AnswerController {
     public ResponseEntity<AnswerDto> getAnswerByInquiryId(@PathVariable Long inquiryId) {
         return ResponseEntity.ok(answerService.getAnswerByInquiryId(inquiryId));
     }
-}
+}*/
 

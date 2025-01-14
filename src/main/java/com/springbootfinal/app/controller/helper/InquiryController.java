@@ -1,96 +1,94 @@
 package com.springbootfinal.app.controller.helper;
 
+import com.springbootfinal.app.domain.helper.AnswerDto;
 import com.springbootfinal.app.domain.helper.InquiryDto;
+import com.springbootfinal.app.service.helper.AnswerService;
 import com.springbootfinal.app.service.helper.InquiryService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
-@RestController
-@RequestMapping("/inquiries")
+@Slf4j
+@Controller
 public class InquiryController {
 
-    private final InquiryService inquiryService;
+    @Autowired
+    private InquiryService inquiryService;
 
-    public InquiryController(InquiryService inquiryService) {
-        this.inquiryService = inquiryService;
-    }
+    @Autowired
+    private AnswerService answerService;
 
-    // 문의 등록
-    @PostMapping
-    public ResponseEntity<String> createInquiry(@RequestBody InquiryDto inquiryDto) {
-        inquiryService.addInquiry(inquiryDto);
-        return ResponseEntity.ok("문의가 등록되었습니다.");
-    }
-
-    // 모든 문의 가져오기 (관리자 전용)
-    /*@GetMapping
-    public ResponseEntity<List<InquiryDto>> getAllInquiries(
-            @AuthenticationPrincipal UserDetails userDetails) {
-        // 관리자만 접근 가능
-        if (!userDetails.getAuthorities().stream().anyMatch(
-                auth -> auth.getAuthority()
-                        .equals("ROLE_ADMIN"))) {
-            return ResponseEntity.status(403).build();
-        }
-        return ResponseEntity.ok(inquiryService.getAllInquiries(userDetails));
-    }*/
+    // 문의 목록 페이지
     @GetMapping("/inquiries")
-    public ResponseEntity<List<InquiryDto>> getAllInquiries(@AuthenticationPrincipal UserDetails userDetails,
-                                                            Model model) {
-        List<InquiryDto> inquiryBList = inquiryService.getAllInquiries(userDetails);
-        // 관리자만 접근 가능
-        boolean isAdmin = userDetails.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
-
-        model.addAttribute("inquiryBList", inquiryBList);
-        if (isAdmin) {
-            // 관리자는 모든 문의글을 반환
-            return ResponseEntity.ok(inquiryService.getAllInquiries(userDetails));
-        } else {
-            // 일반 사용자는 자기 자신이 작성한 문의만 반환
-            return ResponseEntity.ok(inquiryService.getInquiriesByUser(userDetails));
-        }
-
+    public String listInquiries(Model model) {
+        List<InquiryDto> inquiries = inquiryService.getAllInquiries();
+        model.addAttribute("inquiries", inquiries);
+        return "views/helper";
+    }
+    // 문의 상세 페이지
+    @GetMapping("/inquiries/{inquiryNo}")
+    public String viewInquiry(@PathVariable Long inquiryNo, Model model) {
+        InquiryDto inquiry = inquiryService.getInquiryById(inquiryNo);
+        model.addAttribute("inquiry", inquiry);
+        return "views/InquiriesDetail";
     }
 
-
-    // 특정 문의 가져오기 (관리자 전용)
-    @GetMapping("/{id}")
-    public ResponseEntity<InquiryDto> getInquiryById(
-            @PathVariable Long id,
-            @AuthenticationPrincipal UserDetails userDetails) {
-        InquiryDto inquiry = inquiryService.getInquiryById(id, userDetails);
-        // 작성자 또는 관리자 확인
-        boolean isOwner = inquiry.getUserId().equals(userDetails.getUsername());
-        boolean isAdmin = userDetails.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
-
-        if (!isOwner && !isAdmin) {
-            return ResponseEntity.status(403).build();
-        }
-
-        return ResponseEntity.ok(inquiryService.getInquiryById(id, userDetails));
-
+    // 문의 작성 폼
+    @GetMapping("/inquiries/create")
+    public String createInquiryForm(Model model) {
+        model.addAttribute("inquiry", new InquiryDto());
+        return "views/InquiriesWriter";
     }
 
-    // 특정 문의와 답변 조회
-    @GetMapping("/{id}/answers")
-    public ResponseEntity<Map<String, Object>> getInquiryWithAnswer(@PathVariable Long id) {
-        Map<String, Object> inquiryWithAnswer = inquiryService.getInquiryWithAnswer(id);
-        return ResponseEntity.ok(inquiryWithAnswer);
+    // 문의 등록 처리
+    @PostMapping("/inquiries")
+    public String createInquiry(@ModelAttribute InquiryDto inquiry) {
+        inquiryService.createInquiry(inquiry);
+        return "redirect:/inquiries";
     }
 
-    // 문의 상태 업데이트
-    @PutMapping("/{id}/status")
-    public ResponseEntity<String> updateInquiryStatus(@PathVariable Long id, @RequestBody Map<String, String> status, @AuthenticationPrincipal UserDetails userDetails) {
-        inquiryService.updateInquiryStatus(id, status.get("status"), userDetails);
-        return ResponseEntity.ok("문의 상태가 업데이트되었습니다.");
+    // 문의 수정 폼
+    @GetMapping("/inquiries/{inquiryNo}/edit")
+    public String editInquiryForm(@PathVariable Long inquiryNo, Model model) {
+        InquiryDto inquiry = inquiryService.getInquiryById(inquiryNo);
+        model.addAttribute("inquiry", inquiry);
+        return "views/InquiriesUpdate";
+    }
+
+    // 문의 수정 처리
+    @PostMapping("/inquiries/{inquiryNo}")
+    public String editInquiry(@PathVariable Long inquiryNo, @ModelAttribute InquiryDto inquiry) {
+        inquiry.setInquiryNo(inquiryNo);
+        inquiryService.updateInquiry(inquiry);
+        return "redirect:/inquiries/{inquiryNo}";
+    }
+
+    // 문의 삭제 처리
+    @PostMapping("/inquiries/{inquiryNo}/delete")
+    public String deleteInquiry(@PathVariable Long inquiryNo) {
+        inquiryService.deleteInquiry(inquiryNo);
+        return "redirect:/inquiries";
+    }
+
+    // 답변 추가
+    @PostMapping("/inquiries/{inquiryNo}/answer")
+    public String addAnswer(@PathVariable Long inquiryNo, @RequestParam String content) {
+        AnswerDto answer = new AnswerDto();
+        answer.setInquiryNo(inquiryNo);
+        answer.setContent(content);
+        log.info("답변 전송: {}", answer);
+        // 관리자 번호는 로그인 정보에서 가져와야 합니다.
+        answer.setAdminUserNo(1L);  // 예시로 관리자 번호를 1로 설정
+        answerService.addAnswer(answer);
+        return "redirect:/inquiries/{inquiryNo}";
     }
 }
 

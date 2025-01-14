@@ -58,13 +58,14 @@
 
       <div class="mb-5">
         <h3 class="mb-3">문의하기</h3>
-        <!-- 검색 폼 -->
+
         <form id="searchForm" class="mb-3">
           <div class="input-group row g-2 align-content-center">
             <div class="col-md-3">
             <select id="searchType" class="form-select flex-grow-2" aria-label="검색 옵션">
               <option value="all" selected>제목 & 내용</option>
               <option value="author">작성자</option>
+              <option value="answered">답변여부</option>
             </select>
             </div>
             <div class="col-md-8">
@@ -75,37 +76,25 @@
             </div>
           </div>
         </form>
-
+        <a href="/inquiries/create" class="btn btn-primary">문의 작성</a>
         <!-- 여기는 inpuiryBoardList -->
-        <table class="table table-bordered">
+        <table class="table">
           <thead>
           <tr>
-            <th scope="col">번호</th>
-            <th scope="col">제목</th>
-            <th scope="col">상태</th>
-            <th scope="col">작성자</th>
-            <th scope="col">작성일</th>
+            <th>#</th>
+            <th>제목</th>
+            <th>상태</th>
+            <th>작성일</th>
+            <th>상세</th>
           </tr>
           </thead>
-          <tbody id="inquiryBoardList">
-          <tr th:block th:each="inquiry : ${inquiryBList}">
-            <!-- 문의글 출력 -->
+          <tbody>
+          <tr th:each="inquiry : ${inquiries}">
             <td th:text="${inquiry.inquiryNo}"></td>
-            <td th:href="@{inquiryDetail(no=${inquiry.inquiryNo})}" th:text="${inquiry.title}"></td>
+            <td th:text="${inquiry.title}"></td>
             <td th:text="${inquiry.status}"></td>
-            <td th:text="${inquiry.userName}"></td> <!-- 작성자 수정 -->
-            <td th:text="${#dates.format(inquiry.inquiryDate, 'yyyy-MM-dd')}"></td>
-          </tr>
-
-          <!-- 답글이 있을 경우 답글을 표시 -->
-          <tr th:block th:each="answer : ${inquiry.answers}">
-            <td colspan="5">
-              <!-- 답글 제목 표시 -->
-              <strong>답변:</strong>
-              <a th:href="@{answerDetail(no=${answer.answerNo})}" th:text="${answer.content}"></a><br />
-              <span th:text="'작성자: ' + ${answer.adminName}"></span><br />
-              <span th:text="'작성일: ' + ${#dates.format(answer.answerDate, 'yyyy-MM-dd')}"></span>
-            </td>
+            <td th:text="${inquiry.inquiryDate}"></td>
+            <td><a th:href="@{/inquiries/{inquiryNo}(inquiryNo=${inquiry.inquiryNo})}">상세보기</a></td>
           </tr>
           </tbody>
         </table>
@@ -117,7 +106,7 @@
           </ul>
         </nav>
         <!-- 문의 등록 버튼 -->
-        <button class="btn btn-primary mt-3 text-end" id="createInquiryBtn">문의 등록</button>
+        <!--<button class="btn btn-primary mt-3 text-end" id="createInquiryBtn">문의 등록</button>-->
 
         <!-- 문의 작성 폼 (숨김 처리) -->
         <div id="inquiryFormContainer" style="display: none; margin-top: 20px;">
@@ -145,7 +134,7 @@
       </div>
       </div>
 
-    <script>
+    <!--<script>
       // 문의 작성 폼 토글
       document.getElementById("createInquiryBtn").addEventListener("click", function () {
         document.getElementById("inquiryFormContainer").style.display = "block";
@@ -215,7 +204,7 @@
 
       // 초기 데이터 로드
       document.addEventListener("DOMContentLoaded", loadInquiries);
-    </script>
+    </script>-->
 
     </div>
 
