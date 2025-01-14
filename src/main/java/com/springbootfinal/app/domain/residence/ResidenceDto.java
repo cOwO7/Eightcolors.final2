@@ -27,7 +27,7 @@ public class ResidenceDto {
     private BigDecimal discountedPrice; // 할인된 가격
     private BigDecimal rating;          // 평균 평점
     private Date residDate;             // 등록일 (TIMESTAMP)
-
+    private String residStatus;
     private List<PropertyPhotosDto> propertyPhotos;
 
 }
