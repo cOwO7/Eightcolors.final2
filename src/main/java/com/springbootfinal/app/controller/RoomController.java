@@ -47,7 +47,7 @@ public class RoomController {
 	    
 	    @GetMapping("/room")
 	    public String rooms(Model model) {
-	    	return "available-rooms";
+	    	return "stayBookingLookup";
 	    }
 	    
 }
