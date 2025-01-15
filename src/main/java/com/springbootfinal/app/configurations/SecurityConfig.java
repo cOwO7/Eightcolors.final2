@@ -1,6 +1,7 @@
 package com.springbootfinal.app.configurations;
 
-import com.springbootfinal.app.custom.CustomAuthenticationSuccessHandler;
+import com.springbootfinal.app.service.login.CustomOAuth2UserService;
+import com.springbootfinal.app.service.login.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,94 +12,93 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final CustomAuthenticationSuccessHandler
-            customAuthenticationSuccessHandler;
-
-    public SecurityConfig(CustomAuthenticationSuccessHandler
-                                  customAuthenticationSuccessHandler) {
-        this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
-    }
+    private final UserService userService;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-
-        return new BCryptPasswordEncoder();  // 비밀번호 암호화 설정
+    public static PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http//.authorizeHttpRequests(authorizeHttpRequests ->
-                // authorizeHttpRequests
-                .csrf().disable() // CSRF 보호 비활성화
-                .authorizeRequests()
-                .requestMatchers("/login","/**").permitAll()  // 로그인 경로 허용
-                .anyRequest().authenticated()
-                .and()
-                .oauth2Login()
-                .successHandler(customAuthenticationSuccessHandler) // 로그인 성공 시 핸들러 설정
-                .loginPage("/login")
-                .defaultSuccessUrl("/main", true)
-                .failureUrl("/login?error=true")
-                .and()
-                .logout()
-                .logoutSuccessUrl("/login");
-
-        return http.build();
-    }
-}
-/*public class SecurityConfig {
-
-    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
-    private final CustomUserDetailsService customUserDetailsService;
-
-    public SecurityConfig(CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler,
-                          CustomUserDetailsService customUserDetailsService) {
-        this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
-        this.customUserDetailsService = customUserDetailsService;
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // 비밀번호 암호화 설정
+    public SecurityConfig(UserService userService, CustomOAuth2UserService customOAuth2UserService) {
+        this.userService = userService;
+        this.customOAuth2UserService = customOAuth2UserService;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable() // CSRF 보호 비활성화
-                .authorizeRequests()
-                .antMatchers("/login", "/register", "/public/**").permitAll() // 로그인, 회원가입, 공개 경로 허용
-                .antMatchers("/admin/**").hasRole("ADMIN") // 관리자 페이지 접근 제어
-                .antMatchers("/user/**").hasRole("USER") // 사용자 페이지 접근 제어
-                .anyRequest().authenticated() // 나머지 요청은 인증 필요
-                .and()
-                .formLogin()
-                .loginPage("/login") // 사용자 정의 로그인 페이지
-                .defaultSuccessUrl("/main", true) // 로그인 성공 시 리디렉션
-                .failureUrl("/login?error=true") // 로그인 실패 시 리디렉션
-                .and()
-                .oauth2Login()
-                .successHandler(customAuthenticationSuccessHandler) // OAuth2 로그인 성공 핸들러
-                .and()
-                .logout()
-                .logoutSuccessUrl("/login") // 로그아웃 성공 시 리디렉션
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID");
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/", "user/**", "/userJoin", "/login", "/oauth2/**", "/register", "/oauth2.0/*", "/overlapIdCheck").permitAll()
+                        .requestMatchers("/static/**", "/bootstrap/**", "/css/**", "/js/**", "/images/**", "/joinResult", "/h2-console/**", "/userInfo").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/main") // 일반 로그인 성공 후 메인 페이지 이동
+                        .failureUrl("/login?error=true")
+                        .successHandler((request, response, authentication) -> {
+                            log.info("로그인 성공");
+                            // 로그인 성공 시 세션에 isLogin 값 설정
+                            request.getSession().setAttribute("isLogin", true);
+                            response.sendRedirect("/main");
+                        })
+                        .failureHandler((request, response, exception) -> {
+                            log.info("로그인 실패");
+                            response.sendRedirect("/login?error=true");
+                        })
+                        .permitAll()
+                )
+                .oauth2Login(oauth -> oauth
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/main") // 소셜 로그인 성공 후 메인 페이지 이동
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService)
+                        )
+                        .successHandler((request, response, authentication) -> {
+                            log.info("로그인 성공");
+                            response.sendRedirect("/main");
+                        })
+                        .failureHandler((request, response, exception) -> {
+                            log.info("로그인 실패");
+                            response.sendRedirect("/main?error=true&message=Login%20issue%20occurred.%20Redirecting%20to%20main.");
+                        })
+                )
+                .sessionManagement(session -> session
+                        .sessionFixation().newSession() // 새로운 세션 생성
+                        .maximumSessions(1) // 최대 세션 수
+                        .maxSessionsPreventsLogin(false) // 이전 세션 만료 후 새 세션 허용
+                        .expiredSessionStrategy(event -> {
+                            System.out.println("Session expired for: " + event.getSessionInformation().getPrincipal());
+                        })
+                )
+                .logout(logout -> logout
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .logoutSuccessUrl("/login?logout")
+                        .permitAll()
+                );
+
+        http.csrf(csrf -> csrf.disable());
+        http.headers(headers -> headers.frameOptions(frame -> frame.disable()));
 
         return http.build();
     }
 
     @Bean
-    public AuthenticationManager authManager(HttpSecurity http, PasswordEncoder passwordEncoder) throws Exception {
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(customUserDetailsService)
-                .passwordEncoder(passwordEncoder)
+                .userDetailsService(userService)
+                .passwordEncoder(passwordEncoder())
                 .and()
                 .build();
     }
-}*/
+}

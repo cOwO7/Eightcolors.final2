@@ -48,9 +48,9 @@ public class WebConfig implements WebMvcConfigurer{
 		// 기본페이지 폼 뷰 전용 컨트롤러 설정
 		registry.addViewController("/").setViewName("main/main");
 		// 로그인 폼 뷰 전용 컨트롤러 설정
-		registry.addViewController("/loginForm").setViewName("member/loginForm");
+		registry.addViewController("/loginForm").setViewName("user/login");
 		// 회원가입 폼
-		registry.addViewController("/joinForm").setViewName("member/memberJoinForm");
+		registry.addViewController("/joinForm").setViewName("user/userJoin");
 		// 고객센터
 		registry.addViewController("/helper").setViewName("views/helper");
 	}
