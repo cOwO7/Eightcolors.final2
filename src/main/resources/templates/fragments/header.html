@@ -20,15 +20,21 @@
 		<div class="row-12">
 			<div class="col-12">
 				<ul class="col-12 nav justify-content-end">
+
+						<a class="nav-link" th:href="@{user-info}">임시 내정보 확인(로그인 여부 확인겸)</a>
+
+
 					<!-- 로그인 안 한 경우 로그인 버튼 표시 -->
 					<li class="nav-item"><th:block th:unless="${session.isLogin}">
-							<a class="nav-link" th:href="@{loginForm}">로그인</a>
+							<a class="nav-link" th:href="@{login}">로그인</a>
 						</th:block></li>
 
 					<!-- 로그인한 경우 로그아웃 버튼 표시 -->
 					<li class="nav-item"><th:block th:if="${session.isLogin}">
-							<a class="nav-link" th:href="@{memberLogout}">로그아웃</a>
+							<a class="nav-link" th:href="@{logout}">로그아웃</a>
 						</th:block></li>
+
+
 					<li class="nav-item"><a class="nav-link" th:href="@{main}">Home</a>
 					</li>
 

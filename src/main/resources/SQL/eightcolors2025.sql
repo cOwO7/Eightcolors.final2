@@ -28,19 +28,20 @@ CREATE TABLE IF NOT EXISTS host_users (
 
 -- 3. 회원가입 테이블
 CREATE TABLE IF NOT EXISTS users (
-    user_no BIGINT AUTO_INCREMENT PRIMARY KEY,                   		  -- 회원 번호 (PK)
-    id VARCHAR(100) UNIQUE,                           	 		  	-- 일반 아이디
-    password VARCHAR(255),                                				  -- 비밀번호
-    email VARCHAR(255),                                          			  -- 이메일
-    phone VARCHAR(100),                                         			   -- 휴대폰번호
-    name VARCHAR(100),                                           			  -- 이름
-    zipcode VARCHAR(50),                                         			  -- 우편번호
-    address1 VARCHAR(255),                                      			   -- 주소
-    address2 VARCHAR(255),                                      			   -- 상세주소
-    login_type ENUM('local', 'google', 'kakao', 'naver') DEFAULT 'local', 		 -- 로그인 매개체
-    provider_id VARCHAR(255),                                     			 -- 소셜 로그인 제공자 ID
-    regdate DATETIME DEFAULT CURRENT_TIMESTAMP                		  -- 회원가입일
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+    user_no BIGINT AUTO_INCREMENT PRIMARY KEY,                   -- 회원 번호 (PK)
+    id VARCHAR(100),                           	 		  		  -- 일반 아이디
+    password VARCHAR(255),                                		-- 비밀번호
+    email VARCHAR(255),                                          	 -- 이메일
+    phone VARCHAR(100),                                         	 -- 휴대폰번호
+    name VARCHAR(100),                                           	 -- 이름
+    zipcode VARCHAR(50),                                         	 -- 우편번호
+    address1 VARCHAR(255),                                      	 -- 주소
+    address2 VARCHAR(255),                                      	 -- 상세주소
+    login_type VARCHAR(50) ,						                  -- "LOCAL", "GOOGLE", "KAKAO", "NAVER"
+    provider_id VARCHAR(255),                                     	 -- 소셜 로그인 제공자 ID
+    reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,			 -- 회원가입일
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 -- 4. 숙소 테이블
 CREATE TABLE IF NOT EXISTS residence (
