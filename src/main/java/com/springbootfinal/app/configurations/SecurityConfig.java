@@ -65,6 +65,7 @@ public class SecurityConfig {
                         )
                         .successHandler((request, response, authentication) -> {
                             log.info("로그인 성공");
+                            request.getSession().setAttribute("isLogin", true);
                             response.sendRedirect("/main");
                         })
                         .failureHandler((request, response, exception) -> {
