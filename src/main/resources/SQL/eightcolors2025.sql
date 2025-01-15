@@ -51,6 +51,7 @@ CREATE TABLE IF NOT EXISTS users (
     reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP			 -- 회원가입일
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+    select * from users;
 
 -- 4. 숙소 테이블
 CREATE TABLE IF NOT EXISTS residence (
