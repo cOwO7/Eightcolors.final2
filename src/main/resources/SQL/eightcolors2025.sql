@@ -1,11 +1,11 @@
 -- MySQL 사용자 계정 생성
 -- root 계정으로 접속 후 script에서 아래 코드 복사 붙여넣기 실행
-mysql -u root -h localhost -p mysql
-create database clouds2024;
-create user 'clouds2024'@'%' identified by 'clouds2024';
-grant all privileges on clouds2024.* to 'clouds2024'@'%';
+-- mysql -u root -h localhost -p mysql
+create database eightcolors2025;
+create user 'eightcolors2025'@'%' identified by 'eightcolors2025';
+grant all privileges on eightcolors2025.* to 'eightcolors2025'@'%';
 flush privileges;
-exit
+-- exit
 
 CREATE DATABASE IF NOT EXISTS eightcolors2025; -- 데이터베이스 생성
 
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS users (
     address2 VARCHAR(255),                                      	 -- 상세주소
     login_type VARCHAR(50) ,						                  -- "LOCAL", "GOOGLE", "KAKAO", "NAVER"
     provider_id VARCHAR(255),                                     	 -- 소셜 로그인 제공자 ID
-    reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,			 -- 회원가입일
+    reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP			 -- 회원가입일
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
     select * from users;
@@ -65,6 +65,8 @@ CREATE TABLE IF NOT EXISTS residence (
     UNIQUE (host_user_no),  -- host_user_no 컬럼에 고유 키 제약 조건 추가
     FOREIGN KEY (host_user_no) REFERENCES host_users(host_user_no) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+ALTER TABLE residence
+    ADD COLUMN sold_out BOOLEAN DEFAULT FALSE AFTER resid_type;
 
 -- 5. 숙소 방 정보 테이블
 CREATE TABLE IF NOT EXISTS residence_rooms (
