@@ -1,3 +1,12 @@
+-- MySQL 사용자 계정 생성
+-- root 계정으로 접속 후 script에서 아래 코드 복사 붙여넣기 실행
+mysql -u root -h localhost -p mysql
+create database clouds2024;
+create user 'clouds2024'@'%' identified by 'clouds2024';
+grant all privileges on clouds2024.* to 'clouds2024'@'%';
+flush privileges;
+exit
+
 CREATE DATABASE IF NOT EXISTS eightcolors2025; -- 데이터베이스 생성
 
 use eightcolors2025; -- 데이터베이스 접속
@@ -163,7 +172,9 @@ ALTER TABLE transfers
     ADD COLUMN transfer_title VARCHAR(255) NOT NULL;
 select * from transfers;
 
-
+SELECT * FROM residence;
+SELECT * FROM residence_rooms;
+SELECT * FROM property_photos;
 -- 1. 관리자 계정 데이터 삽입
 INSERT INTO admin_users (admin_id, admin_passwd, admin_name)
 VALUES
