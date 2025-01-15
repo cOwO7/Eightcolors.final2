@@ -1,11 +1,11 @@
 -- MySQL 사용자 계정 생성
 -- root 계정으로 접속 후 script에서 아래 코드 복사 붙여넣기 실행
-mysql -u root -h localhost -p mysql
-create database clouds2024;
-create user 'clouds2024'@'%' identified by 'clouds2024';
-grant all privileges on clouds2024.* to 'clouds2024'@'%';
+-- mysql -u root -h localhost -p mysql
+create database eightcolors2025;
+create user 'eightcolors2025'@'%' identified by 'eightcolors2025';
+grant all privileges on eightcolors2025.* to 'eightcolors2025'@'%';
 flush privileges;
-exit
+-- exit
 
 CREATE DATABASE IF NOT EXISTS eightcolors2025; -- 데이터베이스 생성
 
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS users (
     address2 VARCHAR(255),                                      	 -- 상세주소
     login_type VARCHAR(50) ,						                  -- "LOCAL", "GOOGLE", "KAKAO", "NAVER"
     provider_id VARCHAR(255),                                     	 -- 소셜 로그인 제공자 ID
-    reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,			 -- 회원가입일
+    reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP			 -- 회원가입일
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
@@ -193,6 +193,8 @@ INSERT INTO users (id, password, email, phone, name, zipcode, address1, address2
 VALUES
     ('user01', 'userpass123', 'user01@email.com', '010-5678-1234', '회원1', '11111', '서울시 마포구', '상암동 789', 'local', ''),
     ('user02', 'userpass456', 'user02@email.com', '010-6789-2345', '회원2', '22222', '서울시 동작구', '신대방동 101', 'google', 'google123');
+
+select * from users;
 
 -- 4. 숙소 데이터 삽입
 INSERT INTO residence (resid_name, host_user_no, resid_description, resid_address, resid_type)
