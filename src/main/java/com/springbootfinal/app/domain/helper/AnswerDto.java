@@ -26,6 +26,6 @@ public class AnswerDto {
                 "inquiryNo=" + inquiryNo +
                 ", content='" + content + '\'' +
                 ", adminUserNo=" + adminUserNo +
-                '}';
+            '}';
     }
 }

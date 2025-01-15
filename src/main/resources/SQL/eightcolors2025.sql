@@ -169,6 +169,7 @@ INSERT INTO admin_users (admin_id, admin_passwd, admin_name)
 VALUES
     ('admin01', 'adminpass123', '관리자1'),
     ('admin02', 'adminpass456', '관리자2');
+select * from admin_users;
 
 -- 2. 숙박업소 회원가입 데이터 삽입
 INSERT INTO host_users (id, passwd, email, phone, name, zipcode, address1, address2, business_license_no)
