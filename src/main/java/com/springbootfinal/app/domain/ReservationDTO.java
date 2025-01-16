@@ -15,6 +15,7 @@ import lombok.Setter;
 public class ReservationDTO {
 
     private String guestName;      // 손님 이름
+    private String guestPhone;      // 손님 전화번호
     private String roomName;       // 방 이름
     private LocalDate checkinDate; // 체크인 날짜
     private LocalDate checkoutDate;// 체크아웃 날짜

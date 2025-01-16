@@ -35,7 +35,7 @@ public class RoomController {
 	        return "bookedRooms"; // 예약된 방을 보여줄 뷰
 	    }*/
 	    
-	 // 예약된 방 조회 (오늘 날짜 기준)
+	 // 예약된 방 조회 (오늘 날짜 기준) 및 예약가능한 방 조회
 	    @GetMapping("/availableAndBookedRooms")
 	    public String getavailableAndBookedRooms(@RequestParam("hotelId") int hotelId, Model model) {
 	        List<ReservationDTO> bookedRooms = roomService.getReservations(hotelId);
@@ -46,7 +46,9 @@ public class RoomController {
 	    }
 	    
 	    @GetMapping("/room")
-	    public String rooms(Model model) {
+	    public String rooms(Model model,@RequestParam("hotelId") int hotelId) {
+			List<ReservationDTO> BookingList=roomService.getReservationsByResidence(hotelId);
+			model.addAttribute("bookingList",BookingList);
 	    	return "stayBookingLookup";
 	    }
 	    

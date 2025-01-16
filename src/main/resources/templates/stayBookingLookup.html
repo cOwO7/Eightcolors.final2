@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/main_layout}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,90 +13,72 @@
     >
 </head>
 <body>
-<div class="container mt-5">
-    <!-- 페이지 제목 -->
-    <div class="text-center mb-4">
-        <h1 class="fw-bold">숙박업소 예약 검색</h1>
-    </div>
+<th:block layout:fragment="content">
+    <div class="container mt-5">
+        <!-- 페이지 제목 -->
+        <div class="text-center mb-4">
+            <h1 class="fw-bold">숙박업소 예약 검색</h1>
+        </div>
 
-    <!-- 검색 폼 -->
-    <div class="card p-4 mb-5 shadow-sm">
-        <form action="/searchReservations" method="get">
-            <div class="row g-3">
-                <div class="col-md-4">
-                    <label for="customerName" class="form-label">예약자 이름</label>
-                    <input
-                            type="text"
-                            class="form-control"
-                            id="customerName"
-                            name="customerName"
-                            placeholder="예약자 이름을 입력하세요"
-                    >
-                </div>
-                <div class="col-md-4">
-                    <label for="reservationDate" class="form-label">예약일</label>
-                    <input
-                            type="date"
-                            class="form-control"
-                            id="reservationDate"
-                            name="reservationDate"
-                    >
-                </div>
-                <div class="col-md-4 align-self-end">
-                    <button type="submit" class="btn btn-primary w-100">검색</button>
-                </div>
+        <!-- 검색 폼 -->
+        <form name="searchForm" id="searchForm" action="/searchReservations" method="get" class="row justify-content-center my-3">
+            <!-- 방 이름 검색 -->
+            <div class="col-auto">
+                <select name="type" class="form-select">
+                    <option value="roomName">방 이름</option>
+                    <option value="checkinDate">체크인 날짜</option>
+                    <option value="checkoutDate">체크아웃 날짜</option>
+                </select>
+            </div>
+
+            <div class="col-4">
+                <input type="text" name="keyword" class="form-control" placeholder="검색어를 입력하세요" />
+            </div>
+
+            <div class="col-auto">
+                <input type="submit" value="검색" class="btn btn-primary" />
             </div>
         </form>
+
+        <!-- 검색 결과 -->
+        <div>
+            <h3 class="mb-3">예약 내역</h3>
+            <table class="table table-hover table-bordered">
+                <thead class="table-light">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">손님 이름</th>
+                    <th scope="col">손님 전화번호</th>
+                    <th scope="col">방 이름</th>
+                    <th scope="col">체크인 날짜</th>
+                    <th scope="col">체크아웃 날짜</th>
+                    <th scope="col">예약 상태</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Thymeleaf 반복문으로 데이터를 출력 -->
+                <tr th:each="booking, stat : ${bookingList}">
+                    <th scope="row" th:text="${stat.count}"></th>
+                    <td th:text="${booking.guestName}"></td>
+                    <td th:text="${booking.guestPhone}"></td>
+                    <td th:text="${booking.roomName}"></td>
+                    <td th:text="${booking.checkinDate}"></td>
+                    <td th:text="${booking.checkoutDate}"></td>
+                    <td th:text="${booking.reservationStatus}"></td>
+                </tr>
+                <!-- 데이터가 없을 경우 -->
+                <tr th:if="${#lists.isEmpty(bookingList)}">
+                    <td colspan="7" class="text-center text-muted">예약 내역이 없습니다.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <!-- 검색 결과 -->
-    <div>
-        <h3 class="mb-3">예약 내역</h3>
-        <table class="table table-hover table-bordered">
-            <thead class="table-light">
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">예약자 이름</th>
-                <th scope="col">예약일</th>
-                <th scope="col">숙소명</th>
-                <th scope="col">방 번호</th>
-                <th scope="col">상태</th>
-            </tr>
-            </thead>
-            <tbody>
-            <!-- 예제 데이터 -->
-            <tr>
-                <th scope="row">1</th>
-                <td>홍길동</td>
-                <td>2025-01-15</td>
-                <td>서울 호텔</td>
-                <td>101</td>
-                <td>예약 완료</td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>김철수</td>
-                <td>2025-01-16</td>
-                <td>부산 리조트</td>
-                <td>205</td>
-                <td>취소</td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td>이영희</td>
-                <td>2025-01-17</td>
-                <td>제주 펜션</td>
-                <td>302</td>
-                <td>확인 중</td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<!-- Bootstrap JS -->
-<script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
-></script>
+    <!-- Bootstrap JS -->
+    <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+    ></script>
+</th:block>
 </body>
 </html>

@@ -35,16 +35,20 @@ public class RoomService {
 	    	String currentDate = LocalDate.now().toString(); // 오늘 날짜를 가져옴
 	        return roomMapper.getReservationsForHotel(currentDate, hotelId);
 	    }*/
-	    
+	    /*오늘기준 예약가능한방*/
 	    public List<RoomDTO> getAvailableRoomsByHostAndDate(int hostUserNo) {
 	    	String currentDate = LocalDate.now().toString(); // 오늘 날짜를 가져옴
 	        return roomMapper.findAvailableRoomsByHostAndDate(hostUserNo, currentDate);
 	    }
-	    
+		/*오늘기준 투숙중인 내역*/
 	    public List<ReservationDTO> getReservations(int hotelId) {
 	    	String currentDate = LocalDate.now().toString(); // 오늘 날짜를 가져옴
 	        return roomMapper.getReservationsByHotelIdAndDate(hotelId, currentDate);
 	    }
+
+		public List<ReservationDTO> getReservationsByResidence(int hotelId) {
+			return roomMapper.getReservationsByResidence(hotelId);
+		}
 
 	
 

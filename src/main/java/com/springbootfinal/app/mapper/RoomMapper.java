@@ -15,10 +15,11 @@ public interface RoomMapper {
 
 		    );
 
-		    // 특정 호텔 ID와 날짜에 해당하는 예약된 방 정보를 찾는 쿼리
-		    List<ReservationDTO> getReservationsByHotelIdAndDate(
+	  // 특정 호텔 ID와 날짜에 해당하는 예약된 방 정보를 찾는 쿼리
+	  List<ReservationDTO> getReservationsByHotelIdAndDate(
 		        @Param("hotelId") int hotelId,
 		        @Param("currentDate") String currentDate
 		    );
 
+	  List<ReservationDTO> getReservationsByResidence(@Param("hotelId") int hotelId);
 }
