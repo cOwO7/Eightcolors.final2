@@ -189,17 +189,17 @@ public class AllWeatherService {
 
         // 1. 단기 예보 데이터 가져오기
         Map<String, Map<String, String>> shortTermData = getShortTermForecast(weatherDto);
-        //log.info("단기 예보 데이터 가져오기 성공");
+        log.info("단기 예보 데이터 가져오기 성공");
 
         // 2. 중기 육상 예보 데이터 가져오기
         LongWeatherDto longWeatherForecast = getLongWeatherForecast(regId, tmFc);
         Map<String, Map<String, String>> midLandData = convertLongWeatherDtoToMap(longWeatherForecast);
-        //log.info("중기 육상 예보 데이터 가져오기 성공");
+        log.info("중기 육상 예보 데이터 가져오기 성공");
 
         // 3. 중기 기온 데이터 가져오기
         LongWeatherTemperatureDto longWeatherTemperature = getLongWeatherTemperature(regIdTemp, tmFc);
         Map<String, Map<String, String>> midTemperatureData = convertLongWeatherTemperatureDtoToMap(longWeatherTemperature);
-        //log.info("중기 기온 데이터 가져오기 성공");
+        log.info("중기 기온 데이터 가져오기 성공");
 
         // 4. 병합 데이터 구조 생성
         Map<String, Map<String, String>> combinedData = new HashMap<>();
@@ -241,7 +241,7 @@ public class AllWeatherService {
             String date = timeKey.substring(0, 8);
             lastShortTermDate = date;
             dailyForecast.computeIfAbsent(date, k -> new HashMap<>()).putAll(shortTermData.get(timeKey));
-            //log.info("단기 예보의 마지막 날짜: {}", lastShortTermDate);
+            log.info("단기 예보의 마지막 날짜: {}", lastShortTermDate);
         }
 
         // 중기 데이터 병합
@@ -253,7 +253,7 @@ public class AllWeatherService {
         // 누락된 날짜 기본값 추가
         fillMissingDates(dailyForecast);
 
-        //log.info("최종 병합된 데이터: {}", dailyForecast);
+        log.info("최종 병합된 데이터: {}", dailyForecast);
         return dailyForecast;
     }
 
@@ -262,13 +262,13 @@ public class AllWeatherService {
         for (String date : additionalData.keySet()) {
             // 단기 예보 마지막 날짜 이후만 병합
             if (date.compareTo(lastShortTermDate) <= 0) {
-              //  log.info("중기 데이터 병합 제외 (단기 예보 범위 내): {}", date);
+                log.info("중기 데이터 병합 제외 (단기 예보 범위 내): {}", date);
                 continue;
             }
             Map<String, String> forecast = dailyForecast.computeIfAbsent(date, k -> new HashMap<>());
-           // log.info("병합 전 데이터 (날짜: {}): {}", date, forecast);
+            log.info("병합 전 데이터 (날짜: {}): {}", date, forecast);
             forecast.putAll(additionalData.get(date)); // 기존 데이터에 추가
-           // log.info("병합 후 데이터 (날짜: {}): {}", date, forecast);
+            log.info("병합 후 데이터 (날짜: {}): {}", date, forecast);
         }
     }
 
@@ -321,6 +321,7 @@ public class AllWeatherService {
      * @throws IOException
      * */
     public Map<String, Map<String, String>> getShortTermForecast(WeatherDto weatherDto) throws IOException {
+        //URI url = UriComponentsBuilder.fromHttpUrl(apiUrl + "/getVilageFcst")
         URI url = UriComponentsBuilder.fromHttpUrl(apiUrl + "/getVilageFcst")
                 .queryParam("serviceKey", apiKey)
                 .queryParam("dataType", "JSON")
@@ -333,15 +334,15 @@ public class AllWeatherService {
                 .build(true)
                 .toUri();
 
-        //log.info("단기 예보 URL: {}", url);
+        log.info("단기 예보 URL: {}", url);
 
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
 
         String responseBody = response.getBody();
-        //log.info("단기 예보 API 응답 데이터: {}", responseBody);
+        log.info("단기 예보 API 응답 데이터: {}", responseBody);
 
         if (responseBody.trim().startsWith("<")) {
-            //log.error("API 응답이 JSON이 아니라 XML/HTML입니다: {}", responseBody);
+            log.error("API 응답이 JSON이 아니라 XML/HTML입니다: {}", responseBody);
             throw new RuntimeException("API 응답이 JSON이 아님: XML/HTML 데이터 반환");
         }
 
@@ -376,7 +377,8 @@ public class AllWeatherService {
      * @return
      * */
     public LongWeatherDto getLongWeatherForecast(String regId, String tmFc) throws IOException {
-        URI url = UriComponentsBuilder.fromUriString(apiUrl2 + "/getMidLandFcst")
+        //URI url = UriComponentsBuilder.fromUriString(apiUrl2 + "/getMidLandFcst")
+        URI url = UriComponentsBuilder.fromHttpUrl(apiUrl2 + "/getMidLandFcst")
                 .queryParam("serviceKey", apiKey)
                 .queryParam("numOfRows", 200)
                 .queryParam("pageNo", 1)
@@ -386,16 +388,16 @@ public class AllWeatherService {
                 .build(true)
                 .toUri();
 
-        //log.info("중기 육상 예보  URL: {}", url); // URL 로깅
+        log.info("중기 육상 예보  URL: {}", url); // URL 로깅
 
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
 
-        //log.info("중기 육상 API 호출 URL: {}", url); // API 호출 정보 로깅
+        log.info("중기 육상 API 호출 URL: {}", url); // API 호출 정보 로깅
         String responseBody = response.getBody();
-        //log.info("중기 육상 API 응답 데이터: {}", responseBody); // API 응답 데이터 로깅
+        log.info("중기 육상 API 응답 데이터: {}", responseBody); // API 응답 데이터 로깅
 
         if (responseBody.trim().startsWith("<")) {
-           // log.error("API 응답이 JSON이 아니라 XML/HTML입니다: {}", responseBody);
+            log.error("API 응답이 JSON이 아니라 XML/HTML입니다: {}", responseBody);
             throw new RuntimeException("API 응답이 JSON이 아님: XML/HTML 데이터 반환");
         }
 
@@ -412,7 +414,8 @@ public class AllWeatherService {
      * @return
      * */
     public LongWeatherTemperatureDto getLongWeatherTemperature(String regIdTemp, String tmFcTemp) throws IOException {
-        URI url = UriComponentsBuilder.fromUriString(apiUrl2 + "/getMidTa")
+        //URI url = UriComponentsBuilder.fromUriString("/" + apiUrl2 + "/getMidTa")
+        URI url = UriComponentsBuilder.fromHttpUrl(apiUrl2 + "/getMidTa")
                 .queryParam("serviceKey", apiKey)
                 .queryParam("numOfRows", 200)
                 .queryParam("pageNo", 1)
@@ -422,16 +425,16 @@ public class AllWeatherService {
                 .build(true)
                 .toUri();
 
-        //log.info("중기 기온 예보 URL: {}", url); // URL 로깅
+        log.info("중기 기온 예보 URL: {}", url); // URL 로깅
 
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
 
-        //log.info("중기 기온 API 호출 URL: {}", url); // API 호출 정보 로깅
+        log.info("중기 기온 API 호출 URL: {}", url); // API 호출 정보 로깅
         String responseBody = response.getBody();
-        //log.info("중기 기온 API 응답 데이터: {}", responseBody); // API 응답 데이터 로깅
+        log.info("중기 기온 API 응답 데이터: {}", responseBody); // API 응답 데이터 로깅
 
         if (responseBody.trim().startsWith("<")) {
-            //log.error("API 응답이 JSON이 아니라 XML/HTML입니다: {}", responseBody);
+            log.error("API 응답이 JSON이 아니라 XML/HTML입니다: {}", responseBody);
             throw new RuntimeException("API 응답이 JSON이 아님: XML/HTML 데이터 반환");
         }
 

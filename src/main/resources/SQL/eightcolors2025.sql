@@ -55,6 +55,25 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- 4. 숙소 테이블
 CREATE TABLE IF NOT EXISTS residence (
+    resid_no BIGINT AUTO_INCREMENT PRIMARY KEY,                         -- 숙소 번호 (PK)
+    resid_name VARCHAR(255),                                             -- 숙소 이름
+    host_user_no BIGINT,                                                -- 숙소 주인 회원 번호 (FK)
+    resid_description TEXT,                                             -- 숙소 상세 설명
+    resid_address VARCHAR(255),                                          -- 숙소 주소
+    resid_type ENUM('resort', 'hotel', 'pension', 'motel'),             -- 숙소 유형
+    resid_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,                     -- 등록일
+    sold_out BOOLEAN DEFAULT FALSE,                    -- 숙소 매진 여부
+    nx INT DEFAULT 0 ,                                   -- nx 좌표 (기본값 0)
+    ny INT DEFAULT 0 ,                                           -- ny 좌표 (기본값 0)
+    regId VARCHAR(255) DEFAULT '' ,                              -- regId (기본값 빈 문자열)
+    regIdTemp VARCHAR(255) DEFAULT ''                        -- regIdTemp (기본값 빈 문자열)
+    -- UNIQUE (host_user_no),                                              -- host_user_no 컬럼에 고유 키 제약 조건 추가
+    -- FOREIGN KEY (host_user_no) REFERENCES host_users(host_user_no) ON DELETE CASCADE -- 외래키 제약조건
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+-- 기존 숙소 테이블
+CREATE TABLE IF NOT EXISTS residence (
     resid_no BIGINT AUTO_INCREMENT PRIMARY KEY,                    			-- 숙소 번호 (PK)
     resid_name VARCHAR(255),                            				  	-- 숙소 이름
     host_user_no BIGINT,                            				  	-- 숙소 주인 회원 번호 (FK)
@@ -65,8 +84,22 @@ CREATE TABLE IF NOT EXISTS residence (
     UNIQUE (host_user_no),  -- host_user_no 컬럼에 고유 키 제약 조건 추가
     FOREIGN KEY (host_user_no) REFERENCES host_users(host_user_no) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- 숙소 매진시 sold-out 상태 추가
 ALTER TABLE residence
     ADD COLUMN sold_out BOOLEAN DEFAULT FALSE AFTER resid_type;
+-- nx와 ny는 정수 타입이고, 기본값은 0으로 설정
+ALTER TABLE residence
+    ADD COLUMN nx INT DEFAULT 0 AFTER resid_type;
+ALTER TABLE residence
+    ADD COLUMN ny INT DEFAULT 0 AFTER nx;
+-- regId와 regIdTemp는 문자열을 저장하므로 VARCHAR 타입으로 설정
+ALTER TABLE residence
+    ADD COLUMN regId VARCHAR(255) DEFAULT '' AFTER ny;
+ALTER TABLE residence
+    ADD COLUMN regIdTemp VARCHAR(255) DEFAULT '' AFTER regId;
+
+select * from residence;
+
 
 -- 5. 숙소 방 정보 테이블
 CREATE TABLE IF NOT EXISTS residence_rooms (
@@ -91,7 +124,7 @@ CREATE TABLE IF NOT EXISTS reservations (
     payment_status ENUM('대기중', '완료', '실패', '취소') DEFAULT '대기중', 			 -- 결제 상태
     reservation_status ENUM('예약 완료', '체크인 완료', '체크아웃 완료', '예약 취소') DEFAULT '예약 완료', 	-- 예약 상태
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,     				 	 -- 예약(결제) 생성일
-    FOREIGN KEY (user_no) REFERENCES users(user_no) ON DELETE CASCADE,
+    -- FOREIGN KEY (user_no) REFERENCES users(user_no) ON DELETE CASCADE,
     FOREIGN KEY (room_no) REFERENCES residence_rooms(room_no) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -156,6 +189,7 @@ CREATE TABLE IF NOT EXISTS notices (
     is_active TINYINT(1) DEFAULT 1,                               			  	-- 활성 여부 (1: 활성, 0: 비활성)
     FOREIGN KEY (admin_user_no) REFERENCES admin_users(admin_user_no) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+select * from notices;
 
 -- 12. 양도 테이블
 CREATE TABLE IF NOT EXISTS transfers (
@@ -178,7 +212,7 @@ select * from transfers;
 SELECT * FROM residence;
 SELECT * FROM residence_rooms;
 SELECT * FROM property_photos;
--- 1. 관리자 계정 데이터 삽입
+-- 1. 관리자 계정 데이터 삽입 - 안됨
 INSERT INTO admin_users (admin_id, admin_passwd, admin_name)
 VALUES
     ('admin01', 'adminpass123', '관리자1'),
@@ -194,8 +228,8 @@ VALUES
 -- 3. 일반 회원가입 데이터 삽입
 INSERT INTO users (id, password, email, phone, name, zipcode, address1, address2, login_type, provider_id)
 VALUES
-    ('user01', 'userpass123', 'user01@email.com', '010-5678-1234', '회원1', '11111', '서울시 마포구', '상암동 789', 'local', ''),
-    ('user02', 'userpass456', 'user02@email.com', '010-6789-2345', '회원2', '22222', '서울시 동작구', '신대방동 101', 'google', 'google123');
+    ('user01', 'userpass123', 'user01@email.com', '010-5678-1234', '회원1', '11111', '서울시 마포구', '상암동 789', 'LOCAL', ''),
+    ('user02', 'userpass456', 'user02@email.com', '010-6789-2345', '회원2', '22222', '서울시 동작구', '신대방동 101', 'GOOGLE', 'google123');
 
 select * from users;
 
@@ -213,7 +247,7 @@ VALUES
     (2, '201호', 150000),
     (2, '202호', 180000);
 
--- 6. 예약 데이터 삽입
+-- 6. 예약 데이터 삽입 - 안됨
 INSERT INTO reservations (user_no, room_no, checkin_date, checkout_date, total_price, discounted_price, transaction_id, payment_status, reservation_status)
 VALUES
     (1, 1, '2025-02-01', '2025-02-03', 100000, 95000, 'txn12345', '완료', '예약 완료'),
@@ -243,7 +277,7 @@ VALUES
     (1, 'thumbnail01.jpg', 'photo01.jpg', 'photo02.jpg'),
     (2, 'thumbnail02.jpg', 'photo03.jpg', 'photo04.jpg');
 
--- 11. 공지사항 데이터 삽입
+-- 11. 공지사항 데이터 삽입 - 안됨
 INSERT INTO notices (admin_user_no, title, content)
 VALUES
     (1, '시스템 점검 안내', '정기적인 시스템 점검이 예정되어 있습니다. 서비스 이용에 불편을 드려 죄송합니다.');

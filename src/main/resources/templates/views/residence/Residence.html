@@ -19,7 +19,7 @@
     <h1 class="my-4 text-center">숙소 목록</h1>
 
     <!-- 검색 폼 -->
-    <form action="#" th:action="@{/residence/list}" method="get" class="row mb-3">
+    <form action="#" th:action="@{/list}" method="get" class="row mb-3">
       <div class="col-md-3">
         <input type="text" name="keyword" class="form-control" placeholder="검색어를 입력하세요" />
       </div>
@@ -39,7 +39,7 @@
 
     <!-- 숙소 등록 버튼 -->
     <div class="mb-3 text-end">
-      <a th:href="@{/residence/new}" class="btn btn-success">숙소 등록</a>
+      <a th:href="@{/new}" class="btn btn-success">숙소 등록</a>
     </div>
 
     <!-- 숙소 목록 테이블 -->
@@ -78,6 +78,10 @@
         <td th:text="${residence.checkinDate != null ? #dates.format(residence.checkinDate, 'yyyy-MM-dd') : 'N/A'}"></td>
         <td th:text="${residence.checkoutDate != null ? #dates.format(residence.checkoutDate, 'yyyy-MM-dd') : 'N/A'}"></td>
         <td th:text="${#dates.format(residence.residDate, 'yyyy-MM-dd')}"></td>
+        <td>
+          <a th:href="@{/detail/{residNo}(residNo=${residence.residNo})}">상세보기</a>
+
+        </td>
         <td>
           <a th:href="@{/residence/edit/{id}(id=${residence.residNo})}" class="btn btn-warning btn-sm">수정</a>
           <!-- 삭제는 POST로 처리되어야 하므로 form으로 변경 -->

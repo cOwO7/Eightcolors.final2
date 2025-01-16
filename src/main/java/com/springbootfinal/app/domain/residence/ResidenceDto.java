@@ -27,6 +27,13 @@ public class ResidenceDto {
     private Date checkinDate; // 체크인 날짜
     private Date checkoutDate; // 체크아웃 날짜
     private boolean soldOut; // 매진 여부 추가
+    private int nx;
+    private int ny;
+    private String regId;
+    private String regIdTemp;
+    private Long hostUserNo;
+
+    private PropertyPhotosDto propertyPhotosDto;  // PropertyPhotosDto 객체
 
     // 조인 필드
     @Getter
@@ -45,5 +52,28 @@ public class ResidenceDto {
         }
         return totalPrice;
     }
+
+    @Override
+    public String toString() {
+        return "ResidenceDto{" +
+                "residNo=" + residNo +
+                ", residName='" + residName + '\'' +
+                ", residDescription='" + residDescription + '\'' +
+                ", residAddress='" + residAddress + '\'' +
+                ", residType='" + residType + '\'' +
+                ", residDate=" + residDate +
+                ", discountRate=" + discountRate +
+                ", discountedPrice=" + discountedPrice +
+                ", checkinDate=" + checkinDate +
+                ", checkoutDate=" + checkoutDate +
+                ", soldOut=" + soldOut +
+                ", nx=" + nx +
+                ", ny=" + ny +
+                ", regId='" + regId + '\'' +
+                ", regIdTemp='" + regIdTemp + '\'' +
+                ", hostUserNo=" + hostUserNo +
+                '}';
+    }
+
 
 }
