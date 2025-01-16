@@ -4,6 +4,23 @@
 
 <mapper namespace="com.springbootfinal.app.mapper.residence.PropertyPhotosMapper">
 
+    <!--<insert id="insertPhoto" parameterType="map">
+        INSERT INTO property_photos (resid_no, thumbnailUrls, photo_url01, photo_url02, photo_url03, photo_url04, photo_url05)
+        VALUES (#{residNo}, #{thumbnailUrls}, #{photoUrls[0]}, #{photoUrls[1]}, #{photoUrls[2]}, #{photoUrls[3]}, #{photoUrls[4]});
+    </insert>
+
+    <select id="getPhotosByResidence" parameterType="Long" resultType="String">
+        SELECT photo_url01, photo_url02, photo_url03, photo_url04, photo_url05
+        FROM property_photos WHERE resid_no = #{residNo};
+    </select>
+
+    <delete id="deletePhoto" parameterType="Long">
+        DELETE FROM property_photos WHERE photo_no = #{photoNo};
+    </delete>-->
+
+
+
+
     <!--&lt;!&ndash; 특정 숙소의 사진 목록 조회 &ndash;&gt;
     <select id="getPhotosByResidenceId" resultType="com.springbootfinal.app.domain.residence.PropertyPhotosDto">
         SELECT

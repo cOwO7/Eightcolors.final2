@@ -24,10 +24,9 @@ public class ResidenceDto {
     private Date residDate;  // TIMESTAMP는 String으로 매핑
     private BigDecimal discountRate; // 할인율
     private BigDecimal discountedPrice; // 할인된 가격
-    /*private LocalDate checkinDate;
-    private LocalDate checkoutDate;*/
     private Date checkinDate; // 체크인 날짜
     private Date checkoutDate; // 체크아웃 날짜
+    private boolean soldOut; // 매진 여부 추가
 
     // 조인 필드
     @Getter

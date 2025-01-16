@@ -4,8 +4,14 @@ import com.springbootfinal.app.domain.residence.PropertyPhotosDto;
 import com.springbootfinal.app.mapper.residence.PropertyPhotoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 
 
 @Service
@@ -16,6 +22,18 @@ public class PropertyPhotosService {
     @Autowired
     public PropertyPhotosService(PropertyPhotoMapper propertyPhotosMapper) {
         this.propertyPhotosMapper = propertyPhotosMapper;
+    }
+
+    private final String UPLOAD_DIR = "uploads/";
+
+    public String savePhoto(MultipartFile photo) throws IOException {
+        if (photo.isEmpty()) {
+            throw new IllegalArgumentException("사진이 비어 있습니다.");
+        }
+        String fileName = UUID.randomUUID() + "_" + photo.getOriginalFilename();
+        Path filePath = Paths.get(UPLOAD_DIR + fileName);
+        Files.copy(photo.getInputStream(), filePath);
+        return fileName;
     }
 
     // 숙소 사진 저장 (여러 사진 저장 처리)

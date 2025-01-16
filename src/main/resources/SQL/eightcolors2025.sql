@@ -65,6 +65,8 @@ CREATE TABLE IF NOT EXISTS residence (
     UNIQUE (host_user_no),  -- host_user_no 컬럼에 고유 키 제약 조건 추가
     FOREIGN KEY (host_user_no) REFERENCES host_users(host_user_no) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+ALTER TABLE residence
+    ADD COLUMN sold_out BOOLEAN DEFAULT FALSE AFTER resid_type;
 
 -- 5. 숙소 방 정보 테이블
 CREATE TABLE IF NOT EXISTS residence_rooms (
