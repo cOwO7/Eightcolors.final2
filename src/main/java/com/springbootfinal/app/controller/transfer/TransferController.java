@@ -41,15 +41,21 @@ public class TransferController {
         return "views/transfer/transferList";  // 반환할 뷰 이름 (transferList.html)
     }
 
-    // 게시글 쓰기 요청 처리 메서드
-    @GetMapping("/transferWrite")
-    public String writeTransfer() {
-        return "views/transfer/transferWrite";  // 반환할 뷰 이름 (transferWrite.html)
-    }
-
     // 양도 생성 폼 요청 처리 메서드
     @GetMapping("/transfers/create")
     public String createTransferForm() {
         return "views/transfer/transferWrite";  // 반환할 뷰 이름 (transferWrite.html)
     }
+
+/*    @GetMapping("/transfers/create")
+    public String createTransferForm(Model model, @RequestParam("userId") String userId) {
+        // Fetch the user's reservation details
+        TransferDto reservation = transferService.getReservationByUserId(userId);
+
+        // Add reservation details to the model
+        model.addAttribute("reservation", reservation);
+        model.addAttribute("userId", userId);
+
+        return "views/transfer/transferWrite";  // Return the view name
+    }*/
 }

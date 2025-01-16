@@ -22,6 +22,7 @@ public class TransferDto {
     private BigDecimal transferPrice;
     private String status;                    // 상태
     private LocalDateTime createdAt;
+    private String transferContent;           // 글 내용
 
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
@@ -29,6 +30,7 @@ public class TransferDto {
     private String sellerId;                  // 양도자 아이디
     private String buyerId;                   // 양수자 아이디
     private String reservationResidName;      // 예약한 숙소명 (residence 테이블의 resid_name)
+
 
     // 포맷팅된 가격을 반환하는 메서드 추가
     public String getFormattedTransferPrice() {

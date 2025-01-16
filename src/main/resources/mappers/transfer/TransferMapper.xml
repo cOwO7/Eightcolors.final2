@@ -21,6 +21,7 @@
             t.buyer_user_no,
             t.reservation_no,
             t.transfer_price,
+            t.transfer_content,
             t.status,
             t.created_at,
             s.id AS seller_id,
@@ -38,7 +39,7 @@
     </select>
 
 
-    <!-- 양도 등록 -->
+   <!--게시글 리스트-->
     <select id="transferList" resultType="com.springbootfinal.app.domain.transfer.TransferDto">
         SELECT
             t.transfer_no,
@@ -51,7 +52,9 @@
             t.created_at,
             s.id AS seller_id,  -- 양도자 아이디
             b.id AS buyer_id,   -- 양수자 아이디
-            r.resid_name AS reservation_resid_name -- 예약한 숙소명 (residence 테이블의 resid_name)
+            r.resid_name AS reservation_resid_name, -- 예약한 숙소명 (residence 테이블의 resid_name)
+            re.checkin_date, -- 체크인 날짜
+            re.checkout_date -- 체크아웃 날짜
         FROM transfers t
                  LEFT JOIN users s ON t.seller_user_no = s.user_no
                  LEFT JOIN users b ON t.buyer_user_no = b.user_no
