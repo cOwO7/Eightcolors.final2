@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class RoomService {
@@ -46,8 +48,20 @@ public class RoomService {
 	        return roomMapper.getReservationsByHotelIdAndDate(hotelId, currentDate);
 	    }
 
-		public List<ReservationDTO> getReservationsByResidence(int hotelId) {
-			return roomMapper.getReservationsByResidence(hotelId);
+		public Map<String, Object> getReservationsByResidence(int hotelId, String type, String keyword) {
+			boolean searchOption = (type.equals("null")
+					|| keyword.equals("null")) ? false : true;
+			Map<String, Object> modelMap = new HashMap<String, Object>();
+
+			modelMap.put("searchOption",searchOption);
+			List<ReservationDTO> BookingList=roomMapper.getReservationsByResidence(hotelId,type,keyword);
+			if(searchOption){
+				modelMap.put("type", type);
+				modelMap.put("keyword", keyword);
+			}
+
+			modelMap.put("bookingList",BookingList);
+			return modelMap;
 		}
 
 	

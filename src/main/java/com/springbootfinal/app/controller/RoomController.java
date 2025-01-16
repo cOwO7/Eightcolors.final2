@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class RoomController {
@@ -46,9 +47,13 @@ public class RoomController {
 	    }
 	    
 	    @GetMapping("/room")
-	    public String rooms(Model model,@RequestParam("hotelId") int hotelId) {
-			List<ReservationDTO> BookingList=roomService.getReservationsByResidence(hotelId);
-			model.addAttribute("bookingList",BookingList);
+	    public String rooms(Model model,@RequestParam("hotelId") int hotelId,
+							@RequestParam(value = "type", required = false, defaultValue = "null") String type,
+							@RequestParam(value = "keyword", required = false, defaultValue = "null") String keyword) {
+			Map<String, Object> modelMap = roomService.getReservationsByResidence(hotelId,type,keyword);
+
+			model.addAttribute("hotelId",hotelId);
+			model.addAllAttributes(modelMap);
 	    	return "stayBookingLookup";
 	    }
 	    

@@ -21,5 +21,6 @@ public interface RoomMapper {
 		        @Param("currentDate") String currentDate
 		    );
 
-	  List<ReservationDTO> getReservationsByResidence(@Param("hotelId") int hotelId);
+	  List<ReservationDTO> getReservationsByResidence(@Param("hotelId") int hotelId,
+													  @Param("type") String type, @Param("keyword") String keyword);
 }

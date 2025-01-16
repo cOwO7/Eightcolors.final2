@@ -21,4 +21,5 @@ public class ReservationDTO {
     private LocalDate checkoutDate;// 체크아웃 날짜
     private String reservationStatus; // 예약 상태
 
+
 }

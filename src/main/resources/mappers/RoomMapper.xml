@@ -110,14 +110,15 @@
             AND r.reservation_status = '예약 완료';
     </select>
 <!--특정숙소의 모든 예약내역-->
-    <select id="getReservationsByResidence" resultType="ReservationDTO">
+    <select id="getReservationsByResidence" resultType="ReservationDTO" parameterType="map">
     SELECT
     u.name AS guest_name,
     u.phone AS guest_phone,
     rr.room_name,
     r.checkin_date,
     r.checkout_date,
-    r.reservation_status
+    r.reservation_status,
+    res.resid_no
     FROM
     reservations r
     JOIN
@@ -128,6 +129,16 @@
     residence res ON rr.resid_no = res.resid_no
     WHERE
     res.resid_no = #{hotelId}
+        <if test="type == 'roomName'">
+            AND rr.room_name LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+        <if test="type == 'checkinDate'">
+            AND r.checkin_date = #{keyword}
+        </if>
+        <if test="type == 'checkoutDate'">
+            AND r.checkout_date = #{keyword}
+        </if>
+
     </select>
 
 </mapper>
