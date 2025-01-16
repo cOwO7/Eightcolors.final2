@@ -44,6 +44,7 @@ public class UserService implements UserDetailsService  {
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setLoginType(LoginType.LOCAL);
+        user.setRole("ROLE_USER");
         userMapper.insertUser(user);
     }
 
@@ -54,6 +55,7 @@ public class UserService implements UserDetailsService  {
         user.setName(name);
         user.setProviderId(providerId);
         user.setLoginType(loginType);
+        user.setRole("ROLE_USER");
         // 기타 필요한 필드 설정
 
         userMapper.insertUser(user);

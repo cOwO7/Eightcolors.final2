@@ -34,4 +34,5 @@ public class Users {
     private String providerId;
     private LocalDateTime regDate;
     private Integer point = 0;
+    private String role;
 }

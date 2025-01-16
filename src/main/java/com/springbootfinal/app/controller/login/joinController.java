@@ -1,5 +1,6 @@
 package com.springbootfinal.app.controller.login;
 
+import com.springbootfinal.app.domain.login.AdminUser;
 import com.springbootfinal.app.domain.login.LoginType;
 import com.springbootfinal.app.domain.login.Users;
 import com.springbootfinal.app.service.login.UserService;
@@ -40,7 +41,7 @@ public class joinController {
 
 
 
-    // 회원가입 처리
+    // 일반 유저 회원가입 처리
     @PostMapping("/joinResult")
     public String joinResult(
             Model model,
@@ -83,6 +84,7 @@ public class joinController {
             user.setAddress2(address2);
             user.setLoginType(LoginType.LOCAL); // 기본 로그인 타입 설정
             user.setProviderId(null); // 소셜 로그인 사용하지 않음
+            user.setRole("ROLE_USER"); //기본 사용자 역할 설정
 
             // 명확히 설정: pass는 pass1
             log.info("Setting pass field with pass1 value: {}", pass1);
