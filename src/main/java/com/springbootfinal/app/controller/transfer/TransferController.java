@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -16,6 +17,14 @@ public class TransferController {
 
     @Autowired
     private TransferService transferService;
+
+    //게시글 쓰기 폼에서 들어오는 게시글 쓰기 요청을 처리하는 메서드
+    @PostMapping("/addTransfer")
+    public String addTransfer(TransferDto transfer) {
+        transferService.addTransfer(transfer);
+
+        return "redirect:/transfers";  // 반환할 뷰 이름 (transferList.html)
+    }
 
     // 게시글 상세보기 요청처리 메서드
     @GetMapping("/transferDetail")
@@ -30,5 +39,17 @@ public class TransferController {
         List<TransferDto> transfers = transferService.getTransferList();  // 메서드 이름을 수정했습니다.
         model.addAttribute("transfers", transfers);
         return "views/transfer/transferList";  // 반환할 뷰 이름 (transferList.html)
+    }
+
+    // 게시글 쓰기 요청 처리 메서드
+    @GetMapping("/transferWrite")
+    public String writeTransfer() {
+        return "views/transfer/transferWrite";  // 반환할 뷰 이름 (transferWrite.html)
+    }
+
+    // 양도 생성 폼 요청 처리 메서드
+    @GetMapping("/transfers/create")
+    public String createTransferForm() {
+        return "views/transfer/transferWrite";  // 반환할 뷰 이름 (transferWrite.html)
     }
 }

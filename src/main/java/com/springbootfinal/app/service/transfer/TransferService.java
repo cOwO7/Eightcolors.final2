@@ -13,6 +13,13 @@ public class TransferService {
 
     private final TransferMapper transferMapper;
 
+    // 게시글 정보를 추가하는 메서드
+    public void addTransfer(TransferDto transfer) {
+        log.info("Adding transfer record: {}", transfer);
+        transferMapper.transferInsert(transfer);
+        log.info("Added transfer record: {}", transfer);
+    }
+
     // no에 해당하는 게시글을 읽어와 반환하는 메서드
     public TransferDto getTransfer(int no) {
         log.info("Fetching transfer record with no: {}", no);

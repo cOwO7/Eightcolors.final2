@@ -2,6 +2,7 @@ package com.springbootfinal.app.controller.kakaopay;
 
 import com.springbootfinal.app.domain.kakaopay.ReadyResponse;
 import com.springbootfinal.app.service.kakaopay.KakaopayService;
+import com.springbootfinal.app.service.transfer.TransferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,30 +14,30 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class KakaopayController {
     @Autowired
     private KakaopayService kakaoPayService;
+    private TransferService transferService;
 
     @GetMapping("/Kakaopay")
     public String index() {
         return "pc/index";
     }
 
+    // 결제 준비 요청 transferNo를 받아서 결제 준비 요청을 한다.
+    // Request payment preparation with transferNo
+
     @GetMapping("/ready/{agent}/{openType}")
-    public String ready(@PathVariable("agent") String agent, @PathVariable("openType") String openType, Model model) {
-        ReadyResponse readyResponse = kakaoPayService.ready(agent, openType);
+    public String ready(@PathVariable("agent") String agent, @PathVariable("openType") String openType,
+                        @RequestParam("transferNo") long transferNo, Model model) {
+        ReadyResponse readyResponse = kakaoPayService.ready(agent, openType, transferNo);
 
         if (agent.equals("mobile")) {
-            // 모바일은 결제대기 화면으로 redirect 한다.
-            // In mobile, redirect to payment stand-by screen
             return "redirect:" + readyResponse.getNext_redirect_mobile_url();
         }
 
         if (agent.equals("app")) {
-            // 앱에서 결제대기 화면을 올리는 webview 스킴
-            // In app, webview app scheme for payment stand-by screen
             model.addAttribute("webviewUrl", "app://webview?url=" + readyResponse.getNext_redirect_app_url());
             return "app/webview/ready";
         }
 
-        // pc
         model.addAttribute("response", readyResponse);
         return agent + "/" + openType + "/ready";
     }

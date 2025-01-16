@@ -3,34 +3,46 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layouts/main_layout}">
 <head>
-    <link href="bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <meta charset="UTF-8">
     <title>양도 상세게시판</title>
 </head>
 <body>
 <th:block layout:fragment="content">
 
-<div class="container mt-5">
-    <h1 class="text-center mb-4">Transfer Detail</h1>
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">글 제목: <span th:text="${transfer.transferTitle}"></span></h5>
-            <p class="card-text">양도자 ID: <span th:text="${transfer.sellerId}"></span></p>
-            <p class="card-text">숙소명: <span th:text="${transfer.reservationResidName}"></span></p>
-            <p class="card-text">체크인 날짜: <span th:text="${transfer.checkInDate}"></span></p>
-            <p class="card-text">체크아웃 날짜: <span th:text="${transfer.checkOutDate}"></span></p>
-            <p class="card-text">양도 가격: <span th:text="${transfer.formattedTransferPrice}"></span></p>
-            <p class="card-text">양도상태: <span th:text="${transfer.status}"></span></p>
-            <p class="card-text">작성일: <span th:text="${transfer.formattedCreatedAt}"></span></p>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Transfer Detail</h1>
 
+        <!-- Card for displaying transfer details -->
+        <div class="card shadow-lg">
+            <div class="card-body">
+                <h5 class="card-title mb-3">글 제목: <span th:text="${transfer.transferTitle}"></span></h5>
+
+                <!-- Transfer Information -->
+                <div class="mb-3">
+                    <p><strong>양도자 ID:</strong> <span th:text="${transfer.sellerId}"></span></p>
+                    <p><strong>숙소명:</strong> <span th:text="${transfer.reservationResidName}"></span></p>
+                    <p><strong>체크인 날짜:</strong> <span th:text="${transfer.checkInDate}"></span></p>
+                    <p><strong>체크아웃 날짜:</strong> <span th:text="${transfer.checkOutDate}"></span></p>
+                    <p><strong>양도 가격:</strong> <span th:text="${transfer.formattedTransferPrice}"></span></p>
+                    <p><strong>양도상태:</strong> <span th:text="${transfer.status}"></span></p>
+                    <p><strong>작성일:</strong> <span th:text="${transfer.formattedCreatedAt}"></span></p>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="/transfers" class="btn btn-outline-primary">목록으로</a>
+                    <form action="/ready/pc/layer" method="get">
+                        <button type="submit" class="btn btn-success">결제하기</button>
+                    </form>
+                </div>
+            </div>
         </div>
+
     </div>
-    <a href="/transfers" class="btn btn-primary">목록으로</a>
-    <form class="btn btn-success" action="/ready/pc/layer" method="get">
-        <button type="submit">결제하기</button>
-    </form>
-</div>
+
 </th:block>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

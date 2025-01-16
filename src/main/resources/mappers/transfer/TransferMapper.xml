@@ -5,6 +5,12 @@
 
 <mapper namespace="com.springbootfinal.app.mapper.transfer.TransferMapper">
 
+    <!--양도 등록-->
+    <insert id="transferInsert" parameterType="com.springbootfinal.app.domain.transfer.TransferDto">
+        INSERT INTO transfers (transfer_title, seller_user_no, buyer_user_no, reservation_no, transfer_price, status)
+        VALUES (#{transfer_title}, #{seller_user_no}, #{buyer_user_no}, #{reservation_no}, #{transfer_price}, 'WAITING')
+    </insert>
+
 
     <!-- transferRead에 해당하는 SQL 문 -->
     <select id="transferRead" resultType="com.springbootfinal.app.domain.transfer.TransferDto">
