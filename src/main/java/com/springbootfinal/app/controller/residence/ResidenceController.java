@@ -1,19 +1,22 @@
 package com.springbootfinal.app.controller.residence;
 
+import com.springbootfinal.app.domain.residence.PropertyPhotosDto;
 import com.springbootfinal.app.domain.residence.ResidenceDto;
 import com.springbootfinal.app.domain.weather.AllWeatherDto;
 import com.springbootfinal.app.domain.weather.WeatherDto;
+import com.springbootfinal.app.service.residence.PropertyPhotosService;
 import com.springbootfinal.app.service.residence.ResidenceService;
 import com.springbootfinal.app.service.weather.AllWeatherService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,13 +27,16 @@ public class ResidenceController {
 
     private final ResidenceService residenceService;
     private final AllWeatherService allWeatherService;
+    private final PropertyPhotosService propertyPhotosService;
 
     @Autowired
     public ResidenceController(
             AllWeatherService allWeatherService
-     ,ResidenceService residenceService) {
+     ,ResidenceService residenceService,
+            PropertyPhotosService propertyPhotosService) {
         this.allWeatherService = allWeatherService;
         this.residenceService = residenceService;
+        this.propertyPhotosService = propertyPhotosService;
     }
 
     // 숙소 목록 조회
@@ -66,10 +72,6 @@ public class ResidenceController {
     @GetMapping("/new")
     public String newResidenceForm(Model model) {
         ResidenceDto residence = new ResidenceDto();
-       /* residence.setNx(0);  // 초기값을 설정 (필요시)
-        residence.setNy(0);  // 초기값을 설정 (필요시)
-        residence.setRegId("");  // 빈 값으로 설정 (필요시)
-        residence.setRegIdTemp("");  // 빈 값으로 설정 (필요시)*/
         model.addAttribute("residence", residence);  // 모델에 residence 객체 추가
         return "views/residence/ResidenceWriter";  // 숙소 등록 페이지
     }
@@ -86,17 +88,52 @@ public class ResidenceController {
     @GetMapping("/edit/{residNo}")
     public String editResidenceForm(@PathVariable Long residNo, Model model) {
         ResidenceDto residence = residenceService.getResidenceById(residNo);
-        model.addAttribute("residence", residence); // 수정할 숙소 데이터 전달
-        return "views/residence/ResidenceUpdata"; // 숙소 수정 페이지
+
+        // 기존 숙소 데이터와 사진 목록을 함께 모델에 추가
+        model.addAttribute("residence", residence);
+        model.addAttribute("photos", residence.getAllPhotoUrls()); // 사진 목록 전달
+
+        return "views/residence/ResidenceUpdate"; // 수정 페이지
     }
+
 
     // 숙소 수정 처리
     @PostMapping("/edit/{residNo}")
-    public String updateResidence(@PathVariable Long residNo, @ModelAttribute ResidenceDto residence) {
-        residence.setResidNo(residNo); // 숙소 번호 설정
-        residenceService.updateResidence(residence); // 숙소 수정
-        return "redirect:/list"; // 수정 후 목록 페이지로 리다이렉트
+    public String updateResidence(@PathVariable Long residNo,
+                                  @ModelAttribute ResidenceDto residence,
+                                  @RequestParam(value = "photos", required = false) List<MultipartFile> photos,
+                                  @RequestParam(value = "deletedPhotoIds", required = false) List<Long> deletedPhotoIds) {
+        residence.setResidNo(residNo);
+
+        // 기존 숙소 정보 업데이트
+        residenceService.updateResidence(residence);
+
+        // 삭제된 사진 처리
+        if (deletedPhotoIds != null && !deletedPhotoIds.isEmpty()) {
+            propertyPhotosService.deletePhotos(residNo);
+        }
+
+        // 새로운 사진 처리
+        if (photos != null && !photos.isEmpty()) {
+            List<PropertyPhotosDto> newPhotoDtos = new ArrayList<>();
+            for (MultipartFile photo : photos) {
+                try {
+                    String savedFileName = propertyPhotosService.savePhoto(photo); // 사진 저장
+                    PropertyPhotosDto photoDto = new PropertyPhotosDto();
+                    photoDto.setResidNo(residNo);
+                    photoDto.setPhotoUrl01("/uploads/" + savedFileName); // 새 사진 경로 설정
+                    newPhotoDtos.add(photoDto);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    // 에러 처리 로직 추가
+                }
+            }
+            propertyPhotosService.savePhotos(newPhotoDtos); // 새로운 사진 저장
+        }
+
+        return "redirect:/list"; // 수정 완료 후 목록 페이지로 리다이렉트
     }
+
 
     // 숙소 삭제
     @PostMapping("/delete/{residNo}")

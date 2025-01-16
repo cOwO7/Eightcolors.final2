@@ -100,7 +100,6 @@ ALTER TABLE residence
 
 select * from residence;
 
-
 -- 5. 숙소 방 정보 테이블
 CREATE TABLE IF NOT EXISTS residence_rooms (
     room_no BIGINT AUTO_INCREMENT PRIMARY KEY,         				  -- 방 번호 (PK)
@@ -157,8 +156,8 @@ CREATE TABLE IF NOT EXISTS answers (
     admin_user_no BIGINT NOT NULL,                        	   		   	  -- 관리자 번호 (FK)
     content TEXT NOT NULL,                                     			  	  -- 답변 내용
     answer_date DATETIME DEFAULT CURRENT_TIMESTAMP,           		    	 -- 답변 작성일
-    FOREIGN KEY (inquiry_no) REFERENCES inquiries(inquiry_no) ON DELETE CASCADE,
-    FOREIGN KEY (admin_user_no) REFERENCES admin_users(admin_user_no) ON DELETE CASCADE
+    FOREIGN KEY (inquiry_no) REFERENCES inquiries(inquiry_no) ON DELETE CASCADE
+    -- FOREIGN KEY (admin_user_no) REFERENCES admin_users(admin_user_no) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- 10. 숙소 사진 테이블

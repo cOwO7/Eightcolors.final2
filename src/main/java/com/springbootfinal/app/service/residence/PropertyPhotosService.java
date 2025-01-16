@@ -58,6 +58,7 @@ public class PropertyPhotosService {
     public void deletePhotos(Long residNo) {
         propertyPhotosMapper.deletePhoto(residNo);
     }
+
 }
 
     /*// 특정 숙소의 모든 사진 조회

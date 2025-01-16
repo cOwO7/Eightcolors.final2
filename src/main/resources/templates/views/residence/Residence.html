@@ -83,9 +83,9 @@
 
         </td>
         <td>
-          <a th:href="@{/residence/edit/{id}(id=${residence.residNo})}" class="btn btn-warning btn-sm">수정</a>
+          <a th:href="@{/edit/{id}(id=${residence.residNo})}" class="btn btn-warning btn-sm">수정</a>
           <!-- 삭제는 POST로 처리되어야 하므로 form으로 변경 -->
-          <form th:action="@{/residence/delete/{id}(id=${residence.residNo})}" method="post" style="display:inline-block;">
+          <form th:action="@{/delete/{id}(id=${residence.residNo})}" method="post" style="display:inline-block;">
             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
           </form>
         </td>

@@ -14,7 +14,8 @@
             <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=36a75517ce82693ff837cc79c740e197&libraries=services,clusterer"></script>
         </div>
         <h1>숙소 등록</h1>
-        <form th:action="@{/new}" th:object="${residence}" method="post">
+        <form th:action="@{/new}" th:object="${residence}" method="post" enctype="multipart/form-data">
+            <!-- 기존 숙소 입력 필드들 -->
             <label for="residName">숙소 이름:</label>
             <input type="text" id="residName" th:field="*{residName}" required><br><br>
 
@@ -30,14 +31,16 @@
 
             <label for="totalPrice">원가:</label>
             <input type="number" id="totalPrice" th:field="*{totalPrice}" step="0.01" required><br><br>
+
+            <!-- 사진 추가 -->
             <h3>사진 추가</h3>
+            <label for="photoFiles">사진 파일 업로드:</label>
+            <input type="file" id="photoFiles" name="photoFiles" multiple><br><br>
 
             <button type="submit" id="registerButton">등록</button>
             <a href="/list">뒤로 가기</a>
-            <!--</form>
 
-
-            <form th:action="@{/residence/processAllWeather}" method="post">-->
+            <!-- 날씨 데이터 -->
             <div class="col-md-12 text-center">
                 <div id="map" style="width: 300px; height: 350px; text-align: center;"></div>
                 <table width="85%" style="margin: auto; text-align: center;">
@@ -148,7 +151,6 @@
     </div>
     <link href="/css/weather/allW.css" rel="stylesheet"/>
     <script th:src="@{js/jquery-3.7.1.min.js}"></script>
-    <!--<script th:src="@{js/weather/allWN.js}"></script>-->
     <script th:src="@{js/map/geolocation.js}"></script>
     <script th:src="@{js/weather/allMapChoice.js}"></script>
     <script th:src="@{js/map/kakaomap2.js}"></script>

@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -31,8 +32,35 @@ public class ResidenceService {
 
     // 숙소 목록 조회
     public List<ResidenceDto> getAllResidences() {
-        return residenceMapper.getAllResidences();
+        List<ResidenceDto> residences = residenceMapper.getAllResidences();
+
+        residences.forEach(residence -> {
+            List<String> photoUrls = new ArrayList<>();
+            if (residence.getPhotoUrl01() != null) photoUrls.add(residence.getPhotoUrl01());
+            if (residence.getPhotoUrl02() != null) photoUrls.add(residence.getPhotoUrl02());
+            if (residence.getPhotoUrl03() != null) photoUrls.add(residence.getPhotoUrl03());
+            if (residence.getPhotoUrl04() != null) photoUrls.add(residence.getPhotoUrl04());
+            if (residence.getPhotoUrl05() != null) photoUrls.add(residence.getPhotoUrl05());
+            if (residence.getPhotoUrl06() != null) photoUrls.add(residence.getPhotoUrl06());
+            if (residence.getPhotoUrl07() != null) photoUrls.add(residence.getPhotoUrl07());
+            if (residence.getPhotoUrl08() != null) photoUrls.add(residence.getPhotoUrl08());
+            if (residence.getPhotoUrl09() != null) photoUrls.add(residence.getPhotoUrl09());
+            if (residence.getPhotoUrl10() != null) photoUrls.add(residence.getPhotoUrl10());
+
+            residence.setPhotoUrls(photoUrls);
+
+            // 첫 번째 URL을 썸네일로 설정
+            if (!photoUrls.isEmpty()) {
+                residence.setThumbnailUrl(photoUrls.get(0));
+            }
+        });
+
+        return residences;
     }
+
+    /*public List<ResidenceDto> getAllResidences() {
+        return residenceMapper.getAllResidences();
+    }*/
 
     // 숙소 상세 조회
     public ResidenceDto getResidenceById(Long residNo) {
