@@ -1,4 +1,12 @@
-drop database eightcolors2025;
+-- MySQL 사용자 계정 생성
+-- root 계정으로 접속 후 script에서 아래 코드 복사 붙여넣기 실행
+-- mysql -u root -h localhost -p mysql
+create database eightcolors2025;
+create user 'eightcolors2025'@'%' identified by 'eightcolors2025';
+grant all privileges on eightcolors2025.* to 'eightcolors2025'@'%';
+flush privileges;
+-- exit
+
 
 CREATE DATABASE IF NOT EXISTS eightcolors2025; -- 데이터베이스 생성
 
@@ -34,33 +42,48 @@ CREATE TABLE IF NOT EXISTS host_users (
 
 -- 3. 회원가입 테이블
 CREATE TABLE IF NOT EXISTS users (
-                                     user_no BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                     id VARCHAR(100),
-                                     password VARCHAR(255),
-                                     email VARCHAR(255),
-                                     phone VARCHAR(100),
-                                     name VARCHAR(100),
-                                     zipcode VARCHAR(50),
-                                     address1 VARCHAR(255),
-                                     address2 VARCHAR(255),
-                                     login_type VARCHAR(50),
-                                     provider_id VARCHAR(255),
-                                     reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                     role VARCHAR(50) DEFAULT 'ROLE_USER'
+     user_no BIGINT AUTO_INCREMENT PRIMARY KEY,
+     id VARCHAR(100),
+     password VARCHAR(255),
+     email VARCHAR(255),
+     phone VARCHAR(100),
+     name VARCHAR(100),
+     zipcode VARCHAR(50),
+     address1 VARCHAR(255),
+     address2 VARCHAR(255),
+     login_type VARCHAR(50),
+     provider_id VARCHAR(255),
+     reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+     role VARCHAR(50) DEFAULT 'ROLE_USER'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- 4. 숙소 테이블
 CREATE TABLE IF NOT EXISTS residence (
-                                         resid_no BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                         resid_name VARCHAR(255),
-                                         host_user_no BIGINT,
-                                         resid_description TEXT,
-                                         resid_address VARCHAR(255),
-                                         resid_type ENUM('resort', 'hotel', 'pension', 'motel'),
-                                         resid_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                         UNIQUE (host_user_no),
-                                         FOREIGN KEY (host_user_no) REFERENCES host_users(host_user_no) ON DELETE CASCADE
+       resid_no BIGINT AUTO_INCREMENT PRIMARY KEY,
+       resid_name VARCHAR(255),
+       host_user_no BIGINT,
+       resid_description TEXT,
+       resid_address VARCHAR(255),
+       resid_type ENUM('resort', 'hotel', 'pension', 'motel'),
+       resid_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+       UNIQUE (host_user_no),
+       FOREIGN KEY (host_user_no) REFERENCES host_users(host_user_no) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- 숙소 매진시 sold-out 상태 추가
+ALTER TABLE residence
+    ADD COLUMN sold_out BOOLEAN DEFAULT FALSE AFTER resid_type;
+-- nx와 ny는 정수 타입이고, 기본값은 0으로 설정
+ALTER TABLE residence
+    ADD COLUMN nx INT DEFAULT 0 AFTER resid_type;
+ALTER TABLE residence
+    ADD COLUMN ny INT DEFAULT 0 AFTER nx;
+-- regId와 regIdTemp는 문자열을 저장하므로 VARCHAR 타입으로 설정
+ALTER TABLE residence
+    ADD COLUMN regId VARCHAR(255) DEFAULT '' AFTER ny;
+ALTER TABLE residence
+    ADD COLUMN regIdTemp VARCHAR(255) DEFAULT '' AFTER regId;
+
+select * from residence;
 
 -- 5. 숙소 방 정보 테이블
 CREATE TABLE IF NOT EXISTS residence_rooms (
@@ -73,6 +96,7 @@ CREATE TABLE IF NOT EXISTS residence_rooms (
 
 -- 6. 예약 페이지 테이블
 CREATE TABLE IF NOT EXISTS reservations (
+
                                             reservation_no BIGINT AUTO_INCREMENT PRIMARY KEY,
                                             user_no BIGINT,
                                             room_no BIGINT,
@@ -87,6 +111,7 @@ CREATE TABLE IF NOT EXISTS reservations (
                                             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                                             FOREIGN KEY (user_no) REFERENCES users(user_no) ON DELETE CASCADE,
                                             FOREIGN KEY (room_no) REFERENCES residence_rooms(room_no) ON DELETE CASCADE
+
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- 7. 댓글 테이블
@@ -113,13 +138,15 @@ CREATE TABLE IF NOT EXISTS inquiries (
 
 -- 9. 답변 테이블
 CREATE TABLE IF NOT EXISTS answers (
-                                       answer_no BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                       inquiry_no BIGINT,
-                                       admin_user_no BIGINT,
-                                       content TEXT,
-                                       answer_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-                                       FOREIGN KEY (inquiry_no) REFERENCES inquiries(inquiry_no) ON DELETE CASCADE,
-                                       FOREIGN KEY (admin_user_no) REFERENCES admin_users(admin_user_no) ON DELETE CASCADE
+
+  answer_no BIGINT AUTO_INCREMENT PRIMARY KEY,
+  inquiry_no BIGINT,
+  admin_user_no BIGINT,
+  content TEXT,
+  answer_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (inquiry_no) REFERENCES inquiries(inquiry_no) ON DELETE CASCADE,
+  FOREIGN KEY (admin_user_no) REFERENCES admin_users(admin_user_no) ON DELETE CASCADE
+
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- 10. 숙소 사진 테이블
@@ -150,6 +177,7 @@ CREATE TABLE IF NOT EXISTS notices (
                                        is_active TINYINT(1) DEFAULT 1,
                                        FOREIGN KEY (admin_user_no) REFERENCES admin_users(admin_user_no) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+select * from notices;
 
 -- 12. 양도 테이블
 CREATE TABLE IF NOT EXISTS transfers (
@@ -181,11 +209,13 @@ ALTER TABLE transfers
 select * from transfers;
 
 
+
 -- 1. 관리자 계정 데이터 삽입
 INSERT INTO admin_users (admin_id, admin_passwd, admin_name, role)
 VALUES
     ('admin01', 'adminpass123', '관리자1', 'ROLE_ADMIN'),
     ('admin02', 'adminpass456', '관리자2', 'ROLE_ADMIN');
+
 
 -- 2. 숙박업소 회원가입 데이터 삽입
 INSERT INTO host_users (id, passwd, email, phone, name, zipcode, address1, address2, business_license_no, role)
@@ -196,8 +226,10 @@ VALUES
 -- 3. 일반 회원가입 데이터 삽입
 INSERT INTO users (id, password, email, phone, name, zipcode, address1, address2, login_type, provider_id, role)
 VALUES
+
     ('user01', 'userpass123', 'user01@email.com', '010-5678-1234', '회원1', '11111', '서울시 마포구', '상암동 789', 'LOCAL', '', 'ROLE_USER'),
     ('user02', 'userpass456', 'user02@email.com', '010-6789-2345', '회원2', '22222', '서울시 동작구', '신대방동 101', 'GOOGLE', 'google123', 'ROLE_USER');
+
 
 -- 4. 숙소 데이터 삽입
 INSERT INTO residence (resid_name, host_user_no, resid_description, resid_address, resid_type)
@@ -213,7 +245,7 @@ VALUES
     (2, '201호', 150000),
     (2, '202호', 180000);
 
--- 6. 예약 데이터 삽입
+-- 6. 예약 데이터 삽입 - 안됨
 INSERT INTO reservations (user_no, room_no, checkin_date, checkout_date, total_price, discounted_price, transaction_id, payment_status, reservation_status)
 VALUES
     (1, 1, '2025-02-01', '2025-02-03', 100000, 95000, 'txn12345', '완료', '예약 완료'),
@@ -243,7 +275,7 @@ VALUES
     (1, 'thumbnail01.jpg', 'photo01.jpg', 'photo02.jpg'),
     (2, 'thumbnail02.jpg', 'photo03.jpg', 'photo04.jpg');
 
--- 11. 공지사항 데이터 삽입
+-- 11. 공지사항 데이터 삽입 - 안됨
 INSERT INTO notices (admin_user_no, title, content)
 VALUES
     (1, '시스템 점검 안내', '정기적인 시스템 점검이 예정되어 있습니다. 서비스 이용에 불편을 드려 죄송합니다.');
