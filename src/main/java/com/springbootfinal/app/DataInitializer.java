@@ -19,6 +19,12 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+//
+//    여기는 샘플데이터의 passwordEncoder 가 되어있지 않아 발생하는 문제를 해결하기 위해
+//            자동으로 샘플데이터를 paswordEncoder해서 넣어주는 메서드 입니다.
+//    현제는 관리자 계정에 대한 샘플 이 존재합니다.
+//
+
     @Override
     public void run(String... args) throws Exception {
         try (Connection connection = dataSource.getConnection()) {

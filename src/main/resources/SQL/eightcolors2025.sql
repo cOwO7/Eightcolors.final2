@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS admin_users (
                                            admin_name VARCHAR(100),
                                            role VARCHAR(50) DEFAULT 'ROLE_ADMIN'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 -- 2. 숙박업소 회원가입 테이블
 CREATE TABLE IF NOT EXISTS host_users (
                                           host_user_no BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -30,6 +31,8 @@ CREATE TABLE IF NOT EXISTS host_users (
                                           role VARCHAR(50) DEFAULT 'ROLE_HOST'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+select * from host_users;
+
 -- 3. 회원가입 테이블
 CREATE TABLE IF NOT EXISTS users (
                                      user_no BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -46,8 +49,6 @@ CREATE TABLE IF NOT EXISTS users (
                                      reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                                      role VARCHAR(50) DEFAULT 'ROLE_USER'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-
 
 -- 4. 숙소 테이블
 CREATE TABLE IF NOT EXISTS residence (
@@ -169,6 +170,15 @@ CREATE TABLE IF NOT EXISTS transfers (
 ALTER TABLE transfers
     ADD COLUMN transfer_title VARCHAR(255);
 
+ALTER TABLE reservations
+    MODIFY COLUMN discounted_price INT;
+
+ALTER TABLE transfers
+    MODIFY COLUMN transfer_price INT;
+
+ALTER TABLE transfers
+    ADD COLUMN transfer_content VARCHAR(1000);
+
 select * from transfers;
 
 
@@ -178,7 +188,6 @@ VALUES
     ('admin01', 'adminpass123', '관리자1', 'ROLE_ADMIN'),
     ('admin02', 'adminpass456', '관리자2', 'ROLE_ADMIN');
 
-SELECT * FROM admin_users;
 -- 2. 숙박업소 회원가입 데이터 삽입
 INSERT INTO host_users (id, passwd, email, phone, name, zipcode, address1, address2, business_license_no, role)
 VALUES
@@ -190,8 +199,6 @@ INSERT INTO users (id, password, email, phone, name, zipcode, address1, address2
 VALUES
     ('user01', 'userpass123', 'user01@email.com', '010-5678-1234', '회원1', '11111', '서울시 마포구', '상암동 789', 'LOCAL', '', 'ROLE_USER'),
     ('user02', 'userpass456', 'user02@email.com', '010-6789-2345', '회원2', '22222', '서울시 동작구', '신대방동 101', 'GOOGLE', 'google123', 'ROLE_USER');
-
-
 
 -- 4. 숙소 데이터 삽입
 INSERT INTO residence (resid_name, host_user_no, resid_description, resid_address, resid_type)
