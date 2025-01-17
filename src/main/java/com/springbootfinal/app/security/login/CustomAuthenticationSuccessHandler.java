@@ -1,5 +1,6 @@
 package com.springbootfinal.app.security.login;
 
+import jakarta.servlet.FilterChain;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -13,8 +14,13 @@ import java.io.IOException;
 @Component
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
+
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(jakarta.servlet.http.HttpServletRequest request, jakarta.servlet.http.HttpServletResponse response, Authentication authentication) throws IOException, jakarta.servlet.ServletException {
+
+        // 로그인 성공 시 세션에 로그인 상태와 사용자 역할 저장
+        request.getSession().setAttribute("isLogin", true);
+
         // 로그인 성공 시 세션에 사용자 역할 저장
         if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             request.getSession().setAttribute("role", "admin");

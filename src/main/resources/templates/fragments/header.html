@@ -25,26 +25,31 @@
 
 
 					<!-- 로그인 안 한 경우 로그인 버튼 표시 -->
-					<li class="nav-item"><th:block th:unless="${session.isLogin}">
+					<li class="nav-item">
+						<th:block th:unless="${session['isLogin']}">
 							<a class="nav-link" th:href="@{login}">로그인</a>
-						</th:block></li>
+						</th:block>
+					</li>
 
 					<!-- 로그인한 경우 로그아웃 버튼 표시 -->
-					<li class="nav-item"><th:block th:if="${session.isLogin}">
+					<li class="nav-item">
+						<th:block th:if="${session['isLogin']}">
 							<a class="nav-link" th:href="@{logout}">로그아웃</a>
-						</th:block></li>
+						</th:block>
+					</li>
 
 					<!-- 로그인한 사용자가 관리자일 때만 "관리자 페이지로 가기" 링크를 표시 -->
-					<div th:if="${session.admin}">
-						<a href="/admin">관리자 페이지로 가기</a>
+					<div th:if="${session['role'] == 'admin'}">
+						<a href="/admin/admin">관리자 페이지로 가기</a>
 					</div>
-					<!--일반유저용 테스트-->
-					<div th:if="${session.admin}">
-						<a href="/admin">일반유저용(테스트 관리자,호스트에 대한)</a>
+
+					<!-- 일반유저용 테스트 -->
+					<div th:if="${session['role'] == 'user'}">
+						<a href="/user-info">일반유저용(테스트)</a>
 					</div>
 
 					<!-- 로그인한 사용자가 호스트일 때만 "호스트 페이지로 가기" 링크를 표시 -->
-					<div th:if="${session.host}">
+					<div th:if="${session['role'] == 'host'}">
 						<a href="/host">호스트 페이지로 가기</a>
 					</div>
 

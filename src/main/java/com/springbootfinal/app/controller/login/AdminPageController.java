@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/admin")
 public class AdminPageController {
 
-    @GetMapping("/dashboard")
+    @GetMapping("/admin")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String adminDashboard() {
-        return "admin/dashboard"; // admin/dashboard.html 뷰를 반환
+        return "admin/admin"; // admin/dashboard.html 뷰를 반환
     }
 
     @GetMapping("/settings")
