@@ -31,7 +31,6 @@ CREATE TABLE IF NOT EXISTS host_users (
                                           role VARCHAR(50) DEFAULT 'ROLE_HOST'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-select * from host_users;
 
 -- 3. 회원가입 테이블
 CREATE TABLE IF NOT EXISTS users (
