@@ -2,127 +2,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.springbootfinal.app.mapper.residence.PropertyPhotosMapper">
-
-    <!--<insert id="insertPhoto" parameterType="map">
-        INSERT INTO property_photos (resid_no, thumbnailUrls, photo_url01, photo_url02, photo_url03, photo_url04, photo_url05)
-        VALUES (#{residNo}, #{thumbnailUrls}, #{photoUrls[0]}, #{photoUrls[1]}, #{photoUrls[2]}, #{photoUrls[3]}, #{photoUrls[4]});
-    </insert>
-
-    <select id="getPhotosByResidence" parameterType="Long" resultType="String">
-        SELECT photo_url01, photo_url02, photo_url03, photo_url04, photo_url05
-        FROM property_photos WHERE resid_no = #{residNo};
-    </select>
-
-    <delete id="deletePhoto" parameterType="Long">
-        DELETE FROM property_photos WHERE photo_no = #{photoNo};
-    </delete>-->
-
-
-
-
-    <!--&lt;!&ndash; 특정 숙소의 사진 목록 조회 &ndash;&gt;
-    <select id="getPhotosByResidenceId" resultType="com.springbootfinal.app.domain.residence.PropertyPhotosDto">
-        SELECT
-            photo_no AS photoNo,
-            resid_no AS residNo,
-            thumbnailUrls,
-            photo_url01 AS photoUrl01,
-            photo_url02 AS photoUrl02,
-            photo_url03 AS photoUrl03,
-            photo_url04 AS photoUrl04,
-            photo_url05 AS photoUrl05,
-            photo_url06 AS photoUrl06,
-            photo_url07 AS photoUrl07,
-            photo_url08 AS photoUrl08,
-            photo_url09 AS photoUrl09,
-            photo_url10 AS photoUrl10
-        FROM property_photos
-        WHERE resid_no = #{residNo}
-    </select>
-
-    &lt;!&ndash; 사진 등록 &ndash;&gt;
-    <insert id="insertPhoto" parameterType="com.springbootfinal.app.domain.residence.PropertyPhotosDto">
-        INSERT INTO property_photos (
-            resid_no, thumbnailUrls, photo_url01, photo_url02, photo_url03, photo_url04,
-            photo_url05, photo_url06, photo_url07, photo_url08, photo_url09, photo_url10
-        ) VALUES (
-                     #{residNo}, #{thumbnailUrls}, #{photoUrls[0]}, #{photoUrls[1]}, #{photoUrls[2]}, #{photoUrls[3]},
-                     #{photoUrls[4]}, #{photoUrls[5]}, #{photoUrls[6]}, #{photoUrls[7]}, #{photoUrls[8]}, #{photoUrls[9]}
-                 )
-    </insert>
-
-    &lt;!&ndash; 사진 삭제 &ndash;&gt;
-    <delete id="deletePhoto" parameterType="Long">
-        DELETE FROM property_photos WHERE photo_no = #{photoNo}
-    </delete>
-
-    &lt;!&ndash; 사진 수정 &ndash;&gt;
-    <update id="updatePhoto" parameterType="com.springbootfinal.app.domain.residence.PropertyPhotosDto">
-        UPDATE property_photos
-        SET
-            thumbnailUrls = #{thumbnailUrls},
-            photo_url01 = #{photoUrls[0]},
-            photo_url02 = #{photoUrls[1]},
-            photo_url03 = #{photoUrls[2]},
-            photo_url04 = #{photoUrls[3]},
-            photo_url05 = #{photoUrls[4]},
-            photo_url06 = #{photoUrls[5]},
-            photo_url07 = #{photoUrls[6]},
-            photo_url08 = #{photoUrls[7]},
-            photo_url09 = #{photoUrls[8]},
-            photo_url10 = #{photoUrls[9]}
-        WHERE photo_no = #{photoNo}
-    </update>
-
-    &lt;!&ndash; 숙소 ID로 사진 목록 조회 &ndash;&gt;
-    <select id="selectPhotosByResidenceId" resultType="com.springbootfinal.app.domain.residence.PropertyPhotosDto">
-        SELECT
-            photo_no AS photoNo,
-            resid_no AS residNo,
-            thumbnailUrls,
-            photo_url01 AS photoUrl01,
-            photo_url02 AS photoUrl02,
-            photo_url03 AS photoUrl03,
-            photo_url04 AS photoUrl04,
-            photo_url05 AS photoUrl05,
-            photo_url06 AS photoUrl06,
-            photo_url07 AS photoUrl07,
-            photo_url08 AS photoUrl08,
-            photo_url09 AS photoUrl09,
-            photo_url10 AS photoUrl10
-        FROM property_photos
-        WHERE resid_no = #{residNo}
-    </select>
-
-    &lt;!&ndash; 사진 ID로 사진 조회 &ndash;&gt;
-    <select id="selectPhotoById" resultType="com.springbootfinal.app.domain.residence.PropertyPhotosDto">
-        SELECT
-            photo_no AS photoNo,
-            resid_no AS residNo,
-            thumbnailUrls,
-            photo_url01 AS photoUrl01,
-            photo_url02 AS photoUrl02,
-            photo_url03 AS photoUrl03,
-            photo_url04 AS photoUrl04,
-            photo_url05 AS photoUrl05,
-            photo_url06 AS photoUrl06,
-            photo_url07 AS photoUrl07,
-            photo_url08 AS photoUrl08,
-            photo_url09 AS photoUrl09,
-            photo_url10 AS photoUrl10
-        FROM property_photos
-        WHERE photo_no = #{photoNo}
-    </select>-->
+<mapper namespace="com.springbootfinal.app.mapper.residence.PropertyPhotoMapper">
 
     <!-- 숙소 사진 목록 조회 -->
     <select id="getPhotosByResidenceId" resultType="com.springbootfinal.app.domain.residence.PropertyPhotosDto">
-        SELECT * FROM property_photos WHERE resid_no = #{residNo}
+        SELECT * FROM eightcolors2025.property_photos WHERE resid_no = #{residNo}
     </select>
 
     <!-- 사진 등록 -->
     <insert id="insertPhoto" parameterType="com.springbootfinal.app.domain.residence.PropertyPhotosDto">
-        INSERT INTO property_photos (resid_no, thumbnailUrls, photo_url01, photo_url02, photo_url03, photo_url04, photo_url05, photo_url06, photo_url07, photo_url08, photo_url09, photo_url10)
+        INSERT INTO eightcolors2025.property_photos (resid_no, thumbnailUrls, photo_url01, photo_url02, photo_url03, photo_url04, photo_url05, photo_url06, photo_url07, photo_url08, photo_url09, photo_url10)
         VALUES (#{residNo}, #{thumbnailUrls}, #{photoUrl01}, #{photoUrl02}, #{photoUrl03}, #{photoUrl04}, #{photoUrl05}, #{photoUrl06}, #{photoUrl07}, #{photoUrl08}, #{photoUrl09}, #{photoUrl10})
     </insert>
 
@@ -136,9 +25,16 @@
         WHERE photo_no = #{photoNo}
     </update>
 
-    <!-- 사진 삭제 -->
-    <delete id="deletePhoto" parameterType="long">
-        DELETE FROM property_photos WHERE photo_no = #{photoNo}
+    <!-- 숙소 번호로 해당하는 사진 파일 경로 목록을 가져오는 쿼리 -->
+    <select id="getPhotoFilesByResidNo" resultType="string">
+        SELECT photo_url
+        FROM property_photos
+        WHERE resid_no = #{residNo}
+    </select>
+    <!-- 숙소 번호로 해당하는 사진 삭제 -->
+    <delete id="deletePhoto" parameterType="Long">
+        DELETE FROM eightcolors2025.property_photos
+        WHERE resid_no = #{residNo}
     </delete>
 
 </mapper>

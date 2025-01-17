@@ -58,10 +58,6 @@ public class ResidenceService {
         return residences;
     }
 
-    /*public List<ResidenceDto> getAllResidences() {
-        return residenceMapper.getAllResidences();
-    }*/
-
     // 숙소 상세 조회
     public ResidenceDto getResidenceById(Long residNo) {
         return residenceMapper.getResidenceById(residNo);

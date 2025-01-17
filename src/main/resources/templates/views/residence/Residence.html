@@ -56,6 +56,7 @@
         <th>체크인</th>
         <th>체크아웃</th>
         <th>등록일</th>
+        <th>상세보기</th>
         <th>관리</th>
       </tr>
       </thead>
@@ -64,7 +65,8 @@
         <td th:text="${residence.residNo}"></td>
         <td>
           <th:block th:if="${residence.propertyPhotos != null and not #lists.isEmpty(residence.propertyPhotos)}">
-            <img th:src="@{|/files/${residence.propertyPhotos[0]}|}" alt="숙소 사진" class="img-fluid"/>
+            <img th:src="@{|/Upload/${residence.propertyPhotos[0]}|}" alt="숙소 사진" class="img-fluid"/>
+            <img th:src="@{'data:image/jpeg;base64,' + ${residence.propertyPhotos[0]}}" alt="숙소 사진" class="img-fluid"/>
           </th:block>
           <th:block th:unless="${residence.propertyPhotos != null and not #lists.isEmpty(residence.propertyPhotos)}">
             사진 없음

@@ -473,12 +473,12 @@ document.addEventListener("DOMContentLoaded", function () {
 		center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울시청 좌표
 		level: 3
 	});
-	const marker = new kakao.maps.Marker({ map });
+	const marker = new kakao.maps.Marker({map});
 
 	// 현재 위치로 지도 초기화
 	if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(function (position) {
-			const { latitude, longitude } = position.coords;
+			const {latitude, longitude} = position.coords;
 			map.setCenter(new kakao.maps.LatLng(latitude, longitude));
 			marker.setPosition(new kakao.maps.LatLng(latitude, longitude));
 		}, function () {
@@ -494,6 +494,18 @@ document.addEventListener("DOMContentLoaded", function () {
 		new daum.Postcode({
 			oncomplete: function (data) {
 				const fullAddress = data.address;
+
+				// 기존 fullAddress 필드에 값 설정
+				const fullAddressInput = document.getElementById("fullAddress");
+				if (fullAddressInput) {
+					fullAddressInput.value = fullAddress;
+				}
+				// 추가적으로 residAddress 필드에도 값 설정
+				const residAddressInput = document.getElementById("residAddress");
+				if (residAddressInput) {
+					residAddressInput.value = fullAddress;
+				}
+				// 지도와 마커 위치 업데이트 (기존 로직)
 				const geocoder = new kakao.maps.services.Geocoder();
 				geocoder.addressSearch(fullAddress, function (results, status) {
 					if (status === kakao.maps.services.Status.OK) {
@@ -551,7 +563,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			return;
 		}
 
-		const { regId, regIdTemp } = locations[selectedCity].reg_code;
+		const {regId, regIdTemp} = locations[selectedCity].reg_code;
 		regIdInput.value = regId || "";
 		regIdTempInput.value = regIdTemp || "";
 
@@ -589,8 +601,9 @@ document.addEventListener("DOMContentLoaded", function () {
 			districtDropdown.appendChild(listItem);
 		});
 	}
+});
 
-	// 도시 목록을 동적으로 추가
+	/*// 도시 목록을 동적으로 추가
 	function updateCityList() {
 		citySelector.innerHTML = "<option value=''>도시를 선택하세요</option>";
 		for (const city in locations) {
@@ -719,3 +732,4 @@ document.addEventListener("DOMContentLoaded", function () {
 		return rs;
 	}
 });
+*/

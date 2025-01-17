@@ -94,9 +94,9 @@ ALTER TABLE residence
     ADD COLUMN ny INT DEFAULT 0 AFTER nx;
 -- regId와 regIdTemp는 문자열을 저장하므로 VARCHAR 타입으로 설정
 ALTER TABLE residence
-    ADD COLUMN regId VARCHAR(255) DEFAULT '' AFTER ny;
+    ADD COLUMN latitudeNum VARCHAR(255) DEFAULT '' AFTER ny;
 ALTER TABLE residence
-    ADD COLUMN regIdTemp VARCHAR(255) DEFAULT '' AFTER regId;
+    ADD COLUMN longitudeNum VARCHAR(255) DEFAULT '' AFTER latitudeNum;
 
 select * from residence;
 
@@ -177,6 +177,8 @@ CREATE TABLE IF NOT EXISTS property_photos (
     photo_url10 VARCHAR(255) DEFAULT NULL,                            			   -- 사진 URL
     FOREIGN KEY (resid_no) REFERENCES residence(resid_no) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+select * from property_photos;
 
 -- 11. 공지사항 테이블
 CREATE TABLE IF NOT EXISTS notices (

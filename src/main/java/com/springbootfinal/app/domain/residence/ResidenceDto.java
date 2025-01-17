@@ -32,8 +32,26 @@ public class ResidenceDto {
     // 날씨 데이터
     private int nx;
     private int ny;
+    private String latitudeNum;
+    private String longitudeNum;
     private String regId;
     private String regIdTemp;
+
+    public String getLatitudeNum() {
+        return latitudeNum;
+    }
+
+    public void setLatitudeNum(String latitudeNum) {
+        this.latitudeNum = latitudeNum;
+    }
+
+    public String getLongitudeNum() {
+        return longitudeNum;
+    }
+
+    public void setLongitudeNum(String longitudeNum) {
+        this.longitudeNum = longitudeNum;
+    }
 
     // 업자 No 데이터
     private Long hostUserNo;
@@ -50,6 +68,8 @@ public class ResidenceDto {
     private String photoUrl09;
     private String photoUrl10;
     private String thumbnailUrls;
+
+
 
     public void setPhotoUrls(List<String> photoUrls) {
         int size = photoUrls.size();
@@ -83,8 +103,6 @@ public class ResidenceDto {
     public void setThumbnailUrl(String thumbnailUrl) {
         this.thumbnailUrls = thumbnailUrl;
     }
-
-
 
     private PropertyPhotosDto propertyPhotosDto;  // PropertyPhotosDto 객체
 
@@ -122,9 +140,22 @@ public class ResidenceDto {
                 ", soldOut=" + soldOut +
                 ", nx=" + nx +
                 ", ny=" + ny +
+                ", latitudeNum=" + latitudeNum +
+                ", longitudeNum =" + longitudeNum  +
                 ", regId='" + regId + '\'' +
                 ", regIdTemp='" + regIdTemp + '\'' +
-                ", hostUserNo=" + hostUserNo +
+                ", hostUserNo=" + hostUserNo + '\'' +
+                ", pUrl01='" + photoUrl01 + '\'' +
+                ", pUrl02='" + photoUrl02 + '\'' +
+                ", pUrl03='" + photoUrl03 + '\'' +
+                ", pUrl04='" + photoUrl04 + '\'' +
+                ", pUrl05='" + photoUrl05 + '\'' +
+                ", pUrl06='" + photoUrl06 + '\'' +
+                ", pUrl07='" + photoUrl07 + '\'' +
+                ", pUrl08='" + photoUrl08 + '\'' +
+                ", pUrl09='" + photoUrl09 + '\'' +
+                ", pUrl10='" + photoUrl10 + '\'' +
+                ", tUrls='" + thumbnailUrls + '\'' +
                 '}';
     }
 

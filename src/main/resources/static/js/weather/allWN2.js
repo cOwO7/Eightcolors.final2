@@ -1,8 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
     const weatherContainer = document.getElementById("weatherContainer");
 
-    console.log('여기까지 이상 무');
-
     // 스크롤 좌/우 이동
     const row2 = document.getElementById("row2");
     window.scrollToLeft = () => row2.scrollBy({left: -300, behavior: "smooth"});
