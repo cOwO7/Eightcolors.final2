@@ -2,11 +2,20 @@ package com.springbootfinal.app.mapper.transfer;
 
 import com.springbootfinal.app.domain.transfer.TransferDto;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
 @Mapper
 public interface TransferMapper {
+
+    //한 페이지에 해당하는 게시글 리스트를 DB 테이블에서 읽어와 반환하는 메서드
+    List<TransferDto> transferList(
+            @Param("startRow") int startRow, @Param("count") int count);
+
+    // DB 테이블에 등록된 전체 게시글 수를 읽어와 반환하는 메서드
+    int transferCount();
+
 
     //게시글을 transferDto 객체로 받아서 DB 테이블에 추가하는 메서드
     void transferInsert(TransferDto transfer);

@@ -6,11 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
+import java.util.Map;
 
 @Controller
 public class TransferController {
@@ -22,7 +21,6 @@ public class TransferController {
     @PostMapping("/addTransfer")
     public String addTransfer(TransferDto transfer) {
         transferService.addTransfer(transfer);
-
         return "redirect:/transfers";  // 반환할 뷰 이름 (transferList.html)
     }
 
@@ -33,29 +31,26 @@ public class TransferController {
         return "views/transfer/transferDetail";  // 반환할 뷰 이름 (transferDetail.html)
     }
 
-    @GetMapping("/transfers")
-    public String getTransferList(Model model) {
-        // transferService에서 transfer 리스트를 조회하고, 모델에 추가
-        List<TransferDto> transfers = transferService.getTransferList();  // 메서드 이름을 수정했습니다.
-        model.addAttribute("transfers", transfers);
-        return "views/transfer/transferList";  // 반환할 뷰 이름 (transferList.html)
+   @GetMapping("/transfers")
+    public String getTransferList(Model model,
+                              @RequestParam(value = "pageNum", required = false,
+                                      defaultValue = "1") int pageNum) {
+    Map<String, Object> modelMap = transferService.transferList(pageNum);
+    model.addAllAttributes(modelMap);
+    model.addAttribute("transfers", modelMap.get("transferList")); // transfers 변수 추가
+    return "views/transfer/transferList";  // 반환할 뷰 이름 (transferList.html)
     }
 
     // 양도 생성 폼 요청 처리 메서드
-    @GetMapping("/transfers/create")
+    @GetMapping("/transferWrite")
     public String createTransferForm() {
         return "views/transfer/transferWrite";  // 반환할 뷰 이름 (transferWrite.html)
     }
 
-/*    @GetMapping("/transfers/create")
-    public String createTransferForm(Model model, @RequestParam("userId") String userId) {
-        // Fetch the user's reservation details
-        TransferDto reservation = transferService.getReservationByUserId(userId);
-
-        // Add reservation details to the model
-        model.addAttribute("reservation", reservation);
-        model.addAttribute("userId", userId);
-
-        return "views/transfer/transferWrite";  // Return the view name
-    }*/
+    // 게시글 쓰기 요청 처리 메서드
+    @PostMapping("/transferAdd")
+    public String addBoard(TransferDto transfer) {
+        transferService.addTransfer(transfer);
+        return "redirect:/transfers";  // 반환할 뷰 이름 (transferList.html)
+    }
 }

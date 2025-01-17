@@ -5,56 +5,64 @@
 
 <mapper namespace="com.springbootfinal.app.mapper.transfer.TransferMapper">
 
+    <!--전체 게시글 수를 반환하는 맵핑 구문-->
+    <select id="transferCount" resultType="int">
+        SELECT COUNT(*) FROM transfers
+    </select>
+
+
+
+
     <!--양도 등록-->
     <insert id="transferInsert" parameterType="com.springbootfinal.app.domain.transfer.TransferDto">
-        INSERT INTO transfers (transfer_title, seller_user_no, buyer_user_no, reservation_no, transfer_price, status)
-        VALUES (#{transfer_title}, #{seller_user_no}, #{buyer_user_no}, #{reservation_no}, #{transfer_price}, 'WAITING')
+        INSERT INTO transfers (transfer_title, seller_user_no, buyer_user_no,
+                               reservation_no, transfer_price, status)
+        VALUES (#{transferTitle}, #{sellerUserNo}, #{buyerUserNo},
+                #{reservationNo}, #{transferPrice}, '양도가능')
     </insert>
-
 
     <!-- transferRead에 해당하는 SQL 문 -->
     <select id="transferRead" resultType="com.springbootfinal.app.domain.transfer.TransferDto">
         SELECT
-            t.transfer_no,
-            t.transfer_title,
-            t.seller_user_no,
-            t.buyer_user_no,
-            t.reservation_no,
-            t.transfer_price,
-            t.transfer_content,
+            t.transfer_no AS transferNo,
+            t.transfer_title AS transferTitle,
+            t.seller_user_no AS sellerUserNo,
+            t.buyer_user_no AS buyerUserNo,
+            t.reservation_no AS reservationNo,
+            t.transfer_price AS transferPrice,
+            t.transfer_content AS transferContent,
             t.status,
-            t.created_at,
-            s.id AS seller_id,
-            b.id AS buyer_id,
-            r.resid_name AS reservation_resid_name,
-            re.checkin_date,
-            re.checkout_date
+            t.created_at AS createdAt,
+            s.id AS sellerId,
+            b.id AS buyerId,
+            r.resid_name AS reservationResidName,
+            re.checkin_date AS checkinDate,
+            re.checkout_date AS checkoutDate
         FROM transfers t
                  LEFT JOIN users s ON t.seller_user_no = s.user_no
                  LEFT JOIN users b ON t.buyer_user_no = b.user_no
                  LEFT JOIN reservations re ON t.reservation_no = re.reservation_no
                  LEFT JOIN residence_rooms rr ON re.room_no = rr.room_no
                  LEFT JOIN residence r ON rr.resid_no = r.resid_no
-        WHERE t.transfer_no = #{transfer_no}
+        WHERE t.transfer_no = #{transferNo}
     </select>
 
-
-   <!--게시글 리스트-->
-    <select id="transferList" resultType="com.springbootfinal.app.domain.transfer.TransferDto">
+    <!--한 페이지 출력할 게시글 리스트를 가져오는 맵핑 구문-->
+    <select id="transferList" parameterType="map" resultType="com.springbootfinal.app.domain.transfer.TransferDto">
         SELECT
-            t.transfer_no,
-            t.transfer_title,
-            t.seller_user_no,
-            t.buyer_user_no,
-            t.reservation_no,
-            t.transfer_price,
+            t.transfer_no AS transferNo,
+            t.transfer_title AS transferTitle,
+            t.seller_user_no AS sellerUserNo,
+            t.buyer_user_no AS buyerUserNo,
+            t.reservation_no AS reservationNo,
+            t.transfer_price AS transferPrice,
             t.status,
-            t.created_at,
-            s.id AS seller_id,  -- 양도자 아이디
-            b.id AS buyer_id,   -- 양수자 아이디
-            r.resid_name AS reservation_resid_name, -- 예약한 숙소명 (residence 테이블의 resid_name)
-            re.checkin_date, -- 체크인 날짜
-            re.checkout_date -- 체크아웃 날짜
+            t.created_at AS createdAt,
+            s.id AS sellerId,
+            b.id AS buyerId,
+            r.resid_name AS reservationResidName,
+            re.checkin_date AS checkinDate,
+            re.checkout_date AS checkoutDate
         FROM transfers t
                  LEFT JOIN users s ON t.seller_user_no = s.user_no
                  LEFT JOIN users b ON t.buyer_user_no = b.user_no
@@ -62,9 +70,7 @@
                  LEFT JOIN residence_rooms rr ON re.room_no = rr.room_no
                  LEFT JOIN residence r ON rr.resid_no = r.resid_no
         ORDER BY t.transfer_no DESC
+            LIMIT #{startRow}, #{count}
     </select>
-
-
-
 
 </mapper>
