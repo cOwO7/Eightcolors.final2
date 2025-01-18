@@ -1,24 +1,23 @@
 package com.springbootfinal.app.service.kakaopay;
 
+
 import com.springbootfinal.app.domain.kakaopay.ApproveRequest;
 import com.springbootfinal.app.domain.kakaopay.ReadyRequest;
 import com.springbootfinal.app.domain.kakaopay.ReadyResponse;
-import com.springbootfinal.app.domain.transfer.TransferDto;
-import com.springbootfinal.app.service.transfer.TransferService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * Created by kakaopay
+ */
 @Service
 public class KakaopayService {
-    @Autowired
-    private TransferService transferService;
-
     @Value("${kakaopay.api.secret.key}")
     private String kakaopaySecretKey;
 
@@ -30,19 +29,20 @@ public class KakaopayService {
 
     private String tid;
 
-    public ReadyResponse ready(String agent, String openType, long transferNo) {
+    public ReadyResponse ready(String agent, String openType) {
+        // Request header
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "DEV_SECRET_KEY " + kakaopaySecretKey);
         headers.setContentType(MediaType.APPLICATION_JSON);
-        TransferDto transfer = transferService.getTransfer((int) transferNo);
 
+        // Request param
         ReadyRequest readyRequest = ReadyRequest.builder()
                 .cid(cid)
                 .partnerOrderId("1")
                 .partnerUserId("1")
-                .itemName(transfer.getReservationResidName())
+                .itemName("상품명")
                 .quantity(1)
-                .totalAmount(transfer.getTransferPrice().intValue()) // 수정된 부분
+                .totalAmount(1100)
                 .taxFreeAmount(0)
                 .vatAmount(100)
                 .approvalUrl(sampleHost + "/approve/" + agent + "/" + openType)
@@ -50,6 +50,7 @@ public class KakaopayService {
                 .failUrl(sampleHost + "/fail/" + agent + "/" + openType)
                 .build();
 
+        // Send reqeust
         HttpEntity<ReadyRequest> entityMap = new HttpEntity<>(readyRequest, headers);
         ResponseEntity<ReadyResponse> response = new RestTemplate().postForEntity(
                 "https://open-api.kakaopay.com/online/v1/payment/ready",
@@ -58,19 +59,29 @@ public class KakaopayService {
         );
         ReadyResponse readyResponse = response.getBody();
 
+        // 주문번호와 TID를 매핑해서 저장해놓는다.
+        // Mapping TID with partner_order_id then save it to use for approval request.
         this.tid = readyResponse.getTid();
         return readyResponse;
     }
 
     public String approve(String pgToken) {
+        // ready할 때 저장해놓은 TID로 승인 요청
+        // Call “Execute approved payment” API by pg_token, TID mapping to the current payment transaction and other parameters.
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "SECRET_KEY " + kakaopaySecretKey);
         headers.setContentType(MediaType.APPLICATION_JSON);
 
+        // Request param
         ApproveRequest approveRequest = ApproveRequest.builder()
-                // ...
+                .cid(cid)
+                .tid(tid)
+                .partnerOrderId("1")
+                .partnerUserId("1")
+                .pgToken(pgToken)
                 .build();
 
+        // Send Request
         HttpEntity<ApproveRequest> entityMap = new HttpEntity<>(approveRequest, headers);
         try {
             ResponseEntity<String> response = new RestTemplate().postForEntity(
@@ -78,9 +89,13 @@ public class KakaopayService {
                     entityMap,
                     String.class
             );
-            return response.getBody();
-        } catch (Exception e) {
-            throw new RuntimeException("API 호출 실패: " + e.getMessage(), e);
+
+            // 승인 결과를 저장한다.
+            // save the result of approval
+            String approveResponse = response.getBody();
+            return approveResponse;
+        } catch (HttpStatusCodeException ex) {
+            return ex.getResponseBodyAsString();
         }
     }
 }

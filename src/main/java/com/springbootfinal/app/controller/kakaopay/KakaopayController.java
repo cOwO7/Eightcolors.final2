@@ -27,7 +27,7 @@ public class KakaopayController {
     @GetMapping("/ready/{agent}/{openType}")
     public String ready(@PathVariable("agent") String agent, @PathVariable("openType") String openType,
                         @RequestParam("transferNo") long transferNo, Model model) {
-        ReadyResponse readyResponse = kakaoPayService.ready(agent, openType, transferNo);
+        ReadyResponse readyResponse = kakaoPayService.ready(agent, openType);
 
         if (agent.equals("mobile")) {
             return "redirect:" + readyResponse.getNext_redirect_mobile_url();
