@@ -133,9 +133,12 @@ public class ResidenceController {
                 // 파일 이름 중복 방지를 위해 UUID를 이용한 고유 이름 생성
                 String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
 
-                // 파일 저장
-                String filePath = propertyPhotosService.savePhoto(file, fileName);  // 파일 저장 메서드 수정: 경로도 반환
-                fileNames.add(filePath);  // 저장된 파일명 리스트에 추가
+                // 파일 저장 및 PropertyPhotosDto 생성
+                PropertyPhotosDto photoDto = new PropertyPhotosDto();
+                photoDto.setPhotoUrl01(fileName);  // 사진 URL을 PropertyPhotosDto에 설정
+                String savedFileName = propertyPhotosService.savePhoto(file, fileName, photoDto);  // 파일 저장 메서드 수정
+
+                fileNames.add(savedFileName);  // 저장된 파일명 리스트에 추가
             }
 
             // 저장된 파일명들을 ResidenceDto에 추가
@@ -186,10 +189,17 @@ public class ResidenceController {
             List<PropertyPhotosDto> newPhotoDtos = new ArrayList<>();
             for (MultipartFile photo : photos) {
                 try {
-                    String savedFileName = propertyPhotosService.savePhoto(photo); // 사진 저장
+                    // UUID로 고유한 파일명 생성
+                    String fileName = UUID.randomUUID().toString();
+
+                    // PropertyPhotosDto 생성
                     PropertyPhotosDto photoDto = new PropertyPhotosDto();
-                    photoDto.setResidNo(residNo);
-                    photoDto.setPhotoUrl01("/uploads/" + savedFileName); // 새 사진 경로 설정
+                    photoDto.setResidNo(residNo);  // residNo 설정
+                    photoDto.setPhotoUrl01(fileName);  // 사진 URL을 PropertyPhotosDto에 설정
+
+                    // 파일 저장 호출 (MultipartFile과 fileName, photoDto 전달)
+                    String savedFileName = propertyPhotosService.savePhoto(photo, fileName, photoDto);
+
                     newPhotoDtos.add(photoDto);
                 } catch (IOException e) {
                     e.printStackTrace();

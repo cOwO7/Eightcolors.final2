@@ -14,6 +14,7 @@
         r.resid_address AS residAddress,
         r.resid_type AS residType,
         r.resid_date AS residDate,
+        rp.thumbnailUrls AS thumbnailUrls,  <!-- 썸네일 URL -->
         rp.photo_url01 AS photoUrl01,  <!-- 사진 URL -->
         rp.photo_url02 AS photoUrl02,  <!-- 사진 URL -->
         rp.photo_url03 AS photoUrl03,  <!-- 사진 URL -->
@@ -31,10 +32,10 @@
         re.discounted_price AS discountedPrice,  <!-- 할인된 가격 -->
         re.checkin_date AS checkinDate,  <!-- 체크인 날짜 -->
         re.checkout_date AS checkoutDate  <!-- 체크아웃 날짜 -->
-        FROM residence r
-        LEFT JOIN property_photos rp ON r.resid_no = rp.resid_no  <!-- 사진 테이블 조인 -->
-        LEFT JOIN residence_rooms rr ON r.resid_no = rr.resid_no    <!-- 방 테이블 조인 -->
-        LEFT JOIN reservations re ON rr.room_no = re.room_no  <!-- 예약 테이블 조인 -->
+        FROM eightcolors2025.residence r
+        LEFT JOIN eightcolors2025.property_photos rp ON r.resid_no = rp.resid_no  <!-- 사진 테이블 조인 -->
+        LEFT JOIN eightcolors2025.residence_rooms rr ON r.resid_no = rr.resid_no    <!-- 방 테이블 조인 -->
+        LEFT JOIN eightcolors2025.reservations re ON rr.room_no = re.room_no  <!-- 예약 테이블 조인 -->
     </select>
 
     <!-- 매진 상태 맵핑-->
