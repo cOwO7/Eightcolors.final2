@@ -26,46 +26,43 @@ public class TransferService {
 
     // Method to get a paginated and optionally searched list of transfers
     public Map<String, Object> transferList(int pageNum, String search, String searchText) {
-        log.info("transferList(int pageNum, String search, String searchText)");
-        int currentPage = pageNum;
-        int startRow = (pageNum - 1) * PAGE_SIZE;
-        log.info("startRow : {}", startRow);
-        boolean searchOption = !(search.equals("null") || search.isEmpty());
-        int listCount = transferMapper.transferCount(search, searchText);
-        List<TransferDto> transferList = transferMapper.transferList(startRow, PAGE_SIZE, search, searchText);
-        int totalTransferCount = transferMapper.transferCount(search, searchText);
-        int totalPageCount = (int) Math.ceil((double) totalTransferCount / PAGE_SIZE);
-        int startPage = (pageNum - 1) / PAGE_GROUP * PAGE_GROUP + 1;
-        int endPage = Math.min(startPage + PAGE_GROUP - 1, totalPageCount);
-
-        Map<String, Object> transferMap = new HashMap<>();
-        transferMap.put("transferList", transferList);
-        transferMap.put("totalTransferCount", totalTransferCount);
-        transferMap.put("totalPageCount", totalPageCount);
-        transferMap.put("startPage", startPage);
-        transferMap.put("endPage", endPage);
-        transferMap.put("pageNum", pageNum);
-        transferMap.put("search", search);
-        transferMap.put("searchText", searchText);
-        transferMap.put("searchOption", searchOption);
-        transferMap.put("currentPage", currentPage);
-        transferMap.put("listCount", listCount);
-        transferMap.put("pageGroup", PAGE_GROUP);
-        log.info("Fetched {} transfer records.", transferList.size());
-
-        if (searchOption) {
-            log.info("search : {}", search);
-            log.info("searchText : {}", searchText);
-        }
-        return transferMap;
+    log.info("transferList(int pageNum, String search, String searchText)");
+    int currentPage = pageNum;
+    int startRow = (currentPage - 1) * PAGE_SIZE;
+    log.info("startRow : {}", startRow);
+    boolean searchOption = !(search.equals("null") || search.isEmpty());
+    int listCount = transferMapper.transferCount(search, searchText);
+    List<TransferDto> transferList = transferMapper.transferList(startRow, PAGE_SIZE, search, searchText);
+    int pageCount = listCount / PAGE_SIZE + (listCount % PAGE_SIZE == 0 ? 0 : 1);
+    int startPage = (currentPage / PAGE_GROUP) * PAGE_GROUP + 1 - (currentPage % PAGE_GROUP == 0 ? PAGE_GROUP : 0);
+    int endPage = startPage + PAGE_GROUP - 1;
+    if (endPage > pageCount) {
+        endPage = pageCount;
     }
+
+    Map<String, Object> transferMap = new HashMap<>();
+    transferMap.put("transferList", transferList);
+    transferMap.put("startPage", startPage);
+    transferMap.put("endPage", endPage);
+    transferMap.put("pageNum", pageNum);
+    transferMap.put("search", search);
+    transferMap.put("searchText", searchText);
+    transferMap.put("searchOption", searchOption);
+    transferMap.put("currentPage", currentPage);
+    transferMap.put("listCount", listCount);
+    transferMap.put("pageGroup", PAGE_GROUP);
+    transferMap.put("totalTransferCount", listCount); // Add this line
+    log.info("Fetched {} transfer records.", transferList.size());
+
+    return transferMap;
+}
 
     // Method to get a paginated list of transfers without search
-    public Map<String, Object> transferList(int pageNum) {
+/*    public Map<String, Object> transferList(int pageNum) {
         log.info("Fetching transfer list...");
         int startRow = (pageNum - 1) * PAGE_SIZE;
-        List<TransferDto> transferList = transferMapper.transferList(startRow, PAGE_SIZE);
-        int totalTransferCount = transferMapper.transferCount();
+        List<TransferDto> transferList = transferMapper.transferList(startRow, PAGE_SIZE, null, null);
+        int totalTransferCount = transferMapper.transferCount(null, null);
         int totalPageCount = (int) Math.ceil((double) totalTransferCount / PAGE_SIZE);
         int startPage = (pageNum - 1) / PAGE_GROUP * PAGE_GROUP + 1;
         int endPage = Math.min(startPage + PAGE_GROUP - 1, totalPageCount);
@@ -79,7 +76,7 @@ public class TransferService {
         transferMap.put("pageNum", pageNum);
         log.info("Fetched {} transfer records.", transferList.size());
         return transferMap;
-    }
+    }*/
 
     // Method to add a new transfer
     public void addTransfer(TransferDto transfer) {
