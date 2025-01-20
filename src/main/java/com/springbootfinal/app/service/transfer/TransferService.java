@@ -73,9 +73,9 @@ public class TransferService {
 
 
     public void addTransfer(TransferDto transfer) {
-        log.info("Adding transfer record: {}", transfer);
+        log.info("게시글 추가", transfer);
         transferMapper.transferInsert(transfer);
-        log.info("Added transfer record: {}", transfer);
+        log.info("게시글 transfers DB 저장완료", transfer);
     }
 
 

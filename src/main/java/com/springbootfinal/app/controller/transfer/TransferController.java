@@ -71,25 +71,6 @@ public String updateBoard(TransferDto transferDto, RedirectAttributes reAttrs,
     reAttrs.addAttribute("test1", "1회성 파라미터");
     return "redirect:/transfers";
 }
- /*                                @RequestParam("transferNo") long transferNo,
-                                 @RequestParam("pageCount") int pageCount,
-                                 @RequestParam("search") String search,
-                                 @RequestParam("keyword") String keyword,
-                                 @RequestParam("transferPrice") int transferPrice,
-                                 @RequestParam("transferTitle") String transferTitle,
-                                 @RequestParam("content") String content) {
-
-        boolean searchOption = (search.equals("null") || keyword.equals("null")) ? false : true;
-
-        reAttrs.addAttribute("searchOption", searchOption);
-        reAttrs.addAttribute("pageCount", pageCount);
-
-        if (searchOption) {
-            reAttrs.addAttribute("search", search);
-            reAttrs.addAttribute("keyword", keyword);
-        }
-        return "redirect:/transfers";
-    }*/
 
     // 양도 생성 폼 요청 처리 메서드
     @GetMapping("/transferWrite")
