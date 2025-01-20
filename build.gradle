@@ -83,6 +83,15 @@ dependencies {
     implementation 'org.springframework.security:spring-security-web:6.0.0'
     implementation 'org.springframework.security:spring-security-config:6.0.0'
 
+    // Spring Security 및 OAuth2 관련
+    implementation 'org.springframework.security:spring-security-oauth2-resource-server'
+    implementation 'org.springframework.security:spring-security-oauth2-jose'
+
+    // H2 Database (테스트 용도)
+    runtimeOnly 'com.h2database:h2'
+
+
+
 
 }
 

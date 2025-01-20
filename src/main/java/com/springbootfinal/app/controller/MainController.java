@@ -13,7 +13,20 @@ public class MainController {
 	@Autowired
 	private MainService mainService;
 
+	@GetMapping("/login")
+	public String showLoginForm() {
+		return "user/login";
+	}
 
+	@GetMapping("/userJoin")
+	public String userJoin() {
+		return "user/userJoin"; // userjoin.html을 반환합니다.
+	}
+
+	@GetMapping("/hostUserJoin")
+	public String hostUserJoin() {
+		return "user/hostUserJoin";
+	}
 
 	@GetMapping("/helper")
 	public String helper() {
