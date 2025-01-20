@@ -3,9 +3,9 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layouts/main_layout}">
 <head>
-    <link href="bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="/bootstrap/bootstrap.min.css" rel="stylesheet">
     <meta charset="UTF-8">
-    <title>숙소 등록</title>
+    <title>숙소 수정</title>
 <body>
 <th:block layout:fragment="content">
     <div class="container">
@@ -13,8 +13,8 @@
             <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
             <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=36a75517ce82693ff837cc79c740e197&libraries=services,clusterer"></script>
         </div>
-        <h1>숙소 등록</h1>
-        <form th:action="@{/new}" th:object="${residence}" method="post" enctype="multipart/form-data">
+        <h1>숙소 수정</h1>
+        <form th:action="@{/edit/{residNo}(residNo=${residence.residNo})}" th:object="${residence}" method="post" enctype="multipart/form-data">
             <!-- 기존 숙소 입력 필드들 -->
             <label for="residName">숙소 이름:</label>
             <input type="text" id="residName" th:field="*{residName}" required><br><br>
@@ -99,10 +99,10 @@
         </table>
     </div>
     <link href="/css/weather/allW.css" rel="stylesheet"/>
-    <script th:src="@{js/jquery-3.7.1.min.js}"></script>
-    <script th:src="@{js/map/geolocation.js}"></script>
-    <script th:src="@{js/weather/allMapChoiceN.js}"></script>
-    <script th:src="@{js/map/kakaomapN.js}"></script>
+    <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+    <script th:src="@{/js/map/geolocation.js}"></script>
+    <script th:src="@{/js/weather/allMapChoiceN.js}"></script>
+    <script th:src="@{/js/map/kakaomapN.js}"></script>
 </th:block>
 </body>
 </html>
