@@ -24,14 +24,14 @@
                         <h2 class="fs-3 fw-bold">양도 게시글 작성</h2>
                     </div>
                 </div>
-            <form name="writeForm" action="transferAdd" id="trwriteForm" class="row border-primary" method="post">
+            <form name="writeForm" th:action="@{/transferAdd}" id="trwriteForm" class="row border-primary" method="post">
                     <!-- <div class="col-lg-4 offset-md-2">
                         <label for="writer" class="form-label">작성자</label>
                         <input type="text" class="form-control" name="writer" id="writer" onkeyup="syncSellerId()">
                     </div>-->
                 <div class="col-lg-4 offset-md-2">
                     <label for="sellerId" class="form-label">ID</label>
-                    <input type="text" class="form-control" name="sellerId" id="sellerId" readonly placeholder="판매자의 ID">
+                    <input type="text" class="form-control" name="sellerId" id="sellerId" readonly>
                 </div>
                 <div class="col-lg-4">
                     <label for="reservationResidName" class="form-label">숙소명</label>

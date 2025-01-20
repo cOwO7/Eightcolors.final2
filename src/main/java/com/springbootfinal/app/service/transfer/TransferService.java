@@ -15,6 +15,11 @@ public class TransferService {
 
     private final TransferMapper transferMapper;
 
+    public void transferUpdate(TransferDto transferDto) {
+        log.info("수정하기: {}", transferDto);
+        transferMapper.transferUpdate(transferDto);
+    }
+
     // Constants for pagination
     private static final int PAGE_SIZE = 10;
     private static final int PAGE_GROUP = 10;
@@ -25,58 +30,44 @@ public class TransferService {
     }
 
     // Method to get a paginated and optionally searched list of transfers
-    public Map<String, Object> transferList(int pageNum, String search, String searchText) {
-    log.info("transferList(int pageNum, String search, String searchText)");
-    int currentPage = pageNum;
-    int startRow = (currentPage - 1) * PAGE_SIZE;
-    log.info("startRow : {}", startRow);
-    boolean searchOption = !(search.equals("null") || search.isEmpty());
-    int listCount = transferMapper.transferCount(search, searchText);
-    List<TransferDto> transferList = transferMapper.transferList(startRow, PAGE_SIZE, search, searchText);
-    int pageCount = listCount / PAGE_SIZE + (listCount % PAGE_SIZE == 0 ? 0 : 1);
-    int startPage = (currentPage / PAGE_GROUP) * PAGE_GROUP + 1 - (currentPage % PAGE_GROUP == 0 ? PAGE_GROUP : 0);
-    int endPage = startPage + PAGE_GROUP - 1;
-    if (endPage > pageCount) {
-        endPage = pageCount;
-    }
+    public Map<String, Object> transferList(int pageNum, String search, String keyword) {
+        log.info("transferList(int pageCount, 문자열 검색, 문자열 키워드");
+        int currentPage = pageNum;
+        int startRow = (currentPage - 1) * PAGE_SIZE;
+        log.info("startRow : {}", startRow);
+        boolean searchOption = !(search.equals("null") || search.isEmpty());
+        int listCount = transferMapper.transferCount(search, keyword);
+        List<TransferDto> transferList = transferMapper.transferList(startRow, PAGE_SIZE, search, keyword);
+        int pageCount = listCount / PAGE_SIZE + (listCount % PAGE_SIZE == 0 ? 0 : 1);
+        int startPage = (currentPage / PAGE_GROUP) * PAGE_GROUP + 1 - (currentPage % PAGE_GROUP == 0 ? PAGE_GROUP : 0);
+        int endPage = startPage + PAGE_GROUP - 1;
 
-    Map<String, Object> transferMap = new HashMap<>();
-    transferMap.put("transferList", transferList);
-    transferMap.put("startPage", startPage);
-    transferMap.put("endPage", endPage);
-    transferMap.put("pageNum", pageNum);
-    transferMap.put("search", search);
-    transferMap.put("searchText", searchText);
-    transferMap.put("searchOption", searchOption);
-    transferMap.put("currentPage", currentPage);
-    transferMap.put("listCount", listCount);
-    transferMap.put("pageGroup", PAGE_GROUP);
-    transferMap.put("totalTransferCount", listCount); // Add this line
-    log.info("Fetched {} transfer records.", transferList.size());
-
-    return transferMap;
-}
-
-    // Method to get a paginated list of transfers without search
-/*    public Map<String, Object> transferList(int pageNum) {
-        log.info("Fetching transfer list...");
-        int startRow = (pageNum - 1) * PAGE_SIZE;
-        List<TransferDto> transferList = transferMapper.transferList(startRow, PAGE_SIZE, null, null);
-        int totalTransferCount = transferMapper.transferCount(null, null);
-        int totalPageCount = (int) Math.ceil((double) totalTransferCount / PAGE_SIZE);
-        int startPage = (pageNum - 1) / PAGE_GROUP * PAGE_GROUP + 1;
-        int endPage = Math.min(startPage + PAGE_GROUP - 1, totalPageCount);
+        if (endPage > pageCount) {
+            endPage = pageCount;
+        }
 
         Map<String, Object> transferMap = new HashMap<>();
+
         transferMap.put("transferList", transferList);
-        transferMap.put("totalTransferCount", totalTransferCount);
-        transferMap.put("totalPageCount", totalPageCount);
         transferMap.put("startPage", startPage);
         transferMap.put("endPage", endPage);
-        transferMap.put("pageNum", pageNum);
+        transferMap.put("pageCount", pageCount);
+        transferMap.put("search", search);
+        transferMap.put("keyword", keyword);
+        transferMap.put("searchOption", searchOption);
+        transferMap.put("currentPage", currentPage);
+        transferMap.put("listCount", listCount);
+        transferMap.put("pageGroup", PAGE_GROUP);
+        transferMap.put("totalTransferCount", listCount);
         log.info("Fetched {} transfer records.", transferList.size());
+
+        if (searchOption) {
+            transferMap.put("search", search);
+            transferMap.put("keyword", keyword);
+        }
+
         return transferMap;
-    }*/
+    }
 
     // Method to add a new transfer
     public void addTransfer(TransferDto transfer) {
@@ -87,17 +78,18 @@ public class TransferService {
 
     // Method to get a transfer by its ID
     public TransferDto getTransfer(Long transferNo) {
-        log.info("Fetching transfer record with no: {}", transferNo);
+        log.info("양도게시글 번호{}", transferNo);
         TransferDto transfer = transferMapper.transferRead(transferNo);
         log.info("Fetched transfer record: {}", transfer);
         return transfer;
+
     }
 
     // Method to get a list of all transfers
     public List<TransferDto> getTransferList() {
-        log.info("Fetching transfer list...");
+        log.info("양도게시글 리스트 받아오기 완료");
         List<TransferDto> transferList = transferMapper.transferList();
-        log.info("Fetched {} transfer records.", transferList.size());
+        log.info("게시글 사이즈", transferList.size());
         return transferList;
     }
 }

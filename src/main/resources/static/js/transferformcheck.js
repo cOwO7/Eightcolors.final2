@@ -102,4 +102,17 @@ $(function() {
 		}
 	});
 
+	$("#transferUpdate").on("submit", function() {
+		if($("#transferTitle").val().length <= 0) {
+			alert("제목이 입력되지 않았습니다.\n제목을 입력해주세요");
+			$("#title").focus();
+			return false;
+		}
+		if($("#content").val().length <= 0) {
+			alert("내용이 입력되지 않았습니다.\n내용을 입력해주세요");
+			$("#content").focus();
+			return false;
+		}
+	});
+
 });

@@ -35,7 +35,7 @@
             background-color: #a9a9a9; /* 양도완료 배경 */
         }
         .no-underline {
-            text-decoration: none; /* 밑줄 제거 */
+            text-decoration: none; /* 밑줄 제�� */
         }
         .line-through {
             text-decoration: line-through; /* 글의 중간에 줄 긋기 */
@@ -62,7 +62,7 @@
                 <input type="text" class="form-control" name="searchKeyword" id="searchKeyword" placeholder="검색어">
             </div>
             <div class="col-auto">
-                <input type="submit" value="검색" class="btn btn-primary"/>
+                <input type="submit" value="검 색" class="btn btn-primary"/>
             </div>
         </form>
         <table class="table table-striped">
@@ -77,64 +77,135 @@
             </tr>
             </thead>
             <tbody>
-            <th:block th:each="transfer : ${transferList}">
-                <tr th:classappend="${transfer.status == '양도가능'} ? 'status-available' : (transfer.status == '양도완료' ? 'status-completed' : '')">
-                    <td>
-                        <span th:if="${transfer.status == '양도완료'}" th:text="${transfer.transferTitle}" class="no-underline line-through"></span>
-                        <a th:if="${transfer.status != '양도완료'}" th:href="@{/transferDetail(residNo=${transfer.transferNo})}" th:text="${transfer.transferTitle}" class="no-underline"></a>
-                    </td>
-                    <td>
-                        <span th:if="${transfer.status == '양도완료'}" th:text="${transfer.reservationResidName}" class="line-through"></span>
-                        <span th:if="${transfer.status == '양도가능'}" th:text="${transfer.reservationResidName}" class="bold"></span>
-                        <span th:if="${transfer.status != '양도완료' && transfer.status != '양도가능'}" th:text="${transfer.reservationResidName}"></span>
-                    </td>
-                    <td>
-                        <span th:if="${transfer.status == '양도완료'}" th:text="${transfer.checkInDate}" class="line-through"></span>
-                        <span th:if="${transfer.status != '양도완료'}" th:text="${transfer.checkInDate}"></span> -
-                        <span th:if="${transfer.status == '양도완료'}" th:text="${transfer.checkOutDate}" class="line-through"></span>
-                        <span th:if="${transfer.status != '양도완료'}" th:text="${transfer.checkOutDate}"></span>
-                    </td>
-                    <td>
-                        <span th:if="${transfer.status == '양도완료'}" th:text="${transfer.formattedTransferPrice}" class="line-through"></span>
-                        <span th:if="${transfer.status == '양도가능'}" th:text="${transfer.formattedTransferPrice}" class="bold"></span>
-                        <span th:if="${transfer.status != '양도완료' && transfer.status != '양도가능'}" th:text="${transfer.formattedTransferPrice}"></span>
-                    </td>
-                    <td th:text="${transfer.status}" th:classappend="${transfer.status == '양도가능'} ? 'bold' : ''"></td>
-                    <td th:text="${transfer.formattedCreatedAt}"></td>
+            <th:block th:if="${searchOption and not #lists.isEmpty(transferList)}">
+                <th:block th:each="transfer : ${transferList}">
+                    <tr th:classappend="${transfer.status == '양도가능'} ? 'status-available' : (transfer.status == '양도완료' ? 'status-completed' : '')">
+                        <td>
+                            <span th:if="${transfer.status == '양도완료'}" th:text="${transfer.transferTitle}" class="no-underline line-through"></span>
+                            <a th:if="${transfer.status != '양도완료'}" th:href="@{/transferDetail(transferNo=${transfer.transferNo}, search=${search}, keyword=${keyword})}" th:text="${transfer.transferTitle}" class="no-underline"></a>
+                        </td>
+                        <td>
+                            <span th:if="${transfer.status == '양도완료'}" th:text="${transfer.reservationResidName}" class="line-through"></span>
+                            <span th:if="${transfer.status == '양도가능'}" th:text="${transfer.reservationResidName}" class="bold"></span>
+                            <span th:if="${transfer.status != '양도완료' && transfer.status != '양도가능'}" th:text="${transfer.reservationResidName}"></span>
+                        </td>
+                        <td>
+                            <span th:if="${transfer.status == '양도완료'}" th:text="${transfer.checkInDate}" class="line-through"></span>
+                            <span th:if="${transfer.status != '양도완료'}" th:text="${transfer.checkInDate}"></span> -
+                            <span th:if="${transfer.status == '양도완료'}" th:text="${transfer.checkOutDate}" class="line-through"></span>
+                            <span th:if="${transfer.status != '양도완료'}" th:text="${transfer.checkOutDate}"></span>
+                        </td>
+                        <td>
+                            <span th:if="${transfer.status == '양도완료'}" th:text="${transfer.formattedTransferPrice}" class="line-through"></span>
+                            <span th:if="${transfer.status == '양��가능'}" th:text="${transfer.formattedTransferPrice}" class="bold"></span>
+                            <span th:if="${transfer.status != '양���완료' && transfer.status != '양도가능'}" th:text="${transfer.formattedTransferPrice}"></span>
+                        </td>
+                        <td th:text="${transfer.status}" th:classappend="${transfer.status == '양도가능'} ? 'bold' : ''"></td>
+                        <td th:text="${transfer.formattedCreatedAt}"></td>
+                    </tr>
+                </th:block>
+            </th:block>
+            <th:block th:if="${not searchOption and not #lists.isEmpty(transferList)}">
+                <th:block th:each="transfer : ${transferList}">
+                    <tr th:classappend="${transfer.status == '양도가능'} ? 'status-available' : (transfer.status == '양도완료' ? 'status-completed' : '')">
+                        <td>
+                            <span th:if="${transfer.status == '양도완료'}" th:text="${transfer.transferTitle}" class="no-underline line-through"></span>
+                            <a th:if="${transfer.status != '양도완료'}" th:href="@{/transferDetail(transferNo=${transfer.transferNo})}" th:text="${transfer.transferTitle}" class="no-underline"></a>
+                        </td>
+                        <td>
+                            <span th:if="${transfer.status == '양도완료'}" th:text="${transfer.reservationResidName}" class="line-through"></span>
+                            <span th:if="${transfer.status == '양도가능'}" th:text="${transfer.reservationResidName}" class="bold"></span>
+                            <span th:if="${transfer.status != '양도완료' && transfer.status != '양도가능'}" th:text="${transfer.reservationResidName}"></span>
+                        </td>
+                        <td>
+                            <span th:if="${transfer.status == '양도완료'}" th:text="${transfer.checkInDate}" class="line-through"></span>
+                            <span th:if="${transfer.status != '양도완료'}" th:text="${transfer.checkInDate}"></span> -
+                            <span th:if="${transfer.status == '양도완료'}" th:text="${transfer.checkOutDate}" class="line-through"></span>
+                            <span th:if="${transfer.status != '양도완료'}" th:text="${transfer.checkOutDate}"></span>
+                        </td>
+                        <td>
+                            <span th:if="${transfer.status == '양도완료'}" th:text="${transfer.formattedTransferPrice}" class="line-through"></span>
+                            <span th:if="${transfer.status == '양도가능'}" th:text="${transfer.formattedTransferPrice}" class="bold"></span>
+                            <span th:if="${transfer.status != '양도완료' && transfer.status != '양도가능'}" th:text="${transfer.formattedTransferPrice}"></span>
+                        </td>
+                        <td th:text="${transfer.status}" th:classappend="${transfer.status == '양도가능'} ? 'bold' : ''"></td>
+                        <td th:text="${transfer.formattedCreatedAt}"></td>
+                    </tr>
+                </th:block>
+            </th:block>
+            <th:block th:if="${not searchOption and #lists.isEmpty(transferList)}">
+                <tr>
+                    <td colspan="6" class="text-center">게시글이 없습니다.</td>
                 </tr>
             </th:block>
-
             </tbody>
         </table>
         <div class="text-start mb-3">
             <a href="/transferWrite" class="btn btn-success">글쓰기</a>
         </div>
-        <th:block th:if="${#lists.isEmpty(transferList)}">
-            <tr>
-                <td colspan="6" class="text-center">게시글이 없습니다.</td>
-            </tr>
-        </th:block>
     </div>
     <div class="row">
         <div class="col">
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item" th:if="${startPage > 1}">
-                        <a class="page-link" th:href="@{|?pageCount=${startPage - 1}|}">pre</a>
-                    </li>
-                    <li th:each="count : ${#numbers.sequence(startPage, endPage)}" th:classappend="${count == currentPage} ? 'active'" class="page-item" aria-current="page">
-                        <th:block th:if="${count != currentPage}">
-                            <a th:text="${count}" class="page-link" th:href="@{|?pageCount=${count}|}"></a>
-                        </th:block>
-                        <th:block th:if="${count == currentPage}">
-                            <span th:text="${count}" class="page-link"></span>
-                        </th:block>
-                    </li>
-                    <li class="page-item" th:if="${endPage < pageCount}">
-                        <a class="page-link" th:href="@{|?pageCount=${endPage + 1}|}">next</a>
-                    </li>
-                </ul>
-            </nav>
+            <th:block th:if="${searchOption and not #lists.isEmpty(transferList)}">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:if="${startPage > 1}">
+                            <a class="page-link" th:href="@{|?pageCount=${startPage - 1}&search=${search}&keyword=${keyword}|}">pre</a>
+                        </li>
+                        <li th:each="count : ${#numbers.sequence(startPage, endPage)}" th:classappend="${count == currentPage} ? 'active'" class="page-item" aria-current="page">
+                            <th:block th:if="${count != currentPage}">
+                                <a th:text="${count}" class="page-link" th:href="@{|?pageCount=${count}&search=${search}&keyword=${keyword}|}"></a>
+                            </th:block>
+                            <th:block th:if="${count == currentPage}">
+                                <span th:text="${count}" class="page-link"></span>
+                            </th:block>
+                        </li>
+                        <li class="page-item" th:if="${endPage < pageCount}">
+                            <a class="page-link" th:href="@{|?pageCount=${endPage + 1}&search=${search}&keyword=${keyword}|}">next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </th:block>
+            <th:block th:if="${not searchOption and not #lists.isEmpty(transferList)}">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:if="${startPage > 1}">
+                            <a class="page-link" th:href="@{|?pageCount=${startPage - 1}|}">pre</a>
+                        </li>
+                        <li th:each="count : ${#numbers.sequence(startPage, endPage)}" th:classappend="${count == currentPage} ? 'active'" class="page-item" aria-current="page">
+                            <th:block th:if="${count != currentPage}">
+                                <a th:text="${count}" class="page-link" th:href="@{|?pageCount=${count}|}"></a>
+                            </th:block>
+                            <th:block th:if="${count == currentPage}">
+                                <span th:text="${count}" class="page-link"></span>
+                            </th:block>
+                        </li>
+                        <li class="page-item" th:if="${endPage < pageCount}">
+                            <a class="page-link" th:href="@{|?pageCount=${endPage + 1}|}">next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </th:block>
+            <th:block th:if="${not searchOption and #lists.isEmpty(transferList)}">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:if="${startPage > 1}">
+                            <a class="page-link" th:href="@{|?pageCount=${startPage - 1}|}">pre</a>
+                        </li>
+                        <li th:each="count : ${#numbers.sequence(startPage, endPage)}" th:classappend="${count == currentPage} ? 'active'" class="page-item" aria-current="page">
+                            <th:block th:if="${count != currentPage}">
+                                <a th:text="${count}" class="page-link" th:href="@{|?pageCount=${count}|}"></a>
+                            </th:block>
+                            <th:block th:if="${count == currentPage}">
+                                <span th:text="${count}" class="page-link"></span>
+                            </th:block>
+                        </li>
+                        <li class="page-item" th:if="${endPage < pageCount}">
+                            <a class="page-link" th:href="@{|?pageCount=${endPage + 1}|}">next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </th:block>
         </div>
     </div>
 </th:block>

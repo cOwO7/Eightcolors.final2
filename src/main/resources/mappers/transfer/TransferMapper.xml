@@ -12,33 +12,41 @@
         WHERE transfer_no = #{transferNo}
     </update>-->
 
-
+    <!--게시판 테이블에서 no에 해당하는 게시글을 수정하는 맵핑 구문 -->
+    <update id="transferUpdate" parameterType="com.springbootfinal.app.domain.transfer.TransferDto">
+        UPDATE transfers
+        SET transfer_title = #{transferTitle},
+            transfer_content = #{transferContent},
+            transfer_price = #{transferPrice}
+            created_at = now()
+        WHERE transfer_no = #{transferNo}
+    </update>
 
     <!-- 한 페이지에 해당하는 게시글 리스트, 검색리스트를 가져오는 맵핑 구문-->
-    <select id="transferSearchList" parameterType="map" resultType="com.springbootfinal.app.domain.transfer.TransferDto">
+    <select id="transferList" parameterType="map" resultType="com.springbootfinal.app.domain.transfer.TransferDto">
         SELECT
-            t.transfer_no AS transferNo,
-            t.transfer_title AS transferTitle,
-            t.seller_user_no AS sellerUserNo,
-            t.buyer_user_no AS buyerUserNo,
-            t.reservation_no AS reservationNo,
-            t.transfer_price AS transferPrice,
-            t.transfer_content AS transferContent,
-            t.status,
-            t.created_at AS createdAt,
-            s.id AS sellerId,
-            b.id AS buyerId,
-            r.resid_name AS reservationResidName,
-            re.checkin_date AS checkinDate,
-            re.checkout_date AS checkoutDate
+        t.transfer_no AS transferNo,
+        t.transfer_title AS transferTitle,
+        t.seller_user_no AS sellerUserNo,
+        t.buyer_user_no AS buyerUserNo,
+        t.reservation_no AS reservationNo,
+        t.transfer_price AS transferPrice,
+        t.transfer_content AS transferContent,
+        t.status,
+        t.created_at AS createdAt,
+        s.id AS sellerId,
+        b.id AS buyerId,
+        r.resid_name AS reservationResidName,
+        re.checkin_date AS checkinDate,
+        re.checkout_date AS checkoutDate
         FROM transfers t
-                 LEFT JOIN users s ON t.seller_user_no = s.user_no
-                 LEFT JOIN users b ON t.buyer_user_no = b.user_no
-                 LEFT JOIN reservations re ON t.reservation_no = re.reservation_no
-                 LEFT JOIN residence_rooms rr ON re.room_no = rr.room_no
-                 LEFT JOIN residence r ON rr.resid_no = r.resid_no
+        LEFT JOIN users s ON t.seller_user_no = s.user_no
+        LEFT JOIN users b ON t.buyer_user_no = b.user_no
+        LEFT JOIN reservations re ON t.reservation_no = re.reservation_no
+        LEFT JOIN residence_rooms rr ON re.room_no = rr.room_no
+        LEFT JOIN residence r ON rr.resid_no = r.resid_no
         <where>
-            <if test="searchType != null">
+            <if test="searchType != null and searchKeyword != null">
                 <choose>
                     <when test="searchType == 'transferTitle'">
                         AND t.transfer_title LIKE CONCAT('%', #{searchKeyword}, '%')
@@ -59,10 +67,39 @@
             </if>
         </where>
         ORDER BY t.transfer_no DESC
-        LIMIT #{startRow}, #{count}
+        LIMIT #{startRow}, #{pageSize}
     </select>
 
-    <!--양도 등록-->
+    <select id="transferCount" parameterType="map" resultType="int">
+        SELECT COUNT(*) FROM transfers t
+        LEFT JOIN users s ON t.seller_user_no = s.user_no
+        LEFT JOIN users b ON t.buyer_user_no = b.user_no
+        LEFT JOIN reservations re ON t.reservation_no = re.reservation_no
+        LEFT JOIN residence_rooms rr ON re.room_no = rr.room_no
+        LEFT JOIN residence r ON rr.resid_no = r.resid_no
+        <where>
+            <if test="searchType != null and searchKeyword != null">
+                <choose>
+                    <when test="searchType == 'transferTitle'">
+                        AND t.transfer_title LIKE CONCAT('%', #{searchKeyword}, '%')
+                    </when>
+                    <when test="searchType == 'sellerId'">
+                        AND s.id LIKE CONCAT('%', #{searchKeyword}, '%')
+                    </when>
+                    <when test="searchType == 'reservationResidName'">
+                        AND r.resid_name LIKE CONCAT('%', #{searchKeyword}, '%')
+                    </when>
+                    <when test="searchType == 'checkinDate'">
+                        AND re.checkin_date LIKE CONCAT('%', #{searchKeyword}, '%')
+                    </when>
+                    <when test="searchType == 'checkoutDate'">
+                        AND re.checkout_date LIKE CONCAT('%', #{searchKeyword}, '%')
+                    </when>
+                </choose>
+            </if>
+        </where>
+    </select>
+
     <insert id="transferInsert" parameterType="com.springbootfinal.app.domain.transfer.TransferDto">
         INSERT INTO transfers (transfer_title, seller_user_no, buyer_user_no,
                                reservation_no, transfer_price, status)
@@ -70,7 +107,6 @@
                 #{reservationNo}, #{transferPrice}, '양도가능')
     </insert>
 
-    <!-- transferRead에 해당하는 SQL 문 -->
     <select id="transferRead" resultType="com.springbootfinal.app.domain.transfer.TransferDto">
         SELECT
             t.transfer_no AS transferNo,
@@ -94,37 +130,6 @@
                  LEFT JOIN residence_rooms rr ON re.room_no = rr.room_no
                  LEFT JOIN residence r ON rr.resid_no = r.resid_no
         WHERE t.transfer_no = #{transferNo}
-    </select>
-
-    <!--한 페이지 출력할 게시글 리스트를 가져오는 맵핑 구문-->
-    <select id="transferList" parameterType="map" resultType="com.springbootfinal.app.domain.transfer.TransferDto">
-        SELECT
-            t.transfer_no AS transferNo,
-            t.transfer_title AS transferTitle,
-            t.seller_user_no AS sellerUserNo,
-            t.buyer_user_no AS buyerUserNo,
-            t.reservation_no AS reservationNo,
-            t.transfer_price AS transferPrice,
-            t.status,
-            t.created_at AS createdAt,
-            s.id AS sellerId,
-            b.id AS buyerId,
-            r.resid_name AS reservationResidName,
-            re.checkin_date AS checkinDate,
-            re.checkout_date AS checkoutDate
-        FROM transfers t
-                 LEFT JOIN users s ON t.seller_user_no = s.user_no
-                 LEFT JOIN users b ON t.buyer_user_no = b.user_no
-                 LEFT JOIN reservations re ON t.reservation_no = re.reservation_no
-                 LEFT JOIN residence_rooms rr ON re.room_no = rr.room_no
-                 LEFT JOIN residence r ON rr.resid_no = r.resid_no
-        ORDER BY t.transfer_no DESC
-            LIMIT #{startRow}, #{count}
-    </select>
-
-    <!--전체 게시글 수를 반환하는 맵핑 구문-->
-    <select id="transferCount" resultType="int">
-        SELECT COUNT(*) FROM transfers
     </select>
 
 </mapper>
