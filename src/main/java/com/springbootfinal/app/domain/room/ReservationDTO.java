@@ -1,7 +1,6 @@
-package com.springbootfinal.app.domain;
+package com.springbootfinal.app.domain.room;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

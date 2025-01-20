@@ -1,11 +1,10 @@
 package com.springbootfinal.app.mapper;
 
-import com.springbootfinal.app.domain.Reservation;
+import com.springbootfinal.app.domain.room.Reservation;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDate;
-import java.util.Map;
 
 @Mapper
 public interface ReservationMapper {

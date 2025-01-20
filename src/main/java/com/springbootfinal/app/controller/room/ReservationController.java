@@ -1,16 +1,11 @@
-package com.springbootfinal.app.controller;
+package com.springbootfinal.app.controller.room;
 
-import com.springbootfinal.app.domain.Reservation;
-import com.springbootfinal.app.mapper.ReservationMapper;
-import com.springbootfinal.app.service.ReservationService;
+import com.springbootfinal.app.domain.room.Reservation;
+import com.springbootfinal.app.service.room.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 
 @Controller
 public class ReservationController {

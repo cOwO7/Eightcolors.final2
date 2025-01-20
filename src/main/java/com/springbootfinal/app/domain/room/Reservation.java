@@ -1,4 +1,4 @@
-package com.springbootfinal.app.domain;
+package com.springbootfinal.app.domain.room;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

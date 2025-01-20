@@ -1,9 +1,6 @@
-package com.springbootfinal.app.domain;
+package com.springbootfinal.app.domain.room;
 
 
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

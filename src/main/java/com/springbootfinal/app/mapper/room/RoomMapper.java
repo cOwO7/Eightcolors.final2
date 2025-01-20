@@ -1,7 +1,7 @@
-package com.springbootfinal.app.mapper;
+package com.springbootfinal.app.mapper.room;
 
-import com.springbootfinal.app.domain.ReservationDTO;
-import com.springbootfinal.app.domain.RoomDTO;
+import com.springbootfinal.app.domain.room.ReservationDTO;
+import com.springbootfinal.app.domain.room.RoomDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

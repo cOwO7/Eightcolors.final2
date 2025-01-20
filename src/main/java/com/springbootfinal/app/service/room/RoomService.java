@@ -1,9 +1,9 @@
-package com.springbootfinal.app.service;
+package com.springbootfinal.app.service.room;
 
 
-import com.springbootfinal.app.domain.ReservationDTO;
-import com.springbootfinal.app.domain.RoomDTO;
-import com.springbootfinal.app.mapper.RoomMapper;
+import com.springbootfinal.app.domain.room.ReservationDTO;
+import com.springbootfinal.app.domain.room.RoomDTO;
+import com.springbootfinal.app.mapper.room.RoomMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

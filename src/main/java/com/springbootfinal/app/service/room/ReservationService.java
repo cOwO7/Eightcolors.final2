@@ -1,13 +1,12 @@
-package com.springbootfinal.app.service;
+package com.springbootfinal.app.service.room;
 
-import com.springbootfinal.app.domain.Reservation;
+import com.springbootfinal.app.domain.room.Reservation;
 import com.springbootfinal.app.mapper.ReservationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.Map;
 import java.util.UUID;
 
 @Service

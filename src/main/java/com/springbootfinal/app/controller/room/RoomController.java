@@ -1,9 +1,9 @@
-package com.springbootfinal.app.controller;
+package com.springbootfinal.app.controller.room;
 
 
-import com.springbootfinal.app.domain.ReservationDTO;
-import com.springbootfinal.app.domain.RoomDTO;
-import com.springbootfinal.app.service.RoomService;
+import com.springbootfinal.app.domain.room.ReservationDTO;
+import com.springbootfinal.app.domain.room.RoomDTO;
+import com.springbootfinal.app.service.room.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
