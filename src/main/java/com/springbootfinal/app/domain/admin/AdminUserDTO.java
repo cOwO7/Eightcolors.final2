@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-public class adminDTO {
+public class AdminUserDTO {
     @Getter
     @Setter
     @NoArgsConstructor

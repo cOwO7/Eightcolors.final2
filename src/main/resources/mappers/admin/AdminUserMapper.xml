@@ -4,24 +4,24 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.springbootfinal.app.mapper.admin.AdminUserMapper">
-    <select id="selectAllAdminUsers" resultType="com.springbootfinal.app.domain.admin.AdminUser">
+    <select id="selectAllAdminUsers" resultType="com.springbootfinal.app.domain.admin.AdminUserDTO">
         SELECT * FROM admin_users
     </select>
 
-    <select id="selectAdminUserById" parameterType="long" resultType="com.springbootfinal.app.domain.admin.AdminUser">
+    <select id="selectAdminUserById" parameterType="long" resultType="com.springbootfinal.app.domain.admin.AdminUserDTO">
         SELECT * FROM admin_users WHERE id = #{id}
     </select>
 
-    <select id="selectAdminUserByAdminId" parameterType="string" resultType="com.springbootfinal.app.domain.admin.AdminUser">
+    <select id="selectAdminUserByAdminId" parameterType="string" resultType="com.springbootfinal.app.domain.admin.AdminUserDTO">
         SELECT * FROM admin_users WHERE admin_id = #{adminId}
     </select>
 
-    <insert id="insertAdminUser" parameterType="com.springbootfinal.app.domain.admin.AdminUser" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertAdminUser" parameterType="com.springbootfinal.app.domain.admin.AdminUserDTO" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO admin_users(admin_id, admin_passwd, email, name, role)
         VALUES(#{adminId}, #{adminPasswd}, #{email}, #{name}, #{role})
     </insert>
 
-    <update id="updateAdminUser" parameterType="com.springbootfinal.app.domain.admin.AdminUser">
+    <update id="updateAdminUser" parameterType="com.springbootfinal.app.domain.admin.AdminUserDTO">
         UPDATE admin_users
         SET admin_passwd = #{adminPasswd}, email = #{email}, name = #{name}, role = #{role}
         WHERE id = #{id}

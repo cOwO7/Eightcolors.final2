@@ -1,6 +1,6 @@
 package com.springbootfinal.app.controller.admin;
 
-import com.springbootfinal.app.domain.admin.adminDTO;
+import com.springbootfinal.app.domain.admin.AdminUserDTO;
 import com.springbootfinal.app.service.admin.AdminUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,7 @@ public class AdminUserController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/create")
-    public ResponseEntity<adminDTO.AdminUser> createAdminUser(@RequestBody adminDTO.AdminUser adminUser) {
+    public ResponseEntity<AdminUserDTO.AdminUser> createAdminUser(@RequestBody AdminUserDTO.AdminUser adminUser) {
         return new ResponseEntity<>(adminUserService.createAdminUser(adminUser), HttpStatus.CREATED);
     }
 
@@ -35,7 +35,7 @@ public class AdminUserController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping
-    public List<adminDTO.AdminUser> getAllAdminUsers() {
+    public List<AdminUserDTO.AdminUser> getAllAdminUsers() {
         return adminUserService.getAllAdminUsers();
     }
 
@@ -47,7 +47,7 @@ public class AdminUserController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/{id}")
-    public ResponseEntity<adminDTO.AdminUser> getAdminUserById(@PathVariable Long id) {
+    public ResponseEntity<AdminUserDTO.AdminUser> getAdminUserById(@PathVariable Long id) {
         return adminUserService.getAdminUserById(id)
                 .map(adminUser -> new ResponseEntity<>(adminUser, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -62,7 +62,7 @@ public class AdminUserController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<adminDTO.AdminUser> updateAdminUser(@PathVariable Long id, @RequestBody adminDTO.AdminUser adminUser) {
+    public ResponseEntity<AdminUserDTO.AdminUser> updateAdminUser(@PathVariable Long id, @RequestBody AdminUserDTO.AdminUser adminUser) {
         adminUser.setAdminUserNo(id);
         return new ResponseEntity<>(adminUserService.updateAdminUser(adminUser), HttpStatus.OK);
     }

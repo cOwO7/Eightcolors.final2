@@ -1,6 +1,6 @@
 package com.springbootfinal.app.service.admin;
 
-import com.springbootfinal.app.domain.admin.adminDTO;
+import com.springbootfinal.app.domain.admin.AdminUserDTO;
 import com.springbootfinal.app.mapper.admin.AdminUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -29,7 +29,7 @@ public class AdminUserService implements UserDetailsService {
      * @param adminUser 생성할 관리자 계정 정보
      * @return 생성된 관리자 계정 정보
      */
-    public adminDTO.AdminUser createAdminUser(adminDTO.AdminUser adminUser) {
+    public AdminUserDTO.AdminUser createAdminUser(AdminUserDTO.AdminUser adminUser) {
         adminUser.setAdminPasswd(passwordEncoder.encode(adminUser.getAdminPasswd()));
         adminUser.setRole("ROLE_ADMIN");
         adminUserMapper.insertAdminUser(adminUser);
@@ -40,7 +40,7 @@ public class AdminUserService implements UserDetailsService {
      * 모든 관리자 계정을 조회합니다.
      * @return 모든 관리자 계정의 리스트
      */
-    public List<adminDTO.AdminUser> getAllAdminUsers() {
+    public List<AdminUserDTO.AdminUser> getAllAdminUsers() {
         return adminUserMapper.selectAllAdminUsers();
     }
 
@@ -49,7 +49,7 @@ public class AdminUserService implements UserDetailsService {
      * @param id 조회할 관리자 계정의 ID
      * @return 조회된 관리자 계정 정보
      */
-    public Optional<adminDTO.AdminUser> getAdminUserById(Long id) {
+    public Optional<AdminUserDTO.AdminUser> getAdminUserById(Long id) {
         return adminUserMapper.selectAdminUserById(id);
     }
 
@@ -58,7 +58,7 @@ public class AdminUserService implements UserDetailsService {
      * @param adminUser 수정할 관리자 계정 정보
      * @return 수정된 관리자 계정 정보
      */
-    public adminDTO.AdminUser updateAdminUser(adminDTO.AdminUser adminUser) {
+    public AdminUserDTO.AdminUser updateAdminUser(AdminUserDTO.AdminUser adminUser) {
         // 비밀번호가 변경된 경우 암호화
         if (adminUser.getAdminPasswd() != null) {
             adminUser.setAdminPasswd(passwordEncoder.encode(adminUser.getAdminPasswd()));
@@ -80,13 +80,13 @@ public class AdminUserService implements UserDetailsService {
      * @param adminId 조회할 관리자 계정의 ID
      * @return 조회된 관리자 계정 정보
      */
-    public Optional<adminDTO.AdminUser> findAdminUserByAdminId(String adminId) {
+    public Optional<AdminUserDTO.AdminUser> findAdminUserByAdminId(String adminId) {
         return adminUserMapper.selectAdminUserByAdminId(adminId);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        adminDTO.AdminUser adminUser = adminUserMapper.selectAdminUserByAdminId(username)
+        AdminUserDTO.AdminUser adminUser = adminUserMapper.selectAdminUserByAdminId(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
         List<GrantedAuthority> authorities = new ArrayList<>();
