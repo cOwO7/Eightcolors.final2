@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,9 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+//@RequestMapping("/residence")
 @Slf4j
 @Controller
-//@RequestMapping("/residence")
 public class ResidenceController {
 
     private final ResidenceService residenceService;
@@ -82,52 +83,61 @@ public class ResidenceController {
 
     // 숙소 등록 처리
     @PostMapping("/new")
+    @Transactional
     public String createResidence(@ModelAttribute ResidenceDto residence,
                                   @RequestParam("photoFiles") MultipartFile[] photoFiles) throws IOException {
-        log.info("Received ResidenceDto: {}", residence);  // 디버깅 로그 추가
+        log.info("Received ResidenceDto: {}", residence);
 
         try {
-            // 사진 파일 처리
-            List<String> fileNames = new ArrayList<>();
+            residenceService.createResidence(residence, photoFiles);  // 숙소 저장
+            Long residNo = residence.getResidNo();
+            log.info("Generated residNo: {}", residNo);
+
+            if (residNo == null) {
+                throw new IllegalArgumentException("resid_no가 null입니다.");
+            }
+
+            if (photoFiles == null || photoFiles.length == 0) {
+                log.error("No files received.");
+                throw new IllegalArgumentException("사진 파일이 없습니다.");
+            }
+
+            List<PropertyPhotosDto> propertyPhotos = new ArrayList<>();
             for (MultipartFile file : photoFiles) {
-                // 파일 이름 중복 방지를 위해 UUID를 이용한 고유 이름 생성
+                log.info("Processing file: {}", file.getOriginalFilename());
+
                 String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+                String savedFileName = propertyPhotosService.savePhoto(file, fileName, residNo); // 사진 저장
+                log.info("Saved file name: {}", savedFileName);
 
-                // 파일 저장 시 두 번째 인자 fileName을 전달
-                String savedFileName = propertyPhotosService.savePhoto(file, fileName, residence.getResidNo()); // 사진 저장
-                fileNames.add(savedFileName);  // 저장된 파일명 리스트에 추가
-            }
+                PropertyPhotosDto photoDto = new PropertyPhotosDto();
+                photoDto.setResidNo(residNo);
+                photoDto.setThumbnailUrls(savedFileName);
 
-            // 저장된 파일명들을 ResidenceDto에 추가 (사진 파일 경로 리스트 설정)
-            residence.setPhotoUrls(fileNames);
-
-            // PropertyPhotosDto 생성
-            PropertyPhotosDto photoDto = new PropertyPhotosDto();
-            photoDto.setResidNo(residence.getResidNo());  // 자동 생성된 residNo 사용
-            photoDto.setThumbnailUrls(fileNames.get(0));  // 썸네일 URL 설정 (첫 번째 이미지 예시)
-
-            // 사진들을 PropertyPhotosDto에 추가
-            for (int i = 0; i < fileNames.size(); i++) {
-                switch (i) {
-                    case 0: photoDto.setPhotoUrl01(fileNames.get(i)); break;
-                    case 1: photoDto.setPhotoUrl02(fileNames.get(i)); break;
-                    case 2: photoDto.setPhotoUrl03(fileNames.get(i)); break;
-                    case 3: photoDto.setPhotoUrl04(fileNames.get(i)); break;
-                    case 4: photoDto.setPhotoUrl05(fileNames.get(i)); break;
-                    case 5: photoDto.setPhotoUrl06(fileNames.get(i)); break;
-                    case 6: photoDto.setPhotoUrl07(fileNames.get(i)); break;
-                    case 7: photoDto.setPhotoUrl08(fileNames.get(i)); break;
-                    case 8: photoDto.setPhotoUrl09(fileNames.get(i)); break;
-                    case 9: photoDto.setPhotoUrl10(fileNames.get(i)); break;
+                switch (propertyPhotos.size()) {
+                    case 0: photoDto.setPhotoUrl01(savedFileName); break;
+                    case 1: photoDto.setPhotoUrl02(savedFileName); break;
+                    case 2: photoDto.setPhotoUrl03(savedFileName); break;
+                    case 3: photoDto.setPhotoUrl04(savedFileName); break;
+                    case 4: photoDto.setPhotoUrl05(savedFileName); break;
+                    case 5: photoDto.setPhotoUrl06(savedFileName); break;
+                    case 6: photoDto.setPhotoUrl07(savedFileName); break;
+                    case 7: photoDto.setPhotoUrl08(savedFileName); break;
+                    case 8: photoDto.setPhotoUrl09(savedFileName); break;
+                    case 9: photoDto.setPhotoUrl10(savedFileName); break;
                 }
+
+                propertyPhotos.add(photoDto);
             }
 
-            propertyPhotosService.savePhotos(new ArrayList<>(List.of(photoDto))); // 사진 테이블에 저장
-
-            return "redirect:/list";  // 등록 후 목록 페이지로 리다이렉트
+            propertyPhotosService.savePhotos(propertyPhotos);  // DB에 저장
+            return "redirect:/list";  // 목록 페이지로 리다이렉트
         } catch (IOException e) {
             log.error("File upload error: ", e);
-            return "redirect:/error";  // 에러 발생 시 처리
+            return "redirect:/error";  // 오류 처리
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid input error: ", e);
+            return "redirect:/error";  // 잘못된 입력 오류 처리
         }
     }
 

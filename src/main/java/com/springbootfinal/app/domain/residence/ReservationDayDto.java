@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReservationDto {
+public class ReservationDayDto {
 
     private BigDecimal discountRate; // 할인율
     private BigDecimal discountedPrice; // 할인된 가격

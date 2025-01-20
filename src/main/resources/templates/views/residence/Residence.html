@@ -67,6 +67,7 @@
           <th:block th:if="${residence.propertyPhotos != null and not #lists.isEmpty(residence.propertyPhotos)}">
             <img th:src="@{|/Upload/${residence.propertyPhotos[0]}|}" alt="숙소 사진" class="img-fluid"/>
             <img th:src="@{'data:image/jpeg;base64,' + ${residence.propertyPhotos[0]}}" alt="숙소 사진" class="img-fluid"/>
+            <img th:src="@{${residence.propertyPhotos.get(0).photoUrl01}}" alt="Thumbnail">
           </th:block>
           <th:block th:unless="${residence.propertyPhotos != null and not #lists.isEmpty(residence.propertyPhotos)}">
             사진 없음
