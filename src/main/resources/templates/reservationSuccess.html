@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>예약 완료</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h1>예약이 완료되었습니다!</h1>
+
+    <div class="alert alert-success">
+        <p>숙소: <strong>[[${residName}]]</strong></p>
+        <p>방 번호: <strong>[[${roomNo}]]</strong></p>
+        <p>체크인 날짜: <strong>[[${checkinDate}]]</strong></p>
+        <p>체크아웃 날짜: <strong>[[${checkoutDate}]]</strong></p>
+        <p>사용자 번호: <strong>[[${userNo}]]</strong></p>
+        <p>총 금액: <strong>[[${discountedPrice}]]원</strong></p>
+        <p>할인율: <strong>[[${discountRate}]]%</strong></p>
+    </div>
+
+    <a href="/home" class="btn btn-primary">홈으로 돌아가기</a>
+</div>
+</body>
+</html>
