@@ -22,17 +22,28 @@ public class TransferController {
     private TransferService transferService;
     private static final String TRANSFER_BASE_PATH = "views/transfer/";
 
+    @PostMapping("/delete")
+    public String deleteTransfer(
+            HttpServletResponse response, PrintWriter out,
+            @RequestParam("transferNo") long transferNo) {
+
+        transferService.deleteTransfer(transferNo);
+        return "redirect:/transfers";
+
+        }
+
     // 양도 수정 폼 요청 처리 메서드
-    @PostMapping("updateForm")
+    @PostMapping("/updateForm")
     public String updateTransferForm(Model model,
                                      HttpServletResponse response, PrintWriter out,
-                                     @RequestParam("transferNo") long transferNo,
-                                     @RequestParam(value="pageCount", required = false, defaultValue = "1") int pageCount,
-                                     @RequestParam(value="search", required = false, defaultValue = "") String search,
-                                     @RequestParam(value="keyword", required = false, defaultValue = "") String keyword) {
+                                     @RequestParam("transferNo") long transferNo) {
 
         TransferDto transfer = transferService.getTransfer(transferNo);
-        boolean searchOption = !(search.equals("null") || search.isEmpty());
+        model.addAttribute("transfer", transfer);
+
+        return TRANSFER_BASE_PATH + "transferUpdate";
+
+  /*      boolean searchOption = !(search.equals("null") || search.isEmpty());
 
         model.addAttribute("transfer", transfer); // transfer 객체를 모델에 추가
         model.addAttribute("transferNo", transferNo);
@@ -43,13 +54,16 @@ public class TransferController {
             model.addAttribute("search", search);
             model.addAttribute("keyword", keyword);
         }
-        return TRANSFER_BASE_PATH + "transferUpdate";
+        return TRANSFER_BASE_PATH + "transferUpdate";*/
     }
 
-    @PostMapping("transferUpdate")
-    public String transferUpdate(TransferDto transferDto, RedirectAttributes reAttrs,
-                                 HttpServletResponse response, PrintWriter out,
-                                 @RequestParam("transferNo") long transferNo,
+    @PostMapping("/update")
+    public String updateBoard(TransferDto transferDto,
+                              HttpServletResponse response, PrintWriter out) {
+        transferService.updateBoard(transferDto);
+        return "redirect:/transfers";
+    }
+ /*                                @RequestParam("transferNo") long transferNo,
                                  @RequestParam("pageCount") int pageCount,
                                  @RequestParam("search") String search,
                                  @RequestParam("keyword") String keyword,
@@ -67,7 +81,7 @@ public class TransferController {
             reAttrs.addAttribute("keyword", keyword);
         }
         return "redirect:/transfers";
-    }
+    }*/
 
     // 양도 생성 폼 요청 처리 메서드
     @GetMapping("/transferWrite")

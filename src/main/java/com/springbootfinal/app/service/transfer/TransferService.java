@@ -15,9 +15,14 @@ public class TransferService {
 
     private final TransferMapper transferMapper;
 
-    public void transferUpdate(TransferDto transferDto) {
-        log.info("수정하기: {}", transferDto);
-        transferMapper.transferUpdate(transferDto);
+    public void deleteTransfer(Long transferNo) {
+        log.info("TransferService: 삭제하기{}", transferNo);
+        transferMapper.deleteTransfer(transferNo);
+    }
+
+    public void updateBoard(TransferDto transferDto) {
+        log.info("TransferService: 수정하기{}", transferDto);
+        transferMapper.updateBoard(transferDto);
     }
 
     // Constants for pagination

@@ -9,7 +9,11 @@ import java.util.List;
 @Mapper
 public interface TransferMapper {
 
-    public void transferUpdate(TransferDto transferDto);
+
+    public void deleteTransfer(Long transferNo);
+
+    // 게시글을 수정하는 메서드
+    public void updateBoard(TransferDto transferDto);
 
     // 한 페이지에 해당하는 게시글 리스트를 DB 테이블에서 읽어와 반환하는 메서드
     List<TransferDto> transferList(@Param("startRow") int startRow, @Param("pageSize") int pageSize,

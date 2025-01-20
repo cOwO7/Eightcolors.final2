@@ -18,7 +18,7 @@
                         <h2 class="fs-3 fw-bold">양도 게시글 수정</h2>
                     </div>
                 </div>
-                <form name="transferUpdate" action="/transferUpdate" id="transferUpdate" class="row g-3 border-primary" method="post">
+                <form name="updateForm" action="/update" id="updateForm" class="row g-3 border-primary" method="post">
                     <input type="hidden" name="transferNo" th:value="${transfer.transferNo}">
                     <input type="hidden" name="pageCount" th:value="${pageCount}">
                     <input type="hidden" name="search" th:value="${search}">

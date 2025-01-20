@@ -102,7 +102,7 @@ $(function() {
 		}
 	});
 
-	$("#transferUpdate").on("submit", function() {
+	$("#updateForm").on("submit", function() {
 		if($("#transferTitle").val().length <= 0) {
 			alert("제목이 입력되지 않았습니다.\n제목을 입력해주세요");
 			$("#title").focus();
@@ -114,5 +114,13 @@ $(function() {
 			return false;
 		}
 	});
+
+$("#detailDelete").on("click", function() {
+    if (confirm("정말 삭제하시겠습니까?")) {
+        $("#deleteForm").attr("action", "delete");
+        $("#deleteForm").attr("method", "post");
+        $("#deleteForm").submit();
+    }
+});
 
 });

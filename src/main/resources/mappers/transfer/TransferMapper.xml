@@ -12,13 +12,17 @@
         WHERE transfer_no = #{transferNo}
     </update>-->
 
+    <delete id="deleteTransfer">
+        DELETE FROM transfers
+        WHERE transfer_no = #{transferNo}
+    </delete>
+
     <!--게시판 테이블에서 no에 해당하는 게시글을 수정하는 맵핑 구문 -->
-    <update id="transferUpdate" parameterType="com.springbootfinal.app.domain.transfer.TransferDto">
+    <update id="updateBoard" parameterType="com.springbootfinal.app.domain.transfer.TransferDto">
         UPDATE transfers
         SET transfer_title = #{transferTitle},
             transfer_content = #{transferContent},
             transfer_price = #{transferPrice}
-            created_at = now()
         WHERE transfer_no = #{transferNo}
     </update>
 

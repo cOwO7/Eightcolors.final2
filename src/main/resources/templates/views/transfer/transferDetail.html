@@ -62,6 +62,11 @@
                         <input type="hidden" name="keyword" th:value="${keyword}" />
                         <input type="submit" value="수정하기" class="btn btn-primary"/>
                     </form>
+                    <form id="deleteForm" action="delete" method="post">
+                        <input type="hidden" name="transferNo" th:value="${transfer.transferNo}" />
+                        <input class="btn btn-danger" type="button" id="detailDelete" value="삭제하기" />
+                    </form>
+
                 </div>
                 <div class="d-flex justify-content-between mt-4">
                     <a href="/transfers" class="btn btn-outline-primary">목록으로</a>
