@@ -5,6 +5,29 @@
 <th:block layout:fragment="content">
     <div class="container my-5">
         <h1 class="mb-4">관리자페이지 입니다</h1>
+        <div class="row">
+            <div class="col-3">
+                <div class="accordion" id="accordionExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                회원
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item">회원 조회</li>
+                                    <li class="list-group-item">회원 등급조정</li>
+                                    <li class="list-group-item">회원 삭제</li>
+                                    <li class="list-group-item">회원 등록</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+            </div>
+        </div>
 
 </th:block>
 </html>

@@ -100,7 +100,7 @@ public class joinController {
             userService.insertUser(user);
 
             log.info("User successfully registered");
-            return "redirect:/loginPage";
+            return "redirect:/login";
         } catch (Exception e) {
             log.error("Error during registration: ", e);
             model.addAttribute("errorMessage", "회원가입 중 오류가 발생했습니다.");
