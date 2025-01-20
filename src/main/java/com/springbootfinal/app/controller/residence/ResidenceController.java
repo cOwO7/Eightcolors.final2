@@ -18,6 +18,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -82,7 +84,7 @@ public class ResidenceController {
     }
 
     // 숙소 등록 처리
-    @PostMapping("/new")
+    /*@PostMapping("/new")
     @Transactional
     public String createResidence(@ModelAttribute ResidenceDto residence,
                                   @RequestParam("photoFiles") MultipartFile[] photoFiles) throws IOException {
@@ -125,6 +127,71 @@ public class ResidenceController {
                     case 7: photoDto.setPhotoUrl08(savedFileName); break;
                     case 8: photoDto.setPhotoUrl09(savedFileName); break;
                     case 9: photoDto.setPhotoUrl10(savedFileName); break;
+                }
+
+                propertyPhotos.add(photoDto);
+            }
+
+            propertyPhotosService.savePhotos(propertyPhotos);  // DB에 저장
+            return "redirect:/list";  // 목록 페이지로 리다이렉트
+        } catch (IOException e) {
+            log.error("File upload error: ", e);
+            return "redirect:/error";  // 오류 처리
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid input error: ", e);
+            return "redirect:/error";  // 잘못된 입력 오류 처리
+        }
+    }*/
+    @PostMapping("/new")
+    @Transactional
+    public String createResidence(@ModelAttribute ResidenceDto residence,
+                                  @RequestParam("photoFiles") MultipartFile[] photoFiles) throws IOException {
+        log.info("Received ResidenceDto: {}", residence);
+
+        try {
+            residenceService.createResidence(residence, photoFiles);  // 숙소 저장
+            Long residNo = residence.getResidNo();
+            log.info("Generated residNo: {}", residNo);
+
+            if (residNo == null) {
+                throw new IllegalArgumentException("resid_no가 null입니다.");
+            }
+
+            if (photoFiles == null || photoFiles.length == 0) {
+                log.error("No files received.");
+                throw new IllegalArgumentException("사진 파일이 없습니다.");
+            }
+
+            List<PropertyPhotosDto> propertyPhotos = new ArrayList<>();
+            for (MultipartFile file : photoFiles) {
+                log.info("Processing file: {}", file.getOriginalFilename());
+
+                String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+                // 파일 저장 후 경로 인코딩
+                String savedFileName = propertyPhotosService.savePhoto(file, fileName, residNo);
+                String encodedFileName = "";
+                try {
+                    encodedFileName = URLEncoder.encode(savedFileName, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    log.error("File name encoding error: ", e);
+                }
+
+                // 인코딩된 파일 경로 저장
+                PropertyPhotosDto photoDto = new PropertyPhotosDto();
+                photoDto.setResidNo(residNo);
+                photoDto.setThumbnailUrls(encodedFileName);
+
+                switch (propertyPhotos.size()) {
+                    case 0: photoDto.setPhotoUrl01(encodedFileName); break;
+                    case 1: photoDto.setPhotoUrl02(encodedFileName); break;
+                    case 2: photoDto.setPhotoUrl03(encodedFileName); break;
+                    case 3: photoDto.setPhotoUrl04(encodedFileName); break;
+                    case 4: photoDto.setPhotoUrl05(encodedFileName); break;
+                    case 5: photoDto.setPhotoUrl06(encodedFileName); break;
+                    case 6: photoDto.setPhotoUrl07(encodedFileName); break;
+                    case 7: photoDto.setPhotoUrl08(encodedFileName); break;
+                    case 8: photoDto.setPhotoUrl09(encodedFileName); break;
+                    case 9: photoDto.setPhotoUrl10(encodedFileName); break;
                 }
 
                 propertyPhotos.add(photoDto);

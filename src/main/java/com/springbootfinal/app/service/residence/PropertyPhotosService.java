@@ -39,39 +39,6 @@ public class PropertyPhotosService {
     }
 
     // 사진 등록 시 유효성 검사 및 저장
-    /*public String savePhoto(MultipartFile photo, String fileName, Long residNo) throws IOException {
-        if (photo.isEmpty()) {
-            throw new IllegalArgumentException("사진이 비어 있습니다.");
-        }
-
-        // 유효성 검사
-        validatePhoto(photo);
-
-        // 파일 확장자 추출 (기존 방식 유지)
-        String originalFileName = photo.getOriginalFilename();
-        String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
-        if (!isValidExtension(fileExtension)) {
-            throw new IllegalArgumentException("허용되지 않은 파일 확장자입니다.");
-        }
-
-        // 고유 파일명 생성 (넘겨받은 fileName 사용)
-        String fullFileName = fileName + fileExtension;
-
-        // 경로 설정
-        Path filePath = getFilePath(fullFileName);
-
-        // 디렉토리가 존재하지 않으면 생성
-        File directory = new File(UPLOAD_DIR);
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
-
-        // 파일 저장
-        Files.copy(photo.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-        // 저장된 파일명 반환
-        return fullFileName;
-    }*/
     public String savePhoto(MultipartFile photo, String fileName, Long residNo) throws IOException {
         if (photo.isEmpty()) {
             throw new IllegalArgumentException("사진이 비어 있습니다.");
@@ -80,21 +47,25 @@ public class PropertyPhotosService {
         // 유효성 검사
         validatePhoto(photo);
 
-        // 파일 확장자 추출 (기존 방식 유지)
+        // 파일 확장자 추출
         String originalFileName = photo.getOriginalFilename();
-        String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));  // 확장자만 추출
+        String fileExtension = originalFileName.substring(originalFileName.lastIndexOf(".")).toLowerCase();
 
         if (!isValidExtension(fileExtension)) {
             throw new IllegalArgumentException("허용되지 않은 파일 확장자입니다.");
         }
 
-        // 고유 파일명 생성 (넘겨받은 fileName 사용, 확장자는 따로 추가)
-        String fullFileName = fileName + fileExtension;  // 이미 fileName에는 확장자가 없으므로, 여기서 확장자를 덧붙입니다.
+        // 확장자 중복 방지 및 파일명 처리
+        if (fileName.toLowerCase().endsWith(fileExtension)) {
+            fileName = fileName.substring(0, fileName.lastIndexOf("."));
+        }
+
+        String fullFileName = fileName + fileExtension;  // 확장자 추가
 
         // 경로 설정
         Path filePath = getFilePath(fullFileName);
 
-        // 디렉토리가 존재하지 않으면 생성
+        // 디렉토리 존재 여부 확인 및 생성
         File directory = new File(UPLOAD_DIR);
         if (!directory.exists()) {
             directory.mkdirs();
@@ -103,21 +74,20 @@ public class PropertyPhotosService {
         // 파일 저장
         Files.copy(photo.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-        // 저장된 파일명 반환
+        log.info("Saved photo: {}", fullFileName);
         return fullFileName;
     }
 
     // 사진 등록 (여러 사진 저장 처리)
     public void savePhotos(List<PropertyPhotosDto> photos) {
         for (PropertyPhotosDto photo : photos) {
-            // resid_no가 null인지 확인 후 설정
             if (photo.getResidNo() == null) {
                 log.error("resid_no is null for photo: {}", photo);
                 throw new IllegalArgumentException("resid_no must not be null");
             }
 
             if (photo.getThumbnailUrls() == null || photo.getThumbnailUrls().isEmpty()) {
-                photo.setThumbnailUrls(photo.getPhotoUrl01());  // 썸네일 설정 (기본적으로 첫 번째 사진)
+                photo.setThumbnailUrls(photo.getPhotoUrl01());  // 썸네일 설정
             }
 
             log.info("Inserting photo: {}", photo);
@@ -127,8 +97,8 @@ public class PropertyPhotosService {
 
     // 파일 확장자 검증
     private boolean isValidExtension(String fileExtension) {
-        List<String> validExtensions = Arrays.asList(".jpg", ".jpeg", ".png", ".gif", ".bmp");  // 허용할 확장자 리스트
-        return validExtensions.contains(fileExtension.toLowerCase());
+        List<String> validExtensions = Arrays.asList(".jpg", ".jpeg", ".png", ".gif", ".bmp");
+        return validExtensions.contains(fileExtension);
     }
 
     // 사진 삭제 (파일과 DB에서 삭제)
@@ -160,7 +130,7 @@ public class PropertyPhotosService {
 
     // 사진 유효성 검사
     public void validatePhoto(MultipartFile photo) {
-        long maxSize = 5 * 1024 * 1024; // 최대 5MB
+        long maxSize = 5 * 1024 * 1024;  // 최대 5MB
         String[] allowedExtensions = {"jpg", "jpeg", "png", "gif"};
 
         if (photo.getSize() > maxSize) {

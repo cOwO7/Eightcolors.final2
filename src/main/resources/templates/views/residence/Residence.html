@@ -17,7 +17,6 @@
 <th:block layout:fragment="content">
   <div class="container">
     <h1 class="my-4 text-center">숙소 목록</h1>
-
     <!-- 검색 폼 -->
     <form action="#" th:action="@{/list}" method="get" class="row mb-3">
       <div class="col-md-3">
@@ -41,7 +40,6 @@
     <div class="mb-3 text-end">
       <a th:href="@{/new}" class="btn btn-success">숙소 등록</a>
     </div>
-
     <!-- 숙소 목록 테이블 -->
     <table class="table table-bordered table-hover table-responsive">
       <thead class="table-dark">
@@ -65,9 +63,8 @@
         <td th:text="${residence.residNo}"></td>
         <td>
           <th:block th:if="${residence.propertyPhotos != null and not #lists.isEmpty(residence.propertyPhotos)}">
-            <img th:src="@{|/Upload/${residence.propertyPhotos[0]}|}" alt="숙소 사진" class="img-fluid"/>
-            <img th:src="@{'data:image/jpeg;base64,' + ${residence.propertyPhotos[0]}}" alt="숙소 사진" class="img-fluid"/>
-            <img th:src="@{${residence.propertyPhotos.get(0).photoUrl01}}" alt="Thumbnail">
+            <img th:src="@{|/images/files/${residence.propertyPhotos[0].thumbnailUrls}|}" alt="숙소 사진" class="img-fluid"/>
+            <!--<img th:src="@{|/images/files/${residence.propertyPhotos[0].photoUrl01}|}" alt="숙소 사진" class="img-fluid"/>-->
           </th:block>
           <th:block th:unless="${residence.propertyPhotos != null and not #lists.isEmpty(residence.propertyPhotos)}">
             사진 없음
