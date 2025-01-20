@@ -3,8 +3,11 @@ package com.springbootfinal.app.service.login;
 import com.springbootfinal.app.domain.login.LoginType;
 import com.springbootfinal.app.domain.login.Users;
 import com.springbootfinal.app.domain.residence.login.RegisterRequest;
+import com.springbootfinal.app.mapper.admin.AdminUserMapper;
+import com.springbootfinal.app.mapper.host.HostUserMapper;
 import com.springbootfinal.app.mapper.login.UserMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,8 +20,19 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class UserService implements UserDetailsService  {
 
-    private final UserMapper userMapper;
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    private HostUserMapper hostUserMapper;
+
+    @Autowired
+    private AdminUserMapper adminUserMapper;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+
 
     public UserService(UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.userMapper = userMapper;
@@ -27,8 +41,9 @@ public class UserService implements UserDetailsService  {
 
     // 아이디 중복 확인 메서드
     public boolean overlapIdCheck(String id) {
-        Users user = userMapper.findById(id);
-        return user != null;
+        return userMapper.findById(id) != null ||
+                hostUserMapper.findHostUserById(id) != null ||
+                adminUserMapper.selectAdminUserByAdminId(id).isPresent();
     }
 
     // 사용자 저장 메서드
@@ -44,6 +59,7 @@ public class UserService implements UserDetailsService  {
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setLoginType(LoginType.LOCAL);
+        user.setRole("ROLE_USER");
         userMapper.insertUser(user);
     }
 
@@ -54,6 +70,7 @@ public class UserService implements UserDetailsService  {
         user.setName(name);
         user.setProviderId(providerId);
         user.setLoginType(loginType);
+        user.setRole("ROLE_USER");
         // 기타 필요한 필드 설정
 
         userMapper.insertUser(user);
