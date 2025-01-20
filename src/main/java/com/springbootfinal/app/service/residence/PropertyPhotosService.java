@@ -39,7 +39,7 @@ public class PropertyPhotosService {
     }
 
     // 사진 등록 시 유효성 검사 및 저장
-    public String savePhoto(MultipartFile photo, String fileName, Long residNo) throws IOException {
+    /*public String savePhoto(MultipartFile photo, String fileName, Long residNo) throws IOException {
         if (photo.isEmpty()) {
             throw new IllegalArgumentException("사진이 비어 있습니다.");
         }
@@ -56,6 +56,40 @@ public class PropertyPhotosService {
 
         // 고유 파일명 생성 (넘겨받은 fileName 사용)
         String fullFileName = fileName + fileExtension;
+
+        // 경로 설정
+        Path filePath = getFilePath(fullFileName);
+
+        // 디렉토리가 존재하지 않으면 생성
+        File directory = new File(UPLOAD_DIR);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        // 파일 저장
+        Files.copy(photo.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+        // 저장된 파일명 반환
+        return fullFileName;
+    }*/
+    public String savePhoto(MultipartFile photo, String fileName, Long residNo) throws IOException {
+        if (photo.isEmpty()) {
+            throw new IllegalArgumentException("사진이 비어 있습니다.");
+        }
+
+        // 유효성 검사
+        validatePhoto(photo);
+
+        // 파일 확장자 추출 (기존 방식 유지)
+        String originalFileName = photo.getOriginalFilename();
+        String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));  // 확장자만 추출
+
+        if (!isValidExtension(fileExtension)) {
+            throw new IllegalArgumentException("허용되지 않은 파일 확장자입니다.");
+        }
+
+        // 고유 파일명 생성 (넘겨받은 fileName 사용, 확장자는 따로 추가)
+        String fullFileName = fileName + fileExtension;  // 이미 fileName에는 확장자가 없으므로, 여기서 확장자를 덧붙입니다.
 
         // 경로 설정
         Path filePath = getFilePath(fullFileName);

@@ -50,7 +50,7 @@
     </select>
 
     <!-- 숙소 등록 -->
-    <insert id="insertResidence" parameterType="com.springbootfinal.app.domain.residence.ResidenceDto">
+    <insert id="insertResidence" parameterType="com.springbootfinal.app.domain.residence.ResidenceDto" useGeneratedKeys="true" keyProperty="residNo">
         INSERT INTO residence (resid_name, host_user_no, resid_description, resid_address, resid_type,
                                nx, ny, regId, regIdTemp, latitudeNum, longitudeNum)
         VALUES (#{residName}, #{hostUserNo}, #{residDescription}, #{residAddress}, #{residType},
@@ -127,7 +127,7 @@
         <result property="longitudeNum" column="longitudeNum"/>
         <result property="hostUserNo" column="hostUserNo"/>
 
-        <collection property="reservations" ofType="com.springbootfinal.app.domain.residence.ReservationDto">
+        <collection property="reservations" ofType="com.springbootfinal.app.domain.residence.ReservationDayDto">
             <result property="discountRate" column="discountRate"/>
             <result property="discountedPrice" column="discountedPrice"/>
             <result property="checkinDate" column="checkinDate"/>
@@ -135,7 +135,7 @@
         </collection>
 
         <!-- 사진 목록 매핑 -->
-        <collection property="propertyPhotos" ofType="String">
+        <collection property="propertyPhotos" ofType="com.springbootfinal.app.domain.residence.PropertyPhotosDto">
             <result property="thumbnailUrls" column="thumbnailUrls"/>
             <result property="photoUrl01" column="photoUrl01"/>
             <result property="photoUrl02" column="photoUrl02"/>

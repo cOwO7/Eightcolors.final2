@@ -7,7 +7,6 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,8 +106,8 @@ public class ResidenceDto {
     private PropertyPhotosDto propertyPhotosDto;  // PropertyPhotosDto 객체
 
     // 조인 필드
-    private List<ReservationDto> reservations; // Reservation 객체의 리스트
-    private List<String> propertyPhotos; // residencePhoto 객체 리스트
+    private List<ReservationDayDto> reservations; // Reservation 객체의 리스트
+    private List<PropertyPhotosDto> propertyPhotos; // residencePhoto 객체 리스트
     private List<ResidenceRoom> rooms; // ResidenceRoom을 리스트로 추가
 
     // totalPrice를 계산하는 메소드 추가
