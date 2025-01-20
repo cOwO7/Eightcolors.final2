@@ -59,13 +59,7 @@
                     <div class="col-8 offset-md-2 text-center mt-5">
                         <input type="submit" value="수정하기" class="btn btn-primary"/>
                         <!-- 일반 게시글 리스트에서 온 요청이면 일반 게시글 리스트로 돌려보낸다. -->
-                        <th:block th:unless="${searchOption}">
-                            <input class="btn btn-primary" type="button" value="목록보기" th:onclick="@{|location.href='transferList?pageCount=${pageCount}'|}"/>
-                        </th:block>
-                        <!-- 검색 리스트에서 온 요청이면 검색 리스트의 동일한 페이지로 돌려보낸다. -->
-                        <th:block th:if="${searchOption}">
-                            <input class="btn btn-primary" type="button" value="목록보기" th:onclick="@{|location.href='transferList?pageCount=${pageCount}&type=${search}&keyword=${keyword}'|}"/>
-                        </th:block>
+                        <a href="/transfers" class="btn btn-secondary">목록으로</a>
                     </div>
                 </form>
             </div>

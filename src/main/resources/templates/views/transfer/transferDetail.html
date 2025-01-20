@@ -40,26 +40,38 @@
                     <p><strong>양도 가격:</strong> <span th:text="${transfer.formattedTransferPrice}"></span></p>
                     <p><strong>양도 상태:</strong> <span th:text="${transfer.status}"></span></p>
                 </div>
-
                 <h4 class="text-primary mb-3">판매 내용</h4>
                 <div class="mb-4">
                     <p><strong>내용:</strong> <span th:text="${transfer.transferContent}"></span></p>
                     <p><strong>작성일:</strong> <span th:text="${transfer.formattedCreatedAt}"></span></p>
                 </div>
-
                 <div class="d-flex justify-content-between mt-6">
-                    <a href="/transfers" class="btn btn-secondary">목록으로</a>
+                    <form name="checkForm" id="checkForm">
+                        <input type="hidden" name="transferNo" th:value="${transfer.transferNo}" />
+                        <input type="hidden" name="pageCount" th:value="${pageCount}" />
+                    </form>
+                  <!--  <div class="row my-3">
+                        <div class="col text-center">
+                            <input class="btn btn-warning" type="button" id="detailUpdate" value="수정하기" />
+
+                            &nbsp;&nbsp;<input class="btn btn-secondary" type="button" id="detailList" value="목록으로" />
+
+                        </div>
+
+                    </div>-->
+                    <a href="/transfers" class="btn btn-primary">목록으로</a>
                     <form action="updateForm" method="post">
                         <input type="hidden" name="transferNo" th:value="${transfer.transferNo}" />
                         <input type="hidden" name="pageCount" th:value="${pageCount}" />
                         <input type="hidden" name="search" th:value="${search}" />
                         <input type="hidden" name="keyword" th:value="${keyword}" />
-                        <input type="submit" value="수정하기" class="btn btn-primary"/>
+                        <input type="submit" value="수정하기" class="btn btn-warning"/>
                     </form>
-                    <form id="deleteForm" action="delete" method="post">
-                        <input type="hidden" name="transferNo" th:value="${transfer.transferNo}" />
-                        <input class="btn btn-danger" type="button" id="detailDelete" value="삭제하기" />
-                    </form>
+                        <form id="deleteForm" action="delete" method="post">
+                            <input type="hidden" name="transferNo" th:value="${transfer.transferNo}" />
+                            <input type="hidden" name="pageCount" th:value="${pageCount}" />
+                            <input class="btn btn-danger" type="submit" id="detailDelete" value="삭제하기" />
+                        </form>
                     <form action="/ready/pc/layer" method="get">
                         <input type="hidden" name="transferNo" th:value="${transfer.transferNo}" />
                         <button type="submit" class="btn btn-success">결제하기</button>

@@ -35,15 +35,15 @@ public class TransferService {
     }
 
 
-    public Map<String, Object> transferList(int pageNum, String search, String keyword) {
+    public Map<String, Object> transferList(int pageCount, String type, String keyword) {
         log.info("transferList(int pageCount, 문자열 검색, 문자열 키워드");
-        int currentPage = pageNum;
+        int currentPage = pageCount;
         int startRow = (currentPage - 1) * PAGE_SIZE;
         log.info("startRow : {}", startRow);
-        boolean searchOption = !(search.equals("null") || search.isEmpty());
-        int listCount = transferMapper.transferCount(search, keyword);
-        List<TransferDto> transferList = transferMapper.transferList(startRow, PAGE_SIZE, search, keyword);
-        int pageCount = listCount / PAGE_SIZE + (listCount % PAGE_SIZE == 0 ? 0 : 1);
+        boolean searchOption = (type.equals("null") || keyword.equals("null")) ? false : true;
+        int listCount = transferMapper.getTransferCount(type, keyword);
+        List<TransferDto> transferList = transferMapper.transferList(startRow, PAGE_SIZE, type, keyword);
+        int totalPageCount = listCount / PAGE_SIZE + (listCount % PAGE_SIZE == 0 ? 0 : 1);
         int startPage = (currentPage / PAGE_GROUP) * PAGE_GROUP + 1 - (currentPage % PAGE_GROUP == 0 ? PAGE_GROUP : 0);
         int endPage = startPage + PAGE_GROUP - 1;
 
@@ -51,27 +51,24 @@ public class TransferService {
             endPage = pageCount;
         }
 
-        Map<String, Object> transferMap = new HashMap<>();
+        Map<String, Object> modelMap = new HashMap<String, Object>();
 
-        transferMap.put("transferList", transferList);
-        transferMap.put("startPage", startPage);
-        transferMap.put("endPage", endPage);
-        transferMap.put("pageCount", pageCount);
-        transferMap.put("search", search);
-        transferMap.put("keyword", keyword);
-        transferMap.put("searchOption", searchOption);
-        transferMap.put("currentPage", currentPage);
-        transferMap.put("listCount", listCount);
-        transferMap.put("pageGroup", PAGE_GROUP);
-        transferMap.put("totalTransferCount", listCount);
-        log.info("Fetched {} transfer records.", transferList.size());
+        modelMap.put("transferList", transferList);
+        modelMap.put("startPage", startPage);
+        modelMap.put("endPage", endPage);
+        modelMap.put("totalPageCount", totalPageCount);
+        modelMap.put("currentPage", currentPage);
+        modelMap.put("listCount", listCount);
+        modelMap.put("pageGroup", PAGE_GROUP);
+        modelMap.put("searchOption", searchOption);
+        log.info("검색옵션", transferList.size());
 
         if (searchOption) {
-            transferMap.put("search", search);
-            transferMap.put("keyword", keyword);
+            modelMap.put("type", type);
+            modelMap.put("keyword", keyword);
         }
 
-        return transferMap;
+        return modelMap;
     }
 
 
@@ -82,7 +79,7 @@ public class TransferService {
     }
 
 
-    public TransferDto getTransfer(Long transferNo) {
+    public TransferDto getTransfer(Long transferNo, boolean someFlag) {
         log.info("양도게시글 번호{}", transferNo);
         TransferDto transfer = transferMapper.transferRead(transferNo);
         log.info("Fetched transfer record: {}", transfer);

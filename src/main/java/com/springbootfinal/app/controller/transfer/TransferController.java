@@ -23,11 +23,14 @@ public class TransferController {
     private static final String TRANSFER_BASE_PATH = "views/transfer/";
 
     @PostMapping("/delete")
-    public String deleteTransfer(
+    public String deleteTransfer(RedirectAttributes reAttrs,
             HttpServletResponse response, PrintWriter out,
-            @RequestParam("transferNo") long transferNo) {
+            @RequestParam("transferNo") long transferNo,
+                                 @RequestParam(value = "pageCount",
+                                         defaultValue = "1") int pageCount) {
 
         transferService.deleteTransfer(transferNo);
+        reAttrs.addAttribute("pageCount", pageCount);
         return "redirect:/transfers";
 
         }
@@ -36,10 +39,12 @@ public class TransferController {
     @PostMapping("/updateForm")
     public String updateTransferForm(Model model,
                                      HttpServletResponse response, PrintWriter out,
-                                     @RequestParam("transferNo") long transferNo) {
+                                     @RequestParam("transferNo") long transferNo,
+                                     @RequestParam(value = "pageCount", defaultValue = "1") int pageCount) {
 
-        TransferDto transfer = transferService.getTransfer(transferNo);
+        TransferDto transfer = transferService.getTransfer(transferNo, false);
         model.addAttribute("transfer", transfer);
+        model.addAttribute("pageCount", pageCount);
 
         return TRANSFER_BASE_PATH + "transferUpdate";
 
@@ -57,12 +62,15 @@ public class TransferController {
         return TRANSFER_BASE_PATH + "transferUpdate";*/
     }
 
-    @PostMapping("/update")
-    public String updateBoard(TransferDto transferDto,
-                              HttpServletResponse response, PrintWriter out) {
-        transferService.updateBoard(transferDto);
-        return "redirect:/transfers";
-    }
+@PostMapping("/update")
+public String updateBoard(TransferDto transferDto, RedirectAttributes reAttrs,
+                          @RequestParam(value = "pageCount", defaultValue = "1") int pageCount,
+                          HttpServletResponse response, PrintWriter out) {
+    transferService.updateBoard(transferDto);
+    reAttrs.addAttribute("pageCount", pageCount);
+    reAttrs.addAttribute("test1", "1회성 파라미터");
+    return "redirect:/transfers";
+}
  /*                                @RequestParam("transferNo") long transferNo,
                                  @RequestParam("pageCount") int pageCount,
                                  @RequestParam("search") String search,
@@ -99,7 +107,7 @@ public class TransferController {
     // 게시글 상세보기 요청 처리 메서드
     @GetMapping("/transferDetail")
     public String getTransferDetail(Model model, @RequestParam("transferNo") long transferNo) {
-        model.addAttribute("transfer", transferService.getTransfer(transferNo));
+        model.addAttribute("transfer", transferService.getTransfer(transferNo, false));
         return TRANSFER_BASE_PATH + "transferDetail";
     }
 
@@ -107,9 +115,9 @@ public class TransferController {
     @GetMapping("/transfers")
     public String getTransferList(Model model,
                                   @RequestParam(value = "pageCount", required = false, defaultValue = "1") int pageCount,
-                                  @RequestParam(value = "search", required = false, defaultValue = "") String search,
-                                  @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword) {
-        Map<String, Object> modelMap = transferService.transferList(pageCount, search, keyword);
+                                  @RequestParam(value = "type", required = false, defaultValue = "null") String type,
+                                  @RequestParam(value = "keyword", required = false, defaultValue = "null") String keyword) {
+        Map<String, Object> modelMap = transferService.transferList(pageCount, type, keyword);
         model.addAllAttributes(modelMap);
         return TRANSFER_BASE_PATH + "transferList";
     }

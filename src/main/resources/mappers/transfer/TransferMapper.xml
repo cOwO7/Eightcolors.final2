@@ -50,31 +50,31 @@
         LEFT JOIN residence_rooms rr ON re.room_no = rr.room_no
         LEFT JOIN residence r ON rr.resid_no = r.resid_no
         <where>
-            <if test="searchType != null and searchKeyword != null">
+            <if test="type != null and keyword != null">
                 <choose>
-                    <when test="searchType == 'transferTitle'">
+                    <when test="type == 'transferTitle'">
                         AND t.transfer_title LIKE CONCAT('%', #{searchKeyword}, '%')
                     </when>
-                    <when test="searchType == 'sellerId'">
+                    <when test="type == 'sellerId'">
                         AND s.id LIKE CONCAT('%', #{searchKeyword}, '%')
                     </when>
-                    <when test="searchType == 'reservationResidName'">
+                    <when test="type == 'reservationResidName'">
                         AND r.resid_name LIKE CONCAT('%', #{searchKeyword}, '%')
                     </when>
-                    <when test="searchType == 'checkinDate'">
+                    <when test="type == 'checkinDate'">
                         AND re.checkin_date LIKE CONCAT('%', #{searchKeyword}, '%')
                     </when>
-                    <when test="searchType == 'checkoutDate'">
+                    <when test="type == 'checkoutDate'">
                         AND re.checkout_date LIKE CONCAT('%', #{searchKeyword}, '%')
                     </when>
                 </choose>
             </if>
         </where>
         ORDER BY t.transfer_no DESC
-        LIMIT #{startRow}, #{pageSize}
+        LIMIT #{startRow}, #{num}
     </select>
 
-    <select id="transferCount" parameterType="map" resultType="int">
+    <select id="getTransferCount" parameterType="map" resultType="int">
         SELECT COUNT(*) FROM transfers t
         LEFT JOIN users s ON t.seller_user_no = s.user_no
         LEFT JOIN users b ON t.buyer_user_no = b.user_no
@@ -82,21 +82,21 @@
         LEFT JOIN residence_rooms rr ON re.room_no = rr.room_no
         LEFT JOIN residence r ON rr.resid_no = r.resid_no
         <where>
-            <if test="searchType != null and searchKeyword != null">
+            <if test="type != null and keyword != null">
                 <choose>
-                    <when test="searchType == 'transferTitle'">
+                    <when test="type == 'transferTitle'">
                         AND t.transfer_title LIKE CONCAT('%', #{searchKeyword}, '%')
                     </when>
-                    <when test="searchType == 'sellerId'">
+                    <when test="type == 'sellerId'">
                         AND s.id LIKE CONCAT('%', #{searchKeyword}, '%')
                     </when>
-                    <when test="searchType == 'reservationResidName'">
+                    <when test="type == 'reservationResidName'">
                         AND r.resid_name LIKE CONCAT('%', #{searchKeyword}, '%')
                     </when>
-                    <when test="searchType == 'checkinDate'">
+                    <when test="type == 'checkinDate'">
                         AND re.checkin_date LIKE CONCAT('%', #{searchKeyword}, '%')
                     </when>
-                    <when test="searchType == 'checkoutDate'">
+                    <when test="type == 'checkoutDate'">
                         AND re.checkout_date LIKE CONCAT('%', #{searchKeyword}, '%')
                     </when>
                 </choose>
