@@ -216,6 +216,8 @@ VALUES
     ('admin01', 'adminpass123', '관리자1', 'ROLE_ADMIN'),
     ('admin02', 'adminpass456', '관리자2', 'ROLE_ADMIN');
 
+DELETE FROM admin_users WHERE admin_id IN ('admin01', 'admin02');
+select * from admin_users;
 
 -- 2. 숙박업소 회원가입 데이터 삽입
 INSERT INTO host_users (id, passwd, email, phone, name, zipcode, address1, address2, business_license_no, role)

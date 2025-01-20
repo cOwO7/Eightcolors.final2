@@ -1,7 +1,7 @@
 package com.springbootfinal.app.mapper.admin;
 
 import com.springbootfinal.app.domain.admin.AdminUserDTO;
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,5 +1,6 @@
 package com.springbootfinal.app;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+@Slf4j
 @Component
 public class DataInitializer implements CommandLineRunner {
 
@@ -43,6 +45,7 @@ public class DataInitializer implements CommandLineRunner {
                     insertStatement.setString(3, "관리자1");
                     insertStatement.setString(4, "ROLE_ADMIN");
                     insertStatement.executeUpdate();
+                    log.info("관리자 계정이 삽입되었습니다.");
                 }
             }
         } catch (Exception e) {

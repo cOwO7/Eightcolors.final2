@@ -2,6 +2,7 @@ package com.springbootfinal.app.service.admin;
 
 import com.springbootfinal.app.domain.admin.AdminUserDTO;
 import com.springbootfinal.app.mapper.admin.AdminUserMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class AdminUserService implements UserDetailsService {
 
@@ -86,12 +88,17 @@ public class AdminUserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        log.info("Attempting to load admin user by username: {}", username);
         AdminUserDTO.AdminUser adminUser = adminUserMapper.selectAdminUserByAdminId(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+                .orElseThrow(() -> {
+                    log.error("Admin user not found with username: {}", username);
+                    return new UsernameNotFoundException("User not found with username: " + username);
+                });
 
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(adminUser.getRole()));
 
+        log.info("Admin user loaded: {}", adminUser.getAdminId());
         return new org.springframework.security.core.userdetails.User(adminUser.getAdminId(), adminUser.getAdminPasswd(), authorities);
     }
 }
