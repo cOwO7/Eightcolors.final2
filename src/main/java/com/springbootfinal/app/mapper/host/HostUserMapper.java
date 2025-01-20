@@ -1,6 +1,6 @@
-package com.springbootfinal.app.mapper.login;
+package com.springbootfinal.app.mapper.host;
 
-import com.springbootfinal.app.domain.login.HostUser;
+import com.springbootfinal.app.domain.host.HostUserDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -10,25 +10,25 @@ import java.util.List;
 public interface HostUserMapper {
 
     // 특정 ID로 호스트 사용자 조회
-    HostUser findHostUserById(@Param("id") String id);
+    HostUserDTO findHostUserById(@Param("id") String id);
 
     // 특정 HostUserNo로 호스트 사용자 조회
-    HostUser findHostUserByHostUserNo(@Param("hostUserNo") Long hostUserNo);
+    HostUserDTO findHostUserByHostUserNo(@Param("hostUserNo") Long hostUserNo);
 
     // 이름으로 호스트 사용자 조회
-    HostUser findHostUserByName(@Param("name") String name);
+    HostUserDTO findHostUserByName(@Param("name") String name);
 
     // 이메일로 호스트 사용자 조회
-    HostUser findHostUserByEmail(@Param("email") String email);
+    HostUserDTO findHostUserByEmail(@Param("email") String email);
 
     // 모든 호스트 사용자 조회
-    List<HostUser> findAllHostUsers();
+    List<HostUserDTO> findAllHostUsers();
 
     // 호스트 사용자 삽입
-    void insertHostUser(HostUser hostUser);
+    void insertHostUser(HostUserDTO hostUser);
 
     // 호스트 사용자 정보 업데이트
-    void updateHostUserById(HostUser hostUser);
+    void updateHostUserById(HostUserDTO hostUser);
 
     // 특정 HostUserNo로 호스트 사용자 삭제
     void deleteHostUserById(@Param("hostUserNo") Long hostUserNo);

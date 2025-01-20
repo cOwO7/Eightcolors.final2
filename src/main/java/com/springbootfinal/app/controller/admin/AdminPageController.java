@@ -1,4 +1,4 @@
-package com.springbootfinal.app.controller.login;
+package com.springbootfinal.app.controller.admin;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;

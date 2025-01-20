@@ -1,4 +1,4 @@
-package com.springbootfinal.app.domain.login;
+package com.springbootfinal.app.domain.host;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Table(name = "host_users")
 @Getter
 @Setter
-public class HostUser {
+public class HostUserDTO {
 
 
     @Id

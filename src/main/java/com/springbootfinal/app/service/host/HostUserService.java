@@ -1,7 +1,7 @@
-package com.springbootfinal.app.service.login;
+package com.springbootfinal.app.service.host;
 
-import com.springbootfinal.app.domain.login.HostUser;
-import com.springbootfinal.app.mapper.login.HostUserMapper;
+import com.springbootfinal.app.domain.host.HostUserDTO;
+import com.springbootfinal.app.mapper.host.HostUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -29,7 +29,7 @@ public class HostUserService implements UserDetailsService {
      * @param hostUser 생성할 호스트 사용자 정보
      * @return 생성된 호스트 사용자 정보
      */
-    public HostUser createHostUser(HostUser hostUser) {
+    public HostUserDTO createHostUser(HostUserDTO hostUser) {
         hostUser.setPasswd(passwordEncoder.encode(hostUser.getPasswd()));
         hostUser.setRole("ROLE_HOST");
         hostUserMapper.insertHostUser(hostUser);
@@ -40,7 +40,7 @@ public class HostUserService implements UserDetailsService {
      * 모든 호스트 사용자를 조회합니다.
      * @return 모든 호스트 사용자의 리스트
      */
-    public List<HostUser> getAllHostUsers() {
+    public List<HostUserDTO> getAllHostUsers() {
         return hostUserMapper.findAllHostUsers();
     }
 
@@ -49,7 +49,7 @@ public class HostUserService implements UserDetailsService {
      * @param id 조회할 호스트 사용자의 ID
      * @return 조회된 호스트 사용자 정보
      */
-    public Optional<HostUser> getHostUserById(Long id) {
+    public Optional<HostUserDTO> getHostUserById(Long id) {
         return Optional.ofNullable(hostUserMapper.findHostUserByHostUserNo(id));
     }
 
@@ -58,7 +58,7 @@ public class HostUserService implements UserDetailsService {
      * @param hostUser 수정할 호스트 사용자 정보
      * @return 수정된 호스트 사용자 정보
      */
-    public HostUser updateHostUserById(HostUser hostUser) {
+    public HostUserDTO updateHostUserById(HostUserDTO hostUser) {
         // 비밀번호가 변경된 경우 암호화
         if (hostUser.getPasswd() != null) {
             hostUser.setPasswd(passwordEncoder.encode(hostUser.getPasswd()));
@@ -80,13 +80,13 @@ public class HostUserService implements UserDetailsService {
      * @param id 조회할 호스트 사용자의 ID
      * @return 조회된 호스트 사용자 정보
      */
-    public HostUser findHostUserById(String id) {
+    public HostUserDTO findHostUserById(String id) {
         return hostUserMapper.findHostUserById(id);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        HostUser hostUser = hostUserMapper.findHostUserById(username);
+        HostUserDTO hostUser = hostUserMapper.findHostUserById(username);
         if (hostUser == null) {
             throw new UsernameNotFoundException("User not found with username: " + username);
         }

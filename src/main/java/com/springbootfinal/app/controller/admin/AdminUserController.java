@@ -1,7 +1,7 @@
-package com.springbootfinal.app.controller.login;
+package com.springbootfinal.app.controller.admin;
 
-import com.springbootfinal.app.domain.login.AdminUser;
-import com.springbootfinal.app.service.login.AdminUserService;
+import com.springbootfinal.app.domain.admin.adminDTO;
+import com.springbootfinal.app.service.admin.AdminUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +24,7 @@ public class AdminUserController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/create")
-    public ResponseEntity<AdminUser> createAdminUser(@RequestBody AdminUser adminUser) {
+    public ResponseEntity<adminDTO.AdminUser> createAdminUser(@RequestBody adminDTO.AdminUser adminUser) {
         return new ResponseEntity<>(adminUserService.createAdminUser(adminUser), HttpStatus.CREATED);
     }
 
@@ -35,7 +35,7 @@ public class AdminUserController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping
-    public List<AdminUser> getAllAdminUsers() {
+    public List<adminDTO.AdminUser> getAllAdminUsers() {
         return adminUserService.getAllAdminUsers();
     }
 
@@ -47,7 +47,7 @@ public class AdminUserController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/{id}")
-    public ResponseEntity<AdminUser> getAdminUserById(@PathVariable Long id) {
+    public ResponseEntity<adminDTO.AdminUser> getAdminUserById(@PathVariable Long id) {
         return adminUserService.getAdminUserById(id)
                 .map(adminUser -> new ResponseEntity<>(adminUser, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -62,7 +62,7 @@ public class AdminUserController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<AdminUser> updateAdminUser(@PathVariable Long id, @RequestBody AdminUser adminUser) {
+    public ResponseEntity<adminDTO.AdminUser> updateAdminUser(@PathVariable Long id, @RequestBody adminDTO.AdminUser adminUser) {
         adminUser.setAdminUserNo(id);
         return new ResponseEntity<>(adminUserService.updateAdminUser(adminUser), HttpStatus.OK);
     }

@@ -1,7 +1,7 @@
 package com.springbootfinal.app.security.login;
 
-import com.springbootfinal.app.service.login.AdminUserService;
-import com.springbootfinal.app.service.login.HostUserService;
+import com.springbootfinal.app.service.admin.AdminUserService;
+import com.springbootfinal.app.service.host.HostUserService;
 import com.springbootfinal.app.service.login.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;

@@ -1,10 +1,9 @@
 package com.springbootfinal.app.controller.login;
 
-import com.springbootfinal.app.domain.login.AdminUser;
-import com.springbootfinal.app.domain.login.HostUser;
+import com.springbootfinal.app.domain.host.HostUserDTO;
 import com.springbootfinal.app.domain.login.LoginType;
 import com.springbootfinal.app.domain.login.Users;
-import com.springbootfinal.app.service.login.HostUserService;
+import com.springbootfinal.app.service.host.HostUserService;
 import com.springbootfinal.app.service.login.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,7 +140,7 @@ public class joinController {
             String mobile = mobile1 + "-" + mobile2 + "-" + mobile3;
 
             // HostUser 객체 생성 및 설정
-            HostUser hostUser = new HostUser();
+            HostUserDTO hostUser = new HostUserDTO();
             hostUser.setName(name);
             hostUser.setId(id);
             hostUser.setPasswd(pass1); // 원시 비밀번호 설정
