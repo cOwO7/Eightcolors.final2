@@ -25,16 +25,16 @@ public class TransferService {
         transferMapper.updateBoard(transferDto);
     }
 
-    // Constants for pagination
+
     private static final int PAGE_SIZE = 10;
     private static final int PAGE_GROUP = 10;
 
-    // Constructor for dependency injection
+
     public TransferService(TransferMapper transferMapper) {
         this.transferMapper = transferMapper;
     }
 
-    // Method to get a paginated and optionally searched list of transfers
+
     public Map<String, Object> transferList(int pageNum, String search, String keyword) {
         log.info("transferList(int pageCount, 문자열 검색, 문자열 키워드");
         int currentPage = pageNum;
@@ -74,14 +74,14 @@ public class TransferService {
         return transferMap;
     }
 
-    // Method to add a new transfer
+
     public void addTransfer(TransferDto transfer) {
         log.info("Adding transfer record: {}", transfer);
         transferMapper.transferInsert(transfer);
         log.info("Added transfer record: {}", transfer);
     }
 
-    // Method to get a transfer by its ID
+
     public TransferDto getTransfer(Long transferNo) {
         log.info("양도게시글 번호{}", transferNo);
         TransferDto transfer = transferMapper.transferRead(transferNo);
@@ -90,7 +90,6 @@ public class TransferService {
 
     }
 
-    // Method to get a list of all transfers
     public List<TransferDto> getTransferList() {
         log.info("양도게시글 리스트 받아오기 완료");
         List<TransferDto> transferList = transferMapper.transferList();
