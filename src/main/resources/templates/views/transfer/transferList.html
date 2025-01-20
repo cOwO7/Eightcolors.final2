@@ -62,7 +62,7 @@
                 <input type="text" class="form-control" name="searchKeyword" id="searchKeyword" placeholder="검색어">
             </div>
             <div class="col-auto">
-                <input type="submit" value="검 색" class="btn btn-primary"/>
+                <input type="submit" value="검색" class="btn btn-primary"/>
             </div>
         </form>
         <table class="table table-striped">
@@ -97,8 +97,8 @@
                         </td>
                         <td>
                             <span th:if="${transfer.status == '양도완료'}" th:text="${transfer.formattedTransferPrice}" class="line-through"></span>
-                            <span th:if="${transfer.status == '양��가능'}" th:text="${transfer.formattedTransferPrice}" class="bold"></span>
-                            <span th:if="${transfer.status != '양���완료' && transfer.status != '양도가능'}" th:text="${transfer.formattedTransferPrice}"></span>
+                            <span th:if="${transfer.status == '양도가능'}" th:text="${transfer.formattedTransferPrice}" class="bold"></span>
+                            <span th:if="${transfer.status != '양도완료' && transfer.status != '양도가능'}" th:text="${transfer.formattedTransferPrice}"></span>
                         </td>
                         <td th:text="${transfer.status}" th:classappend="${transfer.status == '양도가능'} ? 'bold' : ''"></td>
                         <td th:text="${transfer.formattedCreatedAt}"></td>
