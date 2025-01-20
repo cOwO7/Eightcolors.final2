@@ -1,8 +1,5 @@
 package com.springbootfinal.app.configurations;
 
-
-import com.springbootfinal.app.security.login.CustomAuthenticationProvider;
-import com.springbootfinal.app.security.login.CustomAuthenticationSuccessHandler;
 import com.springbootfinal.app.service.login.CustomOAuth2UserService;
 import com.springbootfinal.app.service.login.UserService;
 import org.springframework.context.annotation.Bean;
@@ -24,8 +21,6 @@ public class SecurityConfig {
 
     private final UserService userService;
     private final CustomOAuth2UserService customOAuth2UserService;
-    private final CustomAuthenticationProvider customAuthenticationProvider;
-    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
     private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
 
     @Bean
@@ -33,11 +28,9 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    public SecurityConfig(UserService userService, CustomOAuth2UserService customOAuth2UserService, CustomAuthenticationProvider customAuthenticationProvider, CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) {
+    public SecurityConfig(UserService userService, CustomOAuth2UserService customOAuth2UserService) {
         this.userService = userService;
         this.customOAuth2UserService = customOAuth2UserService;
-        this.customAuthenticationProvider = customAuthenticationProvider;
-        this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
     }
 
     @Bean
@@ -45,19 +38,20 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "user/**", "/userJoin", "/login", "/oauth2/**", "/register", "/oauth2.0/*", "/overlapIdCheck").permitAll()
-
-                        .requestMatchers("/static/**", "/bootstrap/**", "/css/**", "/js/**", "/images/**", "/joinResult", "/h2-console/**", "/userInfo", "/hostUserJoin").permitAll()
-                        .requestMatchers("/hostJoinResult").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/host/**").hasAnyRole("HOST", "ADMIN")
-
+                        .requestMatchers("/static/**", "/bootstrap/**", "/css/**", "/js/**", "/images/**", "/joinResult", "/h2-console/**", "/userInfo").permitAll()
+                        .requestMatchers("/list", "**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/main") // 일반 로그인 성공 후 메인 페이지 이동
                         .failureUrl("/login?error=true")
-                        .successHandler(customAuthenticationSuccessHandler) // 로그인 성공 핸들러 설정
+                        .successHandler((request, response, authentication) -> {
+                            log.info("로그인 성공");
+                            // 로그인 성공 시 세션에 isLogin 값 설정
+                            request.getSession().setAttribute("isLogin", true);
+                            response.sendRedirect("/main");
+                        })
                         .failureHandler((request, response, exception) -> {
                             log.info("로그인 실패");
                             response.sendRedirect("/login?error=true");
@@ -70,6 +64,15 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)
                         )
+                        .successHandler((request, response, authentication) -> {
+                            log.info("로그인 성공");
+                            request.getSession().setAttribute("isLogin", true);
+                            response.sendRedirect("/main");
+                        })
+                        .failureHandler((request, response, exception) -> {
+                            log.info("로그인 실패");
+                            response.sendRedirect("/main?error=true&message=Login%20issue%20occurred.%20Redirecting%20to%20main.");
+                        })
                 )
                 .sessionManagement(session -> session
                         .sessionFixation().newSession() // 새로운 세션 생성
@@ -95,7 +98,9 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .authenticationProvider(customAuthenticationProvider)
+                .userDetailsService(userService)
+                .passwordEncoder(passwordEncoder())
+                .and()
                 .build();
     }
 }

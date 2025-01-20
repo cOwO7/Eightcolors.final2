@@ -23,10 +23,6 @@ public class MainController {
 		return "user/userJoin"; // userjoin.html을 반환합니다.
 	}
 
-	@GetMapping("/hostUserJoin")
-	public String hostUserJoin() {
-		return "user/hostUserJoin";
-	}
 
 	@GetMapping("/helper")
 	public String helper() {
