@@ -16,7 +16,17 @@
         <h3>숙소 사진</h3>
         <th:block th:if="${residence.propertyPhotos != null and not #lists.isEmpty(residence.propertyPhotos)}">
             <img th:src="@{|/images/files/${residence.propertyPhotos[0].thumbnailUrls}|}" alt="숙소 사진" class="img-fluid"/>
-            <!--<img th:src="@{|/images/files/${residence.propertyPhotos[0].photoUrl01}|}" alt="숙소 사진" class="img-fluid"/>-->
+            <img th:src="@{|/images/files/${residence.propertyPhotos[0].photoUrl01}|}" alt="숙소 사진" class="img-fluid"/>
+            <img th:src="@{|/images/files/${residence.propertyPhotos[1].photoUrl01}|}" alt="숙소 사진" class="img-fluid"/>
+            <img th:src="@{|/images/files/${residence.propertyPhotos[2].photoUrl01}|}" alt="숙소 사진" class="img-fluid"/>
+            <img th:src="@{|/images/files/${residence.propertyPhotos[3].photoUrl01}|}" alt="숙소 사진" class="img-fluid"/>
+            <img th:src="@{|/images/files/${residence.propertyPhotos[4].photoUrl01}|}" alt="숙소 사진" class="img-fluid"/>
+            <img th:src="@{|/images/files/${residence.propertyPhotos[5].photoUrl01}|}" alt="숙소 사진" class="img-fluid"/>
+            <img th:src="@{|/images/files/${residence.propertyPhotos[6].photoUrl01}|}" alt="숙소 사진" class="img-fluid"/>
+            <img th:src="@{|/images/files/${residence.propertyPhotos[7].photoUrl01}|}" alt="숙소 사진" class="img-fluid"/>
+            <img th:src="@{|/images/files/${residence.propertyPhotos[8].photoUrl01}|}" alt="숙소 사진" class="img-fluid"/>
+            <img th:src="@{|/images/files/${residence.propertyPhotos[9].photoUrl01}|}" alt="숙소 사진" class="img-fluid"/>
+            <img th:src="@{|/images/files/${residence.propertyPhotos[10].photoUrl01}|}" alt="숙소 사진" class="img-fluid"/>
         </th:block>
     </div>
     <!-- 지도 -->

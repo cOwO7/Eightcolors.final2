@@ -79,7 +79,7 @@ public class PropertyPhotosService {
     }
 
     // 사진 등록 (여러 사진 저장 처리)
-    public void savePhotos(List<PropertyPhotosDto> photos) {
+    /*public void savePhotos(List<PropertyPhotosDto> photos) {
         for (PropertyPhotosDto photo : photos) {
             if (photo.getResidNo() == null) {
                 log.error("resid_no is null for photo: {}", photo);
@@ -93,7 +93,59 @@ public class PropertyPhotosService {
             log.info("Inserting photo: {}", photo);
             propertyPhotosMapper.insertPhoto(photo);  // DB에 사진 저장
         }
+    }*/ // 단일 성공
+    /*public void savePhotos(List<PropertyPhotosDto> photos) {
+        // 파일 개수 제한 (최대 10개)
+        if (photos.size() > 10) {
+            log.error("Too many files received: {}", photos.size());
+            throw new IllegalArgumentException("최대 10개의 파일만 업로드 가능합니다.");
+        }
+
+        for (PropertyPhotosDto photo : photos) {
+            if (photo.getResidNo() == null) {
+                log.error("resid_no is null for photo: {}", photo);
+                throw new IllegalArgumentException("resid_no must not be null");
+            }
+
+            // 썸네일 설정: thumbnailUrls가 비어있으면 photoUrl01을 썸네일로 설정
+            if (photo.getThumbnailUrls() == null || photo.getThumbnailUrls().isEmpty()) {
+                photo.setThumbnailUrls(photo.getPhotoUrl01());  // 썸네일 설정
+            }
+
+            log.info("Inserting photo: {}", photo);
+            propertyPhotosMapper.insertPhoto(photo);  // DB에 사진 저장
+        }
+    }*/
+    public void savePhotos(List<PropertyPhotosDto> photos) {
+        // 파일 개수 제한 (최대 10개)
+        if (photos.size() > 10) {
+            log.error("Too many files received: {}", photos.size());
+            throw new IllegalArgumentException("최대 10개의 파일만 업로드 가능합니다.");
+        }
+
+        for (PropertyPhotosDto photo : photos) {
+            if (photo.getResidNo() == null) {
+                log.error("resid_no is null for photo: {}", photo);
+                throw new IllegalArgumentException("resid_no must not be null");
+            }
+
+            // 썸네일 설정: thumbnailUrls가 비어있으면 photoUrl01을 썸네일로 설정
+            if (photo.getThumbnailUrls() == null || photo.getThumbnailUrls().isEmpty()) {
+                photo.setThumbnailUrls(photo.getPhotoUrl01());  // 썸네일 설정
+            }
+
+            // 사진 URL들을 하나로 모아서 처리
+            List<String> allPhotoUrls = photo.getAllPhotoUrls();  // getAllPhotoUrls 메서드 호출
+            log.info("Inserting photo: {}, all URLs: {}", photo, allPhotoUrls);
+
+            // DB에 사진 저장
+            propertyPhotosMapper.insertPhoto(photo);  // DB에 사진 저장
+        }
     }
+
+
+
+
 
     // 파일 확장자 검증
     private boolean isValidExtension(String fileExtension) {
