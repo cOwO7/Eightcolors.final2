@@ -1,5 +1,6 @@
 package com.springbootfinal.app.service.residence;
 
+import com.springbootfinal.app.domain.residence.PropertyPhotosDto;
 import com.springbootfinal.app.domain.residence.ResidenceDto;
 import com.springbootfinal.app.mapper.residence.PropertyPhotoMapper;
 import com.springbootfinal.app.mapper.residence.ResidenceMapper;
@@ -64,9 +65,11 @@ public class ResidenceService {
     }
 
     // 숙소 등록
-    public void createResidence(ResidenceDto residence) {
+    public void createResidence(ResidenceDto residence,
+                                PropertyPhotosDto photo) {
         log.info("In Service, ResidenceDto: {}", residence); // 서비스에서 DTO 확인
         residenceMapper.insertResidence(residence); // MyBatis 매퍼 호출
+        propertyPhotoMapper.insertPhoto(photo);
     }
 
     // 숙소 수정

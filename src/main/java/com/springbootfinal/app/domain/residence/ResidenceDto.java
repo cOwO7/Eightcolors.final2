@@ -71,7 +71,7 @@ public class ResidenceDto {
 
 
 
-    public void setPhotoUrls(List<String> photoUrls) {
+  public void setPhotoUrls(List<String> photoUrls) {
         int size = photoUrls.size();
         this.photoUrl01 = size > 0 ? photoUrls.get(0) : null;
         this.photoUrl02 = size > 1 ? photoUrls.get(1) : null;

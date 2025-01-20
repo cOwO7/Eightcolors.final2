@@ -71,7 +71,7 @@
     <!-- 숙소 삭제 -->
     <delete id="deleteResidence" parameterType="Long">
         DELETE
-        FROM eightcolors2025.residence
+        FROM residence
         WHERE resid_no = #{residNo}
     </delete>
 
@@ -136,6 +136,7 @@
 
         <!-- 사진 목록 매핑 -->
         <collection property="propertyPhotos" ofType="String">
+            <result property="thumbnailUrls" column="thumbnailUrls"/>
             <result property="photoUrl01" column="photoUrl01"/>
             <result property="photoUrl02" column="photoUrl02"/>
             <result property="photoUrl03" column="photoUrl03"/>

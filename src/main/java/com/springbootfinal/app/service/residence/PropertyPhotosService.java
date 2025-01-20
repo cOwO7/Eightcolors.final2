@@ -33,50 +33,13 @@ public class PropertyPhotosService {
     @Value("${UPLOAD_DIR}")
     private String UPLOAD_DIR;
 
-    // 사진 등록
-    /*public String savePhoto(MultipartFile photo) throws IOException {
-        if (photo.isEmpty()) {
-            throw new IllegalArgumentException("사진이 비어 있습니다.");
-        }
-
-        // 유효성 검사
-        validatePhoto(photo);
-
-        // 파일명 생성
-        String originalFileName = photo.getOriginalFilename();
-        String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
-        String fileName = UUID.randomUUID() + fileExtension;
-
-        // 경로 설정
-        Path filePath = Paths.get(UPLOAD_DIR + fileName);
-
-        // 디렉토리가 존재하지 않으면 생성
-        File directory = new File(UPLOAD_DIR);
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
-
-        // 파일 저장
-        Files.copy(photo.getInputStream(), filePath);
-        return fileName;
-    }*/
-
-    public void validatePhoto(MultipartFile photo) {
-        long maxSize = 5 * 1024 * 1024; // 최대 5MB
-        String[] allowedExtensions = {"jpg", "jpeg", "png", "gif"};
-
-        if (photo.getSize() > maxSize) {
-            throw new IllegalArgumentException("파일 크기가 너무 큽니다.");
-        }
-
-        String originalFileName = photo.getOriginalFilename();
-        String fileExtension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1).toLowerCase();
-
-        if (!Arrays.asList(allowedExtensions).contains(fileExtension)) {
-            throw new IllegalArgumentException("지원되지 않는 파일 형식입니다.");
-        }
+    // 파일 저장 경로 생성
+    private Path getFilePath(String fileName) {
+        return Paths.get(UPLOAD_DIR).resolve(fileName);  // 안전한 경로 생성
     }
-    public String savePhoto(MultipartFile photo, String fileName) throws IOException {
+
+    // 사진 등록 시 유효성 검사 및 저장
+    public String savePhoto(MultipartFile photo, String fileName, Long residNo) throws IOException {
         if (photo.isEmpty()) {
             throw new IllegalArgumentException("사진이 비어 있습니다.");
         }
@@ -95,7 +58,7 @@ public class PropertyPhotosService {
         String fullFileName = fileName + fileExtension;
 
         // 경로 설정
-        Path filePath = Paths.get(UPLOAD_DIR + fullFileName);
+        Path filePath = getFilePath(fullFileName);
 
         // 디렉토리가 존재하지 않으면 생성
         File directory = new File(UPLOAD_DIR);
@@ -106,9 +69,27 @@ public class PropertyPhotosService {
         // 파일 저장
         Files.copy(photo.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-        return fullFileName;  // 저장된 파일명 반환
+        // 저장된 파일명 반환
+        return fullFileName;
     }
 
+    // 사진 등록 (여러 사진 저장 처리)
+    public void savePhotos(List<PropertyPhotosDto> photos) {
+        for (PropertyPhotosDto photo : photos) {
+            // resid_no가 null인지 확인 후 설정
+            if (photo.getResidNo() == null) {
+                log.error("resid_no is null for photo: {}", photo);
+                throw new IllegalArgumentException("resid_no must not be null");
+            }
+
+            if (photo.getThumbnailUrls() == null || photo.getThumbnailUrls().isEmpty()) {
+                photo.setThumbnailUrls(photo.getPhotoUrl01());  // 썸네일 설정 (기본적으로 첫 번째 사진)
+            }
+
+            log.info("Inserting photo: {}", photo);
+            propertyPhotosMapper.insertPhoto(photo);  // DB에 사진 저장
+        }
+    }
 
     // 파일 확장자 검증
     private boolean isValidExtension(String fileExtension) {
@@ -116,39 +97,47 @@ public class PropertyPhotosService {
         return validExtensions.contains(fileExtension.toLowerCase());
     }
 
-    // 숙소 사진 저장 (여러 사진 저장 처리)
-    public void savePhotos(List<PropertyPhotosDto> photos) {
-        for (PropertyPhotosDto photo : photos) {
-            if (photo.getThumbnailUrls() == null || photo.getThumbnailUrls().isEmpty()) {
-                photo.setThumbnailUrls(photo.getPhotoUrl01());
+    // 사진 삭제 (파일과 DB에서 삭제)
+    public void deletePhotos(List<Long> residNos) {
+        for (Long residNo : residNos) {
+            List<String> photoFiles = propertyPhotosMapper.getPhotoFilesByResidNo(residNo);
+            for (String fileName : photoFiles) {
+                try {
+                    deletePhotoFile(fileName);  // 파일 삭제
+                } catch (IOException e) {
+                    log.error("Failed to delete photo file: {}", fileName, e);
+                }
             }
-            log.info("Inserting photo: {}", photo);
-            propertyPhotosMapper.insertPhoto(photo);
+            propertyPhotosMapper.deletePhoto(residNo);  // DB에서 사진 정보 삭제
         }
-    }
-
-    // 숙소 사진 삭제 (파일과 DB에서 삭제)
-    public void deletePhotos(Long residNo) {
-        List<String> photoFiles = propertyPhotosMapper.getPhotoFilesByResidNo(residNo);
-        for (String fileName : photoFiles) {
-            try {
-                deletePhotoFile(fileName);
-            } catch (IOException e) {
-                // 예외 처리 (파일 삭제 실패 시)
-            }
-        }
-        propertyPhotosMapper.deletePhoto(residNo);  // DB에서 사진 삭제
     }
 
     private void deletePhotoFile(String fileName) throws IOException {
-        String filePath = UPLOAD_DIR + fileName;
-        File file = new File(filePath);
+        Path filePath = getFilePath(fileName);
+        File file = new File(filePath.toUri());
         if (file.exists()) {
-            file.delete();  // 실제 파일 삭제
+            if (file.delete()) {
+                log.info("Deleted photo file: {}", fileName);
+            } else {
+                log.warn("Failed to delete photo file: {}", fileName);
+            }
+        }
+    }
+
+    // 사진 유효성 검사
+    public void validatePhoto(MultipartFile photo) {
+        long maxSize = 5 * 1024 * 1024; // 최대 5MB
+        String[] allowedExtensions = {"jpg", "jpeg", "png", "gif"};
+
+        if (photo.getSize() > maxSize) {
+            throw new IllegalArgumentException("파일 크기가 너무 큽니다.");
+        }
+
+        String originalFileName = photo.getOriginalFilename();
+        String fileExtension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1).toLowerCase();
+
+        if (!Arrays.asList(allowedExtensions).contains(fileExtension)) {
+            throw new IllegalArgumentException("지원되지 않는 파일 형식입니다.");
         }
     }
 }
-/*
-public void deletePhotos(Long residNo) {
-    propertyPhotosMapper.deletePhoto(residNo);
-}*/

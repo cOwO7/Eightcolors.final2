@@ -6,12 +6,12 @@
 
     <!-- 숙소 사진 목록 조회 -->
     <select id="getPhotosByResidenceId" resultType="com.springbootfinal.app.domain.residence.PropertyPhotosDto">
-        SELECT * FROM eightcolors2025.property_photos WHERE resid_no = #{residNo}
+        SELECT * FROM property_photos WHERE resid_no = #{residNo}
     </select>
 
     <!-- 사진 등록 -->
     <insert id="insertPhoto" parameterType="com.springbootfinal.app.domain.residence.PropertyPhotosDto">
-        INSERT INTO eightcolors2025.property_photos (resid_no, thumbnailUrls, photo_url01, photo_url02, photo_url03, photo_url04, photo_url05, photo_url06, photo_url07, photo_url08, photo_url09, photo_url10)
+        INSERT INTO property_photos (resid_no, thumbnailUrls, photo_url01, photo_url02, photo_url03, photo_url04, photo_url05, photo_url06, photo_url07, photo_url08, photo_url09, photo_url10)
         VALUES (#{residNo}, #{thumbnailUrls}, #{photoUrl01}, #{photoUrl02}, #{photoUrl03}, #{photoUrl04}, #{photoUrl05}, #{photoUrl06}, #{photoUrl07}, #{photoUrl08}, #{photoUrl09}, #{photoUrl10})
     </insert>
 
