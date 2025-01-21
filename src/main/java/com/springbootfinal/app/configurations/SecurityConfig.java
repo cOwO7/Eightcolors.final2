@@ -32,6 +32,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+
     public SecurityConfig(UserService userService, CustomOAuth2UserService customOAuth2UserService, CustomAuthenticationProvider customAuthenticationProvider, CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) {
         this.userService = userService;
         this.customOAuth2UserService = customOAuth2UserService;
