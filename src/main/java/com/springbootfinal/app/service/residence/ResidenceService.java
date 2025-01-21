@@ -5,8 +5,6 @@ import com.springbootfinal.app.domain.residence.ResidenceDto;
 import com.springbootfinal.app.mapper.residence.PropertyPhotoMapper;
 import com.springbootfinal.app.mapper.residence.ResidenceMapper;
 import com.springbootfinal.app.mapper.residence.ResidenceRoomMapper;
-import com.springbootfinal.app.service.weather.AllWeatherService;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -78,39 +75,26 @@ public class ResidenceService {
         return residence;
     }
 
-    public void createResidence(ResidenceDto residence, MultipartFile[] photoFiles) throws IOException {
-        // 사진 파일이 null이거나 비어 있으면 예외 처리
-        if (photoFiles == null || photoFiles.length == 0) {
-            throw new IllegalArgumentException("사진 파일이 없습니다.");
-        }
-
+    public void createResidence(ResidenceDto residence) throws IOException {
         // 숙소 등록
         residenceMapper.insertResidence(residence);
         Long residNo = residence.getResidNo(); // 등록된 residNo를 가져옴
 
         log.info("residNo : {}", residNo);
-
-        // 사진 처리
-        List<PropertyPhotosDto> photos = new ArrayList<>();
-        for (MultipartFile file : photoFiles) {
-            String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-            String savedFileName = propertyPhotosService.savePhoto(file, fileName, residNo);
-
-            PropertyPhotosDto photoDto = new PropertyPhotosDto();
-            photoDto.setResidNo(residNo);  // residNo를 설정
-            photoDto.setThumbnailUrls(savedFileName);
-
-            photos.add(photoDto);
-        }
-        // 사진 DB 저장
-        propertyPhotosService.savePhotos(photos);
     }
 
 
 
     // 숙소 수정
-    public void updateResidence(ResidenceDto residence) {
+    public void updateResidence(ResidenceDto residence, Long residNo,
+                                List<MultipartFile> photos) throws IOException {
+        // 숙소 정보 업데이트
         residenceMapper.updateResidence(residence);
+
+        // 사진 수정
+        if (photos != null && !photos.isEmpty()) {
+            propertyPhotosService.updatePhoto(residNo, photos);  // 새로운 사진 업데이트
+        }
     }
 
     // 숙소 삭제

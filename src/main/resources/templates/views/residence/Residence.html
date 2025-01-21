@@ -17,7 +17,6 @@
 <th:block layout:fragment="content">
   <div class="container">
     <h1 class="my-4 text-center">숙소 목록</h1>
-
     <!-- 검색 폼 -->
     <form action="#" th:action="@{/list}" method="get" class="row mb-3">
       <div class="col-md-3">
@@ -41,7 +40,6 @@
     <div class="mb-3 text-end">
       <a th:href="@{/new}" class="btn btn-success">숙소 등록</a>
     </div>
-
     <!-- 숙소 목록 테이블 -->
     <table class="table table-bordered table-hover table-responsive">
       <thead class="table-dark">
@@ -50,11 +48,6 @@
         <th>숙소 사진</th>
         <th>숙소 이름</th>
         <th>숙소 유형</th>
-        <th>원가</th>
-        <th>할인%</th>
-        <th>할인 가격</th>
-        <th>체크인</th>
-        <th>체크아웃</th>
         <th>등록일</th>
         <th>상세보기</th>
         <th>관리</th>
@@ -65,9 +58,7 @@
         <td th:text="${residence.residNo}"></td>
         <td>
           <th:block th:if="${residence.propertyPhotos != null and not #lists.isEmpty(residence.propertyPhotos)}">
-            <img th:src="@{|/Upload/${residence.propertyPhotos[0]}|}" alt="숙소 사진" class="img-fluid"/>
-            <img th:src="@{'data:image/jpeg;base64,' + ${residence.propertyPhotos[0]}}" alt="숙소 사진" class="img-fluid"/>
-            <img th:src="@{${residence.propertyPhotos.get(0).photoUrl01}}" alt="Thumbnail">
+            <img th:src="@{|/images/Upload/${residence.propertyPhotos[0].thumbnailUrls}|}" alt="숙소 사진" class="img-fluid"/>
           </th:block>
           <th:block th:unless="${residence.propertyPhotos != null and not #lists.isEmpty(residence.propertyPhotos)}">
             사진 없음
@@ -75,15 +66,9 @@
         </td>
         <td th:text="${residence.residName}"></td>
         <td th:text="${residence.residType}"></td>
-        <td th:text="${residence.totalPrice ?: 'N/A'}"></td>
-        <td th:text="${residence.discountRate ?: '0'} + '%'"></td>
-        <td th:text="${residence.discountedPrice ?: residence.totalPrice}"></td>
-        <td th:text="${residence.checkinDate != null ? #dates.format(residence.checkinDate, 'yyyy-MM-dd') : 'N/A'}"></td>
-        <td th:text="${residence.checkoutDate != null ? #dates.format(residence.checkoutDate, 'yyyy-MM-dd') : 'N/A'}"></td>
         <td th:text="${#dates.format(residence.residDate, 'yyyy-MM-dd')}"></td>
         <td>
           <a th:href="@{/detail/{residNo}(residNo=${residence.residNo})}">상세보기</a>
-
         </td>
         <td>
           <a th:href="@{/edit/{id}(id=${residence.residNo})}" class="btn btn-warning btn-sm">수정</a>
@@ -91,6 +76,10 @@
           <form th:action="@{/delete/{id}(id=${residence.residNo})}" method="post" style="display:inline-block;">
             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
           </form>
+          <!-- soldOut 숨김폼 -->
+          <!--<form th:action="@{sold_out/{residNo}(residNo=${residence.hostNo})}" method="post">
+            <button type="button" class="btn btn-secondary btn-sm">숨김</button>
+          </form>-->
         </td>
       </tr>
       <th:block th:if="${#lists.isEmpty(residences)}">
@@ -99,8 +88,18 @@
         </tr>
       </th:block>
       </tbody>
-    </table>
-  </div>
+    </table><!-- 숙소 목록 테이블 END -->
+
+    <!-- Host 페이지에 필요한 다른 기능 추가 예정 -->
+    <!-- 일별 매출 조회 -->
+
+    <!-- 월별 매출 조회 -->
+
+    <!-- 공실 조회 -->
+
+    <!-- 기타 등등 -->
+
+  </div> <!-- containel END-->
 </th:block>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>

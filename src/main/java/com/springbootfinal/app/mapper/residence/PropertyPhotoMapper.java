@@ -19,7 +19,6 @@ public interface PropertyPhotoMapper {
     List<String> getPhotoFilesByResidNo(Long residNo); // No에 해당하는 모든 사진 삭제
 
     // 사진 수정
-    void updatePhoto(PropertyPhotosDto photo);
-
-
+    void updatePhoto(Long residNo, Long photo);
+    List<PropertyPhotosDto> getPhotosByResidNo(Long residNo);
 }
