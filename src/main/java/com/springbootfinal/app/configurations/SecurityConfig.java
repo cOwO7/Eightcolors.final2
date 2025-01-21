@@ -1,6 +1,5 @@
 package com.springbootfinal.app.configurations;
 
-
 import com.springbootfinal.app.security.login.CustomAuthenticationProvider;
 import com.springbootfinal.app.security.login.CustomAuthenticationSuccessHandler;
 import com.springbootfinal.app.service.login.CustomOAuth2UserService;
@@ -45,7 +44,6 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "user/**", "/userJoin", "/login", "/oauth2/**", "/register", "/oauth2.0/*", "/overlapIdCheck").permitAll()
-
                         .requestMatchers("/static/**", "/bootstrap/**", "/css/**", "/js/**", "/images/**", "/joinResult", "/h2-console/**", "/userInfo", "/hostUserJoin").permitAll()
                         .requestMatchers("/hostJoinResult").permitAll()
                         .requestMatchers("/list", "**").permitAll()
@@ -67,12 +65,13 @@ public class SecurityConfig {
                 .oauth2Login(oauth -> oauth
                         .loginPage("/login")
                         .defaultSuccessUrl("/main") // 소셜 로그인 성공 후 메인 페이지 이동
+                        .successHandler(customAuthenticationSuccessHandler) // OAuth2 로그인 성공 핸들러 설정
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)
                         )
                 )
                 .sessionManagement(session -> session
-                        .sessionFixation().newSession() // 새로운 세션 생성
+                        .sessionFixation().none() // 세션 고정 방지
                         .maximumSessions(1) // 최대 세션 수
                         .maxSessionsPreventsLogin(false) // 이전 세션 만료 후 새 세션 허용
                         .expiredSessionStrategy(event -> {
