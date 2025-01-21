@@ -161,18 +161,20 @@ public class ResidenceController {
 
 
     // 숙소 수정 페이지
-    @GetMapping("/edit/{residNo}")
+    /*@GetMapping("/edit/{residNo}")
     public String editResidenceForm(@PathVariable Long residNo, Model model) {
+        // 숙소 정보 불러오기
         ResidenceDto residence = residenceService.getResidenceById(residNo);
+        List<PropertyPhotosDto> photos = propertyPhotosService.getPhotosByResidenceId(residNo);
 
-        // 기존 숙소 데이터와 사진 목록을 함께 모델에 추가
         model.addAttribute("residence", residence);
+        model.addAttribute("photos", photos);
 
         return "views/residence/ResidenceUpdate"; // 수정 페이지
-    }
+    }*/ // 원본
 
     // 숙소 수정 처리
-    @PostMapping("/edit/{residNo}")
+    /*@PostMapping("/edit/{residNo}")
     public String updateResidence(@PathVariable Long residNo,
                                   @ModelAttribute ResidenceDto residence,
                                   @RequestParam(value = "photos", required = false) List<MultipartFile> photos,
@@ -192,8 +194,34 @@ public class ResidenceController {
         }
 
         return "redirect:/list";  // 수정 완료 후 목록 페이지로 리다이렉트
-    }
+    }*/
+    /*@PostMapping("/edit/{residNo}")
+    public String updateResidence(@PathVariable Long residNo,
+                                  @ModelAttribute ResidenceDto residence,
+                                  @RequestParam(value = "photos", required = false) List<MultipartFile> photos,
+                                  @RequestParam(value = "deletedPhotoIds", required = false) List<Long> deletedPhotoIds) {
+        // 숙소 정보 수정
+        residence.setResidNo(residNo);
+        try {
+            residenceService.updateResidence(residence, residNo, photos);
 
+            // 삭제할 사진 처리 (기존 로직 활용)
+            if (deletedPhotoIds != null && !deletedPhotoIds.isEmpty()) {
+                propertyPhotosService.deletePhotos(deletedPhotoIds);
+            }
+
+            // 새로운 사진 추가 처리
+            if (photos != null && !photos.isEmpty()) {
+                propertyPhotosService.updatePhoto(residNo, photos);
+            }
+
+        } catch (IOException e) {
+            log.error("숙소 수정 중 오류 발생: ", e);
+            return "redirect:/error";
+        }
+
+        return "redirect:/list"; // 수정 완료 후 목록 페이지로 리다이렉트
+    }
 
     // 숙소 삭제
     @PostMapping("/delete/{residNo}")
@@ -201,6 +229,29 @@ public class ResidenceController {
         propertyPhotosMapper.deletePhoto(residNo); // 사진 삭제
         residenceService.deleteResidence(residNo); // 숙소 삭제
         return "redirect:/list"; // 삭제 후 목록 페이지로 리다이렉트
+    }*/  // 원본
+
+    //피티 최종코드
+    @GetMapping("/edit/{residNo}")
+    public String getResidence(@PathVariable Long residNo, Model model) {
+        ResidenceDto residence = residenceService.getResidenceById(residNo);
+        model.addAttribute("residence", residence);
+        return "views/residence/ResidenceUpdate";
+    }
+
+    @PostMapping("/edit/{residNo}")
+    public String updateResidence(@PathVariable Long residNo,
+                                  @ModelAttribute ResidenceDto residence,
+                                  @RequestParam("photos") List<MultipartFile> photos) throws IOException {
+        residenceService.updateResidence(residence, residNo, photos);
+        //return "redirect:/residence/" + residNo;
+        return "redirect:/list";
+    }
+
+    @PostMapping("/delete/{residNo}")
+    public String deleteResidence(@PathVariable Long residNo) {
+        residenceService.deleteResidence(residNo);
+        return "redirect:/list";
     }
 
     // 숙소 매진 상태 갱신
