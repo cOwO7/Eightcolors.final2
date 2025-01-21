@@ -15,6 +15,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public class UserService implements UserDetailsService  {
@@ -34,6 +36,11 @@ public class UserService implements UserDetailsService  {
     public UserService(UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
+    }
+
+    // 최근 가입한 사용자 목록을 반환하는 메서드
+    public List<Users> getRecentUsers(int limit) {
+        return userMapper.findRecentUsers(limit);
     }
 
     // 아이디 중복 확인 메서드

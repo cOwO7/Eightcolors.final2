@@ -1,6 +1,7 @@
 package com.springbootfinal.app.mapper.login;
 
 import com.springbootfinal.app.domain.login.HostUser;
+import com.springbootfinal.app.domain.login.Users;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -32,4 +33,7 @@ public interface HostUserMapper {
 
     // 특정 HostUserNo로 호스트 사용자 삭제
     void deleteHostUserById(@Param("hostUserNo") Long hostUserNo);
+
+    // 최근 가입한 호스트 조회
+    List<HostUser> findRecentHostUsers(@Param("limit") int limit);
 }

@@ -42,4 +42,8 @@
         DELETE FROM host_users WHERE host_user_no = #{hostUserNo}
     </delete>
 
+    <select id="findRecentHostUsers" parameterType="int" resultType="com.springbootfinal.app.domain.login.HostUser">
+        SELECT * FROM host_users ORDER BY regdate DESC LIMIT #{limit}
+    </select>
+
 </mapper>

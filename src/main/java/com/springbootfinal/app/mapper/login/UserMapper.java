@@ -19,6 +19,7 @@ public interface UserMapper {
     // 이름으로 사용자 조회
     Users findByName(@Param("name") String name);
 
+
     //이메일로 사용자 조회
     Users findByEmail(@Param("email") String email);
 
@@ -36,5 +37,8 @@ public interface UserMapper {
 
     // 특정 UserNo로 사용자 삭제
     void deleteUser(@Param("userNo") Long userNo);
+
+    // 최근 가입한 사용자 조회
+    List<Users> findRecentUsers(@Param("limit") int limit);
 
 }

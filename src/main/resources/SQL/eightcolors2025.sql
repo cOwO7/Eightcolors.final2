@@ -1,4 +1,4 @@
-
+drop database eightcolors2025;
 -- MySQL 사용자 계정 생성
 -- root 계정으로 접속 후 script에서 아래 코드 복사 붙여넣기 실행
 -- mysql -u root -h localhost -p mysql

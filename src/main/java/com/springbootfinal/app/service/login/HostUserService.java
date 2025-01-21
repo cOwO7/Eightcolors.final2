@@ -1,6 +1,7 @@
 package com.springbootfinal.app.service.login;
 
 import com.springbootfinal.app.domain.login.HostUser;
+import com.springbootfinal.app.domain.login.Users;
 import com.springbootfinal.app.mapper.login.HostUserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,11 @@ public class HostUserService implements UserDetailsService {
         hostUser.setRole("ROLE_HOST");
         hostUserMapper.insertHostUser(hostUser);
         return hostUser;
+    }
+
+    // 최근 가입한 사용자 목록을 반환하는 메서드
+    public List<HostUser> findRecentHostUsers(int limit) {
+        return hostUserMapper.findRecentHostUsers(limit);
     }
 
     /**

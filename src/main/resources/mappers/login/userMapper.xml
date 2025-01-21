@@ -45,4 +45,8 @@
         DELETE FROM users WHERE user_no = #{userNo}
     </delete>
 
+    <select id="findRecentUsers" resultType="com.springbootfinal.app.domain.login.Users">
+        SELECT * FROM users ORDER BY reg_date DESC LIMIT #{limit}
+    </select>
+
 </mapper>
