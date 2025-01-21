@@ -44,7 +44,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             request.getSession().setAttribute("role", "user");
         }
 
-        // 유저 번호 세션에 저장
+        // 유저 번호 세션에 저장..
         Users userEntity = userService.getCurrentUser();
         if (userEntity != null) {
             Long userNo = userEntity.getUserNo();
