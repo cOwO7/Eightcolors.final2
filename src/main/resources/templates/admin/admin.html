@@ -61,7 +61,8 @@
                             </div>
                         </div>
                     </div>
-                </div> ///accordion
+                </div>
+                <!--  accordion 끝-->
             </div>
             <div class="col-10">
                 <div class="row">
@@ -145,16 +146,17 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:if="${#lists.isEmpty(HostUserList)}">
-                            <td colspan="7">최근 가입 내역이 없습니다.</td>
-                        </tr>
-                        <tr th:each="HostUser : ${HostUserList}">
+
+                        <tr th:if="${not #lists.isEmpty(HostUserList)}" th:each="HostUser : ${HostUserList}">
                             <td th:text="${HostUser.hostUserNo}"></td>
                             <td th:text="${HostUser.name}"></td>
                             <td th:text="${HostUser.id}"></td>
                             <td th:text="${HostUser.email}"></td>
                             <td th:text="${HostUser.phone}"></td>
-                            <td th:text="${HostUser.zipcode + ' ' + HostUser.address1 + ' ' + HostUser.address2}"></td>
+                            <td th:text="${(HostUser.zipcode) + ' ' + HostUser.address1 + ' ' + HostUser.address2}"></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(HostUserList)}">
+                            <td colspan="7">최근 가입 내역이 없습니다.</td>
                         </tr>
                         </tbody>
                     </table>
@@ -164,6 +166,7 @@
 
         </div>
     </div>
-    </div> //container
+    </div>
+<!--    컨테이너 끝       -->
 </th:block>
 </html>
