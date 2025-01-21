@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main_layout}">
+<th:block layout:fragment="content">
+    <div class="container my-5">
+        <h1 class="mb-4">관리자페이지 입니다</h1>
+        <div class="row">
+            <div class="col-2">
+                <div class="accordion" id="accordionExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                회원
+                            </button>
+                        </h2>
+                        <div id="collapse1" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item">회원 조회</li>
+                                    <li class="list-group-item">회원 등급조정</li>
+                                    <li class="list-group-item">회원 삭제</li>
+                                    <li class="list-group-item">회원 등록</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                호스트
+                            </button>
+                        </h2>
+                        <div id="collapse2" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item">호스트 조회</li>
+                                    <li class="list-group-item">호스트 등급조정</li>
+                                    <li class="list-group-item">호스트 삭제</li>
+                                    <li class="list-group-item">호스트 등록</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                문의
+                            </button>
+                        </h2>
+                        <div id="collapse2" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item">문의 조회</li>
+                                    <li class="list-group-item">양도 조회</li>
+                                    <li class="list-group-item">호스트 삭제</li>
+                                    <li class="list-group-item">호스트 등록</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div> ///accordion
+            </div>
+            <div class="col-10">
+                <div class="row">
+                    <div class="col-12">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <td>주문번호</td>
+                                    <td>일반 유저</td>
+                                    <td> 호스트 유저</td>
+                                    <td>전화번호</td>
+                                    <td>체크인 날짜</td>
+                                    <td>결제 금액</td>
+                                    <td>결제일</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:if="${not #lists.isEmpty(orderList)}">
+                            <tr th:each="order : ${orderList}">
+                                <td th:text="${order.reservationNo}"></td>
+                                <td th:text="${order.userName}"></td>
+                                <td th:text="${order.hostName}"></td>
+                                <td th:text="${order.phone}"></td>
+                                <td th:text="${order.checkinDate}"></td>
+                                <td th:text="${order.discountedPrice}"></td>
+                                <td th:text="${order.createdAt}"></td>
+                            </tr>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(orderList)}">
+                                <td colspan="7">최근 결제 기록이 없습니다.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div> //container
+</th:block>
+</html>

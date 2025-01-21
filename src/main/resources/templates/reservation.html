@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/main_layout}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>예약하기</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<th:block layout:fragment="content">
+<div class="container mt-5">
+  <h1>예약하기 - [[${residName}]]</h1>
+
+  <!-- 예약 폼 -->
+  <form action="/reserve" method="post">
+    <!-- roomNo와 residNo는 hidden 필드로 전달 -->
+    <input type="hidden" name="roomNo" th:value="${roomNo}">
+    <input type="hidden" name="residNo" th:value="${residNo}">
+
+    <!-- 체크인 날짜 -->
+    <div class="form-group">
+      <label for="checkinDate">체크인 날짜:</label>
+      <input type="date" id="checkinDate" name="checkinDate" class="form-control" required>
+    </div>
+
+    <!-- 체크아웃 날짜 -->
+    <div class="form-group">
+      <label for="checkoutDate">체크아웃 날짜:</label>
+      <input type="date" id="checkoutDate" name="checkoutDate" class="form-control" required>
+    </div>
+
+    <!-- 사용자 번호 -->
+    <div class="form-group">
+      <label for="userNo">사용자 번호:</label>
+      <input type="number" name="userNo" id="userNo" class="form-control" required>
+    </div>
+
+    <!-- 예약하기 버튼 -->
+    <button type="submit" class="btn btn-primary">예약하기</button>
+  </form>
+
+  <!-- 메시지 표시 영역 -->
+  <div th:if="${message}" class="alert alert-success mt-3" th:text="${message}"></div>
+  <div th:if="${errorMessage}" class="alert alert-danger mt-3" th:text="${errorMessage}"></div>
+</div>
+</th:block>
+</body>
+</html>

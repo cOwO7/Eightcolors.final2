@@ -94,8 +94,10 @@ dependencies {
     implementation 'org.springframework.security:spring-security-web:6.0.0'
     implementation 'org.springframework.security:spring-security-config:6.0.0'
 
+
     // 2025.1.14 추가
     implementation 'commons-codec:commons-codec:1.15'
+
 
 
 

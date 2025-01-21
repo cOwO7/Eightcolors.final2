@@ -10,16 +10,19 @@ import java.util.Map;
 @Mapper
 public interface InquiriesMapper {
 
-    void insertInquiry(InquiryDto inquiryDto);
+    // 문의 목록 조회
+    List<InquiryDto> selectAllInquiries();
 
-    List<InquiryDto> getAllInquiries();
+    // 특정 문의 조회
+    InquiryDto selectInquiryById(Long inquiryNo);
 
-    InquiryDto getInquiryById(Long inquiryNo);
+    // 문의 추가
+    void insertInquiry(InquiryDto inquiry);
 
-    Map<String, Object> getInquiryWithUser(@Param("inquiryNo") Long inquiryNo);
+    // 문의 수정
+    void updateInquiry(InquiryDto inquiry);
 
-    Map<String, Object> getInquiryWithAnswer(@Param("inquiryNo") Long inquiryNo);
-
-    void updateInquiryStatus(@Param("inquiryNo") Long inquiryNo, @Param("status") String status);
+    // 문의 삭제
+    void deleteInquiry(Long inquiryNo);
 }
 

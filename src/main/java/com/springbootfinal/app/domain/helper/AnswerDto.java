@@ -19,4 +19,13 @@ public class AnswerDto {
     private String adminName;    // 관리자 이름 (추가)
     private String content;      // 답변 내용
     private LocalDateTime answerDate; // 답변 작성일
+
+    @Override
+    public String toString() {
+        return "AnswerDto{" +
+                "inquiryNo=" + inquiryNo +
+                ", content='" + content + '\'' +
+                ", adminUserNo=" + adminUserNo +
+            '}';
+    }
 }

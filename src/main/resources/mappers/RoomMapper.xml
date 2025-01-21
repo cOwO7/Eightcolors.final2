@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--	
+	마이바티스 참고 사이트
+	  - http://blog.mybatis.org/
+	  - http://www.mybatis.org/mybatis-3/ko/index.html
+	  
+	@Mapper 애노테이션이 적용된 인터페이스와 맵퍼 XML파일은
+	namespace 속성으로 연결되기 때문에 맵퍼 XML의 namespace를
+	지정할 때 @Mapper 애노테이션이 적용된 맵퍼 인터페이스의
+	완전한 클래스 이름(패키지를 포함한 이름)을 지정하면 된다.   
+-->
+<mapper namespace="com.springbootfinal.app.mapper.room.RoomMapper">
+
+    <!--오늘 기준 예약가능한방-->
+      <select id="findAvailableRoomsByHostAndDate" resultType="RoomDTO">
+        SELECT r.room_no, r.room_name, r.price_per_night, res.resid_name
+        FROM residence_rooms r
+        JOIN residence res ON r.resid_no = res.resid_no
+        WHERE r.room_no NOT IN (
+            SELECT room_no
+            FROM reservations
+            WHERE (#{currentDate} >= checkin_date AND checkout_date > #{currentDate})
+            AND reservation_status != '예약 취소'
+        )
+        AND res.host_user_no = #{hostUserNo}
+        ORDER BY res.resid_name, r.room_name;
+        
+    </select>
+    <!--오늘 기준 투숙중인 내역-->
+    <select id="getReservationsByHotelIdAndDate" resultType="ReservationDTO">
+        SELECT 
+            u.name AS guest_name,
+            u.phone AS guest_phone,
+            rr.room_name,
+            r.checkin_date,
+            r.checkout_date,
+            r.reservation_status
+        FROM 
+            reservations r
+        JOIN 
+            residence_rooms rr ON r.room_no = rr.room_no
+        JOIN 
+            users u ON r.user_no = u.user_no
+        JOIN 
+            residence res ON rr.resid_no = res.resid_no
+        WHERE 
+            res.resid_no = #{hotelId} 
+            AND #{currentDate}  >= r.checkin_date 
+            AND r.checkout_date >= #{currentDate} 
+            AND r.reservation_status = '예약 완료';
+    </select>
+<!--특정숙소의 모든 예약내역-->
+    <select id="getReservationsByResidence" resultType="ReservationDTO" parameterType="map">
+    SELECT
+    u.name AS guest_name,
+    u.phone AS guest_phone,
+    rr.room_name,
+    r.checkin_date,
+    r.checkout_date,
+    r.reservation_status,
+    res.resid_no
+    FROM
+    reservations r
+    JOIN
+    residence_rooms rr ON r.room_no = rr.room_no
+    JOIN
+    users u ON r.user_no = u.user_no
+    JOIN
+    residence res ON rr.resid_no = res.resid_no
+    WHERE
+    res.resid_no = #{hotelId}
+        <if test="type == 'roomName'">
+            AND rr.room_name LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+        <if test="type == 'checkinDate'">
+            AND r.checkin_date = #{keyword}
+        </if>
+        <if test="type == 'checkoutDate'">
+            AND r.checkout_date = #{keyword}
+        </if>
+
+    </select>
+
+
+</mapper>
+
+
+
+

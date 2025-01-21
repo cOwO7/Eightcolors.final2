@@ -7,10 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.Map;
@@ -40,7 +37,9 @@ public class AllWeatherController {
 
     @PostMapping("/processAllWeather")
     @ResponseBody
-    public ResponseEntity<?> processAllWeatherDataJson(@RequestBody AllWeatherDto allWeatherDto) throws IOException {
+    public ResponseEntity<?> processAllWeatherDataJson(
+            @RequestBody AllWeatherDto allWeatherDto) throws IOException {
+
         WeatherDto weatherDto = new WeatherDto(
                 allWeatherDto.getBaseDate(),
                 allWeatherDto.getBaseTime(),

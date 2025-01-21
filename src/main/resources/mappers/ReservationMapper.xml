@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--	
+	마이바티스 참고 사이트
+	  - http://blog.mybatis.org/
+	  - http://www.mybatis.org/mybatis-3/ko/index.html
+	  
+	@Mapper 애노테이션이 적용된 인터페이스와 맵퍼 XML파일은
+	namespace 속성으로 연결되기 때문에 맵퍼 XML의 namespace를
+	지정할 때 @Mapper 애노테이션이 적용된 맵퍼 인터페이스의
+	완전한 클래스 이름(패키지를 포함한 이름)을 지정하면 된다.   
+-->
+<mapper namespace="com.springbootfinal.app.mapper.ReservationMapper">
+
+    <!-- 방 예약 가능 여부 확인 -->
+    <select id="checkRoomAvailability" resultType="int">
+        SELECT COUNT(*)
+        FROM reservations
+        WHERE room_no = #{roomNo}
+        AND (#{checkoutDate} > checkin_date
+        AND checkout_date > #{checkinDate})
+    </select>
+
+    <!-- 방 가격 조회 -->
+    <select id="getRoomPrice" resultType="int">
+        SELECT price_per_night
+        FROM residence_rooms
+        WHERE room_no = #{roomNo}
+    </select>
+
+    <!-- 예약 정보 저장 -->
+    <insert id="insertReservation">
+        INSERT INTO reservations (
+            room_no,
+            user_no,
+            checkin_date,
+            checkout_date,
+            discount_rate,
+            discounted_price,
+            transaction_id,
+            total_price
+        ) VALUES (
+                     #{roomNo},
+                     #{userNo},
+                     #{checkinDate},
+                     #{checkoutDate},
+                     #{discountRate},
+                     #{discountedPrice},
+                     #{transactionId},
+                     #{totalprice}
+
+                 )
+    </insert>
+
+    <select id="findResidenceNameById" resultType="string">
+        SELECT resid_name
+        FROM residence
+        WHERE resid_no = #{residNo}
+    </select>
+
+
+</mapper>
+
+
+
+

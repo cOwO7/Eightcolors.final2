@@ -1,11 +1,24 @@
+
+-- MySQL 사용자 계정 생성
+-- root 계정으로 접속 후 script에서 아래 코드 복사 붙여넣기 실행
+-- mysql -u root -h localhost -p mysql
+create database eightcolors2025;
+create user 'eightcolors2025'@'%' identified by 'eightcolors2025';
+grant all privileges on eightcolors2025.* to 'eightcolors2025'@'%';
+flush privileges;
+-- exit
+
+
 CREATE DATABASE IF NOT EXISTS eightcolors2025; -- 데이터베이스 생성
 
 use eightcolors2025; -- 데이터베이스 접속
+
 
 -- 1. 관리자 계정 테이블
 CREATE TABLE IF NOT EXISTS admin_users (
                                            admin_user_no BIGINT AUTO_INCREMENT PRIMARY KEY,
                                            admin_id VARCHAR(50) UNIQUE,
+
     admin_passwd VARCHAR(255),
     admin_name VARCHAR(100),
     role VARCHAR(50) DEFAULT 'ROLE_ADMIN'
@@ -28,10 +41,12 @@ CREATE TABLE IF NOT EXISTS host_users (
     role VARCHAR(50) DEFAULT 'ROLE_HOST'
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+
 -- 3. 회원가입 테이블
 CREATE TABLE IF NOT EXISTS users (
                                      user_no BIGINT AUTO_INCREMENT PRIMARY KEY,
                                      id VARCHAR(100),
+
     password VARCHAR(255),
     email VARCHAR(255),
     phone VARCHAR(100),
@@ -58,11 +73,13 @@ CREATE TABLE IF NOT EXISTS residence (
     FOREIGN KEY (host_user_no) REFERENCES host_users(host_user_no) ON DELETE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+
 -- 5. 숙소 방 정보 테이블
 CREATE TABLE IF NOT EXISTS residence_rooms (
                                                room_no BIGINT AUTO_INCREMENT PRIMARY KEY,
                                                resid_no BIGINT,
                                                room_name VARCHAR(255),
+
     price_per_night INT,
     FOREIGN KEY (resid_no) REFERENCES residence(resid_no) ON DELETE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -96,11 +113,13 @@ CREATE TABLE IF NOT EXISTS reviews (
     FOREIGN KEY (user_id) REFERENCES users(user_no)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+
 -- 8. 고객센터 테이블
 CREATE TABLE IF NOT EXISTS inquiries (
                                          inquiry_no BIGINT AUTO_INCREMENT PRIMARY KEY,
                                          user_no BIGINT,
                                          title VARCHAR(255),
+
     content TEXT,
     inquiry_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     status ENUM('대기중', '답변완료') DEFAULT '대기중',
@@ -118,11 +137,13 @@ CREATE TABLE IF NOT EXISTS answers (
     FOREIGN KEY (admin_user_no) REFERENCES admin_users(admin_user_no) ON DELETE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+
 -- 10. 숙소 사진 테이블
 CREATE TABLE IF NOT EXISTS property_photos (
                                                photo_no BIGINT AUTO_INCREMENT PRIMARY KEY,
                                                resid_no BIGINT,
                                                thumbnailUrls VARCHAR(255),
+
     photo_url01 VARCHAR(255),
     photo_url02 VARCHAR(255),
     photo_url03 VARCHAR(255),
@@ -136,16 +157,19 @@ CREATE TABLE IF NOT EXISTS property_photos (
     FOREIGN KEY (resid_no) REFERENCES residence(resid_no) ON DELETE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+
 -- 11. 공지사항 테이블
 CREATE TABLE IF NOT EXISTS notices (
                                        notice_no BIGINT AUTO_INCREMENT PRIMARY KEY,
                                        admin_user_no BIGINT,
                                        title VARCHAR(255),
+
     content TEXT,
     notice_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     is_active TINYINT(1) DEFAULT 1,
     FOREIGN KEY (admin_user_no) REFERENCES admin_users(admin_user_no) ON DELETE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 -- 12. 양도 테이블
 CREATE TABLE IF NOT EXISTS transfers (
@@ -155,6 +179,7 @@ CREATE TABLE IF NOT EXISTS transfers (
                                          reservation_no BIGINT,
                                          transfer_price INT,
                                          status ENUM('양도가능', '양도완료') DEFAULT '양도가능',
+
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (seller_user_no) REFERENCES users(user_no) ON DELETE CASCADE,
     FOREIGN KEY (buyer_user_no) REFERENCES users(user_no) ON DELETE SET NULL,
@@ -265,6 +290,117 @@ INSERT INTO transfers (seller_user_no, buyer_user_no, reservation_no, transfer_p
 VALUES
     (2, 2, 1, 100000, '양도가능', '양도합니다.', '급하게 판매합니다');
 
+
+
+
+ALTER TABLE transfers
+    ADD COLUMN transfer_title VARCHAR(255);
+
+ALTER TABLE reservations
+    MODIFY COLUMN discounted_price INT;
+
+ALTER TABLE transfers
+    MODIFY COLUMN transfer_price INT;
+
+ALTER TABLE transfers
+    ADD COLUMN transfer_content VARCHAR(1000);
+
+select * from transfers;
+
+-- 최근 결제기록 5개 읽어오기
+SELECT r.reservation_no, u.name AS user_name, h.name AS host_name, h.phone, r.checkin_date, r.discounted_price, r.created_at
+FROM reservations r
+         JOIN host_users h ON r.room_no = h.host_user_no
+         JOIN users u ON r.user_no = u.user_no
+ORDER BY r.created_at DESC
+LIMIT 5;
+
+
+-- 1. 관리자 계정 데이터 삽입
+INSERT INTO admin_users (admin_id, admin_passwd, admin_name, role)
+VALUES
+    ('admin01', 'adminpass123', '관리자1', 'ROLE_ADMIN'),
+    ('admin02', 'adminpass456', '관리자2', 'ROLE_ADMIN');
+
+SELECT * FROM residence;
+SELECT * FROM residence_rooms;
+SELECT * FROM property_photos;
+
+
+
+
+-- 2. 숙박업소 회원가입 데이터 삽입
+INSERT INTO host_users (id, passwd, email, phone, name, zipcode, address1, address2, business_license_no, role)
+VALUES
+    ('hostuser01', 'hostpass123', 'hostuser01@email.com', '010-1234-5678', '호스트1', '12345', '서울시 강남구', '역삼동 123', '1234567890', 'ROLE_HOST'),
+    ('hostuser02', 'hostpass456', 'hostuser02@email.com', '010-2345-6789', '호스트2', '54321', '서울시 서초구', '반포동 456', '0987654321', 'ROLE_HOST');
+
+-- 3. 일반 회원가입 데이터 삽입
+INSERT INTO users (id, password, email, phone, name, zipcode, address1, address2, login_type, provider_id, role)
+VALUES
+
+    ('user01', 'userpass123', 'user01@email.com', '010-5678-1234', '회원1', '11111', '서울시 마포구', '상암동 789', 'LOCAL', '', 'ROLE_USER'),
+    ('user02', 'userpass456', 'user02@email.com', '010-6789-2345', '회원2', '22222', '서울시 동작구', '신대방동 101', 'GOOGLE', 'google123', 'ROLE_USER');
+select * from users;
+
+
+-- 4. 숙소 데이터 삽입
+INSERT INTO residence (resid_name, host_user_no, resid_description, resid_address, resid_type)
+VALUES
+    ('호스텔 서울', 1, '서울에서 편리한 위치의 호스텔입니다.', '서울시 강남구 역삼동', 'resort'),
+    ('호텔 강남', 2, '편안하고 고급스러운 호텔입니다.', '서울시 서초구 반포동', 'hotel');
+
+-- 5. 숙소 방 정보 데이터 삽입
+INSERT INTO residence_rooms (resid_no, room_name, price_per_night)
+VALUES
+    (1, '101호', 50000),
+    (1, '102호', 60000),
+    (2, '201호', 150000),
+    (2, '202호', 180000);
+
+-- 6. 예약 데이터 삽입 - 안됨
+INSERT INTO reservations (user_no, room_no, checkin_date, checkout_date, total_price, discounted_price, transaction_id, payment_status, reservation_status)
+VALUES
+    (1, 1, '2025-02-01', '2025-02-03', 100000, 95000, 'txn12345', '완료', '예약 완료'),
+    (2, 3, '2025-02-05', '2025-02-07', 300000, 290000, 'txn67890', '완료', '예약 완료');
+
+-- 7. 리뷰 데이터 삽입
+INSERT INTO reviews (resid_no, user_id, comment)
+VALUES
+    (1, 1, '편안하고 좋았어요! 다시 올게요.'),
+    (2, 2, '서비스가 최고였습니다. 다시 방문하고 싶어요.');
+
+-- 8. 고객센터 문의 데이터 삽입
+INSERT INTO inquiries (user_no, title, content)
+VALUES
+    (1, '예약 변경 요청', '예약 날짜를 변경하고 싶습니다.'),
+    (2, '문의사항', '결제 오류가 발생했습니다.');
+
+-- 9. 답변 데이터 삽입
+INSERT INTO answers (inquiry_no, admin_user_no, content)
+VALUES
+    (1, 1, '예약 날짜 변경은 가능합니다. 고객센터로 문의해주세요.'),
+    (2, 2, '결제 오류는 기술팀에서 확인하고 있습니다. 잠시만 기다려주세요.');
+
+-- 10. 숙소 사진 데이터 삽입
+INSERT INTO property_photos (resid_no, thumbnailUrls, photo_url01, photo_url02)
+VALUES
+    (1, 'thumbnail01.jpg', 'photo01.jpg', 'photo02.jpg'),
+    (2, 'thumbnail02.jpg', 'photo03.jpg', 'photo04.jpg');
+
+-- 11. 공지사항 데이터 삽입 - 안됨
+INSERT INTO notices (admin_user_no, title, content)
+VALUES
+    (1, '시스템 점검 안내', '정기적인 시스템 점검이 예정되어 있습니다. 서비스 이용에 불편을 드려 죄송합니다.');
+
+-- 12. 양도 데이터 삽입
+INSERT INTO transfers (seller_user_no, buyer_user_no, reservation_no, transfer_price, status, transfer_title)
+VALUES
+    (1, 2, 1, 100000, '양도완료', '양도합니다.');
+
+INSERT INTO transfers (seller_user_no, buyer_user_no, reservation_no, transfer_price, status, transfer_title)
+VALUES
+    (2, 2, 1, 100000, '양도가능', '양도합니다.');
 
 -- -----------------------------------------------------------------------------------------------------------------------------
 
@@ -412,6 +548,7 @@ VALUES ('kor1150000000', '서울특별시 강서구', 58, 126, 126.0, 37.5586);
 -- 서울특별시 구로구
 INSERT INTO weather_coordinate (kor_code, area_name, grid_x, grid_y, longitude, latitude)
 VALUES ('kor1153000000', '서울특별시 구로구', 58, 125, 126.0, 37.4952);
+
 -- 서울특별시 금천구
 INSERT INTO weather_coordinate (kor_code, area_name, grid_x, grid_y, longitude, latitude)
 VALUES ('kor1154500000', '서울특별시 금천구', 59, 124, 126.0, 37.4592);
@@ -1097,6 +1234,7 @@ VALUES ('kor5182000000', '강원특별자치도 고성군', 85, 145, 128.0, 38.3
 -- 강원특별자치도 양양군
 INSERT INTO weather_coordinate (kor_code, area_name, grid_x, grid_y, longitude, latitude)
 VALUES ('kor5183000000', '강원특별자치도 양양군', 88, 138, 128.0, 38.0722);
+
 
 
 commit;
