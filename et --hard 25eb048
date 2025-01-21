@@ -1,0 +1,21 @@
+[33m5a298a8[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature/transfer[m[33m, [m[1;31morigin/feature/transfer[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{0}: reset: moving to origin/feature/transfer
+[33m5ddc796[m HEAD@{1}: revert: Revert "Search Option"
+[33m25eb048[m HEAD@{2}: commit: Search Option
+[33m7cd475b[m HEAD@{3}: commit: code organization
+[33m638a889[m HEAD@{4}: commit: code organization
+[33m8df6fa9[m HEAD@{5}: commit: Transfer Bulletin CRUD Completed
+[33me347820[m HEAD@{6}: reset: moving to origin/feature/transfer
+[33me347820[m HEAD@{7}: pull --no-stat -v --progress origin feature/transfer: Fast-forward
+[33mf438b20[m HEAD@{8}: commit: Changed to table NULL for TEST.
+[33m9d98309[m HEAD@{9}: commit: Changed to table NULL for TEST.
+[33m6f8f458[m HEAD@{10}: commit: Implementing scanning
+[33mc038b14[m HEAD@{11}: pull --no-stat -v --progress origin feature/transfer: Fast-forward
+[33meb4df27[m HEAD@{12}: commit: Add transfer_content DB, implement transfer bulletin board writing, and add details of text
+[33m7d5afbb[m HEAD@{13}: reset: moving to 7d5afbb500d0c6d9be70a5f096fcae62d2edd257
+[33mc657655[m HEAD@{14}: commit: Add transfer_content DB, implement transfer bulletin board writing, and add details of text
+[33m7d5afbb[m HEAD@{15}: reset: moving to 7d5afbb500d0c6d9be70a5f096fcae62d2edd257
+[33m5243659[m HEAD@{16}: commit: Add transfer_content DB, implement transfer bulletin board writing, and add details of text
+[33m7d5afbb[m HEAD@{17}: pull --no-stat -v --progress origin feature/transfer: Fast-forward
+[33md336894[m HEAD@{18}: pull --no-stat -v --progress origin feature/transfer: Fast-forward
+[33ma1cdd36[m HEAD@{19}: commit: Implementation of transfer bulletin board
+[33m8cef214[m[33m ([m[1;31morigin/develop[m[33m)[m HEAD@{20}: clone: from https://github.com/Mincheol-Ha/Eightcolors.final2.git

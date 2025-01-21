@@ -55,6 +55,10 @@ public class WebConfig implements WebMvcConfigurer{
 		registry.addViewController("/joinForm").setViewName("user/userJoin");
 		// 고객센터
 		registry.addViewController("/helper").setViewName("views/helper");
+		// 양도게시판 글쓰기
+		registry.addViewController("/transferForm").setViewName("views/transfer/transferWrite");
+		registry.addViewController("/transferWrite").setViewName("views/transfer/transferWrite");
+
 	}
 	
 	@Override
