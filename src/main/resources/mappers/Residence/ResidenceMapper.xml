@@ -14,6 +14,7 @@
         r.resid_address AS residAddress,
         r.resid_type AS residType,
         r.resid_date AS residDate,
+        rp.thumbnailUrls AS thumbnailUrls,
         rp.photo_url01 AS photoUrl01,  <!-- 사진 URL -->
         rp.photo_url02 AS photoUrl02,  <!-- 사진 URL -->
         rp.photo_url03 AS photoUrl03,  <!-- 사진 URL -->
