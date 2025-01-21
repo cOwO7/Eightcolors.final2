@@ -85,10 +85,31 @@ public String updateBoard(TransferDto transferDto, RedirectAttributes reAttrs,
         return "redirect:/transfers";
     }
 
-    // 게시글 상세보기 요청 처리 메서드
+ /*   // 게시글 상세보기 요청 처리 메서드
     @GetMapping("/transferDetail")
     public String getTransferDetail(Model model, @RequestParam("transferNo") long transferNo) {
         model.addAttribute("transfer", transferService.getTransfer(transferNo, false));
+        return TRANSFER_BASE_PATH + "transferDetail";
+    }  */
+    // 게시글 상세보기 요청 처리 메서드
+    @GetMapping("/transferDetail")
+    public String getTransferDetail(Model model, @RequestParam("transferNo") long transferNo,
+                                    @RequestParam(value = "pageCount", defaultValue = "1") int pageCount,
+                                    @RequestParam(value = "type", defaultValue = "") String type,
+                                    @RequestParam(value = "keyword", defaultValue = "") String keyword) {
+
+        boolean searchOption = !(type.isEmpty() || keyword.isEmpty());
+
+        TransferDto transfer = transferService.getTransfer(transferNo, true);
+        model.addAttribute("transfer", transfer);
+        model.addAttribute("pageCount", pageCount);
+        model.addAttribute("searchOption", searchOption);
+
+        if (searchOption) {
+            model.addAttribute("type", type);
+            model.addAttribute("keyword", keyword);
+        }
+
         return TRANSFER_BASE_PATH + "transferDetail";
     }
 

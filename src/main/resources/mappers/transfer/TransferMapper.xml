@@ -6,11 +6,11 @@
 <mapper namespace="com.springbootfinal.app.mapper.transfer.TransferMapper">
 
     <!--읽은횟수 증가 맵핑-->
- <!--   <update id="increaseTransferCount" parameterType="int">
+    <update id="incrementReadCount" parameterType="Long">
         UPDATE transfers
         SET transfer_count = transfer_count + 1
         WHERE transfer_no = #{transferNo}
-    </update>-->
+    </update>
 
     <delete id="deleteTransfer">
         DELETE FROM transfers
@@ -104,12 +104,12 @@
         </where>
     </select>
 
-<insert id="transferInsert" parameterType="com.springbootfinal.app.domain.transfer.TransferDto">
-    INSERT INTO transfers (transfer_title, seller_user_no, buyer_user_no,
-                           reservation_no, transfer_price, transfer_content, status)
-    VALUES (#{transferTitle}, #{sellerUserNo}, #{buyerUserNo},
-            #{reservationNo}, #{transferPrice}, #{transferContent}, '양도가능')
-</insert>
+    <insert id="transferInsert" parameterType="com.springbootfinal.app.domain.transfer.TransferDto">
+        INSERT INTO transfers (transfer_title, seller_user_no, buyer_user_no,
+                               reservation_no, transfer_price, transfer_content, status)
+        VALUES (#{transferTitle}, #{sellerUserNo}, #{buyerUserNo},
+                #{reservationNo}, #{transferPrice}, #{transferContent}, '양도가능')
+    </insert>
 
     <select id="transferRead" resultType="com.springbootfinal.app.domain.transfer.TransferDto">
         SELECT

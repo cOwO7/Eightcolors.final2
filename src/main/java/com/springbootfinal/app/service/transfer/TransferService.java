@@ -15,6 +15,20 @@ public class TransferService {
 
     private final TransferMapper transferMapper;
 
+/*    public TransferDto getTransferDto(Long transferNo, boolean isCount) {
+        log.info("getTransferDto: {}, Long transferNo, boolean isCount", transferNo, isCount);
+        TransferDto transfer = transferMapper.transferRead(transferNo);
+        log.info("transferRead: {}", transferNo);
+
+        if (isCount) {
+            transferMapper.incrementReadCount(transferNo);
+        }
+
+        return transferMapper.transferRead(transferNo);
+
+    }*/
+
+
     public void deleteTransfer(Long transferNo) {
         log.info("TransferService: 삭제하기{}", transferNo);
         transferMapper.deleteTransfer(transferNo);
@@ -26,8 +40,8 @@ public class TransferService {
     }
 
 
-    private static final int PAGE_SIZE = 10;
-    private static final int PAGE_GROUP = 10;
+    private static final int PAGE_SIZE = 20;
+    private static final int PAGE_GROUP = 20;
 
 
     public TransferService(TransferMapper transferMapper) {
@@ -36,7 +50,7 @@ public class TransferService {
 
 
     public Map<String, Object> transferList(int pageCount, String type, String keyword) {
-        log.info("transferList(int pageCount, 문자열 검색, 문자열 키워드");
+        log.info("transferList(int pageCount, String type, String keyword");
         int currentPage = pageCount;
         int startRow = (currentPage - 1) * PAGE_SIZE;
         log.info("startRow : {}", startRow);
@@ -47,16 +61,16 @@ public class TransferService {
         int startPage = (currentPage / PAGE_GROUP) * PAGE_GROUP + 1 - (currentPage % PAGE_GROUP == 0 ? PAGE_GROUP : 0);
         int endPage = startPage + PAGE_GROUP - 1;
 
-        if (endPage > pageCount) {
-            endPage = pageCount;
+        if (endPage > totalPageCount) {
+            endPage = totalPageCount;
         }
 
         Map<String, Object> modelMap = new HashMap<String, Object>();
 
         modelMap.put("transferList", transferList);
+        modelMap.put("totalPageCount", totalPageCount);
         modelMap.put("startPage", startPage);
         modelMap.put("endPage", endPage);
-        modelMap.put("totalPageCount", totalPageCount);
         modelMap.put("currentPage", currentPage);
         modelMap.put("listCount", listCount);
         modelMap.put("pageGroup", PAGE_GROUP);
@@ -79,12 +93,19 @@ public class TransferService {
     }
 
 
-    public TransferDto getTransfer(Long transferNo, boolean someFlag) {
-        log.info("양도게시글 번호{}", transferNo);
-        TransferDto transfer = transferMapper.transferRead(transferNo);
-        log.info("Fetched transfer record: {}", transfer);
+   /* public TransferDto getTransfer(Long transferNo, boolean isCount) {
+        log.info("getTransfer: {}", transferNo);
+        TransferDto transfer = transferMapper.transferRead(transferNo , isCount);
+        log.info("getTransfer: {}", transfer);
         return transfer;
 
+    }*/
+    public TransferDto getTransfer(Long transferNo, boolean isCount) {
+        log.info("getTransfer: {}", transferNo);
+        if(isCount) {
+            transferMapper.incrementReadCount(transferNo);
+        }
+        return transferMapper.transferRead(transferNo, false);
     }
 
     public List<TransferDto> getTransferList() {

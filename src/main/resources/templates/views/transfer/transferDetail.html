@@ -26,7 +26,6 @@
                 <div class="mb-4">
                     <p><strong>양도자 ID:</strong> <span th:text="${transfer.sellerId}"></span></p>
                 </div>
-
                 <h4 class="text-primary mb-3">숙소 예약 정보</h4>
                 <div class="mb-4">
                     <p><strong>숙소명:</strong> <span th:text="${transfer.reservationResidName}"></span></p>
@@ -49,7 +48,12 @@
                     <form name="checkForm" id="checkForm">
                         <input type="hidden" name="transferNo" th:value="${transfer.transferNo}" />
                         <input type="hidden" name="pageCount" th:value="${pageCount}" />
+                        <th:block th:if=${searchOption}>
+                            <input type="hidden" name="type" th:value="${ type }" />
+                            <input type="hidden" name="keyword" th:value="${ keyword }" />
+                        </th:block>
                     </form>
+
                   <!--  <div class="row my-3">
                         <div class="col text-center">
                             <input class="btn btn-warning" type="button" id="detailUpdate" value="수정하기" />
@@ -59,13 +63,13 @@
                         </div>
 
                     </div>-->
-                    <a href="/transfers" class="btn btn-primary">목록으로</a>
+                   <a href="javascript:history.back()" class="btn btn-primary">목록으로</a>
                     <form action="updateForm" method="post">
                         <input type="hidden" name="transferNo" th:value="${transfer.transferNo}" />
                         <input type="hidden" name="pageCount" th:value="${pageCount}" />
                         <input type="hidden" name="search" th:value="${search}" />
                         <input type="hidden" name="keyword" th:value="${keyword}" />
-                        <input type="submit" value="수정하기" class="btn btn-warning"/>
+                        <input type="submit" id="detailUpdate" value="수정하기" class="btn btn-warning"/>
                     </form>
                         <form id="deleteForm" action="delete" method="post">
                             <input type="hidden" name="transferNo" th:value="${transfer.transferNo}" />

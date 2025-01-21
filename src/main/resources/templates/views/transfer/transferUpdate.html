@@ -18,12 +18,11 @@
                         <h2 class="fs-3 fw-bold">양도 게시글 수정</h2>
                     </div>
                 </div>
-                <form name="updateForm" action="/update" id="updateForm" class="row g-3 border-primary" method="post">
+               <form name="updateForm" action="/update" id="updateForm" class="row g-3 border-primary" method="post">
                     <input type="hidden" name="transferNo" th:value="${transfer.transferNo}">
                     <input type="hidden" name="pageCount" th:value="${pageCount}">
                     <input type="hidden" name="search" th:value="${search}">
                     <input type="hidden" name="keyword" th:value="${keyword}">
-                    <!-- 검색 리스트에서 들어온 요청일 경우 다시 keyword에 해당하는 검색 리스트로 돌려보내기 위해서 아래의 파라미터가 필요하다. -->
                     <th:block th:if="${searchOption}">
                         <input type="hidden" name="search" th:value="${search}">
                         <input type="hidden" name="keyword" th:value="${keyword}">
@@ -58,8 +57,7 @@
                     </div>
                     <div class="col-8 offset-md-2 text-center mt-5">
                         <input type="submit" value="수정하기" class="btn btn-primary"/>
-                        <!-- 일반 게시글 리스트에서 온 요청이면 일반 게시글 리스트로 돌려보낸다. -->
-                        <a href="/transfers" class="btn btn-secondary">목록으로</a>
+                        <a href="/transfers?pageCount=${pageCount}" class="btn btn-secondary">목록으로</a>
                     </div>
                 </form>
             </div>

@@ -9,6 +9,8 @@ import java.util.List;
 @Mapper
 public interface TransferMapper {
 
+    // no에 해당하는 게시글의 읽은 횟수를 DB 테이블에서 증가시키는 메서드
+    public void incrementReadCount(Long transferNo);
 
     public void deleteTransfer(Long transferNo);
 
@@ -26,7 +28,7 @@ public interface TransferMapper {
     void transferInsert(TransferDto transfer);
 
     // 특정 게시글을 읽어오는 메서드
-    TransferDto transferRead(Long no);
+    TransferDto transferRead(Long transferNo, boolean isCount);
 
     // 전체 게시글 리스트를 반환하는 메서드
     List<TransferDto> transferList();
