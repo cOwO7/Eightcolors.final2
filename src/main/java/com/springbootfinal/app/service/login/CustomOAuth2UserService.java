@@ -11,9 +11,11 @@ import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
-
-
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Collections;
 import java.util.Map;
 
@@ -81,6 +83,14 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         if (user == null) {
             user = userService.saveSocialUser(email, name, providerId, LoginType.valueOf(provider.toUpperCase()));
         }
+
+        // HttpServletRequest 가져오기
+        HttpServletRequest request = (HttpServletRequest) ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+
+        // 유저 번호와 유저 ID 세션에 저장
+        HttpSession session = request.getSession();
+        session.setAttribute("userNo", user.getUserNo());
+        session.setAttribute("id", user.getId());
 
         // 사용자 정보 반환
         Map<String, Object> customAttributes = Map.of(

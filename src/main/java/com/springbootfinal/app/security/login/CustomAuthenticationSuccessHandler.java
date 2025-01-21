@@ -1,6 +1,7 @@
 package com.springbootfinal.app.security.login;
 
-import jakarta.servlet.FilterChain;
+import com.springbootfinal.app.service.login.CustomUserDetails;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -11,13 +12,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@Slf4j
 @Component
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
 
     @Override
     public void onAuthenticationSuccess(jakarta.servlet.http.HttpServletRequest request, jakarta.servlet.http.HttpServletResponse response, Authentication authentication) throws IOException, jakarta.servlet.ServletException {
-
         // 로그인 성공 시 세션에 로그인 상태와 사용자 역할 저장
         request.getSession().setAttribute("isLogin", true);
 
@@ -29,6 +30,18 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         } else {
             request.getSession().setAttribute("role", "user");
         }
+
+        // 유저 번호와 유저 ID 저장
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        request.getSession().setAttribute("userNo", userDetails.getUserNo());
+        request.getSession().setAttribute("id", userDetails.getUsername());
+
+        // 세션 정보 로그 출력
+        log.info("User logged in: userNo={}, id={}, role={}",
+                userDetails.getUserNo(),
+                userDetails.getUsername(),
+                request.getSession().getAttribute("role"));
+
         response.sendRedirect("/main"); // 로그인 성공 후 메인 페이지로 리다이렉트
     }
 }
