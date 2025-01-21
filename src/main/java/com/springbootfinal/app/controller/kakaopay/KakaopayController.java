@@ -18,16 +18,23 @@ public class KakaopayController {
 
     @GetMapping("/Kakaopay")
     public String index() {
-        return "pc/index";
+        return "/pc/index";
     }
+
 
     // 결제 준비 요청 transferNo를 받아서 결제 준비 요청을 한다.
     // Request payment preparation with transferNo
 
     @GetMapping("/ready/{agent}/{openType}")
     public String ready(@PathVariable("agent") String agent, @PathVariable("openType") String openType,
-                        @RequestParam("transferNo") long transferNo, Model model) {
-        ReadyResponse readyResponse = kakaoPayService.ready(agent, openType);
+                        @RequestParam(value = "transferNo", required = false, defaultValue = "0") long transferNo, Model model) {
+        if (transferNo == 0) {
+            // Handle the case where transferNo is not provided
+            model.addAttribute("error", "Transfer number is required");
+            return "error";
+        }
+
+        ReadyResponse readyResponse = kakaoPayService.ready(agent, openType, transferNo);
 
         if (agent.equals("mobile")) {
             return "redirect:" + readyResponse.getNext_redirect_mobile_url();
@@ -35,13 +42,12 @@ public class KakaopayController {
 
         if (agent.equals("app")) {
             model.addAttribute("webviewUrl", "app://webview?url=" + readyResponse.getNext_redirect_app_url());
-            return "app/webview/ready";
+            return "views/app/webview/ready";
         }
 
         model.addAttribute("response", readyResponse);
         return agent + "/" + openType + "/ready";
     }
-
     @GetMapping("/approve/{agent}/{openType}")
     public String approve(@PathVariable("agent") String agent, @PathVariable("openType") String openType, @RequestParam("pg_token") String pgToken, Model model) {
         String approveResponse = kakaoPayService.approve(pgToken);

@@ -80,7 +80,11 @@
                         </form>
                     <form id="paymentForm" action="/ready/pc/layer" method="get">
                         <input type="hidden" name="transferNo" th:value="${transfer.transferNo}" />
-                        <button type="button" class="btn btn-success" onclick="checkLoginAndSubmit()">결제하기</button>
+                        <button type="button" class="btn btn-success" onclick="checkLoginAndSubmit()">웹에서 결제</button>
+                    </form>
+                    <form action="/ready/pc/popup" method="get">
+                        <input type="hidden" name="transferNo" th:value="${transfer.transferNo}" />
+                        <button type="submit" onclick="checkLoginAndSubmit()">팝업으로 결제</button>
                     </form>
                 </div>
             </div>
