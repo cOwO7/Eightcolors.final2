@@ -11,10 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 
 @Service
 @Slf4j
@@ -31,8 +30,6 @@ public class UserService implements UserDetailsService  {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-
 
     public UserService(UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.userMapper = userMapper;
@@ -107,9 +104,10 @@ public class UserService implements UserDetailsService  {
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
         log.info("User found with username: " + username);
-        return new org.springframework.security.core.userdetails.User(
-                user.getId(), // 사용자 ID
-                user.getPassword(), // 사용자 비밀번호
+        return new CustomUserDetails(
+                user.getUserNo(),
+                user.getId(),
+                user.getPassword(),
                 AuthorityUtils.createAuthorityList("ROLE_USER")
         );
     }

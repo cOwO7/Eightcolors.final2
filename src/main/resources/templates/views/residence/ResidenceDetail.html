@@ -4,6 +4,8 @@
       layout:decorate="~{/layouts/main_layout}">
 <head>
     <link th:href="@{/bootstrap/bootstrap.min.css}" rel="stylesheet">
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=36a75517ce82693ff837cc79c740e197&libraries=services,clusterer"></script>
     <meta charset="UTF-8">
     <title>숙소 상세보기</title>
 </head>
@@ -11,68 +13,131 @@
 <th:block layout:fragment="content">
     <div class="container">
         <h1 th:text="${residence.residName}">숙소 제목</h1>
-        <p th:text="${residence.residDescription}">숙소 설명</p>
         <!-- 숙소 사진들 -->
         <h3>숙소 사진</h3>
-        <th:block th:if="${residence.propertyPhotos != null and not #lists.isEmpty(residence.propertyPhotos)}">
-            <img th:src="@{|/images/files/${residence.propertyPhotos[0].thumbnailUrls}|}" alt="숙소 사진" class="img-fluid"/>
-            <img th:src="@{|/images/files/${residence.propertyPhotos[0].photoUrl01}|}" alt="숙소 사진" class="img-fluid"/>
-            <img th:src="@{|/images/files/${residence.propertyPhotos[1].photoUrl01}|}" alt="숙소 사진" class="img-fluid"/>
-            <img th:src="@{|/images/files/${residence.propertyPhotos[2].photoUrl01}|}" alt="숙소 사진" class="img-fluid"/>
-            <img th:src="@{|/images/files/${residence.propertyPhotos[3].photoUrl01}|}" alt="숙소 사진" class="img-fluid"/>
-            <img th:src="@{|/images/files/${residence.propertyPhotos[4].photoUrl01}|}" alt="숙소 사진" class="img-fluid"/>
-            <img th:src="@{|/images/files/${residence.propertyPhotos[5].photoUrl01}|}" alt="숙소 사진" class="img-fluid"/>
-            <img th:src="@{|/images/files/${residence.propertyPhotos[6].photoUrl01}|}" alt="숙소 사진" class="img-fluid"/>
-            <img th:src="@{|/images/files/${residence.propertyPhotos[7].photoUrl01}|}" alt="숙소 사진" class="img-fluid"/>
-            <img th:src="@{|/images/files/${residence.propertyPhotos[8].photoUrl01}|}" alt="숙소 사진" class="img-fluid"/>
-            <img th:src="@{|/images/files/${residence.propertyPhotos[9].photoUrl01}|}" alt="숙소 사진" class="img-fluid"/>
-            <img th:src="@{|/images/files/${residence.propertyPhotos[10].photoUrl01}|}" alt="숙소 사진" class="img-fluid"/>
-        </th:block>
-    </div>
-    <!-- 지도 -->
-    <div>
-        <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-        <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=36a75517ce82693ff837cc79c740e197&libraries=services,clusterer"></script>
-    </div>
-    <form th:action="@{/residence/processAllWeather}" method="post">
-    <div id="map" style="width: 100%; height: 500px; text-align: center;"></div>
-    <!-- 숙소 정보 (hidden 필드로 추가) -->
-    <input type="hidden" id="nx" th:value="${residence.nx}"/>
-    <input type="hidden" id="ny" th:value="${residence.ny}"/>
-    <input type="hidden" id="regId" th:value="${residence.regId}"/>
-    <input type="hidden" id="regIdTemp" th:value="${residence.regIdTemp}"/>
-    <input type="hidden" id="baseDate" name="baseDate" th:value="${baseDate}"/>
-    <input type="hidden" id="baseTime" name="baseTime" th:value="${baseTime}"/>
-    <input type="hidden" id="latitudeNum" name="latitudeNum" th:value="${residence.latitudeNum}" />
-    <input type="hidden" id="longitudeNum" name="longitudeNum" th:value="${residence.longitudeNum}" />
-    <input type="hidden" id="tmFc" name="tmFc" th:value="${tmFc}" />
-    </form>
-    <!-- 날씨 데이터 표시 -->
-    <table>
-        <tbody id="combinedWeatherTableBody"></tbody>
-        <div id="weatherContainer" class="weather-container">
-            <div id="row1" class="row1"></div>
+        <div class="row" style="display: flex; align-items: center;">
+            <!-- 좌측: 카로셀 -->
+            <div class="col-md-7">
+                <!--<div class="row">-->
+                <div id="photoCarousel" class="carousel slide" style="width: 600px; height: 400px;" data-bs-ride="carousel">
+                    <!-- 카로셀 내용 -->
+                    <div class="carousel-inner" style="width: 630px; height: 400px;">
+                        <th:block th:each="photo, iterStat : ${residence.propertyPhotos}">
+                            <th:block th:if="${photo.photoUrl01 != null}">
+                                <div class="carousel-item" th:classappend="${iterStat.index == 0 ? ' active' : ''}">
+                                    <img th:src="@{|/images/files/${photo.photoUrl01}|}" alt="숙소 사진" class="d-block w-100"/>
+                                </div>
+                            </th:block>
+                            <th:block th:if="${photo.photoUrl02 != null}">
+                                <div class="carousel-item" th:classappend="${iterStat.index == 1 ? ' active' : ''}">
+                                    <img th:src="@{|/images/Upload/${photo.photoUrl02}|}" alt="숙소 사진" class="d-block w-100"/>
+                                </div>
+                            </th:block>
+                            <th:block th:if="${photo.photoUrl03 != null}">
+                                <div class="carousel-item" th:classappend="${iterStat.index == 2 ? ' active' : ''}">
+                                    <img th:src="@{|/images/Upload/${photo.photoUrl03}|}" alt="숙소 사진" class="d-block w-100"/>
+                                </div>
+                            </th:block>
+                            <th:block th:if="${photo.photoUrl04 != null}">
+                                <div class="carousel-item" th:classappend="${iterStat.index == 3 ? ' active' : ''}">
+                                    <img th:src="@{|/images/Upload/${photo.photoUrl04}|}" alt="숙소 사진" class="d-block w-100"/>
+                                </div>
+                            </th:block>
+                            <th:block th:if="${photo.photoUrl05 != null}">
+                                <div class="carousel-item" th:classappend="${iterStat.index == 4 ? ' active' : ''}">
+                                    <img th:src="@{|/images/Upload/${photo.photoUrl05}|}" alt="숙소 사진" class="d-block w-100"/>
+                                </div>
+                            </th:block>
+                            <th:block th:if="${photo.photoUrl06 != null}">
+                                <div class="carousel-item" th:classappend="${iterStat.index == 5 ? ' active' : ''}">
+                                    <img th:src="@{|/images/Upload/${photo.photoUrl06}|}" alt="숙소 사진" class="d-block w-100"/>
+                                </div>
+                            </th:block>
+                            <th:block th:if="${photo.photoUrl07 != null}">
+                                <div class="carousel-item" th:classappend="${iterStat.index == 6 ? ' active' : ''}">
+                                    <img th:src="@{|/images/Upload/${photo.photoUrl07}|}" alt="숙소 사진" class="d-block w-100"/>
+                                </div>
+                            </th:block>
+                            <th:block th:if="${photo.photoUrl08 != null}">
+                                <div class="carousel-item" th:classappend="${iterStat.index == 7 ? ' active' : ''}">
+                                    <img th:src="@{|/images/Upload/${photo.photoUrl08}|}" alt="숙소 사진" class="d-block w-100"/>
+                                </div>
+                            </th:block>
+                            <th:block th:if="${photo.photoUrl09 != null}">
+                                <div class="carousel-item" th:classappend="${iterStat.index == 8 ? ' active' : ''}">
+                                    <img th:src="@{|/images/Upload/${photo.photoUrl09}|}" alt="숙소 사진" class="d-block w-100"/>
+                                </div>
+                            </th:block>
+                            <th:block th:if="${photo.photoUrl10 != null}">
+                                <div class="carousel-item" th:classappend="${iterStat.index == 9 ? ' active' : ''}">
+                                    <img th:src="@{|/images/Upload/${photo.photoUrl10}|}" alt="숙소 사진" class="d-block w-100"/>
+                                </div>
+                            </th:block>
+                        </th:block>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#photoCarousel"
+                                data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#photoCarousel"
+                                data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- 우측: 지도 -->
+            <div class="col-md-5">
+                <div id="map" style="width: 500px; height: 400px;"></div>
+            </div>
         </div>
-        <div class="weather-scroll-container">
-            <button class="scroll-btn left" onclick="scrollToLeft()">&#10094;</button>
-            <div id="row2" class="weather-row"></div>
-            <button class="scroll-btn right" onclick="scrollToRight()">&#10095;</button>
+        <form th:action="@{/residence/processAllWeather}" method="post">
+            <!-- 숙소 정보 (hidden 필드로 추가) -->
+            <input type="hidden" id="nx" th:value="${residence.nx}"/>
+            <input type="hidden" id="ny" th:value="${residence.ny}"/>
+            <input type="hidden" id="regId" th:value="${residence.regId}"/>
+            <input type="hidden" id="regIdTemp" th:value="${residence.regIdTemp}"/>
+            <input type="hidden" id="baseDate" name="baseDate" th:value="${baseDate}"/>
+            <input type="hidden" id="baseTime" name="baseTime" th:value="${baseTime}"/>
+            <input type="hidden" id="latitudeNum" name="latitudeNum" th:value="${residence.latitudeNum}"/>
+            <input type="hidden" id="longitudeNum" name="longitudeNum" th:value="${residence.longitudeNum}"/>
+            <input type="hidden" id="tmFc" name="tmFc" th:value="${tmFc}"/>
+        </form>
+
+        <!-- 추가는 여기에서 Start-->
+
+
+        <!-- 여기까지 추가 END -->
+
+        <!-- 날씨 데이터 표시 -->
+        <table>
+            <tbody id="combinedWeatherTableBody"></tbody>
+            <div id="weatherContainer" class="weather-container">
+                <div id="row1" class="row1"></div>
+            </div>
+            <div class="weather-scroll-container">
+                <button class="scroll-btn left" onclick="scrollToLeft()">&#10094;</button>
+                <div id="row2" class="weather-row"></div>
+                <button class="scroll-btn right" onclick="scrollToRight()">&#10095;</button>
+            </div>
+        </table>
+
+        <!-- 본문 -->
+        <div class="row">
+            <div class="col-md-12">
+                <p th:text="${residence.residDescription}">숙소 설명</p>
+            </div>
         </div>
-    </table>
-
-    <!-- 삭제 버튼 -->
-    <form th:action="@{/residence/{residNo}/delete(residNo=${residence.residNo})}" method="post">
-        <button type="submit" class="btn btn-danger">숙소 삭제</button>
-    </form>
-
-    <!-- 목록으로 돌아가기 -->
-    <a href="/list" class="btn btn-secondary mt-3">목록으로 돌아가기</a>
-    </div>
-<script th:src="@{/js/jquery-3.7.1.min.js}"></script>
-<link th:href="@{/css/weather/allW.css}" rel="stylesheet"/>
-<script th:src="@{/js/map/geolocation.js}"></script>
-<script th:src="@{/js/map/kakaomapN.js}"></script>
-<script th:src="@{/js/weather/allWN2.js}"></script>
+        <!-- 목록으로 돌아가기 -->
+        <div>
+            <a href="/list" class="btn btn-secondary mt-3 text-decoration-none text-center">목록으로 돌아가기</a>
+        </div>
+        <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+        <link th:href="@{/css/weather/allW.css}" rel="stylesheet"/>
+        <script th:src="@{/js/map/geolocation.js}"></script>
+        <script th:src="@{/js/map/kakaomapN.js}"></script>
+        <script th:src="@{/js/weather/allWN2.js}"></script>
 </th:block>
 </body>
 </html>

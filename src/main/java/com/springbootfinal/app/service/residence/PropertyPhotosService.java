@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -79,23 +80,7 @@ public class PropertyPhotosService {
     }
 
     // 사진 등록 (여러 사진 저장 처리)
-    /*public void savePhotos(List<PropertyPhotosDto> photos) {
-        for (PropertyPhotosDto photo : photos) {
-            if (photo.getResidNo() == null) {
-                log.error("resid_no is null for photo: {}", photo);
-                throw new IllegalArgumentException("resid_no must not be null");
-            }
-
-            if (photo.getThumbnailUrls() == null || photo.getThumbnailUrls().isEmpty()) {
-                photo.setThumbnailUrls(photo.getPhotoUrl01());  // 썸네일 설정
-            }
-
-            log.info("Inserting photo: {}", photo);
-            propertyPhotosMapper.insertPhoto(photo);  // DB에 사진 저장
-        }
-    }*/ // 단일 성공
-    /*public void savePhotos(List<PropertyPhotosDto> photos) {
-        // 파일 개수 제한 (최대 10개)
+    /* // 파일 개수 제한 (최대 10개)
         if (photos.size() > 10) {
             log.error("Too many files received: {}", photos.size());
             throw new IllegalArgumentException("최대 10개의 파일만 업로드 가능합니다.");
@@ -107,79 +92,23 @@ public class PropertyPhotosService {
                 throw new IllegalArgumentException("resid_no must not be null");
             }
 
-            // 썸네일 설정: thumbnailUrls가 비어있으면 photoUrl01을 썸네일로 설정
+            // 썸네일 설정: 첫 번째 사진만 썸네일로 설정하도록 수정
             if (photo.getThumbnailUrls() == null || photo.getThumbnailUrls().isEmpty()) {
-                photo.setThumbnailUrls(photo.getPhotoUrl01());  // 썸네일 설정
+                if (photo.getPhotoUrl01() != null) {
+                    photo.setThumbnailUrls(photo.getPhotoUrl01());  // 첫 번째 URL을 썸네일로 설정
+                }
             }
-
-            log.info("Inserting photo: {}", photo);
-            propertyPhotosMapper.insertPhoto(photo);  // DB에 사진 저장
-        }
-    }*/
-    public void savePhotos(List<PropertyPhotosDto> photos) {
-        // 파일 개수 제한 (최대 10개)
-        if (photos.size() > 10) {
-            log.error("Too many files received: {}", photos.size());
-            throw new IllegalArgumentException("최대 10개의 파일만 업로드 가능합니다.");
-        }
-
-        for (PropertyPhotosDto photo : photos) {
-            if (photo.getResidNo() == null) {
-                log.error("resid_no is null for photo: {}", photo);
-                throw new IllegalArgumentException("resid_no must not be null");
-            }
-
-            // 썸네일 설정: thumbnailUrls가 비어있으면 photoUrl01을 썸네일로 설정
-            if (photo.getThumbnailUrls() == null || photo.getThumbnailUrls().isEmpty()) {
-                photo.setThumbnailUrls(photo.getPhotoUrl01());  // 썸네일 설정
-            }
-
-            // 사진 URL들을 하나로 모아서 처리
-            List<String> allPhotoUrls = photo.getAllPhotoUrls();  // getAllPhotoUrls 메서드 호출
-            log.info("Inserting photo: {}, all URLs: {}", photo, allPhotoUrls);
-
-            // DB에 사진 저장
-            propertyPhotosMapper.insertPhoto(photo);  // DB에 사진 저장
-        }
+        }// for*/
+    public void savePhotos(PropertyPhotosDto photo) {
+        // DB에 사진 저장
+        propertyPhotosMapper.insertPhoto(photo);  // DB에 사진 저장
     }
-
-
-
-
 
     // 파일 확장자 검증
     private boolean isValidExtension(String fileExtension) {
         List<String> validExtensions = Arrays.asList(".jpg", ".jpeg", ".png", ".gif", ".bmp");
         return validExtensions.contains(fileExtension);
     }
-
-    // 사진 삭제 (파일과 DB에서 삭제)
-    public void deletePhotos(List<Long> residNos) {
-        for (Long residNo : residNos) {
-            List<String> photoFiles = propertyPhotosMapper.getPhotoFilesByResidNo(residNo);
-            for (String fileName : photoFiles) {
-                try {
-                    deletePhotoFile(fileName);  // 파일 삭제
-                } catch (IOException e) {
-                    log.error("Failed to delete photo file: {}", fileName, e);
-                }
-            }
-            propertyPhotosMapper.deletePhoto(residNo);  // DB에서 사진 정보 삭제
-        }
-    }
-
-    private void deletePhotoFile(String fileName) throws IOException {
-        Path filePath = getFilePath(fileName);
-        File file = new File(filePath.toUri());
-        if (file.exists()) {
-            if (file.delete()) {
-                log.info("Deleted photo file: {}", fileName);
-            } else {
-                log.warn("Failed to delete photo file: {}", fileName);
-            }
-        }
-    }
-
     // 사진 유효성 검사
     public void validatePhoto(MultipartFile photo) {
         long maxSize = 5 * 1024 * 1024;  // 최대 5MB
@@ -196,4 +125,91 @@ public class PropertyPhotosService {
             throw new IllegalArgumentException("지원되지 않는 파일 형식입니다.");
         }
     }
+
+    // 사진 삭제 (파일과 DB에서 삭제)
+    public void deletePhotos(List<Long> residNos) {
+        for (Long residNo : residNos) {
+            List<String> photoFiles = propertyPhotosMapper.getPhotoFilesByResidNo(residNo);
+            for (String fileName : photoFiles) {
+                try {
+                    deletePhotoFile(fileName);  // 파일 삭제
+                } catch (IOException e) {
+                    log.error("사진 파일을 삭제하지 못했습니다.: {}", fileName, e);
+                }
+            }
+            propertyPhotosMapper.deletePhoto(residNo);  // DB에서 사진 정보 삭제
+        }
+    }
+    // 사진 삭제 처리
+    private void deletePhotoFile(String fileName) throws IOException {
+        Path filePath = getFilePath(fileName);
+        File file = new File(filePath.toUri());
+        if (file.exists()) {
+            if (file.delete()) {
+                log.info("삭제된 사진 파일: {}", fileName);
+            } else {
+                log.warn("사진 파일을 삭제하지 못했습니다.: {}", fileName);
+            }
+        }
+    }
+
+    // 사진 수정 메서드
+    public void updatePhoto(Long residNo, List<MultipartFile> photos) throws IOException {
+        // 1. 기존 사진을 삭제 (파일 및 DB에서 삭제)
+        List<String> currentPhotoFiles = propertyPhotosMapper.getPhotoFilesByResidNo(residNo);
+        List<PropertyPhotosDto> existingPhotos = propertyPhotosMapper.getPhotosByResidNo(residNo);
+
+        // 기존 사진을 DB에서 삭제
+        propertyPhotosMapper.deletePhoto(residNo);
+
+        // 기존 사진 파일 삭제
+        for (String fileName : currentPhotoFiles) {
+            try {
+                deletePhotoFile(fileName); // 파일 삭제
+            } catch (IOException e) {
+                log.error("사진 파일을 삭제하지 못했습니다.: {}", fileName, e);
+            }
+        }
+
+        // 2. 새로운 사진 저장
+        boolean isFirstFile = true;
+        PropertyPhotosDto propertyPhotos = new PropertyPhotosDto();
+        propertyPhotos.setResidNo(residNo);  // 외래 키 설정
+
+        for (int i = 0; i < photos.size(); i++) {
+            MultipartFile file = photos.get(i);
+            log.info("파일 처리 중: {}", file.getOriginalFilename());
+
+            // 파일명 생성 및 저장
+            String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+            String savedFileName = savePhoto(file, fileName, residNo);
+            String encodedFileName = URLEncoder.encode(savedFileName, "UTF-8");
+
+            // 첫 번째 파일을 썸네일로 설정
+            if (isFirstFile) {
+                propertyPhotos.setThumbnailUrls(encodedFileName);
+                isFirstFile = false;
+            }
+
+            // 각 사진 URL을 photoUrl01 ~ photoUrl10에 채워 넣음
+            switch (i) {
+                case 0: propertyPhotos.setPhotoUrl01(encodedFileName); break;
+                case 1: propertyPhotos.setPhotoUrl02(encodedFileName); break;
+                case 2: propertyPhotos.setPhotoUrl03(encodedFileName); break;
+                case 3: propertyPhotos.setPhotoUrl04(encodedFileName); break;
+                case 4: propertyPhotos.setPhotoUrl05(encodedFileName); break;
+                case 5: propertyPhotos.setPhotoUrl06(encodedFileName); break;
+                case 6: propertyPhotos.setPhotoUrl07(encodedFileName); break;
+                case 7: propertyPhotos.setPhotoUrl08(encodedFileName); break;
+                case 8: propertyPhotos.setPhotoUrl09(encodedFileName); break;
+                case 9: propertyPhotos.setPhotoUrl10(encodedFileName); break;
+            }
+        }
+
+        // DB에 사진 저장
+        // photoNo 값을 기존 사진에서 찾아서 처리
+        Long photoNo = existingPhotos.isEmpty() ? null : existingPhotos.get(0).getPhotoNo(); // 첫 번째 사진의 photoNo를 사용
+        propertyPhotosMapper.updatePhoto(residNo, photoNo);  // photoNo는 해당하는 사진의 ID
+    }
+
 }

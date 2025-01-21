@@ -21,10 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 //@RequestMapping("/residence")
 @Slf4j
@@ -87,71 +84,6 @@ public class ResidenceController {
     }
 
     // 숙소 등록 처리
-    /*@PostMapping("/new")
-    @Transactional
-    public String createResidence(@ModelAttribute ResidenceDto residence,
-                                  @RequestParam("photoFiles") MultipartFile[] photoFiles) throws IOException {
-        log.info("Received ResidenceDto: {}", residence);
-
-        try {
-            residenceService.createResidence(residence, photoFiles);  // 숙소 저장
-            Long residNo = residence.getResidNo();
-            log.info("Generated residNo: {}", residNo);
-
-            if (residNo == null) {
-                throw new IllegalArgumentException("resid_no가 null입니다.");
-            }
-
-            if (photoFiles == null || photoFiles.length == 0) {
-                log.error("No files received.");
-                throw new IllegalArgumentException("사진 파일이 없습니다.");
-            }
-
-            List<PropertyPhotosDto> propertyPhotos = new ArrayList<>();
-            for (MultipartFile file : photoFiles) {
-                log.info("Processing file: {}", file.getOriginalFilename());
-
-                String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-                // 파일 저장 후 경로 인코딩
-                String savedFileName = propertyPhotosService.savePhoto(file, fileName, residNo);
-                String encodedFileName = "";
-                try {
-                    encodedFileName = URLEncoder.encode(savedFileName, "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    log.error("File name encoding error: ", e);
-                }
-
-                // 인코딩된 파일 경로 저장
-                PropertyPhotosDto photoDto = new PropertyPhotosDto();
-                photoDto.setResidNo(residNo);
-                photoDto.setThumbnailUrls(encodedFileName);
-
-                switch (propertyPhotos.size()) {
-                    case 0: photoDto.setPhotoUrl01(encodedFileName); break;
-                    case 1: photoDto.setPhotoUrl02(encodedFileName); break;
-                    case 2: photoDto.setPhotoUrl03(encodedFileName); break;
-                    case 3: photoDto.setPhotoUrl04(encodedFileName); break;
-                    case 4: photoDto.setPhotoUrl05(encodedFileName); break;
-                    case 5: photoDto.setPhotoUrl06(encodedFileName); break;
-                    case 6: photoDto.setPhotoUrl07(encodedFileName); break;
-                    case 7: photoDto.setPhotoUrl08(encodedFileName); break;
-                    case 8: photoDto.setPhotoUrl09(encodedFileName); break;
-                    case 9: photoDto.setPhotoUrl10(encodedFileName); break;
-                }
-
-                propertyPhotos.add(photoDto);
-            }
-
-            propertyPhotosService.savePhotos(propertyPhotos);  // DB에 저장
-            return "redirect:/list";  // 목록 페이지로 리다이렉트
-        } catch (IOException e) {
-            log.error("File upload error: ", e);
-            return "redirect:/error";  // 오류 처리
-        } catch (IllegalArgumentException e) {
-            log.error("Invalid input error: ", e);
-            return "redirect:/error";  // 잘못된 입력 오류 처리
-        }
-    }*/ // 사용가능 단 1개 이미지
     @PostMapping("/new")
     @Transactional
     public String createResidence(@ModelAttribute ResidenceDto residence,
@@ -159,7 +91,7 @@ public class ResidenceController {
         log.info("Received ResidenceDto: {}", residence);
 
         try {
-            residenceService.createResidence(residence, photoFiles);  // 숙소 저장
+            residenceService.createResidence(residence);  // 숙소 저장
             Long residNo = residence.getResidNo();
             log.info("Generated residNo: {}", residNo);
 
@@ -178,43 +110,44 @@ public class ResidenceController {
                 throw new IllegalArgumentException("최대 10개의 파일만 업로드 가능합니다.");
             }
 
-            List<PropertyPhotosDto> propertyPhotos = new ArrayList<>();
-            for (MultipartFile file : photoFiles) {
+            boolean isFirstFile = true;  // 첫 번째 파일 여부를 추적하는 변수
+
+            PropertyPhotosDto propertyPhotos = new PropertyPhotosDto();
+            propertyPhotos.setResidNo(residNo);  // 외래 키 설정
+
+            for (int i = 0; i < photoFiles.length; i++) {
+                MultipartFile file = photoFiles[i];
                 log.info("Processing file: {}", file.getOriginalFilename());
 
                 String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
                 // 파일 저장 후 경로 인코딩
                 String savedFileName = propertyPhotosService.savePhoto(file, fileName, residNo);
-                String encodedFileName = "";
-                try {
-                    encodedFileName = URLEncoder.encode(savedFileName, "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    log.error("File name encoding error: ", e);
+                String encodedFileName = URLEncoder.encode(savedFileName, "UTF-8");
+
+                // 첫 번째 파일에만 썸네일을 설정
+                if (isFirstFile) {
+                    propertyPhotos.setThumbnailUrls(encodedFileName);  // 첫 번째 파일을 썸네일로 설정
+                    isFirstFile = false;  // 이후 파일들은 썸네일을 설정하지 않음
                 }
 
-                // 인코딩된 파일 경로 저장
-                PropertyPhotosDto photoDto = new PropertyPhotosDto();
-                photoDto.setResidNo(residNo);
-                photoDto.setThumbnailUrls(encodedFileName);
-
-                // 파일 번호에 따라 적절한 URL 필드에 저장
-                switch (propertyPhotos.size()) {
-                    case 0: photoDto.setPhotoUrl01(encodedFileName); break;
-                    case 1: photoDto.setPhotoUrl02(encodedFileName); break;
-                    case 2: photoDto.setPhotoUrl03(encodedFileName); break;
-                    case 3: photoDto.setPhotoUrl04(encodedFileName); break;
-                    case 4: photoDto.setPhotoUrl05(encodedFileName); break;
-                    case 5: photoDto.setPhotoUrl06(encodedFileName); break;
-                    case 6: photoDto.setPhotoUrl07(encodedFileName); break;
-                    case 7: photoDto.setPhotoUrl08(encodedFileName); break;
-                    case 8: photoDto.setPhotoUrl09(encodedFileName); break;
-                    case 9: photoDto.setPhotoUrl10(encodedFileName); break;
+                // 각 사진 URL을 photoUrl01 ~ photoUrl10에 채워 넣음
+                switch (i) {
+                    case 0: propertyPhotos.setPhotoUrl01(encodedFileName); break;
+                    case 1: propertyPhotos.setPhotoUrl02(encodedFileName); break;
+                    case 2: propertyPhotos.setPhotoUrl03(encodedFileName); break;
+                    case 3: propertyPhotos.setPhotoUrl04(encodedFileName); break;
+                    case 4: propertyPhotos.setPhotoUrl05(encodedFileName); break;
+                    case 5: propertyPhotos.setPhotoUrl06(encodedFileName); break;
+                    case 6: propertyPhotos.setPhotoUrl07(encodedFileName); break;
+                    case 7: propertyPhotos.setPhotoUrl08(encodedFileName); break;
+                    case 8: propertyPhotos.setPhotoUrl09(encodedFileName); break;
+                    case 9: propertyPhotos.setPhotoUrl10(encodedFileName); break;
                 }
 
-                propertyPhotos.add(photoDto);
             }
+            // DB에 여러 개의 사진을 저장
+            propertyPhotosService.savePhotos(propertyPhotos);
 
-            propertyPhotosService.savePhotos(propertyPhotos);  // DB에 저장
             return "redirect:/list";  // 목록 페이지로 리다이렉트
         } catch (IOException e) {
             log.error("File upload error: ", e);
@@ -224,6 +157,8 @@ public class ResidenceController {
             return "redirect:/error";  // 잘못된 입력 오류 처리
         }
     }
+
+
 
     // 숙소 수정 페이지
     @GetMapping("/edit/{residNo}")
@@ -242,42 +177,21 @@ public class ResidenceController {
                                   @ModelAttribute ResidenceDto residence,
                                   @RequestParam(value = "photos", required = false) List<MultipartFile> photos,
                                   @RequestParam(value = "deletedPhotoIds", required = false) List<Long> deletedPhotoIds) {
+        // 1. 숙소 정보 수정
         residence.setResidNo(residNo);
+        try {
+            residenceService.updateResidence(residence, residNo, photos);  // 숙소 수정 및 사진 업데이트
+        } catch (IOException e) {
+            log.error("Error updating residence: ", e);
+            return "redirect:/error";  // 오류 발생 시 처리
+        }
 
-        // 기존 숙소 정보 업데이트
-        residenceService.updateResidence(residence);
-
-        // 삭제된 사진 처리
+        // 2. 삭제된 사진 처리
         if (deletedPhotoIds != null && !deletedPhotoIds.isEmpty()) {
-            propertyPhotosService.deletePhotos(deletedPhotoIds);  // 삭제할 사진 IDs를 받아 처리
+            propertyPhotosService.deletePhotos(deletedPhotoIds);  // 삭제할 사진 처리
         }
 
-        // 새로운 사진 처리
-        if (photos != null && !photos.isEmpty()) {
-            List<PropertyPhotosDto> newPhotoDtos = new ArrayList<>();
-            for (MultipartFile photo : photos) {
-                try {
-                    // 고유한 파일 이름 생성 (UUID를 사용)
-                    String fileName = UUID.randomUUID().toString() + "_" + photo.getOriginalFilename();
-
-                    // 파일 저장 시 두 번째 인자 fileName을 전달
-                    String savedFileName = propertyPhotosService.savePhoto(photo, fileName, residence.getResidNo()); // 사진 저장
-
-                    PropertyPhotosDto photoDto = new PropertyPhotosDto();
-                    photoDto.setResidNo(residNo);  // 기존 숙소의 residNo 설정 (residNo 값이 반드시 설정되어야 함)
-                    photoDto.setPhotoUrl01(UPLOAD_DIR + savedFileName); // 새 사진 경로 설정
-                    newPhotoDtos.add(photoDto);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    // 에러 처리 로직 추가
-                }
-            }
-            if (!newPhotoDtos.isEmpty()) {
-                propertyPhotosService.savePhotos(newPhotoDtos); // 새로운 사진 저장
-            }
-        }
-
-        return "redirect:/list"; // 수정 완료 후 목록 페이지로 리다이렉트
+        return "redirect:/list";  // 수정 완료 후 목록 페이지로 리다이렉트
     }
 
 
@@ -291,7 +205,8 @@ public class ResidenceController {
 
     // 숙소 매진 상태 갱신
     @PutMapping("/{residNo}/sold-out")
-    public ResponseEntity<String> updateSoldOutStatus(@PathVariable Long residNo, @RequestParam boolean soldOut) {
+    public ResponseEntity<String> updateSoldOutStatus(@PathVariable Long residNo,
+                                                      @RequestParam boolean soldOut) {
         String message = soldOut ? "숙소가 매진 처리되었습니다." : "숙소 매진 상태가 해제되었습니다.";
         return ResponseEntity.ok(message);
     }
