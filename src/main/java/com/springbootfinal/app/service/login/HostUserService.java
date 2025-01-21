@@ -2,6 +2,7 @@ package com.springbootfinal.app.service.login;
 
 import com.springbootfinal.app.domain.login.HostUser;
 import com.springbootfinal.app.mapper.login.HostUserMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class HostUserService implements UserDetailsService {
 
     @Autowired
@@ -81,15 +83,20 @@ public class HostUserService implements UserDetailsService {
      * @return 조회된 호스트 사용자 정보
      */
     public HostUser findHostUserById(String id) {
-        return hostUserMapper.findHostUserById(id);
+        HostUser hostUser = hostUserMapper.findHostUserById(id);
+        log.info("HostUser found: {}", hostUser); // 로그 추가
+        return hostUser;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         HostUser hostUser = hostUserMapper.findHostUserById(username);
         if (hostUser == null) {
+            log.error("User not found with username: " + username);
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
+
+        log.info("HostUser found for loadUserByUsername: {}", hostUser); // 로그 추가
 
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(hostUser.getRole()));

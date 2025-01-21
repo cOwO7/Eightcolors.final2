@@ -228,6 +228,14 @@ ALTER TABLE transfers
 
 select * from transfers;
 
+-- 최근 결제기록 5개 읽어오기
+SELECT r.reservation_no, u.name AS user_name, h.name AS host_name, h.phone, r.checkin_date, r.discounted_price, r.created_at
+FROM reservations r
+         JOIN host_users h ON r.room_no = h.host_user_no
+         JOIN users u ON r.user_no = u.user_no
+ORDER BY r.created_at DESC
+LIMIT 5;
+
 
 -- 1. 관리자 계정 데이터 삽입
 INSERT INTO admin_users (admin_id, admin_passwd, admin_name, role)
@@ -238,6 +246,7 @@ VALUES
 SELECT * FROM residence;
 SELECT * FROM residence_rooms;
 SELECT * FROM property_photos;
+
 
 
 

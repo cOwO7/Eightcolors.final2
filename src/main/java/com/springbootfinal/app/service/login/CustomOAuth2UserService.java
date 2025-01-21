@@ -12,8 +12,7 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-
-
+import jakarta.servlet.http.HttpSession;
 import java.util.Collections;
 import java.util.Map;
 
@@ -21,9 +20,11 @@ import java.util.Map;
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final UserService userService;
+    private final HttpSession httpSession;
 
-    public CustomOAuth2UserService(UserService userService) {
+    public CustomOAuth2UserService(UserService userService, HttpSession httpSession) {
         this.userService = userService;
+        this.httpSession = httpSession;
     }
 
     @Override
@@ -81,6 +82,11 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         if (user == null) {
             user = userService.saveSocialUser(email, name, providerId, LoginType.valueOf(provider.toUpperCase()));
         }
+
+        // 세션에 로그인 정보 저장
+        httpSession.setAttribute("isLogin", true);
+        httpSession.setAttribute("role", "user");
+        httpSession.setAttribute("userNo", user.getUserNo()); // 유저 번호 세션에 저장
 
         // 사용자 정보 반환
         Map<String, Object> customAttributes = Map.of(
