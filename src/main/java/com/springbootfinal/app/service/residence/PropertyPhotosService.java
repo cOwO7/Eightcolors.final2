@@ -35,7 +35,7 @@ public class PropertyPhotosService {
     private String UPLOAD_DIR;
 
     // 파일 저장 경로 생성
-    private Path getFilePath(String fileName) {
+    /*private Path getFilePath(String fileName) {
         return Paths.get(UPLOAD_DIR).resolve(fileName);  // 안전한 경로 생성
     }
 
@@ -80,25 +80,6 @@ public class PropertyPhotosService {
     }
 
     // 사진 등록 (여러 사진 저장 처리)
-    /* // 파일 개수 제한 (최대 10개)
-        if (photos.size() > 10) {
-            log.error("Too many files received: {}", photos.size());
-            throw new IllegalArgumentException("최대 10개의 파일만 업로드 가능합니다.");
-        }
-
-        for (PropertyPhotosDto photo : photos) {
-            if (photo.getResidNo() == null) {
-                log.error("resid_no is null for photo: {}", photo);
-                throw new IllegalArgumentException("resid_no must not be null");
-            }
-
-            // 썸네일 설정: 첫 번째 사진만 썸네일로 설정하도록 수정
-            if (photo.getThumbnailUrls() == null || photo.getThumbnailUrls().isEmpty()) {
-                if (photo.getPhotoUrl01() != null) {
-                    photo.setThumbnailUrls(photo.getPhotoUrl01());  // 첫 번째 URL을 썸네일로 설정
-                }
-            }
-        }// for*/
     public void savePhotos(PropertyPhotosDto photo) {
         // DB에 사진 저장
         propertyPhotosMapper.insertPhoto(photo);  // DB에 사진 저장
@@ -129,7 +110,7 @@ public class PropertyPhotosService {
     // 사진 삭제 (파일과 DB에서 삭제)
     public void deletePhotos(List<Long> residNos) {
         for (Long residNo : residNos) {
-            List<String> photoFiles = propertyPhotosMapper.getPhotoFilesByResidNo(residNo);
+            List<String> photoFiles = propertyPhotosMapper.getPhotoUrlsByResidNo(residNo);
             for (String fileName : photoFiles) {
                 try {
                     deletePhotoFile(fileName);  // 파일 삭제
@@ -156,7 +137,7 @@ public class PropertyPhotosService {
     // 사진 수정 메서드
     public void updatePhoto(Long residNo, List<MultipartFile> photos) throws IOException {
         // 1. 기존 사진을 삭제 (파일 및 DB에서 삭제)
-        List<String> currentPhotoFiles = propertyPhotosMapper.getPhotoFilesByResidNo(residNo);
+        List<String> currentPhotoFiles = propertyPhotosMapper.getPhotoUrlsByResidNo(residNo);
         List<PropertyPhotosDto> existingPhotos = propertyPhotosMapper.getPhotosByResidNo(residNo);
 
         // 기존 사진을 DB에서 삭제
@@ -209,7 +190,151 @@ public class PropertyPhotosService {
         // DB에 사진 저장
         // photoNo 값을 기존 사진에서 찾아서 처리
         Long photoNo = existingPhotos.isEmpty() ? null : existingPhotos.get(0).getPhotoNo(); // 첫 번째 사진의 photoNo를 사용
-        propertyPhotosMapper.updatePhoto(residNo, photoNo);  // photoNo는 해당하는 사진의 ID
+        propertyPhotosMapper.updatePhoto(propertyPhotos);  // photoNo는 해당하는 사진의 ID
     }
 
+    // 특정 숙소의 사진 목록 조회
+    public List<PropertyPhotosDto> getPhotosByResidenceId(Long residNo) {
+        return propertyPhotosMapper.getPhotosByResidNo(residNo);
+
+    }*/
+
+
+
+
+    // 피티 최종코드
+    private Path getFilePath(String fileName) {
+        return Paths.get(UPLOAD_DIR).resolve(fileName);
+    }
+
+    public String savePhoto(MultipartFile photo, String fileName, Long residNo) throws IOException {
+        if (photo.isEmpty()) {
+            throw new IllegalArgumentException("사진이 비어 있습니다.");
+        }
+        validatePhoto(photo);
+        String originalFileName = photo.getOriginalFilename();
+        String fileExtension = originalFileName.substring(originalFileName.lastIndexOf(".")).toLowerCase();
+
+        if (!isValidExtension(fileExtension)) {
+            throw new IllegalArgumentException("허용되지 않은 파일 확장자입니다.");
+        }
+
+        if (fileName.toLowerCase().endsWith(fileExtension)) {
+            fileName = fileName.substring(0, fileName.lastIndexOf("."));
+        }
+
+        String fullFileName = fileName + fileExtension;
+        Path filePath = getFilePath(fullFileName);
+
+        File directory = new File(UPLOAD_DIR);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        Files.copy(photo.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+        log.info("Saved photo: {}", fullFileName);
+        return fullFileName;
+    }
+
+    public void savePhotos(PropertyPhotosDto photo) {
+        propertyPhotosMapper.insertPhoto(photo);
+    }
+
+    private boolean isValidExtension(String fileExtension) {
+        List<String> validExtensions = Arrays.asList(".jpg", ".jpeg", ".png", ".gif", ".bmp");
+        return validExtensions.contains(fileExtension);
+    }
+
+    public void validatePhoto(MultipartFile photo) {
+        long maxSize = 5 * 1024 * 1024;
+        String[] allowedExtensions = {"jpg", "jpeg", "png", "gif"};
+        if (photo.getSize() > maxSize) {
+            throw new IllegalArgumentException("파일 크기가 너무 큽니다.");
+        }
+
+        String originalFileName = photo.getOriginalFilename();
+        String fileExtension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1).toLowerCase();
+        if (!Arrays.asList(allowedExtensions).contains(fileExtension)) {
+            throw new IllegalArgumentException("지원되지 않는 파일 형식입니다.");
+        }
+    }
+
+    public void deletePhotos(List<Long> residNos) {
+        for (Long residNo : residNos) {
+            List<String> photoFiles = propertyPhotosMapper.getPhotoUrlsByResidNo(residNo);
+            for (String fileName : photoFiles) {
+                try {
+                    deletePhotoFile(fileName);
+                } catch (IOException e) {
+                    log.error("사진 파일을 삭제하지 못했습니다.: {}", fileName, e);
+                }
+            }
+            propertyPhotosMapper.deletePhoto(residNo);
+        }
+    }
+
+    private void deletePhotoFile(String fileName) throws IOException {
+        Path filePath = getFilePath(fileName);
+        File file = new File(filePath.toUri());
+        if (file.exists()) {
+            if (file.delete()) {
+                log.info("삭제된 사진 파일: {}", fileName);
+            } else {
+                log.warn("사진 파일을 삭제하지 못했습니다.: {}", fileName);
+            }
+        }
+    }
+
+    public void updatePhoto(Long residNo, List<MultipartFile> photos) throws IOException {
+        List<String> currentPhotoFiles = propertyPhotosMapper.getPhotoUrlsByResidNo(residNo);
+        List<PropertyPhotosDto> existingPhotos = propertyPhotosMapper.getPhotosByResidNo(residNo);
+
+        propertyPhotosMapper.deletePhoto(residNo);
+
+        for (String fileName : currentPhotoFiles) {
+            try {
+                deletePhotoFile(fileName);
+            } catch (IOException e) {
+                log.error("사진 파일을 삭제하지 못했습니다.: {}", fileName, e);
+            }
+        }
+
+        boolean isFirstFile = true;
+        PropertyPhotosDto propertyPhotos = new PropertyPhotosDto();
+        propertyPhotos.setResidNo(residNo);
+
+        for (int i = 0; i < photos.size(); i++) {
+            MultipartFile file = photos.get(i);
+            log.info("파일 처리 중: {}", file.getOriginalFilename());
+
+            String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+            String savedFileName = savePhoto(file, fileName, residNo);
+            String encodedFileName = URLEncoder.encode(savedFileName, "UTF-8");
+
+            if (isFirstFile) {
+                propertyPhotos.setThumbnailUrls(encodedFileName);
+                isFirstFile = false;
+            }
+
+            switch (i) {
+                case 0: propertyPhotos.setPhotoUrl01(encodedFileName); break;
+                case 1: propertyPhotos.setPhotoUrl02(encodedFileName); break;
+                case 2: propertyPhotos.setPhotoUrl03(encodedFileName); break;
+                case 3: propertyPhotos.setPhotoUrl04(encodedFileName); break;
+                case 4: propertyPhotos.setPhotoUrl05(encodedFileName); break;
+                case 5: propertyPhotos.setPhotoUrl06(encodedFileName); break;
+                case 6: propertyPhotos.setPhotoUrl07(encodedFileName); break;
+                case 7: propertyPhotos.setPhotoUrl08(encodedFileName); break;
+                case 8: propertyPhotos.setPhotoUrl09(encodedFileName); break;
+                case 9: propertyPhotos.setPhotoUrl10(encodedFileName); break;
+            }
+        }
+
+        Long photoNo = existingPhotos.isEmpty() ? null : existingPhotos.get(0).getPhotoNo();
+        propertyPhotosMapper.updatePhoto(propertyPhotos);
+    }
+
+    public List<PropertyPhotosDto> getPhotosByResidenceId(Long residNo) {
+        return propertyPhotosMapper.getPhotosByResidNo(residNo);
+    }
 }

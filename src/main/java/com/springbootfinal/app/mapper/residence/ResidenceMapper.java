@@ -12,7 +12,7 @@ public interface ResidenceMapper {
     List<ResidenceDto> getAllResidences();
 
     // 숙소 상세 조회
-    ResidenceDto getResidenceById(Long residNo);
+    ResidenceDto getResidenceById(@Param("residNo") Long residNo);
 
     // 숙소 등록
     void insertResidence(ResidenceDto residence);
@@ -21,5 +21,5 @@ public interface ResidenceMapper {
     void updateResidence(ResidenceDto residence);
 
     // 숙소 삭제
-    void deleteResidence(Long residNo);
+    void deleteResidence(@Param("residNo") Long residNo);
 }
