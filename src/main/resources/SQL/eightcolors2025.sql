@@ -2,10 +2,10 @@
 -- MySQL 사용자 계정 생성
 -- root 계정으로 접속 후 script에서 아래 코드 복사 붙여넣기 실행
 -- mysql -u root -h localhost -p mysql
-create database eightcolors2025;
-create user 'eightcolors2025'@'%' identified by 'eightcolors2025';
-grant all privileges on eightcolors2025.* to 'eightcolors2025'@'%';
-flush privileges;
+# create database eightcolors2025;
+# create user 'eightcolors2025'@'%' identified by 'eightcolors2025';
+# grant all privileges on eightcolors2025.* to 'eightcolors2025'@'%';
+# flush privileges;
 -- exit
 
 
@@ -246,7 +246,6 @@ VALUES
 SELECT * FROM residence;
 SELECT * FROM residence_rooms;
 SELECT * FROM property_photos;
-
 
 
 

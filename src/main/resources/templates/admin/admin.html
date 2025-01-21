@@ -66,21 +66,21 @@
             <div class="col-10">
                 <div class="row">
                     <div class="col-12">
+                        <h3>최근 결제 내역</h3>
                         <table class="table table-hover table-bordered">
-                            <thead>
-                                <tr>
-                                    <td>주문번호</td>
-                                    <td>일반 유저</td>
-                                    <td> 호스트 유저</td>
-                                    <td>전화번호</td>
-                                    <td>체크인 날짜</td>
-                                    <td>결제 금액</td>
-                                    <td>결제일</td>
-                                </tr>
+                            <thead class="table-light">
+                            <tr>
+                                <td>주문번호</td>
+                                <td>일반 유저</td>
+                                <td> 호스트 유저</td>
+                                <td>전화번호</td>
+                                <td>체크인 날짜</td>
+                                <td>결제 금액</td>
+                                <td>결제일</td>
+                            </tr>
                             </thead>
                             <tbody>
-                            <tr th:if="${not #lists.isEmpty(orderList)}">
-                            <tr th:each="order : ${orderList}">
+                            <tr th:if="${not #lists.isEmpty(orderList)}" th:each="order : ${orderList}">
                                 <td th:text="${order.reservationNo}"></td>
                                 <td th:text="${order.userName}"></td>
                                 <td th:text="${order.hostName}"></td>
@@ -89,17 +89,81 @@
                                 <td th:text="${order.discountedPrice}"></td>
                                 <td th:text="${order.createdAt}"></td>
                             </tr>
-                            </tr>
                             <tr th:if="${#lists.isEmpty(orderList)}">
                                 <td colspan="7">최근 결제 기록이 없습니다.</td>
                             </tr>
                             </tbody>
                         </table>
                     </div>
+                    <br>
+                    <br>
+                </div><div class="row">
+                <div class="col-12">
+                    <h3>최근 일반 유저 가입 내역</h3>
+                    <table class="table table-hover table-bordered">
+                        <thead class="table-light">
+                        <tr>
+                            <td>유저번호</td>
+                            <td>이름</td>
+                            <td>아이디</td>
+                            <td>로그인 타입</td>
+                            <td>이메일</td>
+                            <td>전화번호</td>
+                            <td>가입일</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${not #lists.isEmpty(userList)}" th:each="user : ${userList}">
+                            <td th:text="${user.userNo}"></td>
+                            <td th:text="${user.name}"></td>
+                            <td th:text="${user.id}"></td>
+                            <td th:text="${user.loginType}"></td>
+                            <td th:text="${user.email}"></td>
+                            <td th:text="${user.phone}"></td>
+                            <td th:text="${user.regDate}"></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(userList)}">
+                            <td colspan="7">최근 가입 내역이 없습니다.</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
-
             </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <h3>최근 호스트 유저 가입 내역</h3>
+                    <table class="table table-hover table-bordered">
+                        <thead class="table-light">
+                        <tr>
+                            <td>호스트유저번호</td>
+                            <td>이름</td>
+                            <td>아이디</td>
+                            <td>이메일</td>
+                            <td>전화번호</td>
+                            <td>주소</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${#lists.isEmpty(HostUserList)}">
+                            <td colspan="7">최근 가입 내역이 없습니다.</td>
+                        </tr>
+                        <tr th:each="HostUser : ${HostUserList}">
+                            <td th:text="${HostUser.hostUserNo}"></td>
+                            <td th:text="${HostUser.name}"></td>
+                            <td th:text="${HostUser.id}"></td>
+                            <td th:text="${HostUser.email}"></td>
+                            <td th:text="${HostUser.phone}"></td>
+                            <td th:text="${HostUser.zipcode + ' ' + HostUser.address1 + ' ' + HostUser.address2}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
         </div>
+    </div>
     </div> //container
 </th:block>
 </html>

@@ -1,10 +1,7 @@
 package com.springbootfinal.app.domain.login;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -12,16 +9,25 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity // JPA 엔티티로 표시
+@Builder
+@Entity
+@Table(name = "users") // 테이블 이름 명시
 public class Users {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_no")// 기본 키 생성을 위한 전략 지정
+    @Column(name = "user_no") // 기본 키 생성을 위한 전략 지정
     private Long userNo;
+
+    @Column(nullable = false, unique = true) // ID는 null이 될 수 없고 유일해야 함
     private String id;
+
+    @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false, unique = true)
     private String email;
+
     private String phone;
     private String name;
     private String zipcode;
@@ -32,7 +38,13 @@ public class Users {
     private LoginType loginType;
 
     private String providerId;
-    private LocalDateTime regDate;
+
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime regDate = LocalDateTime.now();
+
+    @Column(nullable = false)
     private Integer point = 0;
-    private String role;
+
+    @Column(nullable = false)
+    private String Role;
 }
