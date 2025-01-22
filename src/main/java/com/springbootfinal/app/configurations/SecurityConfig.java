@@ -32,7 +32,6 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-
     public SecurityConfig(UserService userService, CustomOAuth2UserService customOAuth2UserService, CustomAuthenticationProvider customAuthenticationProvider, CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) {
         this.userService = userService;
         this.customOAuth2UserService = customOAuth2UserService;
@@ -54,8 +53,6 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/main") // 일반 로그인 성공 후 메인 페이지 이동
-                        .failureUrl("/login?error=true")
                         .successHandler(customAuthenticationSuccessHandler) // 로그인 성공 핸들러 설정
                         .failureHandler((request, response, exception) -> {
                             log.info("로그인 실패");
@@ -65,7 +62,6 @@ public class SecurityConfig {
                 )
                 .oauth2Login(oauth -> oauth
                         .loginPage("/login")
-                        .defaultSuccessUrl("/main") // 소셜 로그인 성공 후 메인 페이지 이동
                         .successHandler(customAuthenticationSuccessHandler) // OAuth2 로그인 성공 핸들러 설정
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)
@@ -76,7 +72,10 @@ public class SecurityConfig {
                         .maximumSessions(1) // 최대 세션 수
                         .maxSessionsPreventsLogin(false) // 이전 세션 만료 후 새 세션 허용
                         .expiredSessionStrategy(event -> {
-                            System.out.println("Session expired for: " + event.getSessionInformation().getPrincipal());
+                            log.info("Session expired for: " + event.getSessionInformation().getPrincipal());
+                            // 세션 만료 후 리다이렉트
+                            event.getRequest().getSession().setAttribute("sessionExpired", true);
+                            event.getRequest().getRequestDispatcher("/login?expired=true").forward(event.getRequest(), event.getResponse());
                         })
                 )
                 .logout(logout -> logout
