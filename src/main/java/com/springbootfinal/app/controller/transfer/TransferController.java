@@ -1,0 +1,126 @@
+package com.springbootfinal.app.controller.transfer;
+
+import com.springbootfinal.app.domain.transfer.TransferDto;
+import com.springbootfinal.app.service.transfer.TransferService;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.io.PrintWriter;
+import java.util.Map;
+
+@Controller
+public class TransferController {
+
+    @Autowired
+    private TransferService transferService;
+    private static final String TRANSFER_BASE_PATH = "views/transfer/";
+
+    @PostMapping("/delete")
+    public String deleteTransfer(RedirectAttributes reAttrs,
+            HttpServletResponse response, PrintWriter out,
+            @RequestParam("transferNo") long transferNo,
+                                 @RequestParam(value = "pageCount",
+                                         defaultValue = "1") int pageCount) {
+
+        transferService.deleteTransfer(transferNo);
+        reAttrs.addAttribute("pageCount", pageCount);
+        return "redirect:/transfers";
+
+        }
+
+    // 양도 수정 폼 요청 처리 메서드
+    @PostMapping("/updateForm")
+    public String updateTransferForm(Model model,
+                                     HttpServletResponse response, PrintWriter out,
+                                     @RequestParam("transferNo") long transferNo,
+                                     @RequestParam(value = "pageCount", defaultValue = "1") int pageCount) {
+
+        TransferDto transfer = transferService.getTransfer(transferNo, false);
+        model.addAttribute("transfer", transfer);
+        model.addAttribute("pageCount", pageCount);
+
+        return TRANSFER_BASE_PATH + "transferUpdate";
+
+  /*      boolean searchOption = !(search.equals("null") || search.isEmpty());
+
+        model.addAttribute("transfer", transfer); // transfer 객체를 모델에 추가
+        model.addAttribute("transferNo", transferNo);
+        model.addAttribute("pageCount", pageCount);
+        model.addAttribute("searchOption", searchOption);
+
+        if (searchOption) {
+            model.addAttribute("search", search);
+            model.addAttribute("keyword", keyword);
+        }
+        return TRANSFER_BASE_PATH + "transferUpdate";*/
+    }
+
+@PostMapping("/update")
+public String updateBoard(TransferDto transferDto, RedirectAttributes reAttrs,
+                          @RequestParam(value = "pageCount", defaultValue = "1") int pageCount,
+                          HttpServletResponse response, PrintWriter out) {
+    transferService.updateBoard(transferDto);
+    reAttrs.addAttribute("pageCount", pageCount);
+    reAttrs.addAttribute("test1", "1회성 파라미터");
+    return "redirect:/transfers";
+}
+
+    // 양도 생성 폼 요청 처리 메서드
+    @GetMapping("/transferWrite")
+    public String createTransferForm() {
+        return TRANSFER_BASE_PATH + "transferWrite";
+    }
+
+    // 게시글 쓰기 요청 처리 메서드
+    @PostMapping("/transferAdd")
+    public String addTransfer(TransferDto transfer) {
+        transferService.addTransfer(transfer);
+        return "redirect:/transfers";
+    }
+
+ /*   // 게시글 상세보기 요청 처리 메서드
+    @GetMapping("/transferDetail")
+    public String getTransferDetail(Model model, @RequestParam("transferNo") long transferNo) {
+        model.addAttribute("transfer", transferService.getTransfer(transferNo, false));
+        return TRANSFER_BASE_PATH + "transferDetail";
+    }  */
+    // 게시글 상세보기 요청 처리 메서드
+    @GetMapping("/transferDetail")
+    public String getTransferDetail(Model model, @RequestParam("transferNo") long transferNo,
+                                    @RequestParam(value = "pageCount", defaultValue = "1") int pageCount,
+                                    @RequestParam(value = "type", defaultValue = "") String type,
+                                    @RequestParam(value = "keyword", defaultValue = "") String keyword) {
+
+        boolean searchOption = !(type.isEmpty() || keyword.isEmpty());
+
+        TransferDto transfer = transferService.getTransfer(transferNo, true);
+        model.addAttribute("transfer", transfer);
+        model.addAttribute("pageCount", pageCount);
+        model.addAttribute("searchOption", searchOption);
+
+        if (searchOption) {
+            model.addAttribute("type", type);
+            model.addAttribute("keyword", keyword);
+        }
+
+        return TRANSFER_BASE_PATH + "transferDetail";
+    }
+
+    // 게시글 목록 요청 처리 메서드
+    @GetMapping("/transfers")
+    public String getTransferList(Model model,
+                                  @RequestParam(value = "pageCount", required = false, defaultValue = "1") int pageCount,
+                                  @RequestParam(value = "type", required = false, defaultValue = "null") String type,
+                                  @RequestParam(value = "keyword", required = false, defaultValue = "null") String keyword) {
+        Map<String, Object> modelMap = transferService.transferList(pageCount, type, keyword);
+        model.addAllAttributes(modelMap);
+        return TRANSFER_BASE_PATH + "transferList";
+    }
+}

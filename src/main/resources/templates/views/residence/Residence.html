@@ -40,6 +40,7 @@
     <div class="mb-3 text-end">
       <a th:href="@{/new}" class="btn btn-success">숙소 등록</a>
     </div>
+
     <!-- 숙소 목록 테이블 -->
     <table class="table table-bordered table-hover table-responsive">
       <thead class="table-dark">
@@ -58,7 +59,7 @@
         <td th:text="${residence.residNo}"></td>
         <td>
           <th:block th:if="${residence.propertyPhotos != null and not #lists.isEmpty(residence.propertyPhotos)}">
-            <img th:src="@{|/images/Upload/${residence.propertyPhotos[0].thumbnailUrls}|}" alt="숙소 사진" class="img-fluid"/>
+            <img th:src="@{|/images/files/${residence.propertyPhotos[0].thumbnailUrls}|}" alt="숙소 사진" class="img-fluid"/>
           </th:block>
           <th:block th:unless="${residence.propertyPhotos != null and not #lists.isEmpty(residence.propertyPhotos)}">
             사진 없음
