@@ -76,6 +76,7 @@
                 <td th:text="${residence.residType}"></td>
                 <td th:text="${#dates.format(residence.residDate, 'yyyy-MM-dd')}"></td>
                 <td>
+                    <a th:href="@{/room/{residNo}(residNo=${residences.residNo})}" class="btn btn-primary">방 추가</a>
                     <a th:href="@{/edit/{id}(id=${residence.residNo})}" class="btn btn-warning btn-sm">수정</a>
                     <!-- 삭제는 POST로 처리되어야 하므로 form으로 변경 -->
                     <form th:action="@{/delete/{id}(id=${residence.residNo})}" method="post" style="display:inline-block;">

@@ -128,7 +128,7 @@ public class ResidenceService {
             if (residence.getPhotoUrl08() != null) photoUrls.add(residence.getPhotoUrl08());
             if (residence.getPhotoUrl09() != null) photoUrls.add(residence.getPhotoUrl09());
             if (residence.getPhotoUrl10() != null) photoUrls.add(residence.getPhotoUrl10());
-                residence.setNewPhotoUrls(photoUrls);
+            residence.setNewPhotoUrls(photoUrls);
 
             if (!photoUrls.isEmpty()) {
                 residence.setThumbnailUrls(photoUrls.get(0));
@@ -146,7 +146,7 @@ public class ResidenceService {
         return residence;
     }
 
-    public void createResidence(ResidenceDto residence,
+    /*public void createResidence(ResidenceDto residence,
                                 List<ResidenceRoom> rooms) throws IOException {
         residenceMapper.insertResidence(residence);
         Long residNo = residence.getResidNo();
@@ -157,6 +157,23 @@ public class ResidenceService {
         }
 
         log.info("residNo : {}", residNo);
+    }*/
+
+    // 숙소 등록
+    public void createResidence(ResidenceDto residence) throws IOException {
+        // 1. Residence 정보 저장
+        residenceMapper.insertResidence(residence);
+        Long residNo = residence.getResidNo();
+
+        log.info("residNo : {}", residNo);  // 로그로 확인
+    }
+
+    // 방 등록
+    public void createRooms(Long residNo, List<ResidenceRoom> rooms) {
+        for (ResidenceRoom room : rooms) {
+            room.setResidNo(residNo);  // 각 방에 residNo를 추가
+            /*roomService.save(room);  // 방 정보 저장*/
+        }
     }
 
     public void updateResidence(ResidenceDto residence,
