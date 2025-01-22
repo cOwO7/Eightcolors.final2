@@ -46,7 +46,6 @@
             <div id="photo-preview">
                 <th:block th:each="photo : ${photos}">
                     <div class="photo-container" th:id="|photo-${photo.photoNo}|">
-                        <img th:src="@{/images/files/{fileName}(fileName=${photo.thumbnailUrls})}" width="150">
                         <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl01})}" width="150">
                         <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl02})}" width="150">
                         <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl03})}" width="150">
@@ -129,9 +128,12 @@
         let deletedPhotos = [];
 
         function removePhoto(photoNo) {
+            var deletedPhotoIds = document.getElementById('deletedPhotoIds');
+            var currentDeletedIds = deletedPhotoIds.value ? deletedPhotoIds.value.split(',') : [];
+            currentDeletedIds.push(photoNo);
+            deletedPhotoIds.value = currentDeletedIds.join(',');
+            // 삭제된 사진을 화면에서 제거 (선택 사항)
             document.getElementById('photo-' + photoNo).remove();
-            deletedPhotos.push(photoNo);
-            document.getElementById('deletedPhotoIds').value = deletedPhotos.join(',');
         }
     </script>
 

@@ -2,6 +2,7 @@ package com.springbootfinal.app.service.residence;
 
 import com.springbootfinal.app.domain.residence.PropertyPhotosDto;
 import com.springbootfinal.app.domain.residence.ResidenceDto;
+import com.springbootfinal.app.domain.residence.ResidenceRoom;
 import com.springbootfinal.app.mapper.residence.PropertyPhotoMapper;
 import com.springbootfinal.app.mapper.residence.ResidenceMapper;
 import com.springbootfinal.app.mapper.residence.ResidenceRoomMapper;
@@ -107,6 +108,11 @@ public class ResidenceService {
         residenceMapper.deleteResidence(residNo);
     }*/
 
+    // 방 목록 조회
+    public List<ResidenceRoom> getRoomsByResidenceId(Long residNo) {
+        return residenceRoomMapper.getRoomsByResidenceId(residNo);
+    }
+
     // 피티 최종코드 2
     public List<ResidenceDto> getAllResidences() {
         List<ResidenceDto> residences = residenceMapper.getAllResidences();
@@ -122,9 +128,10 @@ public class ResidenceService {
             if (residence.getPhotoUrl08() != null) photoUrls.add(residence.getPhotoUrl08());
             if (residence.getPhotoUrl09() != null) photoUrls.add(residence.getPhotoUrl09());
             if (residence.getPhotoUrl10() != null) photoUrls.add(residence.getPhotoUrl10());
-            residence.setPhotoUrls(photoUrls);
+            residence.setNewPhotoUrls(photoUrls);
+
             if (!photoUrls.isEmpty()) {
-                residence.setThumbnailUrl(photoUrls.get(0));
+                residence.setThumbnailUrls(photoUrls.get(0));
             }
         });
         return residences;
@@ -134,19 +141,56 @@ public class ResidenceService {
         ResidenceDto residence = residenceMapper.getResidenceById(residNo);
         List<PropertyPhotosDto> photos = propertyPhotoMapper.getPhotosByResidNo(residNo);
         residence.setPropertyPhotos(photos);
+        List<ResidenceRoom> rooms = residenceRoomMapper.getRoomsByResidenceId(residNo);
+        residence.setRooms(rooms);
         return residence;
     }
 
-    public void createResidence(ResidenceDto residence) throws IOException {
+    /*public void createResidence(ResidenceDto residence,
+                                List<ResidenceRoom> rooms) throws IOException {
         residenceMapper.insertResidence(residence);
         Long residNo = residence.getResidNo();
+
+        for (ResidenceRoom room : rooms) {
+        room.setResidNo(residNo);
+        residenceRoomMapper.insertRoom(room);
+        }
+
         log.info("residNo : {}", residNo);
+    }*/
+
+    // 숙소 등록
+    public void createResidence(ResidenceDto residence) throws IOException {
+        // 1. Residence 정보 저장
+        residenceMapper.insertResidence(residence);
+        Long residNo = residence.getResidNo();
+
+        log.info("residNo : {}", residNo);  // 로그로 확인
     }
 
-    public void updateResidence(ResidenceDto residence, Long residNo, List<MultipartFile> photos) throws IOException {
+    // 방 등록
+    public void createRooms(Long residNo, List<ResidenceRoom> rooms) {
+        for (ResidenceRoom room : rooms) {
+            room.setResidNo(residNo);  // 각 방에 residNo를 추가
+            /*roomService.save(room);  // 방 정보 저장*/
+        }
+    }
+
+    public void updateResidence(ResidenceDto residence,
+                                Long residNo, List<MultipartFile> photos,
+                                List<ResidenceRoom> rooms) throws IOException {
         residenceMapper.updateResidence(residence);
         if (photos != null && !photos.isEmpty()) {
             propertyPhotosService.updatePhoto(residNo, photos);
+        }
+
+        for(ResidenceRoom room : rooms) {
+            if (room.getRoomNo() != null) {
+                residenceRoomMapper.updateRoom(room); // 기존 방 수정
+            } else {
+                room.setResidNo(residNo);
+                residenceRoomMapper.insertRoom(room);
+            }
         }
     }
 
@@ -155,4 +199,5 @@ public class ResidenceService {
         propertyPhotoMapper.deletePhoto(residNo);
         residenceMapper.deleteResidence(residNo);
     }
+
 }

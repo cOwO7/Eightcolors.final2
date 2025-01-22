@@ -18,12 +18,29 @@
     <!-- 사진 수정 -->
     <update id="updatePhoto" parameterType="com.springbootfinal.app.domain.residence.PropertyPhotosDto">
         UPDATE property_photos
-        SET thumbnailUrls = #{thumbnailUrls}, photo_url01 = #{photoUrl01}, photo_url02 = #{photoUrl02},
-            photo_url03 = #{photoUrl03}, photo_url04 = #{photoUrl04}, photo_url05 = #{photoUrl05},
-            photo_url06 = #{photoUrl06}, photo_url07 = #{photoUrl07}, photo_url08 = #{photoUrl08},
-            photo_url09 = #{photoUrl09}, photo_url10 = #{photoUrl10}
-        WHERE photo_no = #{photoNo}
+        SET thumbnailUrls = #{thumbnailUrls},
+            photo_url01 = #{photoUrl01},
+            photo_url02 = #{photoUrl02},
+            photo_url03 = #{photoUrl03},
+            photo_url04 = #{photoUrl04},
+            photo_url05 = #{photoUrl05},
+            photo_url06 = #{photoUrl06},
+            photo_url07 = #{photoUrl07},
+            photo_url08 = #{photoUrl08},
+            photo_url09 = #{photoUrl09},
+            photo_url10 = #{photoUrl10}
+        WHERE resid_no = #{residNo}
     </update>
+    <select id="getPhotoUrlsByPhotoNo" resultType="java.lang.String">
+        SELECT photo_url01, photo_url02, photo_url03,
+               photo_url04, photo_url05, photo_url06,
+               photo_url07, photo_url08, photo_url09,
+               photo_url10
+        FROM property_photos
+        WHERE photo_no = #{photoNo}
+    </select>
+
+
 
     <!-- 숙소 번호로 해당하는 사진 파일 경로 목록을 가져오는 쿼리 -->
     <select id="getPhotoFilesByResidNo" resultType="string">

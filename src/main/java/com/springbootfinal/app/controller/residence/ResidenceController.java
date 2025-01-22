@@ -2,9 +2,11 @@ package com.springbootfinal.app.controller.residence;
 
 import com.springbootfinal.app.domain.residence.PropertyPhotosDto;
 import com.springbootfinal.app.domain.residence.ResidenceDto;
+import com.springbootfinal.app.domain.residence.ResidenceRoom;
 import com.springbootfinal.app.domain.weather.AllWeatherDto;
 import com.springbootfinal.app.domain.weather.WeatherDto;
 import com.springbootfinal.app.mapper.residence.PropertyPhotoMapper;
+import com.springbootfinal.app.mapper.residence.ResidenceRoomMapper;
 import com.springbootfinal.app.service.residence.PropertyPhotosService;
 import com.springbootfinal.app.service.residence.ResidenceService;
 import com.springbootfinal.app.service.weather.AllWeatherService;
@@ -18,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.thymeleaf.model.IModel;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -32,17 +36,20 @@ public class ResidenceController {
     private final AllWeatherService allWeatherService;
     private final PropertyPhotosService propertyPhotosService;
     private final PropertyPhotoMapper propertyPhotosMapper; // 사진 삭제;
+    private final ResidenceRoomMapper residenceRoomMapper;
 
     @Autowired
     public ResidenceController(
             AllWeatherService allWeatherService,
             ResidenceService residenceService,
             PropertyPhotosService propertyPhotosService,
-            PropertyPhotoMapper propertyPhotosMapper) {
+            PropertyPhotoMapper propertyPhotosMapper,
+            ResidenceRoomMapper residenceRoomMapper) {
         this.allWeatherService = allWeatherService;
         this.residenceService = residenceService;
         this.propertyPhotosService = propertyPhotosService;
         this.propertyPhotosMapper = propertyPhotosMapper;
+        this.residenceRoomMapper = residenceRoomMapper;
     }
     @Value("${UPLOAD_DIR}")
     private String UPLOAD_DIR;
@@ -52,12 +59,12 @@ public class ResidenceController {
     public String listResidences(Model model) {
         List<ResidenceDto> residences = residenceService.getAllResidences();
 
-        residences.forEach(residence -> {
+        /*residences.forEach(residence -> {
             log.info("Residence: {} - Discount Rate: {} - Discounted Price: {}",
                     residence.getResidName(),
                     residence.getDiscountRate(),
                     residence.getDiscountedPrice());
-        });
+        });*/
         model.addAttribute("residences", residences);
         return "views/residence/Residence"; // "Residence" 페이지에 데이터를 전달
     }
@@ -66,13 +73,39 @@ public class ResidenceController {
     public String viewResidence(@PathVariable Long residNo, Model model) throws IOException {
         // 숙소 정보를 가져옴
         var residence = residenceService.getResidenceById(residNo);
+        List<ResidenceRoom> rooms = residenceService.getRoomsByResidenceId(residNo);
 
-        log.info("residence: {}", residence);
+        //log.info("residence: {}", residence);
 
         // 모델에 데이터를 추가
         model.addAttribute("residence", residence);
+        model.addAttribute("rooms",rooms);
         // 상세 보기 페이지 반환
         return "views/residence/ResidenceDetail"; // 뷰 파일로 이동
+    }
+
+    @GetMapping("/addRoom")
+    public String addRoom(Model model) {
+        /*ResidenceDto residence = new ResidenceDto();
+        model.addAttribute("residence", residence);*/
+        ResidenceRoom room = new ResidenceRoom();
+        model.addAttribute("rooms",room);
+        return "views/residence/ResidenceRoomWriter";
+    }
+
+    @PostMapping("/room/{residNo}")
+    public String createRoom(@PathVariable Long residNo, @ModelAttribute ResidenceDto residence) {
+            residenceService.getResidenceById(residNo);
+
+        try {
+            // 방 정보 추가
+            residenceService.createRooms(residNo, residence.getRooms());
+
+            return "redirect:/list";  // 방 정보 추가 후 목록 페이지로 리다이렉트
+        } catch (Exception e) {
+            log.error("Error while adding rooms: ", e);
+            return "redirect:/error";  // 오류 처리
+        }
     }
 
     // 숙소 등록 페이지
@@ -84,14 +117,16 @@ public class ResidenceController {
     }
 
     // 숙소 등록 처리
-    @PostMapping("/new")
+    /*@PostMapping("/new")
     @Transactional
     public String createResidence(@ModelAttribute ResidenceDto residence,
-                                  @RequestParam("photoFiles") MultipartFile[] photoFiles) throws IOException {
+                                  @RequestParam("photoFiles") MultipartFile[] photoFiles,
+                                  @ModelAttribute List<ResidenceRoom> rooms) throws IOException {
         log.info("Received ResidenceDto: {}", residence);
 
         try {
-            residenceService.createResidence(residence);  // 숙소 저장
+            //residenceService.createResidence(residence);  // 숙소 저장
+            residenceService.createResidence(residence, rooms);  // 숙소 저장
             Long residNo = residence.getResidNo();
             log.info("Generated residNo: {}", residNo);
 
@@ -156,12 +191,85 @@ public class ResidenceController {
             log.error("Invalid input error: ", e);
             return "redirect:/error";  // 잘못된 입력 오류 처리
         }
+    }*/
+
+    @PostMapping("/new")
+    @Transactional
+    public String createResidence(@ModelAttribute ResidenceDto residence,
+                                  @RequestParam("photoFiles") MultipartFile[] photoFiles) throws IOException {
+        log.info("Received ResidenceDto: {}", residence);
+
+        try {
+            // 1. Residence 등록
+            residenceService.createResidence(residence);
+            Long residNo = residence.getResidNo();
+            log.info("Generated residNo: {}", residNo);
+
+            if (residNo == null) {
+                throw new IllegalArgumentException("resid_no가 null입니다.");
+            }
+
+            // 2. 파일 업로드 처리
+            if (photoFiles == null || photoFiles.length == 0) {
+                log.error("No files received.");
+                throw new IllegalArgumentException("사진 파일이 없습니다.");
+            }
+
+            // 최대 10개 사진만 처리
+            if (photoFiles.length > 10) {
+                log.error("Too many files received: {}", photoFiles.length);
+                throw new IllegalArgumentException("최대 10개의 파일만 업로드 가능합니다.");
+            }
+
+            boolean isFirstFile = true;
+            PropertyPhotosDto propertyPhotos = new PropertyPhotosDto();
+            propertyPhotos.setResidNo(residNo);
+
+            // 3. 사진 파일 처리
+            for (int i = 0; i < photoFiles.length; i++) {
+                MultipartFile file = photoFiles[i];
+                log.info("Processing file: {}", file.getOriginalFilename());
+
+                String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+                String savedFileName = propertyPhotosService.savePhoto(file, fileName, residNo);
+                String encodedFileName = URLEncoder.encode(savedFileName, "UTF-8");
+
+                // 첫 번째 파일만 썸네일 설정
+                if (isFirstFile) {
+                    propertyPhotos.setThumbnailUrls(encodedFileName);
+                    isFirstFile = false;
+                }
+
+                // 사진 URL 채우기
+                switch (i) {
+                    case 0: propertyPhotos.setPhotoUrl01(encodedFileName); break;
+                    case 1: propertyPhotos.setPhotoUrl02(encodedFileName); break;
+                    case 2: propertyPhotos.setPhotoUrl03(encodedFileName); break;
+                    case 3: propertyPhotos.setPhotoUrl04(encodedFileName); break;
+                    case 4: propertyPhotos.setPhotoUrl05(encodedFileName); break;
+                    case 5: propertyPhotos.setPhotoUrl06(encodedFileName); break;
+                    case 6: propertyPhotos.setPhotoUrl07(encodedFileName); break;
+                    case 7: propertyPhotos.setPhotoUrl08(encodedFileName); break;
+                    case 8: propertyPhotos.setPhotoUrl09(encodedFileName); break;
+                    case 9: propertyPhotos.setPhotoUrl10(encodedFileName); break;
+                }
+            }
+            // 사진 정보 DB에 저장
+            propertyPhotosService.savePhotos(propertyPhotos);
+
+            return "redirect:/list";  // 목록 페이지로 리다이렉트
+        } catch (IOException e) {
+            log.error("File upload error: ", e);
+            return "redirect:/error";  // 오류 처리
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid input error: ", e);
+            return "redirect:/error";  // 잘못된 입력 오류 처리
+        }
     }
 
 
-
     // 숙소 수정 페이지
-    /*@GetMapping("/edit/{residNo}")
+    @GetMapping("/edit/{residNo}")
     public String editResidenceForm(@PathVariable Long residNo, Model model) {
         // 숙소 정보 불러오기
         ResidenceDto residence = residenceService.getResidenceById(residNo);
@@ -171,7 +279,7 @@ public class ResidenceController {
         model.addAttribute("photos", photos);
 
         return "views/residence/ResidenceUpdate"; // 수정 페이지
-    }*/ // 원본
+    }
 
     // 숙소 수정 처리
     /*@PostMapping("/edit/{residNo}")
@@ -232,21 +340,40 @@ public class ResidenceController {
     }*/  // 원본
 
     //피티 최종코드
-    @GetMapping("/edit/{residNo}")
-    public String getResidence(@PathVariable Long residNo, Model model) {
-        ResidenceDto residence = residenceService.getResidenceById(residNo);
-        model.addAttribute("residence", residence);
-        return "views/residence/ResidenceUpdate";
-    }
-
     @PostMapping("/edit/{residNo}")
     public String updateResidence(@PathVariable Long residNo,
                                   @ModelAttribute ResidenceDto residence,
-                                  @RequestParam("photos") List<MultipartFile> photos) throws IOException {
-        residenceService.updateResidence(residence, residNo, photos);
-        //return "redirect:/residence/" + residNo;
-        return "redirect:/list";
+                                  @RequestParam("photos") List<MultipartFile> photos,
+                                  @RequestParam(value = "deletedPhotos", required = false) String deletedPhotos,
+                                  List<ResidenceRoom> rooms) throws IOException {
+        // 1. 기존 사진 삭제 처리 (삭제된 사진 ID 처리)
+        if (deletedPhotos != null && !deletedPhotos.isEmpty()) {
+            String[] deletedIds = deletedPhotos.split(",");
+            for (String photoId : deletedIds) {
+                Long photoNo = Long.parseLong(photoId);  // deletedPhotos에 담긴 각 ID로 사진 삭제
+                propertyPhotosService.deletePhotos(photoNo);  // 사진 파일과 DB에서 삭제
+            }
+        }
+
+        // 2. 새로운 사진 처리
+        List<String> newPhotoUrls = new ArrayList<>();
+        for (MultipartFile file : photos) {
+            if (!file.isEmpty()) {
+                String fileName = propertyPhotosService.savePhoto(file, UUID.randomUUID().toString()
+                        + "_" + file.getOriginalFilename(), residNo);
+                newPhotoUrls.add(fileName);  // 새로 저장된 파일 URL을 리스트에 추가
+            }
+        }
+
+        // 3. ResidenceDto의 새로운 사진 URL 리스트에 추가
+        residence.setNewPhotoUrls(newPhotoUrls);  // ResidenceDto 객체에 새로운 사진 URL 추가
+
+        // 4. Residence 정보 업데이트 (기존 정보 + 새로 추가된 사진 정보)
+        residenceService.updateResidence(residence, residNo, photos, rooms);  // `photos`를 전달
+
+        return "redirect:/list";  // 업데이트 완료 후 목록으로 리다이렉트
     }
+
 
     @PostMapping("/delete/{residNo}")
     public String deleteResidence(@PathVariable Long residNo) {
