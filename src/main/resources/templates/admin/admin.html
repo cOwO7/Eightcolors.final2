@@ -66,16 +66,16 @@
                     <div class="col-12">
                         <h3>최근 결제 내역</h3>
                         <table class="table table-hover table-bordered">
-                            <thead>
-                                <tr>
-                                    <td>주문번호</td>
-                                    <td>일반 유저</td>
-                                    <td> 호스트 유저</td>
-                                    <td>전화번호</td>
-                                    <td>체크인 날짜</td>
-                                    <td>결제 금액</td>
-                                    <td>결제일</td>
-                                </tr>
+                            <thead class="table-light">
+                            <tr>
+                                <td>주문번호</td>
+                                <td>일반 유저</td>
+                                <td> 호스트 유저</td>
+                                <td>전화번호</td>
+                                <td>체크인 날짜</td>
+                                <td>결제 금액</td>
+                                <td>결제일</td>
+                            </tr>
                             </thead>
                             <tbody>
                             <tr th:if="${not #lists.isEmpty(orderList)}" th:each="order : ${orderList}">
@@ -159,6 +159,8 @@
                     </table>
                 </div>
             </div>
+
+
         </div>
     </div> <!--container-->
 </th:block>
