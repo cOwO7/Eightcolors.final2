@@ -4,6 +4,7 @@ import com.springbootfinal.app.domain.reservations.Reservations;
 import com.springbootfinal.app.domain.room.Reservation;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,4 +28,7 @@ public interface ReservationMapper {
     public void newReservations(Reservations param);
     public void putReservations(Reservations param);
     public void delReservations(Reservations param);
+
+    @Select("SELECT COUNT(*) FROM reservations WHERE user_no = #{userNo}")
+    int countReservationsByUserNo(@Param("userNo") String userNo);
 }

@@ -7,6 +7,7 @@ import com.springbootfinal.app.domain.kakaopay.ReadyResponse;
 import com.springbootfinal.app.domain.reservations.Reservations;
 import com.springbootfinal.app.domain.transfer.TransferDto;
 import com.springbootfinal.app.mapper.ReservationMapper;
+import com.springbootfinal.app.mapper.transfer.TransferMapper;
 import com.springbootfinal.app.service.transfer.TransferService;
 import groovy.util.logging.Slf4j;
 import org.slf4j.Logger;
@@ -33,6 +34,9 @@ public class KakaopayService {
     private TransferService transferService;
 
     @Autowired
+    private TransferMapper transferMapper;
+
+    @Autowired
     private ReservationMapper reservationsMapper;
 
     @Value("${kakaopay.api.secret.key}")
@@ -48,11 +52,22 @@ public class KakaopayService {
     private String partnerUserId;
     private String partnerOrderId;
 
+    public void updateTransferStatus(String partnerOrderId, String status) {
+        TransferDto transfer = transferMapper.findByPartnerOrderId(partnerOrderId);
+        if (transfer != null) {
+            transferMapper.updateTransferStatus(partnerOrderId, status);
+        }
+    }
+
+
     public ReadyResponse ready(String agent, String openType, long transferNo) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "DEV_SECRET_KEY " + kakaopaySecretKey);
         headers.setContentType(MediaType.APPLICATION_JSON);
         TransferDto transfer = transferService.getTransfer(transferNo, false);
+
+        // itemName 값을 직접 설정
+      //  String itemName = transfer.getReservationResidName()// 유효한 itemName 값으로 설정
 
         ReadyRequest readyRequest = ReadyRequest.builder()
                 .cid(cid)
@@ -60,7 +75,7 @@ public class KakaopayService {
                 .partnerUserId("1")
                 .itemName(transfer.getReservationResidName())
                 .quantity(1)
-                .totalAmount(transfer.getTransferPrice().intValue()) // 수정된 부분
+                .totalAmount(transfer.getTransferPrice().intValue())
                 .taxFreeAmount(0)
                 .vatAmount(100)
                 .approvalUrl(sampleHost + "/approve/" + agent + "/" + openType)
@@ -68,9 +83,11 @@ public class KakaopayService {
                 .failUrl(sampleHost + "/fail/" + agent + "/" + openType)
                 .build();
 
+        log.info("KakaoPay ReadyRequest: {}", readyRequest);
+
         HttpEntity<ReadyRequest> entityMap = new HttpEntity<>(readyRequest, headers);
         ResponseEntity<ReadyResponse> response = new RestTemplate().postForEntity(
-                "https://open-api.kakaopay.com/online/v1/payment/ready",entityMap,
+                "https://open-api.kakaopay.com/online/v1/payment/ready", entityMap,
                 ReadyResponse.class);
         ReadyResponse readyResponse = response.getBody();
 
@@ -106,6 +123,9 @@ public class KakaopayService {
                     "https://open-api.kakaopay.com/online/v1/payment/approve",
             entityMap,
                     String.class);
+
+            // 결제 승인 후 양도 상태를 "양도 완료"로 업데이트
+            transferService.updateTransferStatus(approveRequest.getPartnerOrderId(), "양도 완료");
 
             return response.getBody();
         } catch (Exception e) {

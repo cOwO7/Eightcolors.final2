@@ -29,6 +29,14 @@ public class TransferService {
     }*/
 
 
+    public void updateTransferStatus(String partnerOrderId, String status) {
+        TransferDto transfer = transferMapper.findByPartnerOrderId(partnerOrderId);
+        if (transfer != null) {
+            transferMapper.updateTransferStatus(partnerOrderId, status);
+        }
+    }
+
+
     public void deleteTransfer(Long transferNo) {
         log.info("TransferService: 삭제하기{}", transferNo);
         transferMapper.deleteTransfer(transferNo);
