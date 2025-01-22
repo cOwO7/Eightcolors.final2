@@ -31,10 +31,31 @@
         FROM property_photos
         WHERE resid_no = #{residNo}
     </select>
+
+    <select id="getPhotosByResidNo" parameterType="Long" resultType="com.springbootfinal.app.domain.residence.PropertyPhotosDto">
+        SELECT * FROM property_photos WHERE resid_no = #{residNo}
+    </select>
+
+    <select id="getPhotoUrlsByResidNo" resultType="String">
+        SELECT
+            thumbnailUrls,
+            photo_url01,
+            photo_url02,
+            photo_url03,
+            photo_url04,
+            photo_url05,
+            photo_url06,
+            photo_url07,
+            photo_url08,
+            photo_url09,
+            photo_url10
+        FROM property_photos
+        WHERE resid_no = #{residNo}
+    </select>
+
     <!-- 숙소 번호로 해당하는 사진 삭제 -->
     <delete id="deletePhoto" parameterType="Long">
-        DELETE FROM eightcolors2025.property_photos
-        WHERE resid_no = #{residNo}
+        DELETE FROM property_photos WHERE resid_no = #{residNo}
     </delete>
 
 </mapper>

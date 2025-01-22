@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:c=""
       layout:decorate="~{/layouts/main_layout}">
 <head>
     <link href="/bootstrap/bootstrap.min.css" rel="stylesheet">
@@ -40,11 +40,37 @@
                 <label>소개 글:</label><br><br>
                 <textarea id="residDescription" th:field="*{residDescription}"></textarea>
             </div>
-            <!-- 사진 추가 -->
-            <h3>사진 추가</h3>
-            <label for="photoFiles">사진 파일 업로드:</label>
-            <input type="file" id="photoFiles" name="photoFiles" multiple onchange="previewImages()"><br><br>
-            <div id="imagePreview"></div>
+
+            <!-- 사진 수정 -->
+            <label>기존 등록된 사진</label>
+            <div id="photo-preview">
+                <th:block th:each="photo : ${photos}">
+                    <div class="photo-container" th:id="|photo-${photo.photoNo}|">
+                        <img th:src="@{/images/files/{fileName}(fileName=${photo.thumbnailUrls})}" width="150">
+                        <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl01})}" width="150">
+                        <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl02})}" width="150">
+                        <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl03})}" width="150">
+                        <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl04})}" width="150">
+                        <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl05})}" width="150">
+                        <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl06})}" width="150">
+                        <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl07})}" width="150">
+                        <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl08})}" width="150">
+                        <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl09})}" width="150">
+                        <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl10})}" width="150">
+                        <input type="hidden" name="existingPhotos" th:value="${photo.photoNo}">
+                        <br><br>
+                        <button type="button" th:onclick="|removePhoto(${photo.photoNo})|">삭제</button>
+                    </div>
+                </th:block>
+            </div>
+
+            <label>새로운 사진 추가</label>
+            <input type="file" name="photos" multiple>
+
+            <input type="hidden" name="deletedPhotoIds" id="deletedPhotoIds">
+            <br><br>
+            <button type="submit">수정하기</button>
+            <button><a href="/list">뒤로 가기</a></button>
 
             <!-- 날씨 데이터 -->
             <div class="col-md-6">
@@ -83,8 +109,7 @@
                     </div>
                 </div>
             </div>
-            <button type="submit" id="registerButton">등록</button>
-            <button><a href="/list">뒤로 가기</a></button>
+
         </form>
         <!-- 날씨 데이터 출력폼 -->
         <table>
@@ -99,6 +124,16 @@
             </div>
         </table>
     </div>
+
+    <script>
+        let deletedPhotos = [];
+
+        function removePhoto(photoNo) {
+            document.getElementById('photo-' + photoNo).remove();
+            deletedPhotos.push(photoNo);
+            document.getElementById('deletedPhotoIds').value = deletedPhotos.join(',');
+        }
+    </script>
 
     <script>
         const existingImages = [
