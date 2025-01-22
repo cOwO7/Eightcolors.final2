@@ -1,6 +1,7 @@
 package com.springbootfinal.app.service.room;
 
 import com.springbootfinal.app.domain.room.Reservation;
+import com.springbootfinal.app.domain.room.ReservationUserDTO;
 import com.springbootfinal.app.mapper.ReservationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class ReservationService {
     // 예약 처리
     public void reserveRoom(Reservation reservation) {
         // 할인율 계산
-        long daysUntilCheckin = ChronoUnit.DAYS.between(LocalDate.now(), reservation.getCheckinDate());
+        long daysUntilCheckin = ChronoUnit.DAYS.between(LocalDate.now(), reservation.getCheckinDate())+1;
         int discountRate = 0;
 
         if (daysUntilCheckin == 3) {
@@ -48,5 +49,10 @@ public class ReservationService {
         reservation.setTransactionId(UUID.randomUUID().toString());
         // 예약 정보 저장
         reservationMapper.insertReservation(reservation);
+    }
+    
+    //예약하는 사용자 정보 조회
+    public ReservationUserDTO getReservationUser(Long userNo) {
+        return reservationMapper.getReservationUserByUserNo(userNo);
     }
 }

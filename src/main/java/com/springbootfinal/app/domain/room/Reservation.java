@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class Reservation {
     private int roomNo;
-    private int userNo;
+    private Long userNo;
     private LocalDate checkinDate;
     private LocalDate checkoutDate;
     private int totalprice;

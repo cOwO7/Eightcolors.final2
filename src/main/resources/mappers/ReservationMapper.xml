@@ -53,11 +53,34 @@
                  )
     </insert>
 
+    <!-- 숙소 이름 가져오는 쿼리문 -->
     <select id="findResidenceNameById" resultType="string">
         SELECT resid_name
         FROM residence
         WHERE resid_no = #{residNo}
     </select>
+    <!--예약하는 유저의 정보-->
+    <select id="getReservationUserByUserNo" parameterType="long" resultType="ReservationUserDTO">
+        SELECT
+            user_no,
+            id,
+            password,
+            email,
+            phone,
+            name,
+            zipcode,
+            address1,
+            address2,
+            login_type,
+            provider_id,
+            reg_date,
+            role
+        FROM
+            users
+        WHERE
+            user_no = #{userNo}
+    </select>
+
 
 
 </mapper>

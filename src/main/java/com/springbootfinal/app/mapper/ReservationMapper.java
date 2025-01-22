@@ -1,6 +1,7 @@
 package com.springbootfinal.app.mapper;
 
 import com.springbootfinal.app.domain.room.Reservation;
+import com.springbootfinal.app.domain.room.ReservationUserDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -20,4 +21,7 @@ public interface ReservationMapper {
 
     // 예약 정보 저장
     void insertReservation(Reservation reservation);
+    
+    //예약하는 사용자 정보 조회
+    ReservationUserDTO getReservationUserByUserNo(@Param("userNo") Long userNo);
 }

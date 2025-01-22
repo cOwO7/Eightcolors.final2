@@ -10,42 +10,106 @@
 </head>
 <body>
 <th:block layout:fragment="content">
-<div class="container mt-5">
-  <h1>예약하기 - [[${residName}]]</h1>
 
-  <!-- 예약 폼 -->
-  <form action="/reserve" method="post">
-    <!-- roomNo와 residNo는 hidden 필드로 전달 -->
-    <input type="hidden" name="roomNo" th:value="${roomNo}">
-    <input type="hidden" name="residNo" th:value="${residNo}">
+  <div class="container mt-5">
+    <h1>예약하기 - [[${residName}]]</h1>
 
-    <!-- 체크인 날짜 -->
-    <div class="form-group">
-      <label for="checkinDate">체크인 날짜:</label>
-      <input type="date" id="checkinDate" name="checkinDate" class="form-control" required>
-    </div>
+    <!-- 예약 폼 -->
+    <form action="/reserve" method="post">
+      <!-- roomNo와 residNo는 hidden 필드로 전달 -->
+      <input type="hidden" name="roomNo" th:value="${roomNo}">
+      <input type="hidden" name="residNo" th:value="${residNo}">
 
-    <!-- 체크아웃 날짜 -->
-    <div class="form-group">
-      <label for="checkoutDate">체크아웃 날짜:</label>
-      <input type="date" id="checkoutDate" name="checkoutDate" class="form-control" required>
-    </div>
+      <!-- 체크인 날짜 -->
+      <div class="form-group">
+        <label for="checkinDate">체크인 날짜:</label>
+        <input type="date" id="checkinDate" name="checkinDate" class="form-control" th:onchange="calculatePriceWithDiscount()" required>
+      </div>
 
-    <!-- 사용자 번호 -->
-    <div class="form-group">
-      <label for="userNo">사용자 번호:</label>
-      <input type="number" name="userNo" id="userNo" class="form-control" required>
-    </div>
+      <!-- 체크아웃 날짜 -->
+      <div class="form-group">
+        <label for="checkoutDate">체크아웃 날짜:</label>
+        <input type="date" id="checkoutDate" name="checkoutDate" class="form-control" th:onchange="calculatePriceWithDiscount()" required>
+      </div>
 
-    <!-- 예약하기 버튼 -->
-    <button type="submit" class="btn btn-primary">예약하기</button>
-  </form>
+      <!-- 사용자 번호 -->
+      <div class="form-group">
+        <label for="userNo">사용자 번호:</label>
+        <input type="text" name="userNo" id="userNo" class="form-control" th:value="${user.getUserNo() != null ? user.getUserNo() : ''}" required>
+      </div>
 
-  <!-- 메시지 표시 영역 -->
-  <div th:if="${message}" class="alert alert-success mt-3" th:text="${message}"></div>
-  <div th:if="${errorMessage}" class="alert alert-danger mt-3" th:text="${errorMessage}"></div>
-</div>
+      <!-- 사용자 이름 -->
+      <div class="form-group">
+        <label for="userName">사용자 이름:</label>
+        <input type="text" name="userName" id="userName" class="form-control" th:value="${user.getName() != null ? user.getName() : ''}" required>
+      </div>
+
+      <!-- 사용자 이메일 -->
+      <div class="form-group">
+        <label for="userEmail">사용자 이메일:</label>
+        <input type="text" name="userEmail" id="userEmail" class="form-control" th:value="${user.getEmail() != null ? user.getEmail() : ''}" required>
+      </div>
+
+      <!-- 예약 가격 표시 -->
+      <div class="form-group">
+        <label>총 가격:</label>
+        <p id="totalPrice" class="font-weight-bold"></p>
+      </div>
+
+      <!-- 예약하기 버튼 -->
+      <button type="submit" class="btn btn-primary">예약하기</button>
+    </form>
+    <button onclick="requestPay()">결제하기</button> <!-- 결제하기 버튼 생성 -->
+    <button type="button" class="image-only-button"  onclick="kakaoPay()">
+      <img src="../images/payment.png" alt="Image Button" />
+
+
+  </div>
+
+  <script>
+    // 서버에서 전달된 roomPrice 값 (JSP에서 JSON으로 안전하게 전달)
+    function calculatePriceWithDiscount() {
+      const checkinDate = document.getElementById('checkinDate').value;
+      const checkoutDate = document.getElementById('checkoutDate').value;
+
+      if (checkinDate && checkoutDate) {
+        const startDate = new Date(checkinDate);
+        const endDate = new Date(checkoutDate);
+
+        const diffTime = Math.abs(endDate - startDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        // 현재 날짜와 체크인 날짜 차이 계산
+        const today = new Date();
+        const daysUntilCheckin = Math.ceil((startDate - today) / (1000 * 60 * 60 * 24)) + 1;
+
+        // 할인율 계산
+        let discountRate = 0;
+        if (daysUntilCheckin === 3) {
+          discountRate = 10;
+        } else if (daysUntilCheckin === 2) {
+          discountRate = 20;
+        } else if (daysUntilCheckin === 1) {
+          discountRate = 30;
+        }
+
+        // roomPrice 값은 서버에서 전달
+        const roomPrice = [[${roomPrice}]]; // 수정 - 그대로 두면 정상 작동하지 않음
+
+        const originalPrice = roomPrice * diffDays;
+
+        // 할인된 가격 계산
+        const discountedPrice = originalPrice - (originalPrice * discountRate / 100);
+
+        // 결과 출력
+        document.getElementById('totalPrice').textContent =
+                `${originalPrice} 원, 할인율: ${discountRate}%, 할인된 가격: ${discountedPrice} 원`;
+      } else {
+        document.getElementById('totalPrice').textContent = '날짜를 선택해주세요.';
+      }
+    }
+  </script>
+
 </th:block>
-<!--브랜치 생성-->
 </body>
 </html>
