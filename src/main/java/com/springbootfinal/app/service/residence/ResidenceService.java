@@ -147,17 +147,33 @@ public class ResidenceService {
     }
 
     public void createResidence(ResidenceDto residence,
-                                ResidenceRoom room) throws IOException {
+                                List<ResidenceRoom> rooms) throws IOException {
         residenceMapper.insertResidence(residence);
-        residenceRoomMapper.insertRoom(room);
         Long residNo = residence.getResidNo();
+
+        for (ResidenceRoom room : rooms) {
+        room.setResidNo(residNo);
+        residenceRoomMapper.insertRoom(room);
+        }
+
         log.info("residNo : {}", residNo);
     }
 
-    public void updateResidence(ResidenceDto residence, Long residNo, List<MultipartFile> photos) throws IOException {
+    public void updateResidence(ResidenceDto residence,
+                                Long residNo, List<MultipartFile> photos,
+                                List<ResidenceRoom> rooms) throws IOException {
         residenceMapper.updateResidence(residence);
         if (photos != null && !photos.isEmpty()) {
             propertyPhotosService.updatePhoto(residNo, photos);
+        }
+
+        for(ResidenceRoom room : rooms) {
+            if (room.getRoomNo() != null) {
+                residenceRoomMapper.updateRoom(room); // 기존 방 수정
+            } else {
+                room.setResidNo(residNo);
+                residenceRoomMapper.insertRoom(room);
+            }
         }
     }
 

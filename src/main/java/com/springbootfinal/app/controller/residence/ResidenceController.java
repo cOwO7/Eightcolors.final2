@@ -95,12 +95,12 @@ public class ResidenceController {
     @Transactional
     public String createResidence(@ModelAttribute ResidenceDto residence,
                                   @RequestParam("photoFiles") MultipartFile[] photoFiles,
-                                  ResidenceRoom room) throws IOException {
+                                  @RequestParam("rooms") List<ResidenceRoom> rooms) throws IOException {
         log.info("Received ResidenceDto: {}", residence);
 
         try {
             //residenceService.createResidence(residence);  // 숙소 저장
-            residenceService.createResidence(residence, room);  // 숙소 저장
+            residenceService.createResidence(residence, rooms);  // 숙소 저장
             Long residNo = residence.getResidNo();
             log.info("Generated residNo: {}", residNo);
 
@@ -156,7 +156,6 @@ public class ResidenceController {
             }
             // DB에 여러 개의 사진을 저장
             propertyPhotosService.savePhotos(propertyPhotos);
-            residenceRoomMapper.insertRoom(room);
 
             return "redirect:/list";  // 목록 페이지로 리다이렉트
         } catch (IOException e) {
@@ -246,7 +245,8 @@ public class ResidenceController {
     public String updateResidence(@PathVariable Long residNo,
                                   @ModelAttribute ResidenceDto residence,
                                   @RequestParam("photos") List<MultipartFile> photos,
-                                  @RequestParam(value = "deletedPhotos", required = false) String deletedPhotos) throws IOException {
+                                  @RequestParam(value = "deletedPhotos", required = false) String deletedPhotos,
+                                  @RequestParam("rooms") List<ResidenceRoom> rooms) throws IOException {
         // 1. 기존 사진 삭제 처리 (삭제된 사진 ID 처리)
         if (deletedPhotos != null && !deletedPhotos.isEmpty()) {
             String[] deletedIds = deletedPhotos.split(",");
@@ -269,7 +269,7 @@ public class ResidenceController {
         residence.setNewPhotoUrls(newPhotoUrls);  // ResidenceDto 객체에 새로운 사진 URL 추가
 
         // 4. Residence 정보 업데이트 (기존 정보 + 새로 추가된 사진 정보)
-        residenceService.updateResidence(residence, residNo, photos);  // `photos`를 전달
+        residenceService.updateResidence(residence, residNo, photos, rooms);  // `photos`를 전달
 
         return "redirect:/list";  // 업데이트 완료 후 목록으로 리다이렉트
     }

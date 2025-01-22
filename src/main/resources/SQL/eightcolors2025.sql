@@ -84,7 +84,6 @@ CREATE TABLE IF NOT EXISTS residence (
 ALTER TABLE residence
     ADD COLUMN sold_out BOOLEAN DEFAULT FALSE AFTER resid_type;
 
-
 select * from residence;
 
 -- 5. 숙소 방 정보 테이블
