@@ -83,7 +83,7 @@ public class TransferService {
         modelMap.put("listCount", listCount);
         modelMap.put("pageGroup", PAGE_GROUP);
         modelMap.put("searchOption", searchOption);
-        log.info("검색옵션", transferList.size());
+        log.info("transferList", transferList.size());
 
         if (searchOption) {
             modelMap.put("type", type);
