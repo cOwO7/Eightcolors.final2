@@ -12,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+
 @Controller
 @Slf4j
 public class ReservationController {
@@ -32,14 +34,14 @@ public class ReservationController {
 
         int roomPrice = reservationMapper.getRoomPrice(roomNo);
         String residName = reservationService.getResidenceNameById(residNo);
-        Long userNo = (Long) httpSession.getAttribute("userNo");
+       Long userNo = (Long) httpSession.getAttribute("userNo");
 
         ReservationUserDTO user = reservationService.getReservationUser(userNo);
         model.addAttribute("roomNo", roomNo);
         model.addAttribute("residNo", residNo);
         model.addAttribute("residName", residName);
         model.addAttribute("roomPrice", roomPrice);
-        model.addAttribute("user", user);
+       model.addAttribute("user", user);
 
         return "reservation"; // 뷰 이름
     }
@@ -53,16 +55,56 @@ public class ReservationController {
    
 
     // 예약 처리
-    @PostMapping("/reserve")
+    @RequestMapping("/reserve")
     public String reserveRoom(
             @ModelAttribute Reservation reservation,
-            Model model) {
+            Model model, HttpSession httpSession) {
 
         log.info(String.valueOf(reservation.getUserNo()));
+
+        reservation.setRoomNo((int)httpSession.getAttribute("roomNo"));
+        reservation.setUserNo((Long)httpSession.getAttribute("userNo"));
+        // HttpSession에서 checkinDate를 가져옵니다.
+
+        reservation.setPaymentStatus("완료");
+        Object checkinDateObj = httpSession.getAttribute("checkinDate");
+
+        try {
+            // LocalDate로 변환
+            LocalDate checkinDate = LocalDate.parse((CharSequence) checkinDateObj);
+            log.info("체크인날짜 "+checkinDate);
+            // reservation 객체에 checkoutDate 값을 설정합니다.
+            reservation.setCheckinDate(checkinDate);
+
+            log.info("체크인날짜 "+reservation.getCheckinDate());
+        } catch (Exception e) {
+            // 예외 처리
+            e.printStackTrace();
+            // 원하는 에러 메시지 추가 가능
+            throw new IllegalArgumentException("Invalid date format or null value in session.");
+        }
+
+        Object checkoutDateObj = httpSession.getAttribute("checkoutDate");
+
+        try {
+            // LocalDate로 변환
+            LocalDate checkoutDate = LocalDate.parse((CharSequence) checkoutDateObj);
+            log.info("체크아웃날짜 "+checkoutDate);
+            // reservation 객체에 checkoutDate 값을 설정합니다.
+            reservation.setCheckoutDate(checkoutDate);
+        } catch (Exception e) {
+            // 예외 처리
+            e.printStackTrace();
+            // 원하는 에러 메시지 추가 가능
+            throw new IllegalArgumentException("Invalid date format or null value in session.");
+        }
+
+
+
         // 체크인/체크아웃 날짜 유효성 검사
         if (reservation.getCheckinDate().isAfter(reservation.getCheckoutDate())) {
-            model.addAttribute("errorMessage", "체크아웃 날짜는 체크인 날짜 이후여야 합니다.");
-            return "test";
+           /* alert("체크아웃 날짜는 체크인 날짜 이후여야 합니다.");*/
+            return "reservationSuccess";
         }
 
         // 방 예약 가능 여부 확인
@@ -74,17 +116,17 @@ public class ReservationController {
 
         if (!available) {
             model.addAttribute("errorMessage", "선택한 날짜에 방이 이미 예약되었습니다.");
-            return "test";
+            return "reservationSuccess";
         }
 
         // 예약 처리
         reservationService.reserveRoom(reservation);
-        model.addAttribute("message", "예약이 완료되었습니다!");
-        return "test";
+        model.addAttribute("reservation", reservation);
+        return "reservationSuccess";
     }
 
-    @GetMapping("/test")
+    @GetMapping("/reservationSuccess")
     public String test(){
-        return "test";
+        return "reservationSuccess";
     }
 }

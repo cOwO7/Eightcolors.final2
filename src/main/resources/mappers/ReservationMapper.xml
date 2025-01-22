@@ -39,7 +39,8 @@
             discount_rate,
             discounted_price,
             transaction_id,
-            total_price
+            total_price,
+            payment_status
         ) VALUES (
                      #{roomNo},
                      #{userNo},
@@ -48,7 +49,8 @@
                      #{discountRate},
                      #{discountedPrice},
                      #{transactionId},
-                     #{totalprice}
+                     #{totalprice},
+                     #{paymentStatus}
 
                  )
     </insert>
@@ -80,6 +82,68 @@
         WHERE
             user_no = #{userNo}
     </select>
+
+    <!-- 예약 등록 -->
+    <insert id="newReservations" parameterType="Reservations">
+        INSERT INTO reservations (
+            user_no, room_no, checkin_date, checkout_date, total_price, discount_rate, discounted_price,
+            transaction_id, payment_status, reservation_status, created_at, updated_at
+        ) VALUES (
+                     #{user_no}, #{room_no}, #{checkin_date}, #{checkout_date}, #{total_price}, #{discount_rate}, #{discounted_price},
+                     #{transaction_id}, #{payment_status}, #{reservation_status}, NOW(), NOW()
+                 )
+    </insert>
+    <!-- 예약 목록 조회 (사용자 기준) -->
+    <select id="getReservations" parameterType="Reservations" resultType="Reservations">
+        SELECT *
+        FROM reservations
+        WHERE
+        1=1
+        <if test="user_no != null and user_no != '' ">
+            reservation_no = #{reservation_no}
+        </if>
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- 예약 수정 -->
+    <update id="putReservations" parameterType="Reservations">
+        UPDATE reservations
+        SET
+        <if test="room_no != null and room_no != '' ">
+            room_no = #{room_no},
+        </if>
+        <if test="checkin_date != null and checkin_date != '' ">
+            checkin_date = #{checkin_date},
+        </if>
+        <if test="checkout_date != null and checkout_date != '' ">
+            checkout_date = #{checkout_date},
+        </if>
+        <if test="total_price != null and total_price != '' ">
+            total_price = #{total_price},
+        </if>
+        <if test="discount_rate != null and discount_rate != '' ">
+            discount_rate = #{discount_rate},
+        </if>
+        <if test="discounted_price != null and discounted_price != '' ">
+            discounted_price = #{discounted_price},
+        </if>
+        <if test="transaction_id != null and transaction_id != '' ">
+            transaction_id = #{transaction_id},
+        </if>
+        <if test="payment_status != null and payment_status != '' ">
+            payment_status = #{payment_status},
+        </if>
+        <if test="reservation_status != null and reservation_status != '' ">
+            reservation_status = #{reservation_status},
+        </if>
+        updated_at = NOW()
+        WHERE reservation_no = #{reservation_no}
+    </update>
+
+    <!-- 예약 삭제 -->
+    <delete id="delReservations" parameterType="Reservations">
+        DELETE FROM reservations WHERE reservation_no = #{reservationNo}
+    </delete>
 
 
 

@@ -19,4 +19,5 @@ public class Reservation {
     private int discountRate;
     private int discountedPrice;
     private String transactionId;
+    private String paymentStatus;
 }
