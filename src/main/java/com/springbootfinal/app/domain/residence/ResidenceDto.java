@@ -22,11 +22,14 @@ public class ResidenceDto {
     private String residAddress;
     private String residType;  // Enum 대신 String으로 저장
     private Date residDate;  // TIMESTAMP는 String으로 매핑
+    private boolean soldOut; // 매진 여부 추가
+
+
+    // 예약 페이지 데이터
     private BigDecimal discountRate; // 할인율
     private BigDecimal discountedPrice; // 할인된 가격
     private Date checkinDate; // 체크인 날짜
     private Date checkoutDate; // 체크아웃 날짜
-    private boolean soldOut; // 매진 여부 추가
 
     // 날씨 데이터
     private int nx;
@@ -36,26 +39,11 @@ public class ResidenceDto {
     private String regId;
     private String regIdTemp;
 
-    public String getLatitudeNum() {
-        return latitudeNum;
-    }
-
-    public void setLatitudeNum(String latitudeNum) {
-        this.latitudeNum = latitudeNum;
-    }
-
-    public String getLongitudeNum() {
-        return longitudeNum;
-    }
-
-    public void setLongitudeNum(String longitudeNum) {
-        this.longitudeNum = longitudeNum;
-    }
-
     // 업자 No 데이터
     private Long hostUserNo;
 
     // 사진 데이터
+    private PropertyPhotosDto propertyPhotosDto;  // PropertyPhotosDto 객체
     private String photoUrl01;
     private String photoUrl02;
     private String photoUrl03;
@@ -67,48 +55,18 @@ public class ResidenceDto {
     private String photoUrl09;
     private String photoUrl10;
     private String thumbnailUrls;
+    private List<String> newPhotoUrls;
+
+    // 숙소 방 데이터
+    private List<ResidenceRoom> rooms; // ResidenceRoom을 리스트로 추가
+    private Long roomNo;
+    private String roomName;
+    private int pricePerNight;
 
 
-
-  public void setPhotoUrls(List<String> photoUrls) {
-        int size = photoUrls.size();
-        this.photoUrl01 = size > 0 ? photoUrls.get(0) : null;
-        this.photoUrl02 = size > 1 ? photoUrls.get(1) : null;
-        this.photoUrl03 = size > 2 ? photoUrls.get(2) : null;
-        this.photoUrl04 = size > 3 ? photoUrls.get(3) : null;
-        this.photoUrl05 = size > 4 ? photoUrls.get(4) : null;
-        this.photoUrl06 = size > 5 ? photoUrls.get(5) : null;
-        this.photoUrl07 = size > 6 ? photoUrls.get(6) : null;
-        this.photoUrl08 = size > 7 ? photoUrls.get(7) : null;
-        this.photoUrl09 = size > 8 ? photoUrls.get(8) : null;
-        this.photoUrl10 = size > 9 ? photoUrls.get(9) : null;
-    }
-    // 모든 사진 URL을 리스트로 반환하는 메소드
-    public List<String> getAllPhotoUrls() {
-        List<String> photoUrls = new ArrayList<>();
-        if (photoUrl01 != null) photoUrls.add(photoUrl01);
-        if (photoUrl02 != null) photoUrls.add(photoUrl02);
-        if (photoUrl03 != null) photoUrls.add(photoUrl03);
-        if (photoUrl04 != null) photoUrls.add(photoUrl04);
-        if (photoUrl05 != null) photoUrls.add(photoUrl05);
-        if (photoUrl06 != null) photoUrls.add(photoUrl06);
-        if (photoUrl07 != null) photoUrls.add(photoUrl07);
-        if (photoUrl08 != null) photoUrls.add(photoUrl08);
-        if (photoUrl09 != null) photoUrls.add(photoUrl09);
-        if (photoUrl10 != null) photoUrls.add(photoUrl10);
-        return photoUrls;
-    }
-
-    public void setThumbnailUrl(String thumbnailUrl) {
-        this.thumbnailUrls = thumbnailUrl;
-    }
-
-    private PropertyPhotosDto propertyPhotosDto;  // PropertyPhotosDto 객체
-
-    // 조인 필드
     private List<ReservationDayDto> reservations; // Reservation 객체의 리스트
     private List<PropertyPhotosDto> propertyPhotos; // residencePhoto 객체 리스트
-    private List<ResidenceRoom> rooms; // ResidenceRoom을 리스트로 추가
+
 
     // totalPrice를 계산하는 메소드 추가
     public BigDecimal getTotalPrice() {

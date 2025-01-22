@@ -259,7 +259,7 @@ public class PropertyPhotosService {
         }
     }
 
-    public void deletePhotos(List<Long> residNos) {
+    /*public void deletePhotos(List<Long> residNos) {
         for (Long residNo : residNos) {
             List<String> photoFiles = propertyPhotosMapper.getPhotoUrlsByResidNo(residNo);
             for (String fileName : photoFiles) {
@@ -271,7 +271,25 @@ public class PropertyPhotosService {
             }
             propertyPhotosMapper.deletePhoto(residNo);
         }
+    }*/
+
+    public void deletePhotos(Long photoNo) {
+        // 1. 파일 경로를 가져오기 (예: photo_url01~10에서)
+        List<String> photoFiles = propertyPhotosMapper.getPhotoUrlsByPhotoNo(photoNo);  // photoNo에 해당하는 파일 경로 가져오기
+
+        // 2. 파일 삭제 처리
+        for (String fileName : photoFiles) {
+            try {
+                deletePhotoFile(fileName);  // 실제 파일 삭제
+            } catch (IOException e) {
+                log.error("사진 파일을 삭제하지 못했습니다: {}", fileName, e);
+            }
+        }
+
+        // 3. DB에서 해당 사진 정보 삭제
+        propertyPhotosMapper.deletePhoto(photoNo);  // photoNo에 해당하는 레코드 삭제
     }
+
 
     private void deletePhotoFile(String fileName) throws IOException {
         Path filePath = getFilePath(fileName);
@@ -286,36 +304,44 @@ public class PropertyPhotosService {
     }
 
     public void updatePhoto(Long residNo, List<MultipartFile> photos) throws IOException {
-        List<String> currentPhotoFiles = propertyPhotosMapper.getPhotoUrlsByResidNo(residNo);
+        // 1. 기존 사진 파일 URL을 가져온다.
+        List<String> currentPhotoFiles = propertyPhotosMapper.getPhotoUrlsByPhotoNo(residNo);
         List<PropertyPhotosDto> existingPhotos = propertyPhotosMapper.getPhotosByResidNo(residNo);
 
-        propertyPhotosMapper.deletePhoto(residNo);
+        // 2. 기존 사진 DB 및 파일 삭제
+        propertyPhotosMapper.deletePhoto(residNo);  // DB에서 기존 사진 정보 삭제
 
+        // 기존 사진 파일 삭제
         for (String fileName : currentPhotoFiles) {
             try {
-                deletePhotoFile(fileName);
+                deletePhotoFile(fileName);  // 실제 파일 삭제
             } catch (IOException e) {
                 log.error("사진 파일을 삭제하지 못했습니다.: {}", fileName, e);
             }
         }
 
+        // 3. 새로운 사진 정보 저장
         boolean isFirstFile = true;
         PropertyPhotosDto propertyPhotos = new PropertyPhotosDto();
-        propertyPhotos.setResidNo(residNo);
+        propertyPhotos.setResidNo(residNo);  // 사진이 속한 거주지 ID 설정
 
+        // 4. 사진 파일을 하나씩 처리
         for (int i = 0; i < photos.size(); i++) {
             MultipartFile file = photos.get(i);
             log.info("파일 처리 중: {}", file.getOriginalFilename());
 
+            // 파일 이름 생성 및 저장
             String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-            String savedFileName = savePhoto(file, fileName, residNo);
-            String encodedFileName = URLEncoder.encode(savedFileName, "UTF-8");
+            String savedFileName = savePhoto(file, fileName, residNo);  // 파일을 서버에 저장
+            String encodedFileName = URLEncoder.encode(savedFileName, "UTF-8");  // URL 인코딩
 
+            // 첫 번째 파일을 썸네일로 설정
             if (isFirstFile) {
                 propertyPhotos.setThumbnailUrls(encodedFileName);
                 isFirstFile = false;
             }
 
+            // 각 사진 URL을 설정 (최대 10개까지 처리)
             switch (i) {
                 case 0: propertyPhotos.setPhotoUrl01(encodedFileName); break;
                 case 1: propertyPhotos.setPhotoUrl02(encodedFileName); break;
@@ -330,8 +356,15 @@ public class PropertyPhotosService {
             }
         }
 
-        Long photoNo = existingPhotos.isEmpty() ? null : existingPhotos.get(0).getPhotoNo();
-        propertyPhotosMapper.updatePhoto(propertyPhotos);
+        // 5. 기존 사진 정보가 있으면 수정, 없으면 새로 삽입
+        if (!existingPhotos.isEmpty()) {
+            // 기존 사진 정보가 있으면 업데이트
+            propertyPhotos.setPhotoNo(existingPhotos.get(0).getPhotoNo());  // 기존 사진 번호를 설정
+            propertyPhotosMapper.updatePhoto(propertyPhotos);  // 업데이트
+        } else {
+            // 기존 사진이 없으면 새로 삽입
+            propertyPhotosMapper.insertPhoto(propertyPhotos);  // 새로 삽입
+        }
     }
 
     public List<PropertyPhotosDto> getPhotosByResidenceId(Long residNo) {

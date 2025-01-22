@@ -94,7 +94,10 @@ CREATE TABLE IF NOT EXISTS residence_rooms (
     room_name       VARCHAR(255),
     price_per_night INT,
     FOREIGN KEY (resid_no) REFERENCES residence (resid_no) ON DELETE CASCADE)
-    ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+
+insert into residence_rooms (resid_no, room_name, price_per_night)
+values (8, '103호', 150000);
 
 -- 6. 예약 페이지 테이블
 CREATE TABLE IF NOT EXISTS reservations (
@@ -257,10 +260,10 @@ VALUES ('호스텔 서울', 1, '서울에서 편리한 위치의 호스텔입니
 
 -- 5. 숙소 방 정보 데이터 삽입
 INSERT INTO residence_rooms (resid_no, room_name, price_per_night)
-VALUES (1, '101호', 50000),
-       (1, '102호', 60000),
-       (2, '201호', 150000),
-       (2, '202호', 180000);
+VALUES (8, '101호', 50000),
+       (8, '102호', 60000),
+       (9, '201호', 150000),
+       (9, '202호', 180000);
 
 -- 6. 예약 데이터 삽입 - 안됨
 INSERT INTO reservations (user_no, room_no, checkin_date, checkout_date, total_price, discounted_price, transaction_id,
