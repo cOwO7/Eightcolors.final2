@@ -21,8 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.thymeleaf.model.IModel;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -76,30 +74,6 @@ public class ResidenceController {
         model.addAttribute("rooms",rooms);
         // 상세 보기 페이지 반환
         return "views/residence/ResidenceDetail"; // 뷰 파일로 이동
-    }
-
-    @GetMapping("/addRoom")
-    public String addRoom(Model model) {
-        /*ResidenceDto residence = new ResidenceDto();
-        model.addAttribute("residence", residence);*/
-        ResidenceRoom room = new ResidenceRoom();
-        model.addAttribute("rooms",room);
-        return "views/residence/ResidenceRoomWriter";
-    }
-
-    @PostMapping("/room/{residNo}")
-    public String createRoom(@PathVariable Long residNo, @ModelAttribute ResidenceDto residence) {
-            residenceService.getResidenceById(residNo);
-
-        try {
-            // 방 정보 추가
-            residenceService.createRooms(residNo, residence.getRooms());
-
-            return "redirect:/list";  // 방 정보 추가 후 목록 페이지로 리다이렉트
-        } catch (Exception e) {
-            log.error("Error while adding rooms: ", e);
-            return "redirect:/error";  // 오류 처리
-        }
     }
 
     // 숙소 등록 페이지
@@ -183,7 +157,8 @@ public class ResidenceController {
             log.error("Invalid input error: ", e);
             return "redirect:/error";  // 잘못된 입력 오류 처리
         }
-    }*/
+    }
+
     // 숙소 수정 페이지
     @GetMapping("/edit/{residNo}")
     public String editResidenceForm(@PathVariable Long residNo, Model model) {
