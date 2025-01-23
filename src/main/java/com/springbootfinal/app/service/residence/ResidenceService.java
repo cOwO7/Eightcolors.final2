@@ -35,85 +35,6 @@ public class ResidenceService {
     }
 
     // 숙소 목록 조회
-    /*public List<ResidenceDto> getAllResidences() {
-        List<ResidenceDto> residences = residenceMapper.getAllResidences();
-
-        residences.forEach(residence -> {
-            List<String> photoUrls = new ArrayList<>();
-            if (residence.getPhotoUrl01() != null) photoUrls.add(residence.getPhotoUrl01());
-            if (residence.getPhotoUrl02() != null) photoUrls.add(residence.getPhotoUrl02());
-            if (residence.getPhotoUrl03() != null) photoUrls.add(residence.getPhotoUrl03());
-            if (residence.getPhotoUrl04() != null) photoUrls.add(residence.getPhotoUrl04());
-            if (residence.getPhotoUrl05() != null) photoUrls.add(residence.getPhotoUrl05());
-            if (residence.getPhotoUrl06() != null) photoUrls.add(residence.getPhotoUrl06());
-            if (residence.getPhotoUrl07() != null) photoUrls.add(residence.getPhotoUrl07());
-            if (residence.getPhotoUrl08() != null) photoUrls.add(residence.getPhotoUrl08());
-            if (residence.getPhotoUrl09() != null) photoUrls.add(residence.getPhotoUrl09());
-            if (residence.getPhotoUrl10() != null) photoUrls.add(residence.getPhotoUrl10());
-
-            residence.setPhotoUrls(photoUrls);
-
-            // 첫 번째 URL을 썸네일로 설정
-            if (!photoUrls.isEmpty()) {
-                residence.setThumbnailUrl(photoUrls.get(0));
-            }
-        });
-
-        return residences;
-    }*/
-
-    // 숙소 상세 조회
-    /*public ResidenceDto getResidenceById(Long residNo) {
-        return residenceMapper.getResidenceById(residNo);
-    }*/
-
-    /*public ResidenceDto getResidenceById(Long residNo) {
-        ResidenceDto residence = residenceMapper.getResidenceById(residNo);
-
-        // 사진 데이터도 추가
-        List<PropertyPhotosDto> photos = propertyPhotoMapper.getPhotosByResidNo(residNo);
-        residence.setPropertyPhotos(photos);  // 사진 정보를 ResidenceDto에 설정
-
-        return residence;
-    }
-
-    public void createResidence(ResidenceDto residence) throws IOException {
-        // 숙소 등록
-        residenceMapper.insertResidence(residence);
-        Long residNo = residence.getResidNo(); // 등록된 residNo를 가져옴
-
-        log.info("residNo : {}", residNo);
-    }
-
-
-
-    // 숙소 수정
-    public void updateResidence(ResidenceDto residence, Long residNo,
-                                List<MultipartFile> photos) throws IOException {
-        // 1. 숙소 정보 업데이트
-        residenceMapper.updateResidence(residence);
-
-        // 2. 새로운 사진 추가
-        if (photos != null && !photos.isEmpty()) {
-            propertyPhotosService.updatePhoto(residNo, photos);
-        }
-    }
-
-
-    // 숙소 삭제
-    public void deleteResidence(Long residNo) {
-        // 방 및 사진도 함께 삭제
-        residenceRoomMapper.deleteRoom(residNo);
-        propertyPhotoMapper.deletePhoto(residNo);
-        residenceMapper.deleteResidence(residNo);
-    }*/
-
-    // 방 목록 조회
-    public List<ResidenceRoom> getRoomsByResidenceId(Long residNo) {
-        return residenceRoomMapper.getRoomsByResidenceId(residNo);
-    }
-
-    // 피티 최종코드 2
     public List<ResidenceDto> getAllResidences() {
         List<ResidenceDto> residences = residenceMapper.getAllResidences();
         residences.forEach(residence -> {
@@ -137,6 +58,7 @@ public class ResidenceService {
         return residences;
     }
 
+    // 숙소 상세 조회
     public ResidenceDto getResidenceById(Long residNo) {
         ResidenceDto residence = residenceMapper.getResidenceById(residNo);
         List<PropertyPhotosDto> photos = propertyPhotoMapper.getPhotosByResidNo(residNo);
@@ -146,58 +68,35 @@ public class ResidenceService {
         return residence;
     }
 
-    /*public void createResidence(ResidenceDto residence,
-                                List<ResidenceRoom> rooms) throws IOException {
-        residenceMapper.insertResidence(residence);
-        Long residNo = residence.getResidNo();
-
-        for (ResidenceRoom room : rooms) {
-        room.setResidNo(residNo);
-        residenceRoomMapper.insertRoom(room);
-        }
-
-        log.info("residNo : {}", residNo);
-    }*/
+    // 방 목록 조회
+    public List<ResidenceRoom> getRoomsByResidenceId(Long residNo) {
+        return residenceRoomMapper.getRoomsByResidenceId(residNo);
+    }
 
     // 숙소 등록
-    public void createResidence(ResidenceDto residence) throws IOException {
-        // 1. Residence 정보 저장
+    public void createResidence(ResidenceDto residence)
+                throws IOException {
         residenceMapper.insertResidence(residence);
         Long residNo = residence.getResidNo();
-
-        log.info("residNo : {}", residNo);  // 로그로 확인
+        log.info("residNo : {}", residNo);
     }
 
-    // 방 등록
-    public void createRooms(Long residNo, List<ResidenceRoom> rooms) {
-        for (ResidenceRoom room : rooms) {
-            room.setResidNo(residNo);  // 각 방에 residNo를 추가
-            /*roomService.save(room);  // 방 정보 저장*/
-        }
-    }
-
-    public void updateResidence(ResidenceDto residence,
-                                Long residNo, List<MultipartFile> photos,
-                                List<ResidenceRoom> rooms) throws IOException {
+    // 숙소 수정
+    public void updateResidence(ResidenceDto residence, Long residNo,
+                                List<MultipartFile> photos) throws IOException {
+        // 1. Residence 정보 업데이트
         residenceMapper.updateResidence(residence);
-        if (photos != null && !photos.isEmpty()) {
-            propertyPhotosService.updatePhoto(residNo, photos);
-        }
 
-        for(ResidenceRoom room : rooms) {
-            if (room.getRoomNo() != null) {
-                residenceRoomMapper.updateRoom(room); // 기존 방 수정
-            } else {
-                room.setResidNo(residNo);
-                residenceRoomMapper.insertRoom(room);
-            }
+        // 2. 새로운 사진이 있으면 updatePhoto 호출
+        if (photos != null && !photos.isEmpty()) {
+            propertyPhotosService.updatePhoto(residNo, photos);  // 새로운 사진 처리
         }
     }
 
+    // 숙소 삭제
     public void deleteResidence(Long residNo) {
         residenceRoomMapper.deleteRoom(residNo);
         propertyPhotoMapper.deletePhoto(residNo);
         residenceMapper.deleteResidence(residNo);
     }
-
 }

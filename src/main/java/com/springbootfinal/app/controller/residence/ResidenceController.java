@@ -20,8 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.thymeleaf.model.IModel;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -84,30 +82,6 @@ public class ResidenceController {
         return "views/residence/ResidenceDetail"; // 뷰 파일로 이동
     }
 
-    @GetMapping("/addRoom")
-    public String addRoom(Model model) {
-        /*ResidenceDto residence = new ResidenceDto();
-        model.addAttribute("residence", residence);*/
-        ResidenceRoom room = new ResidenceRoom();
-        model.addAttribute("rooms",room);
-        return "views/residence/ResidenceRoomWriter";
-    }
-
-    @PostMapping("/room/{residNo}")
-    public String createRoom(@PathVariable Long residNo, @ModelAttribute ResidenceDto residence) {
-            residenceService.getResidenceById(residNo);
-
-        try {
-            // 방 정보 추가
-            residenceService.createRooms(residNo, residence.getRooms());
-
-            return "redirect:/list";  // 방 정보 추가 후 목록 페이지로 리다이렉트
-        } catch (Exception e) {
-            log.error("Error while adding rooms: ", e);
-            return "redirect:/error";  // 오류 처리
-        }
-    }
-
     // 숙소 등록 페이지
     @GetMapping("/new")
     public String newResidenceForm(Model model) {
@@ -117,16 +91,14 @@ public class ResidenceController {
     }
 
     // 숙소 등록 처리
-    /*@PostMapping("/new")
     @Transactional
+    @PostMapping("/new")
     public String createResidence(@ModelAttribute ResidenceDto residence,
-                                  @RequestParam("photoFiles") MultipartFile[] photoFiles,
-                                  @ModelAttribute List<ResidenceRoom> rooms) throws IOException {
+                                  @RequestParam("photoFiles") MultipartFile[] photoFiles) throws IOException {
         log.info("Received ResidenceDto: {}", residence);
 
         try {
-            //residenceService.createResidence(residence);  // 숙소 저장
-            residenceService.createResidence(residence, rooms);  // 숙소 저장
+            residenceService.createResidence(residence);  // 숙소 저장
             Long residNo = residence.getResidNo();
             log.info("Generated residNo: {}", residNo);
 
@@ -191,81 +163,8 @@ public class ResidenceController {
             log.error("Invalid input error: ", e);
             return "redirect:/error";  // 잘못된 입력 오류 처리
         }
-    }*/
-
-    @PostMapping("/new")
-    @Transactional
-    public String createResidence(@ModelAttribute ResidenceDto residence,
-                                  @RequestParam("photoFiles") MultipartFile[] photoFiles) throws IOException {
-        log.info("Received ResidenceDto: {}", residence);
-
-        try {
-            // 1. Residence 등록
-            residenceService.createResidence(residence);
-            Long residNo = residence.getResidNo();
-            log.info("Generated residNo: {}", residNo);
-
-            if (residNo == null) {
-                throw new IllegalArgumentException("resid_no가 null입니다.");
-            }
-
-            // 2. 파일 업로드 처리
-            if (photoFiles == null || photoFiles.length == 0) {
-                log.error("No files received.");
-                throw new IllegalArgumentException("사진 파일이 없습니다.");
-            }
-
-            // 최대 10개 사진만 처리
-            if (photoFiles.length > 10) {
-                log.error("Too many files received: {}", photoFiles.length);
-                throw new IllegalArgumentException("최대 10개의 파일만 업로드 가능합니다.");
-            }
-
-            boolean isFirstFile = true;
-            PropertyPhotosDto propertyPhotos = new PropertyPhotosDto();
-            propertyPhotos.setResidNo(residNo);
-
-            // 3. 사진 파일 처리
-            for (int i = 0; i < photoFiles.length; i++) {
-                MultipartFile file = photoFiles[i];
-                log.info("Processing file: {}", file.getOriginalFilename());
-
-                String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-                String savedFileName = propertyPhotosService.savePhoto(file, fileName, residNo);
-                String encodedFileName = URLEncoder.encode(savedFileName, "UTF-8");
-
-                // 첫 번째 파일만 썸네일 설정
-                if (isFirstFile) {
-                    propertyPhotos.setThumbnailUrls(encodedFileName);
-                    isFirstFile = false;
-                }
-
-                // 사진 URL 채우기
-                switch (i) {
-                    case 0: propertyPhotos.setPhotoUrl01(encodedFileName); break;
-                    case 1: propertyPhotos.setPhotoUrl02(encodedFileName); break;
-                    case 2: propertyPhotos.setPhotoUrl03(encodedFileName); break;
-                    case 3: propertyPhotos.setPhotoUrl04(encodedFileName); break;
-                    case 4: propertyPhotos.setPhotoUrl05(encodedFileName); break;
-                    case 5: propertyPhotos.setPhotoUrl06(encodedFileName); break;
-                    case 6: propertyPhotos.setPhotoUrl07(encodedFileName); break;
-                    case 7: propertyPhotos.setPhotoUrl08(encodedFileName); break;
-                    case 8: propertyPhotos.setPhotoUrl09(encodedFileName); break;
-                    case 9: propertyPhotos.setPhotoUrl10(encodedFileName); break;
-                }
-            }
-            // 사진 정보 DB에 저장
-            propertyPhotosService.savePhotos(propertyPhotos);
-
-            return "redirect:/list";  // 목록 페이지로 리다이렉트
-        } catch (IOException e) {
-            log.error("File upload error: ", e);
-            return "redirect:/error";  // 오류 처리
-        } catch (IllegalArgumentException e) {
-            log.error("Invalid input error: ", e);
-            return "redirect:/error";  // 잘못된 입력 오류 처리
-        }
     }
+
 
 
     // 숙소 수정 페이지
@@ -344,8 +243,8 @@ public class ResidenceController {
     public String updateResidence(@PathVariable Long residNo,
                                   @ModelAttribute ResidenceDto residence,
                                   @RequestParam("photos") List<MultipartFile> photos,
-                                  @RequestParam(value = "deletedPhotos", required = false) String deletedPhotos,
-                                  List<ResidenceRoom> rooms) throws IOException {
+                                  @RequestParam(value = "deletedPhotos", required = false)
+                                      String deletedPhotos) throws IOException {
         // 1. 기존 사진 삭제 처리 (삭제된 사진 ID 처리)
         if (deletedPhotos != null && !deletedPhotos.isEmpty()) {
             String[] deletedIds = deletedPhotos.split(",");
@@ -354,26 +253,12 @@ public class ResidenceController {
                 propertyPhotosService.deletePhotos(photoNo);  // 사진 파일과 DB에서 삭제
             }
         }
-
-        // 2. 새로운 사진 처리
-        List<String> newPhotoUrls = new ArrayList<>();
-        for (MultipartFile file : photos) {
-            if (!file.isEmpty()) {
-                String fileName = propertyPhotosService.savePhoto(file, UUID.randomUUID().toString()
-                        + "_" + file.getOriginalFilename(), residNo);
-                newPhotoUrls.add(fileName);  // 새로 저장된 파일 URL을 리스트에 추가
-            }
-        }
-
-        // 3. ResidenceDto의 새로운 사진 URL 리스트에 추가
-        residence.setNewPhotoUrls(newPhotoUrls);  // ResidenceDto 객체에 새로운 사진 URL 추가
-
-        // 4. Residence 정보 업데이트 (기존 정보 + 새로 추가된 사진 정보)
-        residenceService.updateResidence(residence, residNo, photos, rooms);  // `photos`를 전달
-
+        // 2. ResidenceDto의 새로운 사진 URL 리스트에 추가
+        residence.setNewPhotoUrls(new ArrayList<>());  // 기존 사진 처리 후 새로 추가된 사진만
+        // 3. Residence 정보 업데이트
+        residenceService.updateResidence(residence, residNo, photos);  // photos를 전달하여 처리
         return "redirect:/list";  // 업데이트 완료 후 목록으로 리다이렉트
     }
-
 
     @PostMapping("/delete/{residNo}")
     public String deleteResidence(@PathVariable Long residNo) {
@@ -394,7 +279,7 @@ public class ResidenceController {
     public ResponseEntity<?> processAllWeatherDataJson(
             @RequestBody AllWeatherDto allWeatherDto) throws IOException {
 
-        WeatherDto weatherDto = new WeatherDto(
+        WeatherDto weatherDto = new WeatherDto (
                 allWeatherDto.getBaseDate(),
                 allWeatherDto.getBaseTime(),
                 allWeatherDto.getNx(),

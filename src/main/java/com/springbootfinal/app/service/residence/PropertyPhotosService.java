@@ -15,9 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -200,13 +198,12 @@ public class PropertyPhotosService {
     }*/
 
 
-
-
     // 피티 최종코드
     private Path getFilePath(String fileName) {
         return Paths.get(UPLOAD_DIR).resolve(fileName);
     }
 
+    // 저장
     public String savePhoto(MultipartFile photo, String fileName, Long residNo) throws IOException {
         if (photo.isEmpty()) {
             throw new IllegalArgumentException("사진이 비어 있습니다.");
@@ -236,15 +233,17 @@ public class PropertyPhotosService {
         return fullFileName;
     }
 
+    // 저장 처리
     public void savePhotos(PropertyPhotosDto photo) {
         propertyPhotosMapper.insertPhoto(photo);
     }
 
+    // 확장자 검사 처리
     private boolean isValidExtension(String fileExtension) {
         List<String> validExtensions = Arrays.asList(".jpg", ".jpeg", ".png", ".gif", ".bmp");
         return validExtensions.contains(fileExtension);
     }
-
+    // 확장자 검사
     public void validatePhoto(MultipartFile photo) {
         long maxSize = 5 * 1024 * 1024;
         String[] allowedExtensions = {"jpg", "jpeg", "png", "gif"};
@@ -326,6 +325,8 @@ public class PropertyPhotosService {
         PropertyPhotosDto propertyPhotos = new PropertyPhotosDto();
         propertyPhotos.setResidNo(residNo);  // 사진이 속한 거주지 ID 설정
 
+        Set<String> processedFileNames = new HashSet<>();  // 이미 처리된 파일명 추적
+
         // 4. 사진 파일을 하나씩 처리
         for (int i = 0; i < photos.size(); i++) {
             MultipartFile file = photos.get(i);
@@ -333,8 +334,16 @@ public class PropertyPhotosService {
 
             // 파일 이름 생성 및 저장
             String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+
+            // 중복 파일 처리: 이미 처리된 파일은 건너뛰기
+            if (processedFileNames.contains(fileName)) {
+                log.info("중복된 파일이므로 건너뜁니다: {}", file.getOriginalFilename());
+                continue;  // 이미 처리된 파일은 건너뛰기
+            }
+
             String savedFileName = savePhoto(file, fileName, residNo);  // 파일을 서버에 저장
             String encodedFileName = URLEncoder.encode(savedFileName, "UTF-8");  // URL 인코딩
+            processedFileNames.add(savedFileName);  // 처리된 파일을 기록
 
             // 첫 번째 파일을 썸네일로 설정
             if (isFirstFile) {
@@ -368,6 +377,7 @@ public class PropertyPhotosService {
         }*/
         propertyPhotosMapper.updatePhoto(propertyPhotos);
     }
+
 
     public List<PropertyPhotosDto> getPhotosByResidenceId(Long residNo) {
         return propertyPhotosMapper.getPhotosByResidNo(residNo);
