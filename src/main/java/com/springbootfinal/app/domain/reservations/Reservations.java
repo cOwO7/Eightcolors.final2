@@ -18,8 +18,10 @@ public class Reservations {
     private Long user_no;
     private Long room_no;
     private String residName; // 숙소명 필드 추가
-    private String checkinDate; // 필드 이름 변경
-    private String checkoutDate; // 필드 이름 변경
+    private Date checkin_date; // 필드 이름 변경
+    private Date checkout_date; // 필드 이름 변경
+    private Date checkinDate; // 필드 이름 변경
+    private Date checkoutDate; // 필드 이름 변경
     private Integer total_price;
     private Integer discount_rate;
     private Float discounted_price;
