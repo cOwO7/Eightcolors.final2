@@ -30,8 +30,8 @@ public class ReservationController {
     // 예약 폼 페이지
     @GetMapping("/reservation")
     public String reservationForm(
-            @RequestParam(value = "residNo", required = false) int residNo,
-            @RequestParam(value = "roomNo", required = false) int roomNo,
+            @RequestParam(value = "residNo", required = false) Long residNo,
+            @RequestParam(value = "roomNo", required = false) Long roomNo,
             Model model, HttpSession httpSession) {
 
         int roomPrice = reservationMapper.getRoomPrice(roomNo);
@@ -64,15 +64,45 @@ public class ReservationController {
             @ModelAttribute Reservation reservation,
             Model model, HttpSession httpSession, RedirectAttributes redirectAttributes) {
 
+
+        reservation.setUserNo((Long)httpSession.getAttribute("userNo"));
         log.info(String.valueOf(reservation.getUserNo()));
 
 
         reservation.setTransactionId((String) httpSession.getAttribute("impUid"));
-        reservation.setRoomNo((int)httpSession.getAttribute("roomNo"));
-        reservation.setUserNo((Long)httpSession.getAttribute("userNo"));
+
+
         // HttpSession에서 checkinDate를 가져옵니다.
 
-        Integer residNo = (Integer) httpSession.getAttribute("residNo");
+        Object roomNoObj = httpSession.getAttribute("roomNo");
+
+        Long roomNo = null;
+
+        if (roomNoObj instanceof Long) {
+            roomNo = (Long) roomNoObj;
+        } else if (roomNoObj instanceof Integer) {
+            roomNo = ((Integer) roomNoObj).longValue();
+        } else {
+            throw new IllegalArgumentException("Invalid roomNo type in session.");
+        }
+
+        reservation.setRoomNo(roomNo);
+
+
+        Object residNoObj = httpSession.getAttribute("residNo");
+
+        Long residNo = null;
+
+        if (roomNoObj instanceof Long) {
+            residNo = (Long) residNoObj;
+        } else if (residNoObj instanceof Integer) {
+            residNo = ((Integer) residNoObj).longValue();
+        } else {
+            throw new IllegalArgumentException("Invalid roomNo type in session.");
+        }
+
+
+
         Map<String, String> residenceAndRoomMap = reservationService.getResidenceAndRoomById(residNo, reservation.getRoomNo());
 
         reservation.setPaymentStatus("완료");

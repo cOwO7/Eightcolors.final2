@@ -73,8 +73,8 @@
 
   </div>
 
-  <script th:inline="javascript">
 
+ <script th:inline="javascript">
     function validateDates() {
       const checkinDate = document.getElementById('checkinDate').value;
       const checkoutDate = document.getElementById('checkoutDate').value;
@@ -120,18 +120,6 @@
 
     // 체크아웃 날짜가 변경될 때마다 validateDates 호출
     document.getElementById('checkoutDate').addEventListener('change', validateDates);
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     const alertMessage = [[${alertMessage}]] ;
@@ -337,6 +325,7 @@
         document.getElementById('totalPrice').textContent = '날짜를 선택해주세요.';
       }
     }
+
   </script>
 
 </th:block>

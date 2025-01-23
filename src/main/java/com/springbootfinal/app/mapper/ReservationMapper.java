@@ -14,13 +14,13 @@ import java.util.Map;
 public interface ReservationMapper {
 
     // 방 예약 가능 여부 확인
-    int checkRoomAvailability(@Param("roomNo") int roomNo,
+    int checkRoomAvailability(@Param("roomNo") Long roomNo,
                               @Param("checkinDate") LocalDate checkinDate,
                               @Param("checkoutDate") LocalDate checkoutDate);
 
-    Map<String, String> findResidenceAndRoomById(@Param("residNo") int residNo, @Param("roomNo") int roomNo);
+    Map<String, String> findResidenceAndRoomById(@Param("residNo") Long residNo, @Param("roomNo") Long roomNo);
     // 방 가격 조회
-    int getRoomPrice(@Param("roomNo") int roomNo);
+    int getRoomPrice(@Param("roomNo") Long roomNo);
 
     // 예약 정보 저장
     void insertReservation(Reservation reservation);

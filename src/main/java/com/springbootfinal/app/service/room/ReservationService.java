@@ -18,12 +18,12 @@ public class ReservationService {
     private ReservationMapper reservationMapper;
 
     // 방 예약 가능 여부 체크
-    public boolean isRoomAvailable(int roomNo, LocalDate checkinDate, LocalDate checkoutDate) {
+    public boolean isRoomAvailable(Long roomNo, LocalDate checkinDate, LocalDate checkoutDate) {
         return reservationMapper.checkRoomAvailability(roomNo, checkinDate, checkoutDate) == 0;
     }
 
 
-    public Map<String, String> getResidenceAndRoomById(int residNo, int roomNo) {
+    public Map<String, String> getResidenceAndRoomById(Long residNo, Long roomNo) {
         return reservationMapper.findResidenceAndRoomById(residNo, roomNo);
     }
 
