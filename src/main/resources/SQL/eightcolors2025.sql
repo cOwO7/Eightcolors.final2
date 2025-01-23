@@ -92,6 +92,9 @@ CREATE TABLE IF NOT EXISTS residence_rooms (
     resid_no        BIGINT,
     room_name       VARCHAR(255),
     price_per_night INT,
+    room_url01   VARCHAR(255),
+    room_url02   VARCHAR(255),
+    room_url03   VARCHAR(255),
     FOREIGN KEY (resid_no) REFERENCES residence (resid_no) ON DELETE CASCADE)
 ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
@@ -184,17 +187,21 @@ select * from notices;
 
 -- 12. 양도 테이블
 CREATE TABLE IF NOT EXISTS transfers (
-    transfer_no    BIGINT AUTO_INCREMENT PRIMARY KEY,
-    seller_user_no BIGINT,
-    buyer_user_no  BIGINT,
-    reservation_no BIGINT,
+    transfer_no BIGINT AUTO_INCREMENT PRIMARY KEY,
+    seller_user_no BIGINT NULL,
+    buyer_user_no BIGINT,
+    reservation_no BIGINT NULL,
     transfer_price INT,
-    status         ENUM ('양도가능', '양도완료') DEFAULT '양도가능',
-    created_at     DATETIME              DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (seller_user_no) REFERENCES users (user_no) ON DELETE CASCADE,
-    FOREIGN KEY (buyer_user_no) REFERENCES users (user_no) ON DELETE SET NULL,
-    FOREIGN KEY (reservation_no) REFERENCES reservations (reservation_no) ON DELETE CASCADE
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+    transfer_title VARCHAR(255),
+    transfer_content VARCHAR(1000),
+    transfer_count INT DEFAULT 0,
+    partner_order_id VARCHAR(255),
+    status ENUM('양도가능', '양도완료') DEFAULT '양도가능',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (seller_user_no) REFERENCES users(user_no) ON DELETE CASCADE,
+    FOREIGN KEY (buyer_user_no) REFERENCES users(user_no) ON DELETE SET NULL,
+    FOREIGN KEY (reservation_no) REFERENCES reservations(reservation_no) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 ALTER TABLE transfers
