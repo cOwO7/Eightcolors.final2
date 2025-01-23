@@ -5,6 +5,9 @@ import lombok.Setter;
 import lombok.ToString;
 import org.apache.ibatis.type.Alias;
 
+import java.sql.Date;
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @ToString
@@ -14,8 +17,9 @@ public class Reservations {
     private Long reservation_no;
     private Long user_no;
     private Long room_no;
-    private String checkin_date;
-    private String checkout_date;
+    private String residName; // 숙소명 필드 추가
+    private String checkinDate; // 필드 이름 변경
+    private String checkoutDate; // 필드 이름 변경
     private Integer total_price;
     private Integer discount_rate;
     private Float discounted_price;

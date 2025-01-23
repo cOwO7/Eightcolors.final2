@@ -31,4 +31,14 @@ public interface ReservationMapper {
 
     @Select("SELECT COUNT(*) FROM reservations WHERE user_no = #{userNo}")
     int countReservationsByUserNo(@Param("userNo") String userNo);
+
+    @Select("SELECT r.reservation_no, r.user_no, r.room_no, res.resid_name AS residName, r.checkin_date, r.checkout_date, r.total_price, r.discount_rate, r.discounted_price, r.transaction_id, r.payment_status, r.reservation_status, r.created_at, r.updated_at " +
+            "FROM reservations r " +
+            "JOIN residence_rooms rr ON r.room_no = rr.room_no " +
+            "JOIN residence res ON rr.resid_no = res.resid_no " +
+            "WHERE r.user_no = #{userNo} LIMIT 1")
+    Reservations getReservationByUserNo(@Param("userNo") String userNo);
+
+
+
 }

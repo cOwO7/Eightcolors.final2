@@ -1,8 +1,10 @@
 package com.springbootfinal.app.service.transfer;
 
 import com.springbootfinal.app.domain.transfer.TransferDto;
+import com.springbootfinal.app.mapper.ReservationMapper;
 import com.springbootfinal.app.mapper.transfer.TransferMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -14,6 +16,11 @@ import java.util.Map;
 public class TransferService {
 
     private final TransferMapper transferMapper;
+
+    @Autowired
+    private ReservationMapper reservationMapper;
+
+
 
 /*    public TransferDto getTransferDto(Long transferNo, boolean isCount) {
         log.info("getTransferDto: {}, Long transferNo, boolean isCount", transferNo, isCount);

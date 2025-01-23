@@ -121,6 +121,26 @@
         DELETE FROM reservations WHERE reservation_no = #{reservationNo}
     </delete>
 
+    <resultMap id="reservationResultMap" type="com.springbootfinal.app.domain.reservations.Reservations">
+    <id property="reservation_no" column="reservation_no"/>
+    <result property="user_no" column="user_no"/>
+    <result property="room_no" column="room_no"/>
+    <result property="residName" column="residName"/>
+    <result property="checkinDate" column="checkin_date"/>
+    <result property="checkoutDate" column="checkout_date"/>
+    <result property="total_price" column="total_price"/>
+    <result property="discount_rate" column="discount_rate"/>
+    <result property="discounted_price" column="discounted_price"/>
+    <result property="transaction_id" column="transaction_id"/>
+    <result property="payment_status" column="payment_status"/>
+    <result property="reservation_status" column="reservation_status"/>
+    <result property="created_at" column="created_at"/>
+    <result property="updated_at" column="updated_at"/>
+    </resultMap>
+
+
+
+
 </mapper>
 
 

@@ -1,5 +1,6 @@
 package com.springbootfinal.app.controller.transfer;
 
+import com.springbootfinal.app.domain.reservations.Reservations;
 import com.springbootfinal.app.domain.transfer.TransferDto;
 import com.springbootfinal.app.mapper.ReservationMapper;
 import com.springbootfinal.app.service.transfer.TransferService;
@@ -85,8 +86,7 @@ public String updateBoard(TransferDto transferDto, RedirectAttributes reAttrs,
 }
 
     // 양도 생성 폼 요청 처리 메서드
-
-@GetMapping("/transferWrite")
+   @GetMapping("/transferWrite")
 public String createTransferForm(Model model, HttpServletRequest request) {
     Logger logger = LoggerFactory.getLogger(TransferController.class);
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -95,13 +95,17 @@ public String createTransferForm(Model model, HttpServletRequest request) {
     Object userNoObj = request.getSession().getAttribute("userNo");
     String userNo = userNoObj != null ? userNoObj.toString() : null;
 
-    log.info("User logged in: userNo={}, role={}", userNo, authentication.getAuthorities());
-    log.info("Authenticated userNo: {}", userNo);
+    logger.info("User logged in: userNo={}, role={}", userNo, authentication.getAuthorities());
+    logger.info("Authenticated userNo: {}", userNo);
 
     int reservationCount = reservationMapper.countReservationsByUserNo(userNo);
-    log.info("Reservation count for userNo {}: {}", userNo, reservationCount);
+    logger.info("Reservation count for userNo {}: {}", userNo, reservationCount);
 
     if (reservationCount > 0) {
+        // 예약 내역 가져오기
+        Reservations reservation = reservationMapper.getReservationByUserNo(userNo);
+        logger.info("Reservation details: {}", reservation); // 예약 정보 로그 추가
+        model.addAttribute("reservation", reservation);
         return TRANSFER_BASE_PATH + "transferWrite";
     } else {
         model.addAttribute("errorMessage", "예약 내역이 있는 회원만 글쓰기가 가능합니다.");
