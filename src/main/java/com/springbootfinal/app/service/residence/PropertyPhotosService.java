@@ -304,19 +304,18 @@ public class PropertyPhotosService {
 
     public void updatePhoto(Long residNo, List<MultipartFile> photos) throws IOException {
         // 1. 기존 사진 파일 URL을 가져온다.
-        /*List<String> currentPhotoFiles = propertyPhotosMapper.getPhotoUrlsByPhotoNo(residNo);
-        List<PropertyPhotosDto> existingPhotos = propertyPhotosMapper.getPhotosByResidNo(residNo);*/
+        List<String> currentPhotoFiles = propertyPhotosMapper.getPhotoUrlsByPhotoNo(residNo);
+        List<PropertyPhotosDto> existingPhotos = propertyPhotosMapper.getPhotosByResidNo(residNo);
 
         // 2. 기존 사진 DB 및 파일 삭제
         propertyPhotosMapper.deletePhoto(residNo);  // DB에서 기존 사진 정보 삭제
 
         // 기존 사진 파일 삭제
-        /*for (String fileName : currentPhotoFiles) {*/
-        for (MultipartFile photo : photos) {
+        for (String fileName : currentPhotoFiles) {
             try {
-                deletePhotoFile(UPLOAD_DIR + photo.getOriginalFilename());  // 실제 파일 삭제
+                deletePhotoFile(fileName);  // 실제 파일 삭제
             } catch (IOException e) {
-                log.error("사진 파일을 삭제하지 못했습니다.: {}", photo.getOriginalFilename(), e);
+                log.error("사진 파일을 삭제하지 못했습니다.: {}", fileName, e);
             }
         }
 
@@ -367,15 +366,14 @@ public class PropertyPhotosService {
         }
 
         // 5. 기존 사진 정보가 있으면 수정, 없으면 새로 삽입
-        /*if (!existingPhotos.isEmpty()) {
+        if (!existingPhotos.isEmpty()) {
             // 기존 사진 정보가 있으면 업데이트
             propertyPhotos.setPhotoNo(existingPhotos.get(0).getPhotoNo());  // 기존 사진 번호를 설정
             propertyPhotosMapper.updatePhoto(propertyPhotos);  // 업데이트
         } else {
             // 기존 사진이 없으면 새로 삽입
             propertyPhotosMapper.insertPhoto(propertyPhotos);  // 새로 삽입
-        }*/
-        propertyPhotosMapper.updatePhoto(propertyPhotos);
+        }
     }
 
 

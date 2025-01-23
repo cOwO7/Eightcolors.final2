@@ -70,6 +70,13 @@ public class HostUserService implements UserDetailsService {
     }
 
     /**
+     * 호스트 사용자 이름을 통해 특정 호스트 사용자를 조회합니다.
+     * @param username 조회할 호스트 사용자의 이름
+     * @return 조회된 호스트 사용자 정보
+     */
+
+
+    /**
      * 호스트 사용자 ID를 통해 특정 호스트 사용자를 삭제합니다.
      * @param id 삭제할 호스트 사용자의 ID
      */
