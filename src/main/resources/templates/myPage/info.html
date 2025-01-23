@@ -5,199 +5,90 @@
 <th:block layout:fragment="content">
     <div class="container my-5">
 
-<div class="row">
-    <div class="col-4">
-<!--        <div class="btn-group-vertical btn-group-lg w-100 p-3">-->
-<!--            <a href="#" class="btn btn-outline-primary active w-100 p-3" aria-current="page">내 정보 관리</a>-->
-<!--            <a href="#" class="btn btn-outline-primary w-100 p-3">예약 내역</a>-->
-<!--            <a href="#" class="btn btn-outline-primary w-100 p-3">찜 목록</a>-->
-<!--        </div>-->
-
-<!--        <div class="list-group">-->
-<!--            <a href="#" class="list-group-item list-group-item-action active" aria-current="true">내정보 관리</a>-->
-<!--            <a href="#" class="list-group-item list-group-item-action">예약 내역</a>-->
-<!--            <a href="#" class="list-group-item list-group-item-action">찜 목록</a>-->
-<!--        </div>-->
-
-
-        <ul class="nav flex-column nav-underline">
-            <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">내 정보 보기</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">예약 현황</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link disabled" aria-disabled="true">양도 현황</a>
-            </li>
-        </ul>
-
-    </div>
-    <!--버튼 끝-->
-    <div class="col-8">
         <div class="row">
-            <div class="col">
-                <h1>내 정보 관리</h1>
+            <div class="col-3">
+                <ul class="nav flex-column nav-underline">
+                    <li class="nav-item">
+                        <a class="nav-link active bg-primary p-2 text-dark bg-opacity-10" aria-current="page" href="#">내 정보 보기</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"  aria-current="true" href="#">예약 현황</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-disabled="true"  href="#">양도 현황</a>
+                    </li>
+                </ul>
+
             </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <h3>회원 정보</h3>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <h5>내 정보 확인/수정 이 가능해요</h5>
-            </div>
-        </div>
+            <!--버튼 끝-->
+            <div class="col-9">
 
-<!--        input 방식 시작-->
-        <div class="row">
-            <div class="col-4">
-                <div class="row">
-                    <div class="col-auto">
-                        <p>ID : </p>
-                    </div>
-                </div>
                 <div class="row">
                     <div class="col">
-                        <input type="text" class="form-control" th:value="${user.id}" readonly>
+                        <div my-3> <h2>내 정보 관리</h2></div>
+                       <div class="row  my-3">
+                           <div class="col">
+                               <div>회원 정보</div>
+                               <div>내 정보 조회 밑 수정은 여기서 가능해요</div>
+                           </div>
+                       </div>
+                       <div>
+                           <div class="row  my-3">
+                               <div class="col">
+                                   <div class="row">
+                                       <div class="col-6  my-3">
+                                           <div>
+                                               닉네임
+                                           </div>
+                                           <div>
+                                               <input class="form-control" type="text" placeholder="Disabled input" aria-label="Disabled input example" disabled th:value="${user.id}">
+                                           </div>
+                                       </div>
+                                       <div class="col-6 my-3">
+                                           <div>
+                                               이름
+                                           </div>
+                                           <div>
+                                             <input class="form-control" type="text" placeholder="Disabled input" aria-label="Disabled input example" disabled th:value="${user.name}">
+                                           </div>
+                                       </div>
+                                   </div>
+                                   <div class="row">
+                                       <div class="col-6  my-3">
+                                           <div>
+                                               전화번호
+                                           </div>
+                                           <div>
+                                                  <input class="form-control" type="text" placeholder="Disabled input" aria-label="Disabled input example" disabled th:value="${user.phone}">
+                                           </div>
+                                       </div>
+                                       <div class="col-6  my-3">
+                                           <div>
+                                               이메일
+                                           </div>
+                                           <div>
+                                                  <input class="form-control" type="text" placeholder="Disabled input" aria-label="Disabled input example" disabled th:value="${user.email}">
+                                           </div>
+                                       </div>
+                                   </div>
+                                   <div class="row  my-3">
+                                       <div class="col">
+                                           <div>
+                                               주소
+                                           </div>
+                                           <div>
+                                                  <input class="form-control" type="text" placeholder="Disabled input" aria-label="Disabled input example" disabled th:value="${user.address1} + ' ' + ${user.address2}">
+                                           </div>
+                                       </div>
+                                   </div>
+                               </div>
+                           </div>
+                       </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-4">
-                <div class="row">
-                    <div class="col-auto">
-                        <p>이름 : </p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-auto">
-                        <input type="text" class="form-control" th:value="${user.name}" readonly>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-auto">
-                    <div class="row">
-                        <div class="col-4">
-                            <p>이메일 : </p>
-                        </div>
-                        <div class="row">
-                            <div class="col-auto">
-                                <input type="text" class="form-control" th:value="${user.email}" readonly>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-4">
-                    <div class="row">
-                        <div class="col">
-                            <p>전화 번호 : </p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <input type="text" class="form-control" th:value="${user.phone}" readonly>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <div class="row">
-                        <div class="col">
-                            <p>주소 : </p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <input type="text" class="form-control" th:value="${user.address1} + ' ' + ${user.address2}" readonly>
-                        </div>
-                    </div>
-                </div>
-            </div>
-<!--            input 방식 끝-->
-        </div>
-    </div>
-</div>
 
-<!--        디자인 2-->
-<div class="row">
-    <div class="col-3">
-        <div class="list-group list-group-flush">
-            <a href="#" class="list-group-item list-group-item-action active" aria-current="true">내정보 관리</a>
-            <a href="#" class="list-group-item list-group-item-action">예약 내역</a>
-            <a href="#" class="list-group-item list-group-item-action">찜 목록</a>
-        </div>
-    </div>
-    <div class="col-9">
-        <div class="row">
-            <div class="col">
-                <span class="border border-primary">
-                    <div class="row">
-                        <div class="col-8">
-                            <div class="list-group list-group-flush">
-                                <a href="#" class="list-group-item list-group-item-action active" aria-current="true">내정보 관리</a>
-                                <a href="#" class="list-group-item list-group-item-action">예약 내역</a>
-                                <a href="#" class="list-group-item list-group-item-action">찜 목록</a>
-                            </div>
-                        </div>
-                    </div>
-                </span>
             </div>
         </div>
-
-    </div>
-</div>
-
-<!--        디자인 3-->
- <div class="row">
-     <div class="col">
-         <nav>
-             <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                 <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Home</button>
-                 <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Profile</button>
-                 <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</button>
-                 <button class="nav-link" id="nav-disabled-tab" data-bs-toggle="tab" data-bs-target="#nav-disabled" type="button" role="tab" aria-controls="nav-disabled" aria-selected="false" disabled>Disabled</button>
-             </div>
-         </nav>
-     </div>
- </div>
- <div class="row">
-     <div class="col">
-         <h1>내정보</h1>
-     </div>
- </div>
-        <!-- 사용자 정보 표시 -->
-        <div class="card">
-            <div class="card-body border border-primary">
-                <p><strong>UserNo:</strong> <span th:text="${user.userNo}">userNo</span></p>
-                <p><strong>Username:</strong> <span th:text="${user.name}">Name O  v</span></p>
-                <p><strong>UserId:</strong> <span th:text="${user.id}">UserID O  v</span></p>
-                <p><strong>Email:</strong> <span th:text="${user.email}">Email O  v</span></p>
-                <p><strong>Provider:</strong> <span th:text="${user.loginType}">Provider</span></p>
-                <p><strong>Phone:</strong>
-                    <span th:if="${user.phone != null}" th:text="${user.phone}">Phone O  v</span>
-                    <span th:if="${user.phone == null}">Not available</span>
-                </p>
-                <p><strong>Address:</strong>
-                    <span th:if="${user.address1 != null}" th:text="${user.address1} + ' ' + ${user.address2}">Address O </span>
-                    <span th:if="${user.address1 == null}">Not available</span>
-                </p>
-                <p><strong>Zipcode:</strong>
-                    <span th:if="${user.zipcode != null}" th:text="${user.zipcode}">Zipcode</span>
-                    <span th:if="${user.zipcode == null}">Not available</span>
-                </p>
-                <p><strong>Points:</strong> <span th:text="${user.point}">0</span></p>
-                <p><strong>role:</strong> <span th:text="${user.role}"></span></p>
-            </div>
-        </div>
-        <br>
-        <!-- 로그아웃 버튼 -->
-        <form th:action="@{/logout}" method="post">
-            <button type="submit" class="btn btn-primary">Logout</button>
-        </form>
     </div>
 </th:block>
 </html>
