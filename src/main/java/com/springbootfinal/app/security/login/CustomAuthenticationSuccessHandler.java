@@ -45,7 +45,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         }
 
 
-
         // 유저 번호 세션에 저장..
         Users userEntity = userService.getCurrentUser();
         if (userEntity != null) {
@@ -55,6 +54,9 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         } else {
             log.warn("User entity is null");
         }
+
+
+
 
         // 세션 정보 로그 출력
         log.info("User logged in: userNo={}, hostUserNo={}, role={}",
