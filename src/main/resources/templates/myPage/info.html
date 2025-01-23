@@ -9,10 +9,10 @@
             <div class="col-3">
                 <ul class="nav flex-column nav-underline">
                     <li class="nav-item">
-                        <a class="nav-link active bg-primary p-2 text-dark bg-opacity-10" aria-current="page" href="#">내 정보 보기</a>
+                        <a class="nav-link active bg-primary p-2 text-dark bg-opacity-10" aria-current="page" th:href="@{/myPage/info}">내 정보 보기</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link"  aria-current="true" href="#">예약 현황</a>
+                        <a class="nav-link"  aria-current="true" th:href="@{/myPage/myReservationStatus}">예약 현황</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" aria-disabled="true"  href="#">양도 현황</a>
@@ -29,7 +29,7 @@
                        <div class="row  my-3">
                            <div class="col">
                                <div>회원 정보</div>
-                               <div>내 정보 조회 밑 수정은 여기서 가능해요</div>
+                               <div>내 정보 조회 및 수정 병합은 여기서 가능해요</div>
                            </div>
                        </div>
                        <div>
@@ -90,6 +90,9 @@
             </div>
         </div>
     </div>
+
+    <a class="btn btn-primary" th:href="@{/myPage/edit}">정보 수정</a>
+    <a class="btn btn-secondary" th:href="@{/myPage/merge}">계정 병합</a>
 
 </th:block>
 </html>

@@ -33,6 +33,18 @@ public class UserService implements UserDetailsService {
 
     private Users currentUser;  // 현재 사용자 정보를 보관
 
+    public void mergeAccounts(Users localUser, Users socialUser) {
+        // 로컬 계정 정보를 소셜 계정으로 병합
+        socialUser.setPassword(localUser.getPassword());
+        socialUser.setPhone(localUser.getPhone());
+        socialUser.setZipcode(localUser.getZipcode());
+        socialUser.setAddress1(localUser.getAddress1());
+        socialUser.setAddress2(localUser.getAddress2());
+
+        userMapper.updateUser(socialUser);
+        userMapper.deleteUser(localUser.getUserNo()); // 로컬 계정 삭제
+    }
+
     public UserService(UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
