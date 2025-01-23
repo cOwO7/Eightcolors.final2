@@ -48,12 +48,13 @@ public class PaymentController {
 	    @PostMapping("/payment/success")
 	    @ResponseBody
 	    public String handlePaymentSuccess(@RequestBody Map<String, Object> paymentData, HttpSession session) {
-	        /*session.setAttribute("impUid", paymentData.get("imp_uid"));
+	        /*
 	        session.setAttribute("merchantUid", paymentData.get("merchant_uid"));
 	        session.setAttribute("paidAmount", paymentData.get("paid_amount"));
 	        session.setAttribute("buyerName", paymentData.get("buyer_name"));
 	        session.setAttribute("buyerEmail", paymentData.get("buyer_email"));*/
 
+			session.setAttribute("impUid", paymentData.get("imp_uid"));
 			session.setAttribute("roomNo",paymentData.get("roomNo"));
 			session.setAttribute("checkinDate",paymentData.get("checkinDate"));
 			session.setAttribute("checkoutDate",paymentData.get("checkoutDate"));

@@ -31,4 +31,7 @@ public interface ReservationMapper {
     public void newReservations(Reservations param);
     public void putReservations(Reservations param);
     public void delReservations(Reservations param);
+
+    Reservation selectReservationByTransactionId(@Param("transactionId") String transactionId);
+
 }

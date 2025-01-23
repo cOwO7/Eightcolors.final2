@@ -55,4 +55,9 @@ public class ReservationService {
     public ReservationUserDTO getReservationUser(Long userNo) {
         return reservationMapper.getReservationUserByUserNo(userNo);
     }
+
+    //예약내역 조회
+    public Reservation getReservationByTransactionId(String transactionId) {
+        return reservationMapper.selectReservationByTransactionId(transactionId);
+    }
 }

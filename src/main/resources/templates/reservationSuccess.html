@@ -14,13 +14,17 @@
     <h1>예약이 완료되었습니다!</h1>
 
     <div class="alert alert-success">
-      <!--  <p>숙소: <strong>[[${residName}]]</strong></p>
-        <p>방 번호: <strong>[[${roomNo}]]</strong></p>-->
+        <h1>예약 내역</h1>
+        <p>예약 번호: <strong>[[${reservation.roomNo}]]</strong></p>
+        <p>사용자 번호: <strong>[[${reservation.userNo}]]</strong></p>
         <p>체크인 날짜: <strong>[[${reservation.checkinDate}]]</strong></p>
         <p>체크아웃 날짜: <strong>[[${reservation.checkoutDate}]]</strong></p>
-<!--        <p>사용자 번호: <strong>[[${userNo}]]</strong></p>-->
-        <p>총 금액: <strong>[[${reservation.discountedPrice}]]원</strong></p>
+        <p>총 금액: <strong>[[${reservation.totalprice}]]원</strong></p>
         <p>할인율: <strong>[[${reservation.discountRate}]]%</strong></p>
+        <p>할인된 금액: <strong>[[${reservation.discountedPrice}]]원</strong></p>
+        <p>거래 ID: <strong>[[${reservation.transactionId}]]</strong></p>
+        <p>결제 상태: <strong>[[${reservation.paymentStatus}]]</strong></p>
+        <p>결제 날짜: <strong>[[${reservation.createdAt}]]</strong></p>
     </div>
 
     <a href="/" class="btn btn-primary">목록</a>

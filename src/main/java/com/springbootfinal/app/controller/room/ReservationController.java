@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 
@@ -58,10 +59,12 @@ public class ReservationController {
     @RequestMapping("/reserve")
     public String reserveRoom(
             @ModelAttribute Reservation reservation,
-            Model model, HttpSession httpSession) {
+            Model model, HttpSession httpSession, RedirectAttributes redirectAttributes) {
 
         log.info(String.valueOf(reservation.getUserNo()));
 
+
+        reservation.setTransactionId((String) httpSession.getAttribute("impUid"));
         reservation.setRoomNo((int)httpSession.getAttribute("roomNo"));
         reservation.setUserNo((Long)httpSession.getAttribute("userNo"));
         // HttpSession에서 checkinDate를 가져옵니다.
@@ -104,7 +107,13 @@ public class ReservationController {
         // 체크인/체크아웃 날짜 유효성 검사
         if (reservation.getCheckinDate().isAfter(reservation.getCheckoutDate())) {
            /* alert("체크아웃 날짜는 체크인 날짜 이후여야 합니다.");*/
-            return "reservationSuccess";
+
+            Integer residNo = (Integer) httpSession.getAttribute("residNo");
+            // alert 메시지 설정
+            redirectAttributes.addFlashAttribute("alertMessage", "체크아웃 날짜는 체크인 날짜 이후여야 합니다.");
+
+            // 리다이렉트 URL 반환
+            return "redirect:/reservation?residNo=" + residNo + "&roomNo=" + reservation.getRoomNo();
         }
 
         // 방 예약 가능 여부 확인
@@ -114,14 +123,27 @@ public class ReservationController {
                 reservation.getCheckoutDate()
         );
 
+
+
         if (!available) {
-            model.addAttribute("errorMessage", "선택한 날짜에 방이 이미 예약되었습니다.");
-            return "reservationSuccess";
+           //model.addAttribute("errorMessage", "선택한 날짜에 방이 이미 예약되었습니다.");
+
+
+            Integer residNo = (Integer) httpSession.getAttribute("residNo");
+
+
+
+            // alert 메시지 설정
+            redirectAttributes.addFlashAttribute("alertMessage", "선택한 날짜에 방이 이미 예약되었습니다.");
+
+            // 리다이렉트 URL 반환
+            return "redirect:/reservation?residNo=" + residNo + "&roomNo=" + reservation.getRoomNo();
         }
 
         // 예약 처리
         reservationService.reserveRoom(reservation);
-        model.addAttribute("reservation", reservation);
+        Reservation reservationDetails=reservationService.getReservationByTransactionId(reservation.getTransactionId());
+        model.addAttribute("reservation", reservationDetails);
         return "reservationSuccess";
     }
 

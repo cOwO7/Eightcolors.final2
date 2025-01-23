@@ -20,7 +20,8 @@
         WHERE room_no = #{roomNo}
         AND (#{checkoutDate} > checkin_date
         AND checkout_date > #{checkinDate})
-    </select>
+        AND reservation_status != '예약 취소'
+           </select>
 
     <!-- 방 가격 조회 -->
     <select id="getRoomPrice" resultType="int">
@@ -55,11 +56,32 @@
                  )
     </insert>
 
+    <!--예약정보 출력-->
+    <select id="selectReservationByTransactionId" resultType="Reservation">
+        SELECT
+            reservation_no,
+            user_no,
+            room_no,
+            checkin_date,
+            checkout_date,
+            total_price,
+            discount_rate,
+            discounted_price,
+            transaction_id,
+            payment_status,
+            reservation_status,
+            created_at
+        FROM
+            reservations
+        WHERE
+            transaction_id = #{transactionId}
+    </select>
+
     <!-- 숙소 이름 가져오는 쿼리문 -->
     <select id="findResidenceNameById" resultType="string">
         SELECT resid_name
         FROM residence
-        WHERE resid_no = #{residNo}
+        WHERE resid_no = #{residNo};
     </select>
     <!--예약하는 유저의 정보-->
     <select id="getReservationUserByUserNo" parameterType="long" resultType="ReservationUserDTO">

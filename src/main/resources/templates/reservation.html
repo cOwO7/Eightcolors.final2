@@ -37,10 +37,10 @@
       </div>
 
       <!-- 사용자 번호 -->
-      <div class="form-group">
+      <!--<div class="form-group">
         <label for="userNo">사용자 번호:</label>
         <input type="text" name="userNo" id="userNo" class="form-control" th:value="${user.getUserNo() != null ? user.getUserNo() : ''}" required>
-      </div>
+      </div>-->
 
       <!-- 사용자 이름 -->
       <div class="form-group">
@@ -74,6 +74,50 @@
   </div>
 
   <script th:inline="javascript">
+
+    function validateDates() {
+      const checkinDate = document.getElementById('checkinDate').value;
+      const checkoutDate = document.getElementById('checkoutDate').value;
+
+      if (checkoutDate && checkinDate) {
+        const checkinDateObj = new Date(checkinDate);
+        const checkoutDateObj = new Date(checkoutDate);
+
+        if (checkoutDateObj < checkinDateObj || checkoutDateObj.toISOString().split('T')[0] === checkinDate) {
+          alert("체크아웃 날짜는 체크인 날짜 이후로 선택해야 합니다.");
+          document.getElementById('checkoutDate').value = '';
+        }
+      }
+    }
+
+    // 체크인 날짜가 변경될 때마다 validateDates 호출
+    document.getElementById('checkinDate').addEventListener('change', function() {
+      const checkoutDateInput = document.getElementById('checkoutDate');
+      checkoutDateInput.setAttribute('min', this.value ? new Date(this.value).toISOString().split('T')[0] : '');
+      checkoutDateInput.setAttribute('max', ''); // 특정 값을 넘지 않게 설정
+      validateDates();
+    });
+
+    // 체크아웃 날짜가 변경될 때마다 validateDates 호출
+    document.getElementById('checkoutDate').addEventListener('change', validateDates);
+
+    // 체크인 날짜가 오늘이면 체크아웃 날짜의 min 속성을 오늘 + 1일로 설정
+    const today = new Date();
+    const nextDay = new Date(today);
+    nextDay.setDate(today.getDate() + 1);
+    document.getElementById('checkinDate').addEventListener('change', function() {
+      if (this.value === today.toISOString().split('T')[0]) {
+        document.getElementById('checkoutDate').setAttribute('min', nextDay.toISOString().split('T')[0]);
+      }
+    });
+
+
+
+
+    const alertMessage = [[${alertMessage}]] ;
+    if (alertMessage) {
+      alert(alertMessage);
+    }
 
 
     function generateOrderNumber() {

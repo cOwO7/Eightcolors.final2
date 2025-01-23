@@ -20,4 +20,5 @@ public class Reservation {
     private int discountedPrice;
     private String transactionId;
     private String paymentStatus;
+    private LocalDate createdAt;
 }
