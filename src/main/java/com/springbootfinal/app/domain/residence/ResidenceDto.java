@@ -1,9 +1,6 @@
 package com.springbootfinal.app.domain.residence;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -12,6 +9,7 @@ import java.util.List;
 
 @Setter
 @Getter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResidenceDto {
@@ -66,54 +64,5 @@ public class ResidenceDto {
 
     private List<ReservationDayDto> reservations; // Reservation 객체의 리스트
     private List<PropertyPhotosDto> propertyPhotos; // residencePhoto 객체 리스트
-
-
-    // totalPrice를 계산하는 메소드 추가
-    public BigDecimal getTotalPrice() {
-        BigDecimal totalPrice = BigDecimal.ZERO;
-        if (rooms != null) {
-            for (ResidenceRoom room : rooms) {
-                totalPrice = totalPrice.add(BigDecimal.valueOf(room.getPricePerNight()));
-            }
-        }
-        return totalPrice;
-    }
-
-
-    // log.info toString 메서드
-    @Override
-    public String toString() {
-        return "ResidenceDto{" +
-                "residNo=" + residNo +
-                ", residName='" + residName + '\'' +
-                ", residDescription='" + residDescription + '\'' +
-                ", residAddress='" + residAddress + '\'' +
-                ", residType='" + residType + '\'' +
-                ", residDate=" + residDate +
-                ", discountRate=" + discountRate +
-                ", discountedPrice=" + discountedPrice +
-                ", checkinDate=" + checkinDate +
-                ", checkoutDate=" + checkoutDate +
-                ", soldOut=" + soldOut +
-                ", nx=" + nx +
-                ", ny=" + ny +
-                ", latitudeNum=" + latitudeNum +
-                ", longitudeNum =" + longitudeNum  +
-                ", regId='" + regId + '\'' +
-                ", regIdTemp='" + regIdTemp + '\'' +
-                ", hostUserNo=" + hostUserNo + '\'' +
-                ", pUrl01='" + photoUrl01 + '\'' +
-                ", pUrl02='" + photoUrl02 + '\'' +
-                ", pUrl03='" + photoUrl03 + '\'' +
-                ", pUrl04='" + photoUrl04 + '\'' +
-                ", pUrl05='" + photoUrl05 + '\'' +
-                ", pUrl06='" + photoUrl06 + '\'' +
-                ", pUrl07='" + photoUrl07 + '\'' +
-                ", pUrl08='" + photoUrl08 + '\'' +
-                ", pUrl09='" + photoUrl09 + '\'' +
-                ", pUrl10='" + photoUrl10 + '\'' +
-                ", tUrls='" + thumbnailUrls + '\'' +
-                '}';
-    }
 
 }

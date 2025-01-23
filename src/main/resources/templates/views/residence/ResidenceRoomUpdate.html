@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/main_layout}">
+<head>
+    <link href="bootstrap/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>숙소 등록</title>
+<body>
+<th:block layout:fragment="content">
+    <div class="container">
+        <div>
+            <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+            <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=36a75517ce82693ff837cc79c740e197&libraries=services,clusterer"></script>
+        </div>
+        <h1>방 수정</h1>
+        <form th:action="@{/edit/{residNo}(residNo=${residence.residNo})/room}" th:object="${residenceRoom}" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div>
+                    <label>숙소 No:</label><br>
+                    <input type="text" th:value="${residNo}" th:field="*{room.residNo}"><br><br>
+                    <label>방 이름:</label><br>
+                    <input type="text" id="roomName" th:value="${roomName}" th:field="*{room.roomName}"><br><br>
+                    <label>가격:</label><br>
+                    <input type="text" id="roomPrice" th:value="${PricePerNight}" th:field="*{room.pricePerNight}"><br><br>
+                    <label>방 이미지: (추가 고민중)</label><br>
+                </div>
+            </div>
+            <button type="submit" id="registerButton">수정</button>
+            <button><a href="/list">뒤로 가기</a></button>
+        </form>
+    </div>
+    <script th:src="@{js/jquery-3.7.1.min.js}"></script>
+</th:block>
+</body>
+</html>
