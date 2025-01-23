@@ -376,6 +376,7 @@ public class PropertyPhotosService {
         }
     }
 
+
     public List<PropertyPhotosDto> getPhotosByResidenceId(Long residNo) {
         return propertyPhotosMapper.getPhotosByResidNo(residNo);
     }
