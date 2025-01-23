@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 @Controller
 @Slf4j
@@ -34,15 +35,17 @@ public class ReservationController {
             Model model, HttpSession httpSession) {
 
         int roomPrice = reservationMapper.getRoomPrice(roomNo);
-        String residName = reservationService.getResidenceNameById(residNo);
+        Map<String, String> residenceAndRoomMap = reservationService.getResidenceAndRoomById(residNo, roomNo);
+
        Long userNo = (Long) httpSession.getAttribute("userNo");
 
         ReservationUserDTO user = reservationService.getReservationUser(userNo);
         model.addAttribute("roomNo", roomNo);
         model.addAttribute("residNo", residNo);
-        model.addAttribute("residName", residName);
+        model.addAttribute("residName", residenceAndRoomMap.get("residName"));
+        model.addAttribute("roomName", residenceAndRoomMap.get("roomName"));
         model.addAttribute("roomPrice", roomPrice);
-       model.addAttribute("user", user);
+         model.addAttribute("user", user);
 
         return "reservation"; // 뷰 이름
     }
@@ -68,6 +71,9 @@ public class ReservationController {
         reservation.setRoomNo((int)httpSession.getAttribute("roomNo"));
         reservation.setUserNo((Long)httpSession.getAttribute("userNo"));
         // HttpSession에서 checkinDate를 가져옵니다.
+
+        Integer residNo = (Integer) httpSession.getAttribute("residNo");
+        Map<String, String> residenceAndRoomMap = reservationService.getResidenceAndRoomById(residNo, reservation.getRoomNo());
 
         reservation.setPaymentStatus("완료");
         Object checkinDateObj = httpSession.getAttribute("checkinDate");
@@ -108,7 +114,7 @@ public class ReservationController {
         if (reservation.getCheckinDate().isAfter(reservation.getCheckoutDate())) {
            /* alert("체크아웃 날짜는 체크인 날짜 이후여야 합니다.");*/
 
-            Integer residNo = (Integer) httpSession.getAttribute("residNo");
+       /*     Integer residNo = (Integer) httpSession.getAttribute("residNo");*/
             // alert 메시지 설정
             redirectAttributes.addFlashAttribute("alertMessage", "체크아웃 날짜는 체크인 날짜 이후여야 합니다.");
 
@@ -129,7 +135,7 @@ public class ReservationController {
            //model.addAttribute("errorMessage", "선택한 날짜에 방이 이미 예약되었습니다.");
 
 
-            Integer residNo = (Integer) httpSession.getAttribute("residNo");
+          /*  Integer residNo = (Integer) httpSession.getAttribute("residNo");*/
 
 
 
@@ -144,6 +150,8 @@ public class ReservationController {
         reservationService.reserveRoom(reservation);
         Reservation reservationDetails=reservationService.getReservationByTransactionId(reservation.getTransactionId());
         model.addAttribute("reservation", reservationDetails);
+        model.addAttribute("residName", residenceAndRoomMap.get("residName"));
+        model.addAttribute("roomName", residenceAndRoomMap.get("roomName"));
         return "reservationSuccess";
     }
 

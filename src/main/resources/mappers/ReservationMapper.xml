@@ -78,10 +78,11 @@
     </select>
 
     <!-- 숙소 이름 가져오는 쿼리문 -->
-    <select id="findResidenceNameById" resultType="string">
-        SELECT resid_name
+    <select id="findResidenceAndRoomById" resultType="map">
+        SELECT residence.resid_name AS residName, residence_rooms.room_name AS roomName
         FROM residence
-        WHERE resid_no = #{residNo};
+                 JOIN residence_rooms ON residence.resid_no = residence_rooms.resid_no
+        WHERE residence.resid_no = #{residNo} AND residence_rooms.room_no = #{roomNo};
     </select>
     <!--예약하는 유저의 정보-->
     <select id="getReservationUserByUserNo" parameterType="long" resultType="ReservationUserDTO">

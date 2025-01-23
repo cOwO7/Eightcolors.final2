@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ReservationMapper {
@@ -17,7 +18,7 @@ public interface ReservationMapper {
                               @Param("checkinDate") LocalDate checkinDate,
                               @Param("checkoutDate") LocalDate checkoutDate);
 
-    String findResidenceNameById(@Param("residNo") int residNo);
+    Map<String, String> findResidenceAndRoomById(@Param("residNo") int residNo, @Param("roomNo") int roomNo);
     // 방 가격 조회
     int getRoomPrice(@Param("roomNo") int roomNo);
 

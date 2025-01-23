@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -20,8 +21,10 @@ public class ReservationService {
     public boolean isRoomAvailable(int roomNo, LocalDate checkinDate, LocalDate checkoutDate) {
         return reservationMapper.checkRoomAvailability(roomNo, checkinDate, checkoutDate) == 0;
     }
-    public String getResidenceNameById(int residNo) {
-        return  reservationMapper.findResidenceNameById(residNo);
+
+
+    public Map<String, String> getResidenceAndRoomById(int residNo, int roomNo) {
+        return reservationMapper.findResidenceAndRoomById(residNo, roomNo);
     }
 
     // 예약 처리

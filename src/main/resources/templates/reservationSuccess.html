@@ -10,25 +10,31 @@
 </head>
 <body>
 <th:block layout:fragment="content">
-<div class="container mt-5">
-    <h1>예약이 완료되었습니다!</h1>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">예약이 완료되었습니다!</h1>
 
-    <div class="alert alert-success">
-        <h1>예약 내역</h1>
-        <p>예약 번호: <strong>[[${reservation.roomNo}]]</strong></p>
-        <p>사용자 번호: <strong>[[${reservation.userNo}]]</strong></p>
-        <p>체크인 날짜: <strong>[[${reservation.checkinDate}]]</strong></p>
-        <p>체크아웃 날짜: <strong>[[${reservation.checkoutDate}]]</strong></p>
-        <p>총 금액: <strong>[[${reservation.totalprice}]]원</strong></p>
-        <p>할인율: <strong>[[${reservation.discountRate}]]%</strong></p>
-        <p>할인된 금액: <strong>[[${reservation.discountedPrice}]]원</strong></p>
-        <p>거래 ID: <strong>[[${reservation.transactionId}]]</strong></p>
-        <p>결제 상태: <strong>[[${reservation.paymentStatus}]]</strong></p>
-        <p>결제 날짜: <strong>[[${reservation.createdAt}]]</strong></p>
+        <div class="alert alert-success">
+            <h3>예약 내역</h3>
+            <ul class="list-group">
+                <li class="list-group-item">예약 번호: <strong>[[${reservation.roomNo}]]</strong></li>
+                <li class="list-group-item">사용자 번호: <strong>[[${reservation.userNo}]]</strong></li>
+                <li class="list-group-item">숙소 이름: <strong th:text="${residName}"></strong></li>
+                <li class="list-group-item">방 이름: <strong th:text="${roomName}"></strong></li>
+                <li class="list-group-item">체크인 날짜: <strong>[[${reservation.checkinDate}]]</strong></li>
+                <li class="list-group-item">체크아웃 날짜: <strong>[[${reservation.checkoutDate}]]</strong></li>
+                <li class="list-group-item">총 금액: <strong>[[${reservation.totalprice}]]원</strong></li>
+                <li class="list-group-item">할인율: <strong>[[${reservation.discountRate}]]%</strong></li>
+                <li class="list-group-item">할인된 금액: <strong>[[${reservation.discountedPrice}]]원</strong></li>
+                <li class="list-group-item">거래 ID: <strong>[[${reservation.transactionId}]]</strong></li>
+                <li class="list-group-item">결제 상태: <strong>[[${reservation.paymentStatus}]]</strong></li>
+                <li class="list-group-item">결제 날짜: <strong>[[${reservation.createdAt}]]</strong></li>
+            </ul>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="/" class="btn btn-primary">목록</a>
+        </div>
     </div>
-
-    <a href="/" class="btn btn-primary">목록</a>
-</div>
 </th:block>
 </body>
 </html>
