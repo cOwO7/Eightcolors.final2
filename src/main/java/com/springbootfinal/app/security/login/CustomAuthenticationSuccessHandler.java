@@ -57,6 +57,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
 
 
+
         // 세션 정보 로그 출력
         log.info("User logged in: userNo={}, hostUserNo={}, role={}",
                 request.getSession().getAttribute("userNo"),
