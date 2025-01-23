@@ -78,30 +78,7 @@ public class ResidenceService {
                 throws IOException {
         residenceMapper.insertResidence(residence);
         Long residNo = residence.getResidNo();
-
-        for (ResidenceRoom room : rooms) {
-        room.setResidNo(residNo);
-        residenceRoomMapper.insertRoom(room);
-        }
-
         log.info("residNo : {}", residNo);
-    }*/
-
-    // 숙소 등록
-    public void createResidence(ResidenceDto residence) throws IOException {
-        // 1. Residence 정보 저장
-        residenceMapper.insertResidence(residence);
-        Long residNo = residence.getResidNo();
-
-        log.info("residNo : {}", residNo);  // 로그로 확인
-    }
-
-    // 방 등록
-    public void createRooms(Long residNo, List<ResidenceRoom> rooms) {
-        for (ResidenceRoom room : rooms) {
-            room.setResidNo(residNo);  // 각 방에 residNo를 추가
-            /*roomService.save(room);  // 방 정보 저장*/
-        }
     }
 
     // 숙소 수정
@@ -113,15 +90,6 @@ public class ResidenceService {
         // 2. 새로운 사진이 있으면 updatePhoto 호출
         if (photos != null && !photos.isEmpty()) {
             propertyPhotosService.updatePhoto(residNo, photos);  // 새로운 사진 처리
-        }
-
-        for(ResidenceRoom room : rooms) {
-            if (room.getRoomNo() != null) {
-                residenceRoomMapper.updateRoom(room); // 기존 방 수정
-            } else {
-                room.setResidNo(residNo);
-                residenceRoomMapper.insertRoom(room);
-            }
         }
     }
 
