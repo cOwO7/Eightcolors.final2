@@ -203,9 +203,14 @@ public class ResidenceController {
 
     // 숙소 매진 상태 갱신
     @PutMapping("/{residNo}/sold-out")
-    public ResponseEntity<String> updateSoldOutStatus(@PathVariable Long residNo,
-                                                      @RequestParam boolean soldOut) {
+    public ResponseEntity<String> updateSoldOutStatus(
+                                                      @PathVariable Long residNo,
+                                                      @RequestParam boolean soldOut,
+                                                      Model model) {
+        ResidenceDto residence = residenceService.getResidenceById(residNo);
+
         String message = soldOut ? "숙소가 매진 처리되었습니다." : "숙소 매진 상태가 해제되었습니다.";
+        model.addAttribute("residence", residence);
         return ResponseEntity.ok(message);
     }
 
@@ -251,7 +256,7 @@ public class ResidenceController {
 
 
     // 방 수정 페이지
-    @GetMapping("/edit/{roomNo}/rooom")
+    @GetMapping("/edit/{roomNo}/room")
     public String editResidenceRoomForm(@PathVariable Long roomNo,
                                         @PathVariable Long residNo,
                                         Model model) {
