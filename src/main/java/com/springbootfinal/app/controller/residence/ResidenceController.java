@@ -212,25 +212,43 @@ public class ResidenceController {
     // Room
     // 방 등록 페이지
     @GetMapping("/room/{residNo}/addRoom")
-    public String newResidenceRoomForm(Model model) {
+    public String newResidenceRoomForm(@PathVariable Long residNo, Model model) {
+        if (residNo == null) {
+            return "redirect:/error";  // residNo가 null일 경우 예외 처리
+        }
+
+        ResidenceDto residence = residenceService.getResidenceById(residNo);
+        if (residence == null) {
+            return "redirect:/error";  // 해당 ID의 residence가 존재하지 않으면 오류 페이지로 이동
+        }
+        residence.setPropertyPhotos(null);  // 숙소 사진을 제외한 정보만 처리
         ResidenceRoom residenceRoom = new ResidenceRoom();
-        model.addAttribute("residenceRoom", residenceRoom);  // 모델에 residence 객체 추가
-        return "views/residence/ResidenceRoomWriter";  // 숙소 등록 페이지
+        model.addAttribute("residence", residence);  // 숙소 정보 전달
+        model.addAttribute("residenceRoom", residenceRoom);  // 방 정보 전달
+
+        return "views/residence/ResidenceRoomWriter";  // 방 등록 페이지로 이동
     }
+
 
     // 방 등록 처리
     @PostMapping("/room/{residNo}/addRoom")
     public String createResidenceRoom(@ModelAttribute ResidenceRoom residenceRoom,
-                                      Long residNo) throws IOException {
-        residenceService.getResidenceById(residenceRoom.getResidNo());
-        log.info("Generated residNo: {}", residNo);
+                                      @PathVariable Long residNo) throws IOException {
         if (residNo == null) {
             throw new IllegalArgumentException("resid_no가 null입니다.");
         }
-        residenceRoomService.createResidenceRoom(residenceRoom);
 
-        return "redirect:/list";
+        ResidenceDto residence = residenceService.getResidenceById(residNo); // 해당 숙소 데이터 가져오기
+        if (residence == null) {
+            throw new IllegalArgumentException("유효한 숙소 정보가 없습니다.");
+        }
+
+        residenceRoom.setResidNo(residNo);  // 방에 해당하는 숙소 번호를 세팅
+        residenceRoomService.createResidenceRoom(residenceRoom);  // 방 등록
+
+        return "redirect:/list";  // 방 등록 후 목록 페이지로 리디렉션
     }
+
 
     // 방 수정 페이지
     @GetMapping("/edit/{roomNo}/rooom")
