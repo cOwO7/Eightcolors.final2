@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/main_layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>숙박 검색</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <style>
+
+        .container {
+            margin-top: 50px;
+        }
+        .search-box {
+            background-color: #ffffff;
+            padding: 30px 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+        .search-box h4 {
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .search-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+        .search-input {
+            flex: 2;
+            border: 2px solid #ced4da;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.25);
+        }
+        .date-input {
+            border: 2px solid #ced4da;
+            border-radius: 50px;
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            text-align: center;
+            background-color: #ffffff;
+            flex: 1;
+        }
+        .date-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.25);
+        }
+        .search-btn {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .search-btn:hover {
+            background-color: #0056b3;
+        }
+        .accommodation-item {
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .accommodation-item:hover {
+            transform: translateY(-10px);
+        }
+        .accommodation-item img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+        .accommodation-item h5, .accommodation-item p {
+            padding: 15px;
+        }
+        .accommodation-item .btn {
+            background-color: #007bff;
+            color: white;
+            margin: 15px;
+        }
+        .accommodation-item .btn:hover {
+            background-color: #0056b3;
+        }
+        .no-results {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #dc3545;
+            font-weight: bold;
+        }
+        /* 숙박 리스트와 하단 간격 */
+        #accommodationList {
+            margin-bottom: 60px; /* 하단 간격 추가 */
+        }
+        /* 캘린더와 검색 박스 사이 간격 */
+        .search-container .date-input {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<th:block layout:fragment="content">
+    <div class="container">
+        <h2 class="text-center mb-4">숙박 검색</h2>
+
+        <!-- 검색 박스 -->
+        <div class="row justify-content-center search-box">
+            <div class="col-md-10">
+                <h4 class="text-center">완벽한 숙박지를 검색해 보세요!</h4>
+                <div class="search-container">
+                    <input type="text" id="searchQuery"
+                           class="form-control search-input"
+                           placeholder="도시나 숙소 이름을 입력하세요 (예: 서울, 제주)">
+                    <input type="text" class="form-control date-input"
+                           id="checkinDate" placeholder="체크인 날짜" readonly>
+                    <input type="text" class="form-control date-input"
+                           id="checkoutDate" placeholder="체크아웃 날짜" readonly>
+                    <button class="btn btn-primary search-btn"
+                            onclick="searchAccommodation()">검색</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 숙박 리스트 -->
+        <div id="accommodationList" class="row"></div>
+        <div id="noResults" class="no-results" style="display: none;">검색 결과가 없습니다.</div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script>
+        // 캘린더 초기화
+        $(document).ready(function () {
+            $('#checkinDate').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true,
+                todayHighlight: true
+            });
+
+            $('#checkoutDate').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true,
+                todayHighlight: true
+            });
+        });
+
+        // 숙박 리스트 (예제 데이터)
+        const accommodations = [
+            { name: "서울 호텔", image: "https://via.placeholder.com/300x250?text=서울+호텔", description: "편안하고 고급스러운 호텔", price: "₩150,000" },
+            { name: "부산 리조트", image: "https://via.placeholder.com/300x250?text=부산+리조트", description: "바다와 가까운 리조트", price: "₩180,000" },
+            { name: "제주도 펜션", image: "https://via.placeholder.com/300x250?text=제주도+펜션", description: "자연 속에서 휴식", price: "₩120,000" },
+            { name: "경주 게스트하우스", image: "https://via.placeholder.com/300x250?text=경주+게스트하우스", description: "저렴한 가격의 아늑한 숙소", price: "₩70,000" },
+            { name: "강릉 호텔", image: "https://via.placeholder.com/300x250?text=강릉+호텔", description: "바다 전망을 갖춘 호텔", price: "₩160,000" }
+        ];
+
+        // 숙박 검색 함수
+        function searchAccommodation() {
+            const query = document.getElementById('searchQuery').value.toLowerCase();
+            const filteredAccommodations = accommodations.filter(acc =>
+                acc.name.toLowerCase().includes(query)
+            );
+            displayAccommodations(filteredAccommodations);
+        }
+
+        // 숙박 리스트 표시 함수
+        function displayAccommodations(list) {
+            const accommodationList = document.getElementById('accommodationList');
+            const noResults = document.getElementById('noResults');
+            accommodationList.innerHTML = '';
+            noResults.style.display = 'none';
+
+            if (list.length > 0) {
+                list.forEach(acc => {
+                    const col = document.createElement('div');
+                    col.classList.add('col-lg-3', 'col-md-4', 'col-sm-6');  // 반응형 그리드
+
+                    const item = document.createElement('div');
+                    item.classList.add('accommodation-item', 'card');
+                    item.innerHTML = `
+                    <img src="${acc.image}" class="card-img-top" alt="${acc.name}">
+                    <div class="card-body">
+                        <h5 class="card-title">${acc.name}</h5>
+                        <p class="card-text">${acc.description}</p>
+                        <div class="price">가격: <span>${acc.price}</span></div>
+                        <button class="btn btn-primary">예약하기</button>
+                    </div>
+                `;
+                    col.appendChild(item);
+                    accommodationList.appendChild(col);
+                });
+            } else {
+                noResults.style.display = 'block';
+            }
+        }
+    </script>
+</th:block>
+</body>
+</html>
