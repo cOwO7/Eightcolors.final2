@@ -34,12 +34,12 @@ $(function() {
 		}
 	});
 
-$("#detailDelete").on("click", function() {
-    if (confirm("정말 삭제하시겠습니까?")) {
-        $("#deleteForm").attr("action", "delete");
-        $("#deleteForm").attr("method", "post");
-        $("#deleteForm").submit();
-    }
-});
+	$("#detailDelete").on("click", function() {
+		if (confirm("정말 삭제하시겠습니까?")) {
+			$("#deleteForm").attr("action", "delete");
+			$("#deleteForm").attr("method", "post");
+			$("#deleteForm").submit();
+		}
+	});
 
 });

@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -98,5 +99,10 @@ public class ResidenceService {
         residenceRoomMapper.deleteRoom(residNo);
         propertyPhotoMapper.deletePhoto(residNo);
         residenceMapper.deleteResidence(residNo);
+    }
+
+    public List<ResidenceDto> findPostsByHostUserNo(Long hostUserNo) {
+        // MyBatis 매퍼를 통해 데이터베이스에서 hostUserNo에 해당하는 게시글 목록을 가져옴
+        return residenceMapper.findByHostUserNo(hostUserNo);
     }
 }

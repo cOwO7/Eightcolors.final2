@@ -9,7 +9,7 @@
         SELECT * FROM property_photos WHERE resid_no = #{residNo}
     </select>
 
-    <!-- 사진 등록 -->
+    <!-- 숙소 사진 등록 -->
     <insert id="insertPhoto" parameterType="com.springbootfinal.app.domain.residence.PropertyPhotosDto">
         INSERT INTO property_photos (resid_no, thumbnailUrls, photo_url01, photo_url02,
                                      photo_url03, photo_url04, photo_url05, photo_url06,
@@ -19,8 +19,13 @@
                 #{photoUrl05}, #{photoUrl06}, #{photoUrl07},
                 #{photoUrl08}, #{photoUrl09}, #{photoUrl10})
     </insert>
+    <!-- 방 사진 등록 -->
+    <insert id="insertRoom" parameterType="com.springbootfinal.app.domain.residence.PropertyPhotosDto">
+        INSERT INTO property_photos (room_url01)
+        VALUES (#{roomUrl01})
+    </insert>
 
-    <!-- 사진 수정 -->
+    <!-- 숙소 사진 수정 -->
     <update id="updatePhoto" parameterType="com.springbootfinal.app.domain.residence.PropertyPhotosDto">
         UPDATE property_photos
         SET thumbnailUrls = #{thumbnailUrls},
@@ -36,6 +41,23 @@
             photo_url10 = #{photoUrl10}
         WHERE resid_no = #{residNo}
     </update>
+
+    <!-- 방 사진 숙정 -->
+    <update id="updateRoom" parameterType="com.springbootfinal.app.domain.residence.PropertyPhotosDto">
+        UPDATE property_photos
+        SET room_url01 = #{roomUrl01}
+        WHERE room_no = #{roomNo}
+    </update>
+
+    <!-- 숙소 번호에 해당하는 사진 삭제 -->
+    <delete id="deletePhoto" parameterType="Long">
+        DELETE FROM property_photos WHERE resid_no = #{residNo}
+    </delete>
+
+    <!-- 방 번호에 해당하는 사진 삭제-->
+    <delete id="deleteRoom" parameterType="Long">
+        DELETE FROM property_photos WHERE room_no = #{roomNo}
+    </delete>
 
     <select id="getPhotoUrlsByPhotoNo" resultType="java.lang.String">
         SELECT photo_url01, photo_url02, photo_url03,
@@ -73,10 +95,5 @@
         FROM property_photos
         WHERE resid_no = #{residNo}
     </select>
-
-    <!-- 숙소 번호로 해당하는 사진 삭제 -->
-    <delete id="deletePhoto" parameterType="Long">
-        DELETE FROM property_photos WHERE resid_no = #{residNo}
-    </delete>
 
 </mapper>

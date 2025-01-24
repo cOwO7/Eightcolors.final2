@@ -18,6 +18,7 @@ public class KakaopayController {
 
     @GetMapping("/Kakaopay")
     public String index() {
+
         return "/pc/index";
     }
 
