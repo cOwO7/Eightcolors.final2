@@ -1,5 +1,6 @@
 package com.springbootfinal.app.service.transfer;
 
+import com.springbootfinal.app.domain.reservations.Reservations;
 import com.springbootfinal.app.domain.transfer.TransferDto;
 import com.springbootfinal.app.mapper.ReservationMapper;
 import com.springbootfinal.app.mapper.transfer.TransferMapper;
@@ -107,14 +108,18 @@ public class TransferService {
         log.info("게시글 transfers DB 저장완료", transfer);
     }
 
+    public Reservations getReservationByUserNo(Long userNo) {
+        return reservationMapper.getReservationByUserNo(userNo);
+    }
 
-   /* public TransferDto getTransfer(Long transferNo, boolean isCount) {
-        log.info("getTransfer: {}", transferNo);
-        TransferDto transfer = transferMapper.transferRead(transferNo , isCount);
-        log.info("getTransfer: {}", transfer);
-        return transfer;
 
-    }*/
+    /* public TransferDto getTransfer(Long transferNo, boolean isCount) {
+         log.info("getTransfer: {}", transferNo);
+         TransferDto transfer = transferMapper.transferRead(transferNo , isCount);
+         log.info("getTransfer: {}", transfer);
+         return transfer;
+
+     }*/
     public TransferDto getTransfer(Long transferNo, boolean isCount) {
         log.info("getTransfer: {}", transferNo);
         if(isCount) {

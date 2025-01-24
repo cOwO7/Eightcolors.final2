@@ -6,6 +6,7 @@ import com.springbootfinal.app.mapper.ReservationMapper;
 import com.springbootfinal.app.service.transfer.TransferService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,10 +36,11 @@ public class TransferController {
     @Autowired
     private ReservationMapper reservationMapper;
 
+
     @PostMapping("/delete")
     public String deleteTransfer(RedirectAttributes reAttrs,
-            HttpServletResponse response, PrintWriter out,
-            @RequestParam("transferNo") long transferNo,
+                                 HttpServletResponse response, PrintWriter out,
+                                 @RequestParam("transferNo") long transferNo,
                                  @RequestParam(value = "pageCount",
                                          defaultValue = "1") int pageCount) {
 
@@ -46,7 +48,7 @@ public class TransferController {
         reAttrs.addAttribute("pageCount", pageCount);
         return "redirect:/transfers";
 
-        }
+    }
 
     // 양도 수정 폼 요청 처리 메서드
     @PostMapping("/updateForm")
@@ -75,57 +77,65 @@ public class TransferController {
         return TRANSFER_BASE_PATH + "transferUpdate";*/
     }
 
-@PostMapping("/update")
-public String updateBoard(TransferDto transferDto, RedirectAttributes reAttrs,
-                          @RequestParam(value = "pageCount", defaultValue = "1") int pageCount,
-                          HttpServletResponse response, PrintWriter out) {
-    transferService.updateBoard(transferDto);
-    reAttrs.addAttribute("pageCount", pageCount);
-    reAttrs.addAttribute("test1", "1회성 파라미터");
-    return "redirect:/transfers";
-}
+    @PostMapping("/update")
+    public String updateBoard(TransferDto transferDto, RedirectAttributes reAttrs,
+                              @RequestParam(value = "pageCount", defaultValue = "1") int pageCount,
+                              HttpServletResponse response, PrintWriter out) {
+        transferService.updateBoard(transferDto);
+        reAttrs.addAttribute("pageCount", pageCount);
+        reAttrs.addAttribute("test1", "1회성 파라미터");
+        return "redirect:/transfers";
+    }
 
     // 양도 생성 폼 요청 처리 메서드
-   @GetMapping("/transferWrite")
-public String createTransferForm(Model model, HttpServletRequest request) {
-    Logger logger = LoggerFactory.getLogger(TransferController.class);
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    @GetMapping("/transferWrite")
+    public String createTransferForm(Model model, HttpServletRequest request) {
+        Logger logger = LoggerFactory.getLogger(TransferController.class);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-    // 세션에서 userNo 가져오기
-    Object userNoObj = request.getSession().getAttribute("userNo");
-    String userNo = userNoObj != null ? userNoObj.toString() : null;
+        // 세션에서 userNo 가져오기
+        Object userNoObj = request.getSession().getAttribute("userNo");
+        String userNo = userNoObj != null ? userNoObj.toString() : null;
 
-    logger.info("User logged in: userNo={}, role={}", userNo, authentication.getAuthorities());
-    logger.info("Authenticated userNo: {}", userNo);
+        logger.info("User logged in: userNo={}, role={}", userNo, authentication.getAuthorities());
+        logger.info("Authenticated userNo: {}", userNo);
 
-    int reservationCount = reservationMapper.countReservationsByUserNo(userNo);
-    logger.info("Reservation count for userNo {}: {}", userNo, reservationCount);
+        int reservationCount = reservationMapper.countReservationsByUserNo(userNo);
+        logger.info("Reservation count for userNo {}: {}", userNo, reservationCount);
 
-    if (reservationCount > 0) {
-        // 예약 내역 가져오기
-        Reservations reservation = reservationMapper.getReservationByUserNo(userNo);
-        logger.info("Reservation details: {}", reservation); // 예약 정보 로그 추가
-        model.addAttribute("reservation", reservation);
-        return TRANSFER_BASE_PATH + "transferWrite";
-    } else {
-        model.addAttribute("errorMessage", "예약 내역이 있는 회원만 글쓰기가 가능합니다.");
-        return TRANSFER_BASE_PATH + "errorPage";
+        if (reservationCount > 0) {
+            // 예약 내역 가져오기
+            Long userNoLong = Long.parseLong(userNo);
+            Reservations reservation = transferService.getReservationByUserNo(userNoLong);
+            logger.info("Reservation details: {}", reservation); // 예약 정보 로그 추가
+            model.addAttribute("reservation", reservation);
+            return TRANSFER_BASE_PATH + "transferWrite";
+        } else {
+            model.addAttribute("errorMessage", "예약 내역이 있는 회원만 글쓰기가 가능합니다.");
+            return TRANSFER_BASE_PATH + "errorPage";
+        }
     }
-}
 
     // 게시글 쓰기 요청 처리 메서드
     @PostMapping("/transferAdd")
-    public String addTransfer(TransferDto transfer) {
+    public String addTransfer(TransferDto transfer,HttpSession httpSession) {
+        //String userNo = String.valueOf(httpSession.getAttribute("userNo"));
+        Reservations reservation = transferService.getReservationByUserNo((Long)httpSession.getAttribute("userNo"));
+        log.info("Reservation details: {}", reservation);
+
+        log.info("들어온건가"+reservation.getReservation_no());
+        transfer.setSellerUserNo((Long)httpSession.getAttribute("userNo"));
+        transfer.setReservationNo(reservation.getReservation_no());
         transferService.addTransfer(transfer);
         return "redirect:/transfers";
     }
 
- /*   // 게시글 상세보기 요청 처리 메서드
-    @GetMapping("/transferDetail")
-    public String getTransferDetail(Model model, @RequestParam("transferNo") long transferNo) {
-        model.addAttribute("transfer", transferService.getTransfer(transferNo, false));
-        return TRANSFER_BASE_PATH + "transferDetail";
-    }  */
+    /*   // 게시글 상세보기 요청 처리 메서드
+       @GetMapping("/transferDetail")
+       public String getTransferDetail(Model model, @RequestParam("transferNo") long transferNo) {
+           model.addAttribute("transfer", transferService.getTransfer(transferNo, false));
+           return TRANSFER_BASE_PATH + "transferDetail";
+       }  */
     // 게시글 상세보기 요청 처리 메서드
     @GetMapping("/transferDetail")
     public String getTransferDetail(Model model, @RequestParam("transferNo") long transferNo,
@@ -135,7 +145,7 @@ public String createTransferForm(Model model, HttpServletRequest request) {
 
         boolean searchOption = !(type.isEmpty() || keyword.isEmpty());
 
-        TransferDto transfer = transferService.getTransfer(transferNo, true);
+        TransferDto transfer = transferService.getTransfer(transferNo,true);
         model.addAttribute("transfer", transfer);
         model.addAttribute("pageCount", pageCount);
         model.addAttribute("searchOption", searchOption);
