@@ -67,7 +67,7 @@
                         <div class="existing-photo">
                             <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl01})}" width="150">
                             <input type="hidden" name="existingPhotos" th:value="${photo.photoNo}">
-                            <button type="button" th:onclick="|removePhoto(${photo.photoNo}, '${photo.photoUrl01}')|">
+                            <!--<button type="button" th:onclick="|removePhoto(${photo.photoNo}, '${photo.photoUrl01}')|">
                                 삭제
                             </button>
 
@@ -81,7 +81,7 @@
                             <input type="hidden" name="existingPhotos" th:value="${photo.photoNo}">
                             <button type="button" th:onclick="|removePhoto(${photo.photoNo}, '${photo.photoUrl03}')|">
                                 삭제
-                            </button>
+                            </button>-->
 
                             <!-- 계속해서 같은 방식으로 추가 -->
 
