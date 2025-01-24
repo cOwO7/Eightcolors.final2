@@ -29,8 +29,8 @@
     </select>
 
     <insert id="insertUser" parameterType="com.springbootfinal.app.domain.login.Users" useGeneratedKeys="true" keyProperty="userNo">
-        INSERT INTO users(id, password, email, phone, name, zipcode, address1, address2, login_type, provider_id, reg_date, point, role)
-        VALUES(#{id}, #{password}, #{email}, #{phone}, #{name}, #{zipcode}, #{address1}, #{address2}, #{loginType}, #{providerId}, #{regDate}, #{point}, #{role})
+        INSERT INTO users(id, password, email, phone, name, zipcode, address1, address2, login_type, provider_id, reg_date, role)
+        VALUES(#{id}, #{password}, #{email}, #{phone}, #{name}, #{zipcode}, #{address1}, #{address2}, #{loginType}, #{providerId}, #{regDate},  #{role})
     </insert>
 
     <update id="updateUser" parameterType="com.springbootfinal.app.domain.login.Users">
