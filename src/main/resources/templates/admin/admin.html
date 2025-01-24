@@ -2,6 +2,19 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/main_layout}">
+<head>
+    <style>
+        .list-group-item:hover {
+            background-color: #f8f9fa;
+            cursor: pointer;
+        }
+        .no-style {
+            text-decoration: none;
+            color: inherit;
+        }
+    </style>
+
+</head>
 <th:block layout:fragment="content">
     <div class="container my-5">
         <h1 class="mb-4">관리자페이지 입니다</h1>
@@ -11,51 +24,49 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                회원
+                                회원 관리
                             </button>
                         </h2>
-                        <div id="collapse1" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                        <div id="collapseOne" class="accordion-collapse collapse show">
                             <div class="accordion-body">
                                 <ul class="list-group">
-
-                                    <li class="list-group-item">회원 조회</li>
-                                    <li class="list-group-item">회원 삭제</li>
-                                    <li class="list-group-item">회원 등록</li>
+                                    <li class="list-group-item">
+                                        <a href="/" class="no-style">사용자 조회</a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <a href="/" class="no-style">사용자 등록</a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <a href="/" class="no-style">호스트 조회</a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <a href="/" class="no-style">호스트 등록</a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
                     </div>
-
                     <div class="accordion-item">
                         <h2 class="accordion-header">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                호스트
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                숙소 관리
                             </button>
                         </h2>
-                        <div id="collapse2" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                        <div id="collapseTwo" class="accordion-collapse collapse">
                             <div class="accordion-body">
                                 <ul class="list-group">
-                                    <li class="list-group-item">호스트 조회</li>
-                                    <li class="list-group-item">호스트 삭제</li>
-                                    <li class="list-group-item">호스트 등록</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                문의
-                            </button>
-                        </h2>
-                        <div id="collapse3" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
-                            <div class="accordion-body">
-                                <ul class="list-group">
-                                    <li class="list-group-item">문의 조회</li>
-                                    <li class="list-group-item">양도 조회</li>
-                                    <li class="list-group-item">호스트 삭제</li>
-                                    <li class="list-group-item">호스트 등록</li>
+                                    <li class="list-group-item">
+                                        <a href="/" class="no-style">문의 조회</a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <a href="/" class="no-style">양도 조회</a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <a href="/" class="no-style">숙소 조회</a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <a href="add" class="no-style">숙소 등록</a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -128,7 +139,6 @@
                     </table>
                 </div>
             </div>
-            </div>
             <div class="row">
                 <div class="col-12">
                     <h3>최근 호스트 유저 가입 내역</h3>
@@ -160,8 +170,7 @@
                     </table>
                 </div>
             </div>
-
-
+            </div>
         </div>
     </div> <!--container-->
 </th:block>
