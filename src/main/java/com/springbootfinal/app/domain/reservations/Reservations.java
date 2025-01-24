@@ -17,6 +17,7 @@ public class Reservations {
     private Long reservation_no;
     private Long user_no;
     private Long room_no;
+
     private String residName; // 숙소명 필드 추가
     private Date checkin_date; // 필드 이름 변경
     private Date checkout_date; // 필드 이름 변경

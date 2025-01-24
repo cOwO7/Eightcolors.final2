@@ -11,12 +11,14 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Reservation {
-    private int roomNo;
-    private int userNo;
+    private Long roomNo;
+    private Long userNo;
     private LocalDate checkinDate;
     private LocalDate checkoutDate;
     private int totalprice;
     private int discountRate;
     private int discountedPrice;
     private String transactionId;
+    private String paymentStatus;
+    private LocalDate createdAt;
 }

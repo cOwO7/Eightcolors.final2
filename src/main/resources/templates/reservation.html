@@ -10,41 +10,325 @@
 </head>
 <body>
 <th:block layout:fragment="content">
-<div class="container mt-5">
-  <h1>예약하기 - [[${residName}]]</h1>
+  <!-- jQuery -->
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js" ></script>
+  <!-- iamport.payment.js -->
+  <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 
-  <!-- 예약 폼 -->
-  <form action="/reserve" method="post">
-    <!-- roomNo와 residNo는 hidden 필드로 전달 -->
-    <input type="hidden" name="roomNo" th:value="${roomNo}">
-    <input type="hidden" name="residNo" th:value="${residNo}">
+  <div class="container mt-5">
+    <h1>예약하기 - [[${residName}]] [[${roomName}]]</h1>
 
-    <!-- 체크인 날짜 -->
-    <div class="form-group">
-      <label for="checkinDate">체크인 날짜:</label>
-      <input type="date" id="checkinDate" name="checkinDate" class="form-control" required>
-    </div>
+    <!-- 예약 폼 -->
 
-    <!-- 체크아웃 날짜 -->
-    <div class="form-group">
-      <label for="checkoutDate">체크아웃 날짜:</label>
-      <input type="date" id="checkoutDate" name="checkoutDate" class="form-control" required>
-    </div>
+      <!-- roomNo와 residNo는 hidden 필드로 전달 -->
+      <input type="hidden" name="roomNo" th:value="${roomNo}">
+      <input type="hidden" name="residNo" th:value="${residNo}">
 
-    <!-- 사용자 번호 -->
-    <div class="form-group">
-      <label for="userNo">사용자 번호:</label>
-      <input type="number" name="userNo" id="userNo" class="form-control" required>
-    </div>
+      <!-- 체크인 날짜 -->
+      <div class="form-group">
+        <label for="checkinDate">체크인 날짜:</label>
+        <input type="date" id="checkinDate" name="checkinDate" class="form-control" th:onchange="calculatePriceWithDiscount()" required>
+      </div>
 
-    <!-- 예약하기 버튼 -->
-    <button type="submit" class="btn btn-primary">예약하기</button>
-  </form>
+      <!-- 체크아웃 날짜 -->
+      <div class="form-group">
+        <label for="checkoutDate">체크아웃 날짜:</label>
+        <input type="date" id="checkoutDate" name="checkoutDate" class="form-control" th:onchange="calculatePriceWithDiscount()" required>
+      </div>
 
-  <!-- 메시지 표시 영역 -->
-  <div th:if="${message}" class="alert alert-success mt-3" th:text="${message}"></div>
-  <div th:if="${errorMessage}" class="alert alert-danger mt-3" th:text="${errorMessage}"></div>
-</div>
+      <!-- 사용자 번호 -->
+      <!--<div class="form-group">
+        <label for="userNo">사용자 번호:</label>
+        <input type="text" name="userNo" id="userNo" class="form-control" th:value="${user.getUserNo() != null ? user.getUserNo() : ''}" required>
+      </div>-->
+
+      <!-- 사용자 이름 -->
+      <div class="form-group">
+        <label for="userName">사용자 이름:</label>
+        <input type="text" name="userName" id="userName" class="form-control" th:value="${user.getName() != null ? user.getName() : ''}" required>
+      </div>
+
+      <!-- 사용자 이메일 -->
+      <div class="form-group">
+        <label for="userEmail">사용자 이메일:</label>
+        <input type="text" name="userEmail" id="userEmail" class="form-control" th:value="${user.getEmail() != null ? user.getEmail() : ''}" required>
+      </div>
+
+      <!-- 예약 가격 표시 -->
+      <div class="form-group">
+        <label>총 가격:</label>
+        <p id="totalPrice" class="font-weight-bold"></p>
+      </div>
+
+
+
+    <!-- 결제하기 버튼 -->
+    <button class="btn btn-primary" onclick="requestPay()">결제하기</button>
+
+    <!-- 카카오페이 버튼 -->
+    <button type="button" class="btn" onclick="kakaoPay()">
+      <img src="../images/payment.png" alt="Image Button" class="img-fluid" />
+    </button>
+
+
+  </div>
+
+
+ <script th:inline="javascript">
+    function validateDates() {
+      const checkinDate = document.getElementById('checkinDate').value;
+      const checkoutDate = document.getElementById('checkoutDate').value;
+
+      if (checkoutDate && checkinDate) {
+        const checkinDateObj = new Date(checkinDate);
+        const checkoutDateObj = new Date(checkoutDate);
+
+        if (checkoutDateObj <= checkinDateObj) {
+          alert("체크아웃 날짜는 체크인 날짜 이후의 날짜여야 합니다.");
+          document.getElementById('checkoutDate').value = '';
+        }
+      }
+    }
+
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1 필요
+    const day = String(today.getDate()).padStart(2, '0');
+    const formattedToday = `${year}-${month}-${day}`; // YYYY-MM-DD 형식
+
+    // 체크인 날짜 입력 필드에 'min' 속성 설정
+    const checkinDateInput = document.getElementById('checkinDate');
+    checkinDateInput.setAttribute('min', formattedToday);
+
+    // 체크인 날짜가 변경될 때마다 validateDates 호출 및 체크아웃 날짜 최소값 설정
+    document.getElementById('checkinDate').addEventListener('change', function () {
+      const checkoutDateInput = document.getElementById('checkoutDate');
+
+      if (this.value) {
+        const checkinDate = new Date(this.value);
+
+        // 체크아웃 날짜의 최소값을 체크인 날짜 다음 날로 설정
+        const nextDay = new Date(checkinDate);
+        nextDay.setDate(nextDay.getDate() + 1);
+        checkoutDateInput.setAttribute('min', nextDay.toISOString().split('T')[0]);
+      } else {
+        checkoutDateInput.removeAttribute('min'); // 체크인 날짜가 없으면 최소값 제거
+      }
+
+      validateDates();
+    });
+
+    // 체크아웃 날짜가 변경될 때마다 validateDates 호출
+    document.getElementById('checkoutDate').addEventListener('change', validateDates);
+
+
+    const alertMessage = [[${alertMessage}]] ;
+    if (alertMessage) {
+      alert(alertMessage);
+    }
+
+
+    function generateOrderNumber() {
+      const timestamp = Date.now(); // 현재 시간의 타임스탬프
+      const randomPart = Math.floor(Math.random() * 10000); // 0~9999 사이의 랜덤 숫자
+      return `ORD${timestamp}-${randomPart}`;
+    }
+
+    let residName = [[${residName}]];
+    let userName=[[${user.getName()}]];
+    let userEmail=[[${user.getEmail()}]];
+    let userAdress1=[[${user.getAddress1()}]];
+    let userZipcode=[[${user.getZipcode()}]];
+    let roomNo=[[${roomNo}]];
+    let residNo=[[${residNo}]];
+
+
+
+
+    function getDiscountedAmount() {
+      // HTML 요소에서 체크인, 체크아웃 날짜 값을 가져오기
+      const checkinDateInput = document.getElementById('checkinDate').value;
+      const checkoutDateInput = document.getElementById('checkoutDate').value;
+
+      if (!checkinDateInput || !checkoutDateInput) {
+        alert("체크인 날짜와 체크아웃 날짜를 모두 입력해주세요.");
+        return false; // 함수 종료
+      }
+
+
+      if (checkinDateInput && checkoutDateInput) {
+        const checkinDate = new Date(checkinDateInput);
+        const checkoutDate = new Date(checkoutDateInput);
+
+        const durationInMilliseconds = Math.abs(checkoutDate - checkinDate);
+        const numberOfNights = Math.ceil(durationInMilliseconds / (1000 * 60 * 60 * 24));
+
+        // 현재 날짜와 체크인 날짜 차이 계산
+        const today = new Date();
+        const daysUntilCheckin = Math.ceil((checkinDate - today) / (1000 * 60 * 60 * 24)) + 1;
+
+        // 할인율 계산
+        let discountPercentage = 0;
+        if (daysUntilCheckin === 3) {
+          discountPercentage = 10;
+        } else if (daysUntilCheckin === 2) {
+          discountPercentage = 20;
+        } else if (daysUntilCheckin === 1) {
+          discountPercentage = 30;
+        }
+
+        // 서버에서 전달받은 roomPrice
+        const roomRatePerNight = [[${roomPrice}]]; // 타임리프 변수
+        const totalRoomPrice = roomRatePerNight * numberOfNights;
+
+        // 할인된 금액 계산
+        const discountedAmount = totalRoomPrice - (totalRoomPrice * discountPercentage / 100);
+
+        return discountedAmount; // 할인된 금액 반환
+      } else {
+        return null; // 유효하지 않은 입력 시 null 반환
+      }
+    }
+
+
+
+
+
+    var IMP = window.IMP;
+    IMP.init("imp48533410");
+
+    function requestPay() {
+
+      let price = getDiscountedAmount();
+
+      if(price==null) return false;
+      console.log(generateOrderNumber());
+      IMP.request_pay({
+        pg: "html5_inicis.INIpayTest",
+        pay_method: "card",
+        merchant_uid: generateOrderNumber(),   // 주문번호
+        name: residName,
+        amount: price,                         // 숫자 타입
+        buyer_email: userEmail,
+        buyer_name: userName,
+        buyer_addr: userAdress1,
+        buyer_postcode: userZipcode
+      }, function (rsp) { // callback
+        if (rsp.success) {
+          $.ajax({
+            type: 'POST',
+            url: '/payment/success',
+            contentType: 'application/json',
+            data: JSON.stringify({
+              imp_uid: rsp.imp_uid,
+              merchant_uid: rsp.merchant_uid,
+              paid_amount: rsp.paid_amount,
+              buyer_name: rsp.buyer_name,
+              buyer_email: rsp.buyer_email
+            })
+          }).done(function(data) {
+            if(rsp.paid_amount === data.response.amount){
+              alert("이니시스 결제 성공");
+              console.log(data);
+            } else {
+              alert("결제 실패");
+            }
+          });
+        } else {
+          alert("결제 실패: " + rsp.error_msg);
+        }
+      });
+    }
+
+    function kakaoPay() {
+
+
+      let price = getDiscountedAmount();
+      console.log(generateOrderNumber());
+
+      IMP.request_pay({
+        pg: "kakaopay.TC0ONETIME",
+        pay_method: "card",
+        merchant_uid: generateOrderNumber(),   // 주문번호
+        name: residName,
+        amount: price ,                         // 숫자 타입
+        buyer_email: userEmail,
+        buyer_name: userName,
+        buyer_addr: userAdress1,
+        buyer_postcode: userZipcode
+      }, function (rsp) { // callback
+        if (rsp.success) {
+          $.ajax({
+            type: 'POST',
+            url: '/payment/success',
+            contentType: 'application/json',
+            data: JSON.stringify({
+              imp_uid: rsp.imp_uid,
+              merchant_uid: rsp.merchant_uid,
+              paid_amount: rsp.paid_amount,
+              buyer_name: rsp.buyer_name,
+              buyer_email: rsp.buyer_email,
+              roomNo: roomNo,              // 추가적인 데이터
+              residNo: residNo,            // 추가적인 데이터
+              checkinDate: $('#checkinDate').val(),  // 체크인 날짜 추가
+              checkoutDate: $('#checkoutDate').val(), // 체크아웃 날짜 추가
+              userNo: $('#userNo').val()
+            })
+          }).done(function(response) {
+            window.location.href = response;
+          });
+        } else {
+          alert("결제에 실패했습니다. 에러 메시지: " + rsp.error_msg);
+        }
+      });
+    }
+
+
+
+    // 서버에서 전달된 roomPrice 값 (JSP에서 JSON으로 안전하게 전달)
+    function calculatePriceWithDiscount() {
+      const checkinDate = document.getElementById('checkinDate').value;
+      const checkoutDate = document.getElementById('checkoutDate').value;
+
+      if (checkinDate && checkoutDate) {
+        const startDate = new Date(checkinDate);
+        const endDate = new Date(checkoutDate);
+
+        const diffTime = Math.abs(endDate - startDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        // 현재 날짜와 체크인 날짜 차이 계산
+        const today = new Date();
+        const daysUntilCheckin = Math.ceil((startDate - today) / (1000 * 60 * 60 * 24)) + 1;
+
+        // 할인율 계산
+        let discountRate = 0;
+        if (daysUntilCheckin === 3) {
+          discountRate = 10;
+        } else if (daysUntilCheckin === 2) {
+          discountRate = 20;
+        } else if (daysUntilCheckin === 1) {
+          discountRate = 30;
+        }
+
+        // roomPrice 값은 서버에서 전달
+        const roomPrice = [[${roomPrice}]];
+        const originalPrice = roomPrice * diffDays;
+
+        // 할인된 가격 계산
+        let discountedPrice = originalPrice - (originalPrice * discountRate / 100);
+
+        // 결과 출력
+        document.getElementById('totalPrice').textContent =
+                `${originalPrice} 원, 할인율: ${discountRate}%, 할인된 가격: ${discountedPrice} 원`;
+      } else {
+        document.getElementById('totalPrice').textContent = '날짜를 선택해주세요.';
+      }
+    }
+
+  </script>
+
 </th:block>
+<!--브랜치 생성-->
 </body>
 </html>

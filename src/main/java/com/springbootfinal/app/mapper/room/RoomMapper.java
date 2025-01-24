@@ -11,16 +11,16 @@ import java.util.List;
 public interface RoomMapper {
 	
 	  List<RoomDTO> findAvailableRoomsByHostAndDate(
-			  @Param("hostUserNo") int hostUserNo,@Param("currentDate") String currentDate
+			  @Param("residNo") Long residNo,@Param("currentDate") String currentDate
 
 		    );
 
 	  // 특정 호텔 ID와 날짜에 해당하는 예약된 방 정보를 찾는 쿼리
 	  List<ReservationDTO> getReservationsByHotelIdAndDate(
-		        @Param("hotelId") int hotelId,
+		        @Param("residNo") Long residNo,
 		        @Param("currentDate") String currentDate
 		    );
 
-	  List<ReservationDTO> getReservationsByResidence(@Param("hotelId") int hotelId,
+	  List<ReservationDTO> getReservationsByResidence(@Param("residNo") Long residNo,
 													  @Param("type") String type, @Param("keyword") String keyword);
 }

@@ -20,7 +20,8 @@
         WHERE room_no = #{roomNo}
         AND (#{checkoutDate} > checkin_date
         AND checkout_date > #{checkinDate})
-    </select>
+        AND reservation_status != '예약 취소'
+           </select>
 
     <!-- 방 가격 조회 -->
     <select id="getRoomPrice" resultType="int">
@@ -39,7 +40,8 @@
             discount_rate,
             discounted_price,
             transaction_id,
-            total_price
+            total_price,
+            payment_status
         ) VALUES (
                      #{roomNo},
                      #{userNo},
@@ -48,15 +50,60 @@
                      #{discountRate},
                      #{discountedPrice},
                      #{transactionId},
-                     #{totalprice}
+                     #{totalprice},
+                     #{paymentStatus}
 
                  )
     </insert>
 
-    <select id="findResidenceNameById" resultType="string">
-        SELECT resid_name
+    <!--예약정보 출력-->
+    <select id="selectReservationByTransactionId" resultType="Reservation">
+        SELECT
+            reservation_no,
+            user_no,
+            room_no,
+            checkin_date,
+            checkout_date,
+            total_price,
+            discount_rate,
+            discounted_price,
+            transaction_id,
+            payment_status,
+            reservation_status,
+            created_at
+        FROM
+            reservations
+        WHERE
+            transaction_id = #{transactionId}
+    </select>
+
+    <!-- 숙소 이름 가져오는 쿼리문 -->
+    <select id="findResidenceAndRoomById" resultType="map">
+        SELECT residence.resid_name AS residName, residence_rooms.room_name AS roomName
         FROM residence
-        WHERE resid_no = #{residNo}
+                 JOIN residence_rooms ON residence.resid_no = residence_rooms.resid_no
+        WHERE residence.resid_no = #{residNo} AND residence_rooms.room_no = #{roomNo};
+    </select>
+    <!--예약하는 유저의 정보-->
+    <select id="getReservationUserByUserNo" parameterType="long" resultType="ReservationUserDTO">
+        SELECT
+            user_no,
+            id,
+            password,
+            email,
+            phone,
+            name,
+            zipcode,
+            address1,
+            address2,
+            login_type,
+            provider_id,
+            reg_date,
+            role
+        FROM
+            users
+        WHERE
+            user_no = #{userNo}
     </select>
 
     <!-- 예약 등록 -->
@@ -121,6 +168,7 @@
         DELETE FROM reservations WHERE reservation_no = #{reservationNo}
     </delete>
 
+
     <resultMap id="reservationResultMap" type="com.springbootfinal.app.domain.reservations.Reservations">
     <id property="reservation_no" column="reservation_no"/>
     <result property="user_no" column="user_no"/>
@@ -137,10 +185,6 @@
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
     </resultMap>
-
-
-
-
 </mapper>
 
 

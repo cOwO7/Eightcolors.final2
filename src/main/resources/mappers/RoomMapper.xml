@@ -24,7 +24,7 @@
             WHERE (#{currentDate} >= checkin_date AND checkout_date > #{currentDate})
             AND reservation_status != '예약 취소'
         )
-        AND res.host_user_no = #{hostUserNo}
+        AND res.resid_no = #{residNo}
         ORDER BY res.resid_name, r.room_name;
         
     </select>
@@ -46,7 +46,7 @@
         JOIN 
             residence res ON rr.resid_no = res.resid_no
         WHERE 
-            res.resid_no = #{hotelId} 
+            res.resid_no = #{residNo}
             AND #{currentDate}  >= r.checkin_date 
             AND r.checkout_date >= #{currentDate} 
             AND r.reservation_status = '예약 완료';
@@ -70,7 +70,7 @@
     JOIN
     residence res ON rr.resid_no = res.resid_no
     WHERE
-    res.resid_no = #{hotelId}
+    res.resid_no = #{residNo}
         <if test="type == 'roomName'">
             AND rr.room_name LIKE CONCAT('%', #{keyword}, '%')
         </if>
