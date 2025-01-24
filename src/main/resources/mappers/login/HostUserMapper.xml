@@ -42,4 +42,5 @@
         DELETE FROM host_users WHERE host_user_no = #{hostUserNo}
     </delete>
 
+
 </mapper>

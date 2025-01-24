@@ -11,19 +11,40 @@
 
     <!-- 사진 등록 -->
     <insert id="insertPhoto" parameterType="com.springbootfinal.app.domain.residence.PropertyPhotosDto">
-        INSERT INTO property_photos (resid_no, thumbnailUrls, photo_url01, photo_url02, photo_url03, photo_url04, photo_url05, photo_url06, photo_url07, photo_url08, photo_url09, photo_url10)
-        VALUES (#{residNo}, #{thumbnailUrls}, #{photoUrl01}, #{photoUrl02}, #{photoUrl03}, #{photoUrl04}, #{photoUrl05}, #{photoUrl06}, #{photoUrl07}, #{photoUrl08}, #{photoUrl09}, #{photoUrl10})
+        INSERT INTO property_photos (resid_no, thumbnailUrls, photo_url01, photo_url02,
+                                     photo_url03, photo_url04, photo_url05, photo_url06,
+                                     photo_url07, photo_url08, photo_url09, photo_url10)
+        VALUES (#{residNo}, #{thumbnailUrls}, #{photoUrl01},
+                #{photoUrl02}, #{photoUrl03}, #{photoUrl04},
+                #{photoUrl05}, #{photoUrl06}, #{photoUrl07},
+                #{photoUrl08}, #{photoUrl09}, #{photoUrl10})
     </insert>
 
     <!-- 사진 수정 -->
     <update id="updatePhoto" parameterType="com.springbootfinal.app.domain.residence.PropertyPhotosDto">
         UPDATE property_photos
-        SET thumbnailUrls = #{thumbnailUrls}, photo_url01 = #{photoUrl01}, photo_url02 = #{photoUrl02},
-            photo_url03 = #{photoUrl03}, photo_url04 = #{photoUrl04}, photo_url05 = #{photoUrl05},
-            photo_url06 = #{photoUrl06}, photo_url07 = #{photoUrl07}, photo_url08 = #{photoUrl08},
-            photo_url09 = #{photoUrl09}, photo_url10 = #{photoUrl10}
-        WHERE photo_no = #{photoNo}
+        SET thumbnailUrls = #{thumbnailUrls},
+            photo_url01 = #{photoUrl01},
+            photo_url02 = #{photoUrl02},
+            photo_url03 = #{photoUrl03},
+            photo_url04 = #{photoUrl04},
+            photo_url05 = #{photoUrl05},
+            photo_url06 = #{photoUrl06},
+            photo_url07 = #{photoUrl07},
+            photo_url08 = #{photoUrl08},
+            photo_url09 = #{photoUrl09},
+            photo_url10 = #{photoUrl10}
+        WHERE resid_no = #{residNo}
     </update>
+
+    <select id="getPhotoUrlsByPhotoNo" resultType="java.lang.String">
+        SELECT photo_url01, photo_url02, photo_url03,
+               photo_url04, photo_url05, photo_url06,
+               photo_url07, photo_url08, photo_url09,
+               photo_url10
+        FROM property_photos
+        WHERE photo_no = #{photoNo}
+    </select>
 
     <!-- 숙소 번호로 해당하는 사진 파일 경로 목록을 가져오는 쿼리 -->
     <select id="getPhotoFilesByResidNo" resultType="string">
@@ -31,10 +52,31 @@
         FROM property_photos
         WHERE resid_no = #{residNo}
     </select>
+
+    <select id="getPhotosByResidNo" parameterType="Long" resultType="com.springbootfinal.app.domain.residence.PropertyPhotosDto">
+        SELECT * FROM property_photos WHERE resid_no = #{residNo}
+    </select>
+
+    <select id="getPhotoUrlsByResidNo" resultType="String">
+        SELECT
+            thumbnailUrls,
+            photo_url01,
+            photo_url02,
+            photo_url03,
+            photo_url04,
+            photo_url05,
+            photo_url06,
+            photo_url07,
+            photo_url08,
+            photo_url09,
+            photo_url10
+        FROM property_photos
+        WHERE resid_no = #{residNo}
+    </select>
+
     <!-- 숙소 번호로 해당하는 사진 삭제 -->
     <delete id="deletePhoto" parameterType="Long">
-        DELETE FROM eightcolors2025.property_photos
-        WHERE resid_no = #{residNo}
+        DELETE FROM property_photos WHERE resid_no = #{residNo}
     </delete>
 
 </mapper>

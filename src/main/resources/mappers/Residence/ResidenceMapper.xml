@@ -14,6 +14,7 @@
         r.resid_address AS residAddress,
         r.resid_type AS residType,
         r.resid_date AS residDate,
+        rp.thumbnailUrls AS thumbnailUrls, <!-- 썸네일 URL -->
         rp.photo_url01 AS photoUrl01,  <!-- 사진 URL -->
         rp.photo_url02 AS photoUrl02,  <!-- 사진 URL -->
         rp.photo_url03 AS photoUrl03,  <!-- 사진 URL -->
@@ -24,9 +25,9 @@
         rp.photo_url08 AS photoUrl08,  <!-- 사진 URL -->
         rp.photo_url09 AS photoUrl09,  <!-- 사진 URL -->
         rp.photo_url10 AS photoUrl10,  <!-- 사진 URL -->
-        rr.room_no AS roomNo,
-        rr.room_name AS roomName,
-        rr.price_per_night AS pricePerNight,
+        rr.room_no AS roomNo,          <!-- 숙소 RoomNo -->
+        rr.room_name AS roomName,      <!-- 숙소 RoomName -->
+        rr.price_per_night AS pricePerNight, <!-- 방 가격 Price -->
         re.discount_rate AS discountRate,  <!-- 할인율 -->
         re.discounted_price AS discountedPrice,  <!-- 할인된 가격 -->
         re.checkin_date AS checkinDate,  <!-- 체크인 날짜 -->
@@ -64,7 +65,13 @@
             host_user_no      = #{hostUserNo},
             resid_description = #{residDescription},
             resid_address     = #{residAddress},
-            resid_type        = #{residType}
+            resid_type        = #{residType},
+            nx                = #{nx},
+            ny                = #{ny},
+            regId             = #{regId},
+            regIdTemp         = #{regIdTemp},
+            latitudeNum       = #{latitudeNum},
+            longitudeNum      = #{longitudeNum}
         WHERE resid_no = #{residNo}
     </update>
 

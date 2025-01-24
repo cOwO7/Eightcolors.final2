@@ -15,7 +15,6 @@
         </div>
         <h1>숙소 등록</h1>
         <form th:action="@{/new}" th:object="${residence}" method="post" enctype="multipart/form-data">
-
             <div class="row">
                 <!-- 기존 숙소 입력 필드들 -->
                 <label for="residName">숙소 이름:</label>
@@ -40,6 +39,8 @@
                 <label>소개 글:</label><br><br>
                 <textarea id="residDescription" th:field="*{residDescription}"></textarea>
             </div>
+
+
             <!-- 사진 추가 -->
             <h3>사진 추가</h3>
             <label for="photoFiles">사진 파일 업로드:</label>

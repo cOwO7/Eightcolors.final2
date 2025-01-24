@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class UserService implements UserDetailsService  {
+public class UserService implements UserDetailsService {
 
     @Autowired
     private UserMapper userMapper;
@@ -30,6 +30,20 @@ public class UserService implements UserDetailsService  {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    private Users currentUser;  // 현재 사용자 정보를 보관
+
+    public void mergeAccounts(Users localUser, Users socialUser) {
+        // 로컬 계정 정보를 소셜 계정으로 병합
+        socialUser.setPassword(localUser.getPassword());
+        socialUser.setPhone(localUser.getPhone());
+        socialUser.setZipcode(localUser.getZipcode());
+        socialUser.setAddress1(localUser.getAddress1());
+        socialUser.setAddress2(localUser.getAddress2());
+
+        userMapper.updateUser(socialUser);
+        userMapper.deleteUser(localUser.getUserNo()); // 로컬 계정 삭제
+    }
 
     public UserService(UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.userMapper = userMapper;
@@ -68,22 +82,32 @@ public class UserService implements UserDetailsService  {
         user.setProviderId(providerId);
         user.setLoginType(loginType);
         user.setRole("ROLE_USER");
-        // 기타 필요한 필드 설정
-
         userMapper.insertUser(user);
         return user;
     }
 
     // 회원 ID에 해당하는 회원 정보를 읽어와 반환하는 메서드
-    public Users findById(String id){
+    public Users findById(String id) {
+        log.info("Finding user by ID: {}", id); // ID 로그 출력
         Users user = userMapper.findById(id);
-        log.info("User found: {}", user);
+        if (user != null) {
+            log.info("User found: {}", user);
+        } else {
+            log.warn("No user found with ID: {}", id);
+        }
         return user;
     }
 
     // 회원 번호로 회원을 찾는 메서드
     public Users findByUserNo(Long userNo) {
-        return userMapper.findByUserNo(userNo);
+        log.info("Finding user by userNo: {}", userNo); // userNo 로그 출력
+        Users user = userMapper.findByUserNo(userNo);
+        if (user != null) {
+            log.info("User found: {}", user);
+        } else {
+            log.warn("No user found with userNo: {}", userNo);
+        }
+        return user;
     }
 
     // 회원 이름으로 회원을 찾는 메서드
@@ -98,17 +122,20 @@ public class UserService implements UserDetailsService  {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Users user = userMapper.findById(username);
-        if (user == null) {
+        currentUser = userMapper.findById(username);
+        if (currentUser == null) {
             log.error("User not found with username: " + username);
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
         log.info("User found with username: " + username);
-        return new CustomUserDetails(
-                user.getUserNo(),
-                user.getId(),
-                user.getPassword(),
-                AuthorityUtils.createAuthorityList("ROLE_USER")
+        return new org.springframework.security.core.userdetails.User(
+                currentUser.getId(),
+                currentUser.getPassword(),
+                AuthorityUtils.createAuthorityList(currentUser.getRole())
         );
+    }
+
+    public Users getCurrentUser() {
+        return currentUser;
     }
 }
