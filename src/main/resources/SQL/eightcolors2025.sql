@@ -98,9 +98,6 @@ CREATE TABLE IF NOT EXISTS residence_rooms (
     FOREIGN KEY (resid_no) REFERENCES residence (resid_no) ON DELETE CASCADE)
 ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
-insert into residence_rooms (resid_no, room_name, price_per_night)
-values (8, '103호', 150000);
-
 -- 6. 예약 페이지 테이블
 CREATE TABLE IF NOT EXISTS reservations (
     reservation_no     BIGINT AUTO_INCREMENT PRIMARY KEY,                                      -- 예약 번호 (PK)
@@ -156,6 +153,7 @@ CREATE TABLE IF NOT EXISTS answers (
 CREATE TABLE IF NOT EXISTS property_photos (
     photo_no      BIGINT AUTO_INCREMENT PRIMARY KEY,
     resid_no      BIGINT,
+    room_no       BIGINT,
     thumbnailUrls VARCHAR(255),
     photo_url01   VARCHAR(255),
     photo_url02   VARCHAR(255),
@@ -167,6 +165,7 @@ CREATE TABLE IF NOT EXISTS property_photos (
     photo_url08   VARCHAR(255),
     photo_url09   VARCHAR(255),
     photo_url10   VARCHAR(255),
+    room_url01    VARCHAR(255),
     FOREIGN KEY (resid_no) REFERENCES residence (resid_no) ON DELETE CASCADE
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
@@ -203,7 +202,6 @@ CREATE TABLE IF NOT EXISTS transfers (
     FOREIGN KEY (reservation_no) REFERENCES reservations(reservation_no) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-
 ALTER TABLE transfers
     ADD COLUMN transfer_title VARCHAR(255);
 
@@ -232,16 +230,10 @@ FROM reservations r
 ORDER BY r.created_at DESC
 LIMIT 5;
 
-
 -- 1. 관리자 계정 데이터 삽입
 INSERT INTO admin_users (admin_id, admin_passwd, admin_name, role)
 VALUES ('admin01', 'adminpass123', '관리자1', 'ROLE_ADMIN'),
        ('admin02', 'adminpass456', '관리자2', 'ROLE_ADMIN');
-
-SELECT * FROM residence;
-SELECT * FROM residence_rooms;
-SELECT * FROM property_photos;
-
 
 -- 2. 숙박업소 회원가입 데이터 삽입
 INSERT INTO host_users (id, passwd, email, phone, name, zipcode, address1, address2, business_license_no, role)

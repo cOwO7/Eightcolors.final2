@@ -14,7 +14,7 @@
             <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=36a75517ce82693ff837cc79c740e197&libraries=services,clusterer"></script>
         </div>
         <h1>숙소 수정</h1>
-        <form th:action="@{/edit/{residNo}(residNo=${residence.residNo})}" th:object="${residence}" method="post" enctype="multipart/form-data">
+        <form th:action="@{/update/{residNo}(residNo=${residence.residNo})}" th:object="${residence}" method="post" enctype="multipart/form-data">
             <div class="row">
 
                 <!-- 기존 숙소 입력 필드들 -->
@@ -40,7 +40,7 @@
                 <textarea id="residDescription" th:field="*{residDescription}"></textarea>
             </div>
             <!-- 사진 수정 -->
-            <label>기존 등록된 사진</label>
+            <!--<label>기존 등록된 사진</label>
             <div id="photo-preview">
                 <th:block th:each="photo : ${photos}">
                     <div class="photo-container" th:id="|photo-${photo.photoNo}|">
@@ -59,16 +59,46 @@
                         <button type="button" th:onclick="|removePhoto(${photo.photoNo})|">삭제</button>
                     </div>
                 </th:block>
-            </div>
+            </div>-->
+            <label>기존 등록된 사진</label>
+            <div id="photo-preview">
+                <th:block th:each="photo : ${photos}">
+                    <div class="photo-container" th:id="|photo-${photo.photoNo}|">
+                        <div class="existing-photo">
+                            <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl01})}" width="150">
+                            <input type="hidden" name="existingPhotos" th:value="${photo.photoNo}">
+                            <button type="button" th:onclick="|removePhoto(${photo.photoNo}, '${photo.photoUrl01}')|">
+                                삭제
+                            </button>
 
+                            <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl02})}" width="150">
+                            <input type="hidden" name="existingPhotos" th:value="${photo.photoNo}">
+                            <button type="button" th:onclick="|removePhoto(${photo.photoNo}, '${photo.photoUrl02}')|">
+                                삭제
+                            </button>
+
+                            <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl03})}" width="150">
+                            <input type="hidden" name="existingPhotos" th:value="${photo.photoNo}">
+                            <button type="button" th:onclick="|removePhoto(${photo.photoNo}, '${photo.photoUrl03}')|">
+                                삭제
+                            </button>
+
+                            <!-- 계속해서 같은 방식으로 추가 -->
+
+                        </div>
+                        <!-- 빈 필드 -->
+                        <div class="empty-photo" style="display:none;">
+                            <!--<input type="file" name="newPhotos" onchange="uploadNewPhoto(this, ${photo.photoNo})">-->
+                        </div>
+                    </div>
+                </th:block>
+            </div>
             <label>새로운 사진 추가</label>
             <input type="file" name="photos" multiple>
-
             <input type="hidden" name="deletedPhotoIds" id="deletedPhotoIds">
             <br><br>
             <button type="submit">수정하기</button>
             <button><a href="/list">뒤로 가기</a></button>
-
             <!-- 날씨 데이터 -->
             <div class="col-md-6">
                 <div class="mb-3">
@@ -80,23 +110,17 @@
                             <!-- <td>예보지점 y값</td> -->
                             <td><input type="hidden" id="ny" th:field="*{ny}"/></td>
                             <!-- <td>위도(latitude)</td> -->
-                            <td><input type="hidden" id="latitudeNum" name="latitudeNum" th:field="*{latitudeNum}"/>
-                            </td>
+                            <td><input type="hidden" id="latitudeNum" name="latitudeNum" th:field="*{latitudeNum}"/></td>
                             <!-- <td>경도(longitude)</td> -->
-                            <td><input type="hidden" id="longitudeNum" name="longitudeNum" th:field="*{longitudeNum}"/>
-                            </td>
+                            <td><input type="hidden" id="longitudeNum" name="longitudeNum" th:field="*{longitudeNum}"/></td>
                         </tr>
                     </table>
                     <br/>
                     <div class="d-flex">
-                        <input type="hidden" id="address" value="" placeholder="검색 버튼을 눌러주세요." class="form-control me-2"
-                               style="flex: 1;">
-                        <!-- 도시와 구/시만 표시하는 필드 -->
-                        <input type="hidden" id="address-hidden" value="" placeholder="좌표 조회는 여기서"
-                               class="form-control me-2"
-                               style="flex: 1;">
-                        <input type="hidden" id="regId" th:field="*{regId}" placeholder="예: 11B00000" required>
-                        <input type="hidden" id="regIdTemp" th:field="*{regIdTemp}" placeholder="예: 11B10101" required>
+                        <input type="hidden" id="address" value="" class="form-control me-2" style="flex: 1;">
+                        <input type="hidden" id="address-hidden" value="" class="form-control me-2" style="flex: 1;">
+                        <input type="hidden" id="regId" th:field="*{regId}">
+                        <input type="hidden" id="regIdTemp" th:field="*{regIdTemp}">
                     </div>
                 </div>
             </div>
@@ -116,19 +140,50 @@
     </div>
 
     <script>
-        let deletedPhotos = [];
-
         function removePhoto(photoNo) {
-            var deletedPhotoIds = document.getElementById('deletedPhotoIds');
-            var currentDeletedIds = deletedPhotoIds.value ? deletedPhotoIds.value.split(',') : [];
-            currentDeletedIds.push(photoNo);
-            deletedPhotoIds.value = currentDeletedIds.join(',');
-            // 삭제된 사진을 화면에서 제거 (선택 사항)
-            document.getElementById('photo-' + photoNo).remove();
+            var photoContainer = document.getElementById('photo-' + photoNo);
+            var existingPhoto = photoContainer.querySelector('.existing-photo');
+            var emptyPhoto = photoContainer.querySelector('.empty-photo');
+
+            // 기존 사진 숨기기, 빈 파일 입력 필드 표시
+            existingPhoto.style.display = 'none';
+            emptyPhoto.style.display = 'block';
+
+            // 삭제된 사진의 ID를 서버로 전송할 수 있도록 처리 (hidden 필드의 name을 변경)
+            var input = photoContainer.querySelector("input[name='existingPhotos']");
+            input.setAttribute('name', 'deletedPhotos');
+            input.value = photoNo;  // 삭제된 사진의 ID 값을 전달
+        }
+    </script>
+    <script>
+        function uploadNewPhoto(inputElement, photoNo) {
+            var file = inputElement.files[0];  // 선택된 파일을 가져옵니다.
+
+            if (file) {
+                var photoContainer = document.getElementById('photo-' + photoNo);
+                var emptyPhoto = photoContainer.querySelector('.empty-photo');
+
+                // 새로 업로드된 이미지를 보여줄 이미지 태그 생성
+                var newImg = document.createElement('img');
+                newImg.src = URL.createObjectURL(file);  // 임시 URL 생성
+                newImg.width = 150;
+
+                // 빈 필드를 숨기고 업로드된 이미지를 표시합니다.
+                emptyPhoto.style.display = 'none';
+                photoContainer.querySelector('.existing-photo').appendChild(newImg);
+
+                // 선택된 파일을 서버로 전송하려면 form 데이터에 추가해야 합니다.
+                var form = document.querySelector('form');
+                var newPhotoInput = document.createElement('input');
+                newPhotoInput.type = 'hidden';
+                newPhotoInput.name = 'newPhotos';
+                newPhotoInput.value = file.name;  // 파일명이나 서버에 보낼 다른 데이터를 처리
+                form.appendChild(newPhotoInput);
+            }
         }
     </script>
 
-    <script>
+    <!--<script>
         const existingImages = [
             { fileName: 'image1.jpg', filePath: '/uploads/image1.jpg' },
             { fileName: 'image2.jpg', filePath: '/uploads/image2.jpg' },
@@ -251,7 +306,8 @@
         window.onload = function () {
             initializeExistingImages(); // 기존 이미지 목록 출력
         };
-    </script>
+    </script>-->
+
     <link href="/css/weather/allW.css" rel="stylesheet"/>
     <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
     <script th:src="@{/js/map/geolocation.js}"></script>

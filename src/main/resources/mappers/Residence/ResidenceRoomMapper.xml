@@ -51,8 +51,10 @@
     <!-- 방 수정 -->
     <update id="updateRoom" parameterType="com.springbootfinal.app.domain.residence.ResidenceRoom">
         UPDATE residence_rooms
-        SET room_name = #{roomName}, price_per_night = #{pricePerNight}
-        WHERE room_no = #{roomNo}
+        SET room_name = #{roomName},
+        price_per_night = #{pricePerNight},
+        WHERE resid_no = #{residNo}   <!-- residNo를 기준으로 -->
+        AND room_no = #{roomNo}       <!-- roomNo를 기준으로 -->
     </update>
 
     <!-- 방 삭제 -->

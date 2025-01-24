@@ -22,4 +22,6 @@ public interface ResidenceMapper {
 
     // 숙소 삭제
     void deleteResidence(@Param("residNo") Long residNo);
+
+    List<ResidenceDto> findByHostUserNo(Long hostUserNo);
 }
