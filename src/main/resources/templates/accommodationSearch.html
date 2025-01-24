@@ -9,7 +9,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
     <style>
-
         .container {
             margin-top: 50px;
         }
@@ -75,22 +74,27 @@
             overflow: hidden;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease;
+            height: 320px;
         }
         .accommodation-item:hover {
             transform: translateY(-10px);
         }
         .accommodation-item img {
             width: 100%;
-            height: 250px;
+            height: 100%;
             object-fit: cover;
         }
-        .accommodation-item h5, .accommodation-item p {
+        .accommodation-item .card-body {
             padding: 15px;
+            height: calc(100% - 250px);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         .accommodation-item .btn {
             background-color: #007bff;
             color: white;
-            margin: 15px;
+            margin-top: auto;
         }
         .accommodation-item .btn:hover {
             background-color: #0056b3;
@@ -101,11 +105,9 @@
             color: #dc3545;
             font-weight: bold;
         }
-        /* 숙박 리스트와 하단 간격 */
         #accommodationList {
-            margin-bottom: 60px; /* 하단 간격 추가 */
+            margin-bottom: 60px;
         }
-        /* 캘린더와 검색 박스 사이 간격 */
         .search-container .date-input {
             margin-top: 10px;
         }
@@ -135,7 +137,7 @@
         </div>
 
         <!-- 숙박 리스트 -->
-        <div id="accommodationList" class="row"></div>
+        <div id="accommodationList" class="row g-4"></div>
         <div id="noResults" class="no-results" style="display: none;">검색 결과가 없습니다.</div>
     </div>
 
