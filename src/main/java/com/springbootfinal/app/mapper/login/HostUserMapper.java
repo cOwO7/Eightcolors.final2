@@ -32,4 +32,5 @@ public interface HostUserMapper {
 
     // 특정 HostUserNo로 호스트 사용자 삭제
     void deleteHostUserById(@Param("hostUserNo") Long hostUserNo);
+
 }

@@ -1,5 +1,6 @@
 package com.springbootfinal.app.domain.transfer;
 
+import com.springbootfinal.app.domain.reservations.Reservations;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -31,6 +32,8 @@ public class TransferDto {
     private String buyerId;                   // 양수자 아이디
     private String reservationResidName;      // 예약한 숙소명 (residence 테이블의 resid_name)
     private String roomNo;                    // 예약한 방 번호
+
+    private Reservations reservation; // 예약 정보 추가
 
 
     // 포맷팅된 가격을 반환하는 메서드 추가

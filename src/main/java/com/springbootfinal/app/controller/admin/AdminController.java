@@ -26,6 +26,7 @@ public class AdminController {
         return "admin/admin"; // admin/admin.html 뷰를 반환
     }
 
+
     @GetMapping("/settings")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String adminSettings() {

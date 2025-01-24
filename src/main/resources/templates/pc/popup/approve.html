@@ -8,11 +8,11 @@
 <body>
 <h1>승인 결과(result of approval)</h1>
 <p th:text="${response}"></p>
-<a href="javascript:closePopup();" target="_parent">close</a>
+<a href="javascript:closePopup();" target="_parent">확인</a>
 </body>
 <script>
     function closePopup() {
-        window.opener.location.href = "/";
+        window.opener.location.href = "/transfers";
         self.close();
     }
 </script>
