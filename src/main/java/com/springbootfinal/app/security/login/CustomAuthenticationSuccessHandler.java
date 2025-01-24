@@ -44,8 +44,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             request.getSession().setAttribute("role", "user");
         }
 
-
-        // 유저 번호 세션에 저장..
+        // 일반 유저의 정보를 세션에 저장
         Users userEntity = userService.getCurrentUser();
         if (userEntity != null) {
             Long userNo = userEntity.getUserNo();
@@ -55,8 +54,15 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             log.warn("User entity is null");
         }
 
-
-
+        // 호스트 유저의 정보를 세션에 저장
+        HostUser hostUserEntity = hostUserService.getCurrentHostUser();
+        if (hostUserEntity != null) {
+            Long hostUserNo = hostUserEntity.getHostUserNo();
+            log.info("Retrieved hostUserNo from HostUser: {}", hostUserNo);
+            request.getSession().setAttribute("hostUserNo", hostUserNo);
+        } else {
+            log.warn("HostUser entity is null");
+        }
 
         // 세션 정보 로그 출력
         log.info("User logged in: userNo={}, hostUserNo={}, role={}",
