@@ -111,8 +111,9 @@ public class TransferController {
             model.addAttribute("reservation", reservation);
             return TRANSFER_BASE_PATH + "transferWrite";
         } else {
-            model.addAttribute("errorMessage", "예약 내역이 있는 회원만 글쓰기가 가능합니다.");
-            return TRANSFER_BASE_PATH + "errorPage";
+            String errorMessage = "예약 내역이 있는 회원만 글쓰기가 가능합니다.";
+            model.addAttribute("script", "<script>alert('" + errorMessage + "'); history.back();</script>");
+            return TRANSFER_BASE_PATH + "errorPage"; // errorPage.jsp 또는 템플릿 파일로 연결
         }
     }
 
