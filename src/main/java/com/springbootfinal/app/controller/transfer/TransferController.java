@@ -124,7 +124,7 @@ public class TransferController {
         Reservations reservation = transferService.getReservationByUserNo((Long)httpSession.getAttribute("userNo"));
         log.info("Reservation details: {}", reservation);
 
-        log.info("들어온건가"+reservation.getReservation_no());
+        log.info("transferAdd" + reservation.getReservation_no());
         transfer.setSellerUserNo((Long)httpSession.getAttribute("userNo"));
         transfer.setReservationNo(reservation.getReservation_no());
         transferService.addTransfer(transfer);
