@@ -27,6 +27,12 @@ ext {
     set('timefoldSolverVersion', "1.15.0")
 }
 
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}
+
 dependencies {
     // Spring Boot 관련 의존성
     implementation 'org.springframework.boot:spring-boot-starter-logging'
@@ -89,6 +95,9 @@ dependencies {
 
     // H2 Database (테스트 용도)
     runtimeOnly 'com.h2database:h2'
+
+    //결제관련 의존성(포트원)
+    implementation 'com.github.iamport:iamport-rest-client-java:0.2.21'
 
 
 

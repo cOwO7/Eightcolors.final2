@@ -16,6 +16,7 @@ public class PropertyPhotosDto {
 
     private Long photoNo;
     private Long residNo;  // 외래 키
+    private Long roomNo; // Room 테이블 조인 키
     private String thumbnailUrls;
     private String photoUrl01;
     private String photoUrl02;
@@ -27,5 +28,5 @@ public class PropertyPhotosDto {
     private String photoUrl08;
     private String photoUrl09;
     private String photoUrl10;
-
+    private String roomUrl01;
 }
