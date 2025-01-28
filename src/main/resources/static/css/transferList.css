@@ -1,0 +1,22 @@
+@charset "UTF-8";
+
+.container-narrow {
+    max-width: 2000px; /* 원하는 최대 너비 설정 */
+    margin: 0 auto; /* 가운데 정렬 */
+}
+.status-available {
+    background-color: #EAEAEA; /* 양도가능 배경 */
+    font-weight: bold;
+}
+.status-completed {
+    background-color: #8C8C8C; /* 양도완료 배경 */
+}
+.no-underline {
+    text-decoration: none; /* 밑줄 제거 */
+}
+.line-through {
+    text-decoration: line-through; /* 글의 중간에 줄 긋기 */
+}
+.bold {
+    font-weight: bold; /* 글자 굵게 */
+}
