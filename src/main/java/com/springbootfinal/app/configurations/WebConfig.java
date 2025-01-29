@@ -1,12 +1,10 @@
 package com.springbootfinal.app.configurations;
 
+import com.springbootfinal.app.interceptor.LoginCheckInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.*;
 
 
 @Configuration
@@ -55,6 +53,8 @@ public class WebConfig implements WebMvcConfigurer{
 		registry.addViewController("/joinForm").setViewName("user/userJoin");
 		// 고객센터
 		registry.addViewController("/helper").setViewName("views/helper");
+		// 양도게시글  상세
+		registry.addViewController("/transferDetail").setViewName("views/transferDetail");
 	}
 	
 	@Override
@@ -66,5 +66,10 @@ public class WebConfig implements WebMvcConfigurer{
                 .allowCredentials(false)
                 .maxAge(3600);
     }
+
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(new LoginCheckInterceptor())
+				.addPathPatterns("/transferDetail");
+	}
 
 }
