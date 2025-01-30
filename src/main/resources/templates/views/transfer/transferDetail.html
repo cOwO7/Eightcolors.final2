@@ -34,7 +34,7 @@
                         <td><span th:text="${transfer.reservationResidName}"></span></td>
                     </tr>
                     <tr>
-                        <th>호수</th>
+                        <th>호 수</th>
                         <td><span th:text="${transfer.roomNo}"></span></td>
                     </tr>
                     <tr>
@@ -82,13 +82,17 @@
                         </form>
                         <form id="paymentFormLayer" action="/ready/pc/layer" method="get" style="display: inline;">
                             <input type="hidden" name="transferNo" th:value="${transfer.transferNo}" />
-                            <button type="button" class="btn btn-success"
-                                    onclick="checkLoginAndSubmit('paymentFormLayer')">웹에서 결제</button>
+                            <button type="button" class="btn btn-success p-0 border-0"
+                                    onclick="checkLoginAndSubmit('paymentFormLayer')">
+                                <img src="/images/kakaopay.jpg" alt="카카오페이결제" style="width: 110px; height: auto;">
+                            </button>
                         </form>
                         <form id="paymentFormPopup" action="/ready/pc/popup" method="get" style="display: inline;">
                             <input type="hidden" name="transferNo" th:value="${transfer.transferNo}" />
-                            <button type="button" class="btn btn-info"
-                                    onclick="checkLoginAndSubmit('paymentFormPopup')">팝업으로 결제</button>
+                            <button type="button" class="btn btn-info p-0 border-0"
+                                    onclick="checkLoginAndSubmit('paymentFormPopup')">
+                                <img src="/images/payment.png" alt="카카오페이결제" style="width: 90px; height: auto;">
+                            </button>
                         </form>
                     </div>
                 </div>

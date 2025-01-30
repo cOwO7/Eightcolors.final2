@@ -22,15 +22,12 @@ public class KakaopayController {
         return "/pc/index";
     }
 
-
     // 결제 준비 요청 transferNo를 받아서 결제 준비 요청을 한다.
-    // Request payment preparation with transferNo
 
     @GetMapping("/ready/{agent}/{openType}")
     public String ready(@PathVariable("agent") String agent, @PathVariable("openType") String openType,
                         @RequestParam(value = "transferNo", required = false, defaultValue = "0") long transferNo, Model model) {
         if (transferNo == 0) {
-            // Handle the case where transferNo is not provided
             model.addAttribute("error", "Transfer number is required");
             return "error";
         }
@@ -59,18 +56,12 @@ public class KakaopayController {
     @GetMapping("/cancel/{agent}/{openType}")
     public String cancel(@PathVariable("agent") String agent, @PathVariable("openType") String openType) {
         // 주문건이 진짜 취소되었는지 확인 후 취소 처리
-        // 결제내역조회(/v1/payment/status) api에서 status를 확인한다.
-        // To prevent the unwanted request cancellation caused by attack,
-        // the “show payment status” API is called and then check if the status is QUIT_PAYMENT before suspending the payment
         return agent + "/" + openType + "/cancel";
     }
 
     @GetMapping("/fail/{agent}/{openType}")
     public String fail(@PathVariable("agent") String agent, @PathVariable("openType") String openType) {
         // 주문건이 진짜 실패되었는지 확인 후 실패 처리
-        // 결제내역조회(/v1/payment/status) api에서 status를 확인한다.
-        // To prevent the unwanted request cancellation caused by attack,
-        // the “show payment status” API is called and then check if the status is FAIL_PAYMENT before suspending the payment
         return agent + "/" + openType + "/fail";
     }
 }
