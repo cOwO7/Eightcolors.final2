@@ -28,6 +28,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 //@RequestMapping("/residence")
@@ -267,8 +270,9 @@ public class ResidenceController {
     // 방 등록 처리
     @PostMapping("/room/{residNo}/addRoom")
     public String createResidenceRoom(@ModelAttribute ResidenceRoom residenceRoom,
-                                      @PathVariable Long residNo
-                                      ) {
+                                      @PathVariable Long residNo,
+                                      MultipartFile roomImage
+                                      ) throws IOException {
         if (residNo == null) {
             throw new IllegalArgumentException("resid_no가 null입니다.");
         }
@@ -279,14 +283,15 @@ public class ResidenceController {
         }
 
         residenceRoom.setResidNo(residNo);  // 방에 해당하는 숙소 번호를 세팅
-        residenceRoomService.createResidenceRoom(residenceRoom);  // 방 등록
+        residenceRoomService.createResidenceRoom(residenceRoom, roomImage);  // 방 등록
 
         return "redirect:/list";  // 방 등록 후 목록 페이지로 리디렉션
     }
 
 
+
     // 방 수정 페이지
-    @GetMapping("/update/{residNo}/room")
+    /*@GetMapping("/update/{residNo}/room")
     public String editResidenceRoomForm(@PathVariable("residNo") Long residNo,
                                         Model model) {
         // 숙소 정보 불러오기
@@ -305,9 +310,10 @@ public class ResidenceController {
     @PostMapping("/update/{residNo}/room")
     public String updateResidenceRoom(@PathVariable("roomNo") Long roomNo,
                                       @PathVariable("residNo") Long residNo,
-                                      @ModelAttribute ResidenceRoom residenceRoom) {
+                                      @ModelAttribute ResidenceRoom residenceRoom,
+                                      MultipartFile roomImage) throws IOException {
         // 3. Residence 정보 업데이트
-        residenceRoomService.updateRoom(residenceRoom, residNo, roomNo);  // photos를 전달하여 처리
+        residenceRoomService.updateRoom(residenceRoom, residNo, roomNo, roomImage);  // photos를 전달하여 처리
         return "redirect:/list";  // 업데이트 완료 후 목록으로 리다이렉트
     }
 
@@ -317,7 +323,44 @@ public class ResidenceController {
                                       ) {
         residenceRoomService.deleteRoom(roomNo);
         return "redirect:/list";
+    }*/ // 원본
+
+    // 방 수정 페이지
+    @GetMapping("/update/{residNo}/room")
+    public String editResidenceRoomForm(@PathVariable("residNo") Long residNo, Model model) {
+        List<ResidenceRoom> residenceRooms = residenceRoomService.getRoomsByResidenceId(residNo);
+        List<PropertyPhotosDto> photos = propertyPhotosService.getPhotosByResidenceId(residNo);
+
+        // residence 객체를 추가해야 함
+        ResidenceDto residence = residenceService.getResidenceById(residNo);
+
+        model.addAttribute("residenceRooms", residenceRooms);
+        model.addAttribute("photos", photos);
+        model.addAttribute("resid", residNo);
+        model.addAttribute("residence", residence);  // 추가
+
+        return "views/residence/ResidenceRoomUpdate";
     }
+
+
+    // 방 수정 처리 (residNo에 해당하는 여러 개의 방을 수정)
+    @PostMapping("/update/{residNo}/room")
+    public String updateResidenceRooms(@PathVariable("residNo") Long residNo,
+                                       @ModelAttribute ResidenceRoom residenceRoom, // 여러 개의 방 데이터를 받기 위한 Wrapper
+                                       @RequestParam(value = "roomImages", required = false) List<MultipartFile> roomImages) throws IOException {
+        List<ResidenceRoom> residenceRooms = residenceRoom.getResidenceRooms();
+
+        // 각 방에 대해 업데이트 진행
+        for (int i = 0; i < residenceRooms.size(); i++) {
+            ResidenceRoom room = residenceRooms.get(i);
+            MultipartFile roomImage = (roomImages != null && i < roomImages.size()) ? roomImages.get(i) : null;
+
+            residenceRoomService.updateRoom(room, residNo, room.getRoomNo(), roomImage);
+        }
+
+        return "redirect:/list"; // 업데이트 완료 후 목록으로 이동
+    }
+
 
     // 날씨 데이터
     @PostMapping("/residence/processAllWeather")

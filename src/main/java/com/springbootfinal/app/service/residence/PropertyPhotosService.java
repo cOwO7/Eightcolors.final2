@@ -109,7 +109,7 @@ public class PropertyPhotosService {
         propertyPhotosMapper.deletePhoto(photoNo);  // photoNo에 해당하는 레코드 삭제
     }
 
-    private void deletePhotoFile(String fileName) throws IOException {
+    public void deletePhotoFile(String fileName) throws IOException {
         Path filePath = getFilePath(fileName);
         File file = new File(filePath.toUri());
         if (file.exists()) {

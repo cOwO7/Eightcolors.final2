@@ -43,18 +43,20 @@
     </select>
 
     <!-- 방 등록 -->
-    <insert id="insertRoom" parameterType="com.springbootfinal.app.domain.residence.ResidenceRoom">
-        INSERT INTO residence_rooms (resid_no, room_name, price_per_night)
-        VALUES (#{residNo}, #{roomName}, #{pricePerNight})
+    <insert id="insertRoom" parameterType="com.springbootfinal.app.domain.residence.ResidenceRoom" useGeneratedKeys="true" keyProperty="roomNo">
+        INSERT INTO residence_rooms (resid_no, room_name, price_per_night, room_url01)
+        VALUES (#{residNo}, #{roomName}, #{pricePerNight}, #{roomUrl01})
     </insert>
+
 
     <!-- 방 수정 -->
     <update id="updateRoom" parameterType="com.springbootfinal.app.domain.residence.ResidenceRoom">
         UPDATE residence_rooms
         SET room_name = #{roomName},
         price_per_night = #{pricePerNight},
-        WHERE resid_no = #{residNo}   <!-- residNo를 기준으로 -->
-        AND room_no = #{roomNo}       <!-- roomNo를 기준으로 -->
+        room_url01 = #{roomUrl01}
+        WHERE resid_no = #{residNo}
+        AND room_no = #{roomNo}
     </update>
 
     <!-- 방 삭제 -->

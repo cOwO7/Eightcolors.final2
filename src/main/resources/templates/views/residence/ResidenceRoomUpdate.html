@@ -17,32 +17,11 @@
         <!-- 방 수정 폼 -->
         <form th:action="@{/update/{id}/room(id=${residence.residNo})}" th:object="${residenceRoom}" method="post" enctype="multipart/form-data">
             <div class="row">
-                <div>
-                    <label>숙소 No:</label><br>
-                    <input type="text" name="residNo" th:value="${residence.residNo}" readonly />
-
-                    <label>방 개수:</label><br>
-                    <input type="number" id="roomCount" name="roomCount" min="1" max="10" value="${#lists.size(rooms)}" readonly>
-                    <button type="button" onclick="generateRoomForms()">방 수정 폼 생성</button><br><br>
-
-                    <!-- 여기에 동적으로 방 수정 폼이 추가될 자리 -->
-                    <div id="roomFormsContainer">
-                        <!-- 기존 방 정보 출력 -->
-                        <div th:each="room, iterStat : ${rooms}">
-                            <div class="roomForm">
-                                <h4>방 [[${iterStat.index + 1}]] 수정</h4>
-
-                                <label>방 이름:</label><br>
-                                <input type="text" th:name="'roomName_' + ${iterStat.index}" th:value="${room.roomName}"/><br><br>
-
-                                <label>가격:</label><br>
-                                <input type="text" th:name="'pricePerNight_' + ${iterStat.index}" th:value="${room.pricePerNight}"/><br><br>
-
-                                <label>방 이미지:</label><br>
-                                <input type="file" th:name="'roomImage_' + ${iterStat.index}"/><br><br>
-                            </div>
-                        </div>
-                    </div>
+                <div th:each="room, iterStat : ${residenceRooms}">
+                    <input type="hidden" name="residenceRooms[__${iterStat.index}__].roomNo" th:value="${room.roomNo}" />
+                    <input type="text" name="residenceRooms[__${iterStat.index}__].roomName" th:value="${room.roomName}" />
+                    <input type="number" name="residenceRooms[__${iterStat.index}__].price" th:value="${room.price}" />
+                    <input type="file" name="roomImages" />
                 </div>
             </div>
 
