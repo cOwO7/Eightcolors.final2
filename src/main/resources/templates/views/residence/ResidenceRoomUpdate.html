@@ -3,42 +3,37 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layouts/main_layout}">
 <head>
-    <link href="bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="/bootstrap/bootstrap.min.css" rel="stylesheet">
     <meta charset="UTF-8">
     <title>숙소 등록</title>
 <body>
 <th:block layout:fragment="content">
     <div class="container">
-        <div>
-            <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-            <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=36a75517ce82693ff837cc79c740e197&libraries=services,clusterer"></script>
-        </div>
         <h1>방 수정</h1>
         <!-- 방 수정 폼 -->
         <form th:action="@{/update/{residNo}/room(residNo=${resid})}" method="post" enctype="multipart/form-data">
             <div class="row">
                 <div th:each="room, iterStat : ${residenceRooms}">
-                    <input type="hidden" th:name="|residenceRooms[${iterStat.index}].roomNo|" th:value="${room.roomNo}" />
-                    <input type="text" th:name="|residenceRooms[${iterStat.index}].roomName|" th:value="${room.roomName}" />
-                    <input type="number" th:name="|residenceRooms[${iterStat.index}].pricePerNight|" th:value="${room.pricePerNight}" />
-                    <input type="file" name="roomImages" />
+                    <input type="text" th:name="|residenceRooms[${iterStat.index}].roomNo|" th:value="${room.roomNo}"/>
+                    <input type="text" th:name="|residenceRooms[${iterStat.index}].roomName|" th:value="${room.roomName}"/>
+                    <input type="number" th:name="|residenceRooms[${iterStat.index}].pricePerNight|" th:value="${room.pricePerNight}"/>
+                    <input type="file" name="roomImages"/>
                     <div id="room-photo-preview">
-                        <th:block th:each="room : ${residenceRooms}">
-                            <div class="room-container" th:id="|room-${room.roomNo}|">
-                                <!-- 첫 번째 이미지 -->
-                                <div class="existing-photo" th:id="|room-box-${room.roomNo}-1|">
-                                    <img th:src="@{/images/files/{fileName}(fileName=${room.roomUrl01})}" width="150"
-                                         th:id="|room-img-${room.roomNo}-1|">
-                                    <input type="hidden" name="existingRoomPhotos" th:value="${room.roomNo}">
-                                    <button type="button" th:onclick="|removeRoomPhoto(${room.roomNo}, 'room-box-${room.roomNo}-1')|">삭제</button>
-                                    <!--<input type="file" th:id="|file-input-${room.roomNo}-1|" onchange="replaceRoomPhoto(event, ${room.roomNo}, 1)">-->
-                                </div>
-
+                        <div class="room-container" th:id="|room-${room.roomNo}|">
+                            <!-- 미리보기 이미지 -->
+                            <div class="existing-photo" th:id="|room-box-${room.roomNo}|">
+                                <img th:src="@{/images/files/{fileName}(fileName=${room.roomUrl01})}" width="150"
+                                     th:id="|room-img-${room.roomNo}|">
+                                <input type="hidden" name="existingRoomPhotos" th:value="${room.roomNo}">
+                                <button type="button" th:onclick="|removeRoomPhoto(${room.roomNo}, 'room-box-${room.roomNo}')|">
+                                    이미지 삭제
+                                </button>
                             </div>
-                        </th:block>
+                        </div>
                     </div>
                 </div>
-            </div><br><br><br>
+            </div>
+            <br><br><br>
             <button><a href="/list" class="text-decoration-none text-black btn-warning">뒤로 가기</a></button>
             <button type="submit" id="registerButton" class="btn btn-primary">수정</button>
         </form>
@@ -57,24 +52,6 @@
             }
         }
     </script>
-
-    <script>
-        function replaceRoomPhoto(event, roomNo, index) {
-            var file = event.target.files[0]; // 사용자가 선택한 파일
-            if (file) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    // 미리보기 이미지 변경
-                    var imgElement = document.getElementById(`room-img-${roomNo}-${index}`);
-                    if (imgElement) {
-                        imgElement.src = e.target.result;
-                    }
-                };
-                reader.readAsDataURL(file); // 선택한 파일을 읽어서 미리보기로 표시
-            }
-        }
-    </script>
-
     <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
 </th:block>
 </body>

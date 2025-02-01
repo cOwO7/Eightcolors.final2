@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -324,6 +325,7 @@ public class ResidenceController {
 
         return "redirect:/list"; // 업데이트 완료 후 목록으로 이동
     }
+
 
     // 개별 삭제
     @PostMapping("/delete/{residNo}/room")

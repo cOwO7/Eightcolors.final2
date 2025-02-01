@@ -17,8 +17,6 @@ public interface ResidenceRoomMapper {
 
     // 방 수정
     void updateRoom(ResidenceRoom room);
-    //void updateRoomImage(Long roomNo, String savedFileName);
-
 
     // 방 삭제
     void deleteRoom(Long roomNo);
