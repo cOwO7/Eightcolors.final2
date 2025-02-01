@@ -104,41 +104,39 @@
             <div class="empty-photo" style="display:none;">
                 <!--<input type="file" name="newPhotos" onchange="uploadNewPhoto(this, ${photo.photoNo})">-->
             </div>
-    </div>
 
-    </div>
-    <label>새로운 사진 추가</label>
-    <input type="file" name="photos" multiple>
-    <input type="hidden" name="deletedPhotoIds" id="deletedPhotoIds">
-    <br><br>
-    <button type="submit">수정하기</button>
-    <button><a href="/list">뒤로 가기</a></button>
-    <!-- 날씨 데이터 -->
-    <div class="col-md-6">
-        <div class="mb-3">
-            <div id="map" style="width: auto; height: auto; text-align: center;"></div>
-            <table width="85%" style="margin: auto; text-align: center;">
-                <tr>
-                    <!-- <td>예보지점 x값</td> -->
-                    <td><input type="hidden" id="nx" th:field="*{nx}"/></td>
-                    <!-- <td>예보지점 y값</td> -->
-                    <td><input type="hidden" id="ny" th:field="*{ny}"/></td>
-                    <!-- <td>위도(latitude)</td> -->
-                    <td><input type="hidden" id="latitudeNum" name="latitudeNum" th:field="*{latitudeNum}"/></td>
-                    <!-- <td>경도(longitude)</td> -->
-                    <td><input type="hidden" id="longitudeNum" name="longitudeNum" th:field="*{longitudeNum}"/></td>
-                </tr>
-            </table>
-            <br/>
-            <div class="d-flex">
-                <input type="hidden" id="address" value="" class="form-control me-2" style="flex: 1;">
-                <input type="hidden" id="address-hidden" value="" class="form-control me-2" style="flex: 1;">
-                <input type="hidden" id="regId" th:field="*{regId}">
-                <input type="hidden" id="regIdTemp" th:field="*{regIdTemp}">
+            <label>새로운 사진 추가</label>
+            <input type="file" name="photos" multiple>
+            <input type="hidden" name="deletedPhotoIds" id="deletedPhotoIds">
+            <br><br>
+            <button type="submit">수정하기</button>
+            <button><a href="/list">뒤로 가기</a></button>
+            <!-- 날씨 데이터 -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <div id="map" style="width: auto; height: auto; text-align: center;"></div>
+                    <table width="85%" style="margin: auto; text-align: center;">
+                        <tr>
+                            <!-- <td>예보지점 x값</td> -->
+                            <td><input type="hidden" id="nx" th:field="*{nx}"/></td>
+                            <!-- <td>예보지점 y값</td> -->
+                            <td><input type="hidden" id="ny" th:field="*{ny}"/></td>
+                            <!-- <td>위도(latitude)</td> -->
+                            <td><input type="hidden" id="latitudeNum" name="latitudeNum" th:field="*{latitudeNum}"/></td>
+                            <!-- <td>경도(longitude)</td> -->
+                            <td><input type="hidden" id="longitudeNum" name="longitudeNum" th:field="*{longitudeNum}"/></td>
+                        </tr>
+                    </table>
+                    <br/>
+                    <div class="d-flex">
+                        <input type="hidden" id="address" value="" class="form-control me-2" style="flex: 1;">
+                        <input type="hidden" id="address-hidden" value="" class="form-control me-2" style="flex: 1;">
+                        <input type="hidden" id="regId" th:field="*{regId}">
+                        <input type="hidden" id="regIdTemp" th:field="*{regIdTemp}">
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    </form>
+        </form>
     <!-- 날씨 데이터 출력폼 -->
     <table>
         <tbody id="combinedWeatherTableBody"></tbody>
@@ -174,174 +172,6 @@
     }
 
 </script>
-<!--<script>
-    function removePhoto(photoNo) {
-        var photoContainer = document.getElementById('photo-' + photoNo);
-        var existingPhoto = photoContainer.querySelector('.existing-photo');
-        var emptyPhoto = photoContainer.querySelector('.empty-photo');
-
-        // 기존 사진 숨기기, 빈 파일 입력 필드 표시
-        existingPhoto.style.display = 'none';
-        emptyPhoto.style.display = 'block';
-
-        // 삭제된 사진의 ID를 서버로 전송할 수 있도록 처리 (hidden 필드의 name을 변경)
-        var input = photoContainer.querySelector("input[name='existingPhotos']");
-        input.setAttribute('name', 'deletedPhotos');
-        input.value = photoNo;  // 삭제된 사진의 ID 값을 전달
-    }
-</script>
-<script>
-    function uploadNewPhoto(inputElement, photoNo) {
-        var file = inputElement.files[0];  // 선택된 파일을 가져옵니다.
-
-        if (file) {
-            var photoContainer = document.getElementById('photo-' + photoNo);
-            var emptyPhoto = photoContainer.querySelector('.empty-photo');
-
-            // 새로 업로드된 이미지를 보여줄 이미지 태그 생성
-            var newImg = document.createElement('img');
-            newImg.src = URL.createObjectURL(file);  // 임시 URL 생성
-            newImg.width = 150;
-
-            // 빈 필드를 숨기고 업로드된 이미지를 표시합니다.
-            emptyPhoto.style.display = 'none';
-            photoContainer.querySelector('.existing-photo').appendChild(newImg);
-
-            // 선택된 파일을 서버로 전송하려면 form 데이터에 추가해야 합니다.
-            var form = document.querySelector('form');
-            var newPhotoInput = document.createElement('input');
-            newPhotoInput.type = 'hidden';
-            newPhotoInput.name = 'newPhotos';
-            newPhotoInput.value = file.name;  // 파일명이나 서버에 보낼 다른 데이터를 처리
-            form.appendChild(newPhotoInput);
-        }
-    }
-</script>-->
-
-<!--<script>
-    const existingImages = [
-        { fileName: 'image1.jpg', filePath: '/uploads/image1.jpg' },
-        { fileName: 'image2.jpg', filePath: '/uploads/image2.jpg' },
-        // 추가된 기존 이미지 목록
-    ];
-
-    // 미리보기 및 수정 폼 초기화
-    function initializeExistingImages() {
-        const preview = document.getElementById('imagePreview');
-        existingImages.forEach((image, index) => {
-            const imgElement = document.createElement('img');
-            imgElement.src = image.filePath;
-            imgElement.style.width = '150px'; // 이미지 크기 조정
-            imgElement.style.marginRight = '10px'; // 이미지 간격
-
-            // 취소 버튼 생성 (삭제 기능)
-            const cancelBtn = document.createElement('button');
-            cancelBtn.innerText = 'X';
-            cancelBtn.style.position = 'absolute';
-            cancelBtn.style.top = '0';
-            cancelBtn.style.right = '0';
-            cancelBtn.style.backgroundColor = 'rgba(255, 0, 0, 0.5)';
-            cancelBtn.style.color = 'white';
-            cancelBtn.style.border = 'none';
-            cancelBtn.style.borderRadius = '50%';
-            cancelBtn.style.width = '20px';
-            cancelBtn.style.height = '20px';
-            cancelBtn.style.cursor = 'pointer';
-
-            // 취소 버튼 클릭 시 이미지 삭제
-            cancelBtn.onclick = function () {
-                removeFileFromExisting(index); // 기존 파일 목록에서 해당 이미지 삭제
-                imgElement.remove(); // 미리보기에서 이미지 삭제
-                cancelBtn.remove(); // 취소 버튼 삭제
-            };
-
-            // 미리보기 이미지 컨테이너
-            const imgContainer = document.createElement('div');
-            imgContainer.style.position = 'relative';
-            imgContainer.style.display = 'inline-block';
-
-            imgContainer.appendChild(imgElement);
-            imgContainer.appendChild(cancelBtn);
-            preview.appendChild(imgContainer);
-        });
-    }
-
-    // 기존 이미지 목록에서 해당 이미지를 삭제하는 함수
-    function removeFileFromExisting(index) {
-        existingImages.splice(index, 1); // DB에서 이미지 목록을 삭제하고
-    }
-
-    // 파일을 추가하거나 수정하는 기능
-    function previewImages() {
-        const preview = document.getElementById('imagePreview');
-        preview.innerHTML = ""; // 기존 미리보기 지우기
-        const files = document.getElementById('photoFiles').files;
-
-        // 새로 추가된 파일들을 미리보기로 출력
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            const reader = new FileReader();
-
-            reader.onload = function (e) {
-                const imgElement = document.createElement('img');
-                imgElement.src = e.target.result;
-                imgElement.style.width = '150px'; // 이미지 크기 조정
-                imgElement.style.marginRight = '10px'; // 이미지 간격
-
-                // 취소 버튼 생성
-                const cancelBtn = document.createElement('button');
-                cancelBtn.innerText = 'X';
-                cancelBtn.style.position = 'absolute';
-                cancelBtn.style.top = '0';
-                cancelBtn.style.right = '0';
-                cancelBtn.style.backgroundColor = 'rgba(255, 0, 0, 0.5)';
-                cancelBtn.style.color = 'white';
-                cancelBtn.style.border = 'none';
-                cancelBtn.style.borderRadius = '50%';
-                cancelBtn.style.width = '20px';
-                cancelBtn.style.height = '20px';
-                cancelBtn.style.cursor = 'pointer';
-
-                // 미리보기 이미지 컨테이너
-                const imgContainer = document.createElement('div');
-                imgContainer.style.position = 'relative';
-                imgContainer.style.display = 'inline-block';
-
-                // 취소 버튼 클릭 시 이미지 삭제
-                cancelBtn.onclick = function () {
-                    imgContainer.remove(); // 미리보기에서 이미지 삭제
-                    removeFileFromInput(i); // 파일 목록에서 해당 이미지 삭제
-                };
-
-                imgContainer.appendChild(imgElement);
-                imgContainer.appendChild(cancelBtn);
-                preview.appendChild(imgContainer);
-            };
-            reader.readAsDataURL(file);
-        }
-    }
-
-    // input에서 파일을 삭제하는 함수
-    function removeFileFromInput(index) {
-        const input = document.getElementById('photoFiles');
-        const dt = new DataTransfer();
-        const files = input.files;
-
-        // 선택된 파일을 제외하고 새로운 DataTransfer 객체에 추가
-        for (let i = 0; i < files.length; i++) {
-            if (i !== index) {
-                dt.items.add(files[i]);
-            }
-        }
-
-        input.files = dt.files; // 수정된 파일 목록을 input에 적용
-    }
-
-    // 페이지 로딩 시 기존 이미지 미리보기 출력
-    window.onload = function () {
-        initializeExistingImages(); // 기존 이미지 목록 출력
-    };
-</script>-->
 
 <link href="/css/weather/allW.css" rel="stylesheet"/>
 <script th:src="@{/js/jquery-3.7.1.min.js}"></script>

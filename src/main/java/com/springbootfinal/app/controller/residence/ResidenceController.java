@@ -289,42 +289,6 @@ public class ResidenceController {
     }
 
 
-
-    // 방 수정 페이지
-    /*@GetMapping("/update/{residNo}/room")
-    public String editResidenceRoomForm(@PathVariable("residNo") Long residNo,
-                                        Model model) {
-        // 숙소 정보 불러오기
-        //ResidenceDto residence = residenceService.getResidenceById(residNo);
-        List<ResidenceRoom> residenceRooms = residenceRoomService.getRoomsByResidenceId(residNo);
-        List<PropertyPhotosDto> photos = propertyPhotosService.getPhotosByResidenceId(residNo);
-
-        model.addAttribute("residenceRooms", residenceRooms);
-        model.addAttribute("photos", photos);
-        model.addAttribute("resid", residNo);
-
-        return "views/residence/ResidenceRoomUpdate"; // 수정 페이지
-    }
-
-    // 방 수정 처리
-    @PostMapping("/update/{residNo}/room")
-    public String updateResidenceRoom(@PathVariable("roomNo") Long roomNo,
-                                      @PathVariable("residNo") Long residNo,
-                                      @ModelAttribute ResidenceRoom residenceRoom,
-                                      MultipartFile roomImage) throws IOException {
-        // 3. Residence 정보 업데이트
-        residenceRoomService.updateRoom(residenceRoom, residNo, roomNo, roomImage);  // photos를 전달하여 처리
-        return "redirect:/list";  // 업데이트 완료 후 목록으로 리다이렉트
-    }
-
-    // 방 삭제
-    @PostMapping("/delete/{roomNo}/room")
-    public String deleteResidenceRoom(@PathVariable Long roomNo
-                                      ) {
-        residenceRoomService.deleteRoom(roomNo);
-        return "redirect:/list";
-    }*/ // 원본
-
     // 방 수정 페이지
     @GetMapping("/update/{residNo}/room")
     public String editResidenceRoomForm(@PathVariable("residNo") Long residNo, Model model) {
@@ -359,6 +323,20 @@ public class ResidenceController {
         }
 
         return "redirect:/list"; // 업데이트 완료 후 목록으로 이동
+    }
+
+    // 개별 삭제
+    @PostMapping("/delete/{residNo}/room")
+    public ResponseEntity<String> deleteSelectedRooms(@RequestBody Map<String, List<Long>> requestData) {
+        List<Long> roomNos = requestData.get("roomNos");
+        if (roomNos == null || roomNos.isEmpty()) {
+            return ResponseEntity.badRequest().body("삭제할 방을 선택하세요.");
+        }
+
+        for (Long roomNo : roomNos) {
+            residenceRoomService.deleteRoom(roomNo);
+        }
+        return ResponseEntity.ok("선택한 방 삭제 완료");
     }
 
 

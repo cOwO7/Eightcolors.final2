@@ -42,6 +42,13 @@
         SELECT * FROM residence_rooms WHERE resid_no = #{residNo}
     </select>
 
+    <select id="getRoomImageByRoomNo" parameterType="long" resultType="java.lang.String">
+        SELECT room_url01
+        FROM residence_rooms
+        WHERE room_no = #{roomNo}
+    </select>
+
+
     <!-- 방 등록 -->
     <insert id="insertRoom" parameterType="com.springbootfinal.app.domain.residence.ResidenceRoom" useGeneratedKeys="true" keyProperty="roomNo">
         INSERT INTO residence_rooms (resid_no, room_name, price_per_night, room_url01)
