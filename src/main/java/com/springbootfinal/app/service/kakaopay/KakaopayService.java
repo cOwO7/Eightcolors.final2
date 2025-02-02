@@ -43,12 +43,13 @@ public class KakaopayService {
 
     @Value("${sample.host}")
     private String sampleHost;
-
+    private Long transferNo;
     private String tid;
     private String partnerUserId;
     private String partnerOrderId;
 
-    public ReadyResponse ready(String agent, String openType, long transferNo) {
+    public ReadyResponse ready(String agent, String openType, long transferNo, String userNo) {
+        this.transferNo = transferNo;
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "DEV_SECRET_KEY " + kakaopaySecretKey);
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -57,7 +58,7 @@ public class KakaopayService {
         ReadyRequest readyRequest = ReadyRequest.builder()
                 .cid(cid)
                 .partnerOrderId("1")
-                .partnerUserId("1")
+                .partnerUserId(userNo)
                 .itemName(transfer.getReservationResidName())
                 .quantity(1)
                 .totalAmount(transfer.getTransferPrice().intValue())
@@ -82,7 +83,7 @@ public class KakaopayService {
         return readyResponse;
     }
 
-    public String approve(String pgToken) {
+    public String approve(String pgToken, Long userNo) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "SECRET_KEY " + kakaopaySecretKey);
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -94,27 +95,28 @@ public class KakaopayService {
                 .partnerUserId(partnerUserId)
                 .pgToken(pgToken)
                 .build();
-
-        Reservations param = new Reservations();
-        param.setReservation_no(1L);
-        param.setUser_no(Long.parseLong(approveRequest.getPartnerUserId()));
-        reservationsMapper.putReservations(param);
-
         HttpEntity<ApproveRequest> entityMap = new HttpEntity<>(approveRequest, headers);
-        log.warn(entityMap.getBody().getTid());
-        log.warn(entityMap.getBody().getPgToken());
         try {
             ResponseEntity<String> response = new RestTemplate().postForEntity(
                     "https://open-api.kakaopay.com/online/v1/payment/approve",
                     entityMap,
                     String.class);
-
-            // 결제 승인 후 양도 상태를 "양도 완료"로 업데이트
-            updateTransferStatus(approveRequest.getPartnerOrderId(), "양도 완료");
-
+//            // 결제 승인 후 양도 상태를 "양도 완료"로 업데이트
+//            updateTransferStatus(approveRequest.getPartnerOrderId(), "양도 완료");
             return response.getBody();
         } catch (Exception e) {
             throw new RuntimeException("API 호출 실패: " + e.getMessage(), e);
+        } finally {
+            TransferDto transfer = transferMapper.transferRead(this.transferNo, false);
+            Reservations param = new Reservations();
+            param.setReservationNo(transfer.getReservationNo());
+            param.setUserNo(userNo);
+            reservationsMapper.putReservations(param);
+
+            TransferDto transParam = new TransferDto();
+            transParam.setTransferNo(transfer.getTransferNo());
+            transParam.setBuyerUserNo(userNo);
+            transferMapper.putTransfer(transParam);
         }
     }
 

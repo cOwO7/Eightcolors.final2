@@ -30,10 +30,10 @@ public interface ReservationMapper {
     //예약하는 사용자 정보 조회
     ReservationUserDTO getReservationUserByUserNo(@Param("userNo") Long userNo);
 
-    public List<Reservations> getReservations(Reservations param);
-    public void newReservations(Reservations param);
-    public void putReservations(Reservations param);
-    public void delReservations(Reservations param);
+    List<Reservations> getReservations(Reservations param);
+    void newReservations(Reservations param);
+    void putReservations(Reservations param);
+    void delReservations(Reservations param);
 
 
     Reservation selectReservationByTransactionId(@Param("transactionId") String transactionId);

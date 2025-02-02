@@ -29,7 +29,11 @@
             <img src="/images/kakaopay.jpg" alt="Kakaopay Logo" class="mb-3" style="width: 150px;">
             <h2 class="card-title">결제 승인 완료</h2>
             <p class="card-text">카카오페이 결제가 성공적으로 처리되었습니다.</p>
-            <p class="fw-bold" th:text="${response}"></p>
+            <p><strong>숙소명:</strong> <span th:text="${transfer.reservationResidName}"></span></p>
+            <p><strong>호수:</strong> <span th:text="${transfer.roomNo}"></span></p>
+            <p><strong>체크인 날짜:</strong> <span th:text="${transfer.checkInDate}"></span></p>
+            <p><strong>체크아웃 날짜:</strong> <span th:text="${transfer.checkOutDate}"></span></p>
+            <p><strong>양도 가격:</strong> <span th:text="${transfer.formattedTransferPrice}"></span></p>
             <a href="/transfers" target="_parent" class="btn kakaopay-btn w-100">확인</a>
         </div>
     </div>

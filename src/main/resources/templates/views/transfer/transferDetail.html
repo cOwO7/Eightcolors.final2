@@ -71,15 +71,20 @@
                     <div>
                         <a href="javascript:history.back()" class="btn btn-outline-primary">목록으로</a>
                     </div>
-                    <div class="btn-group btn-group-custom">
-                        <form action="updateForm" method="post" style="display: inline;">
+                    <th:block th:if="${transfer.sellerUserNo == userNo}">
+                        <form action="updateForm" method="post">
                             <input type="hidden" name="transferNo" th:value="${transfer.transferNo}" />
-                            <button type="submit" class="btn btn-warning">수정하기</button>
+                            <input type="hidden" name="pageCount" th:value="${pageCount}" />
+                            <input type="hidden" name="search" th:value="${search}" />
+                            <input type="hidden" name="keyword" th:value="${keyword}" />
+                            <input type="submit" id="detailUpdate" value="수정하기" class="btn btn-warning"/>
                         </form>
-                        <form id="deleteForm" action="delete" method="post" style="display: inline;">
+                        <form id="deleteForm" action="delete" method="post">
                             <input type="hidden" name="transferNo" th:value="${transfer.transferNo}" />
-                            <button class="btn btn-danger" type="submit">삭제하기</button>
+                            <input type="hidden" name="pageCount" th:value="${pageCount}" />
+                            <input class="btn btn-danger" type="submit" id="detailDelete" value="삭제하기" />
                         </form>
+                    </th:block>
                         <form id="paymentFormLayer" action="/ready/pc/layer" method="get" style="display: inline;">
                             <input type="hidden" name="transferNo" th:value="${transfer.transferNo}" />
                             <button type="button" class="btn btn-success p-0 border-0"

@@ -136,4 +136,10 @@
         WHERE t.transfer_no = #{transferNo}
     </select>
 
+    <update id="putTransfer" parameterType="com.springbootfinal.app.domain.transfer.TransferDto">
+        UPDATE transfers
+        SET buyer_user_no = ${buyerUserNo},
+            status = '양도완료'
+        WHERE transfer_no = #{transferNo}
+    </update>
 </mapper>

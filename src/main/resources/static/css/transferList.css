@@ -5,7 +5,6 @@
     margin: 0 auto; /* 가운데 정렬 */
 }
 .status-available {
-    background-color: #EAEAEA; /* 양도가능 배경 */
     font-weight: bold;
 }
 .status-completed {

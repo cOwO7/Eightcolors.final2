@@ -22,6 +22,8 @@ public interface TransferMapper {
 
     public void deleteTransfer(Long transferNo);
 
+    public void putTransfer(TransferDto transferDto);
+
     // 게시글을 수정하는 메서드
     public void updateBoard(TransferDto transferDto);
 
@@ -40,4 +42,5 @@ public interface TransferMapper {
 
     // 전체 게시글 리스트를 반환하는 메서드
     List<TransferDto> transferList();
+
 }

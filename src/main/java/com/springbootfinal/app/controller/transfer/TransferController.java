@@ -3,6 +3,7 @@ package com.springbootfinal.app.controller.transfer;
 import com.springbootfinal.app.domain.reservations.Reservations;
 import com.springbootfinal.app.domain.transfer.TransferDto;
 import com.springbootfinal.app.mapper.ReservationMapper;
+import com.springbootfinal.app.mapper.residence.ResidenceRoomMapper;
 import com.springbootfinal.app.service.transfer.TransferService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -35,6 +37,12 @@ public class TransferController {
 
     @Autowired
     private ReservationMapper reservationMapper;
+
+    @Autowired
+    private ResidenceRoomMapper roomMapper;
+
+    @Autowired
+    private ReservationMapper resvMapper;
 
 
     @PostMapping("/delete")
@@ -124,9 +132,9 @@ public class TransferController {
         Reservations reservation = transferService.getReservationByUserNo((Long)httpSession.getAttribute("userNo"));
         log.info("Reservation details: {}", reservation);
 
-        log.info("transferAdd" + reservation.getReservation_no());
+        log.info("들어온건가"+reservation.getReservationNo());
         transfer.setSellerUserNo((Long)httpSession.getAttribute("userNo"));
-        transfer.setReservationNo(reservation.getReservation_no());
+        transfer.setReservationNo(reservation.getReservationNo());
         transferService.addTransfer(transfer);
         return "redirect:/transfers";
     }
@@ -142,11 +150,20 @@ public class TransferController {
     public String getTransferDetail(Model model, @RequestParam("transferNo") long transferNo,
                                     @RequestParam(value = "pageCount", defaultValue = "1") int pageCount,
                                     @RequestParam(value = "type", defaultValue = "") String type,
-                                    @RequestParam(value = "keyword", defaultValue = "") String keyword) {
-
+                                    @RequestParam(value = "keyword", defaultValue = "") String keyword,
+                                    HttpSession session
+    ) {
         boolean searchOption = !(type.isEmpty() || keyword.isEmpty());
-
         TransferDto transfer = transferService.getTransfer(transferNo,true);
+        log.warn(session.getAttribute("userNo").toString());
+        Reservations resvParam = new Reservations();
+        resvParam.setReservationNo(transfer.getReservationNo());
+        List<Reservations> resvRs = resvMapper.getReservations(resvParam);
+        log.warn("resvNo : " + transfer.getReservationNo());
+        log.warn("resvations : " + resvRs.get(0).toString());
+        transfer.setRoomNo(resvRs.get(0).getRoomNo().toString());
+
+        model.addAttribute("userNo", session.getAttribute("userNo"));
         model.addAttribute("transfer", transfer);
         model.addAttribute("pageCount", pageCount);
         model.addAttribute("searchOption", searchOption);
