@@ -34,24 +34,6 @@ public class ResidenceRoomService {
         this.propertyPhotosService = propertyPhotosService;
     }
 
-    /*// 방 등록
-    public void createResidenceRoom (ResidenceRoom residenceRoom) {
-
-        residenceRoomMapper.insertRoom(residenceRoom);
-        //Long residNo = residence.getResidNo();
-
-    }
-
-    // 방 수정
-    public void updateRoom(ResidenceRoom residenceRoom, Long residNo, Long roomNo) {
-        // residNo와 roomNo를 기준으로 방을 업데이트
-        residenceRoom.setResidNo(residNo);  // 숙소 번호
-        residenceRoom.setRoomNo(roomNo);    // 방 번호
-
-        // 방을 업데이트하는 Mapper 호출
-        residenceRoomMapper.updateRoom(residenceRoom);
-    }*/
-
     // 방 등록
     @Transactional
     public void createResidenceRoom(ResidenceRoom residenceRoom, MultipartFile roomImage) throws IOException {
@@ -75,8 +57,6 @@ public class ResidenceRoomService {
 
         log.info("방 정보에 설정된 roomUrl01: {}", residenceRoom.getRoomUrl01());
     }
-
-
 
     // 방 수정
     public void updateRoom(ResidenceRoom residenceRoom, Long residNo, Long roomNo, MultipartFile roomImage) throws IOException {
@@ -109,15 +89,43 @@ public class ResidenceRoomService {
         residenceRoomMapper.updateRoom(residenceRoom);
     }
 
-
-    // 방 삭제
-    public void deleteRoom (Long residNo) {
-        deleteRoomPhoto(residNo);
-        residenceRoomMapper.deleteRoom(residNo);
-    }
-
     public List<ResidenceRoom> getRoomsByResidenceId(Long residNo) {
         return residenceRoomMapper.getRoomsByResidenceId(residNo);
+    }
+
+    // 개별 방 삭제
+    public void deleteRoom(Long roomNo) {
+        deleteRoomPhoto(roomNo);
+        residenceRoomMapper.deleteRoom(roomNo);
+    }
+
+    // 여러 개의 방 삭제
+    public void deleteRooms(List<Long> roomNos) {
+        if (roomNos != null && !roomNos.isEmpty()) {
+            for (Long roomNo : roomNos) {
+                deleteRoom(roomNo); // 기존 개별 삭제 로직 호출
+            }
+        }
+    }
+
+    // 방 사진 삭제
+    public void deleteRoomPhoto(Long roomNo) {
+        String existingPhoto = residenceRoomMapper.getRoomImageByRoomNo(roomNo);
+        if (existingPhoto != null) {
+            Path filePath = Paths.get(UPLOAD_DIR).resolve(existingPhoto);
+            try {
+                Files.deleteIfExists(filePath);
+                log.info("방 사진 삭제 완료: {}", existingPhoto);
+            } catch (IOException e) {
+                log.error("방 사진 삭제 실패: {}", existingPhoto, e);
+            }
+        }
+
+        // DB에서 이미지 정보 제거
+        ResidenceRoom room = new ResidenceRoom();
+        room.setRoomNo(roomNo);
+        room.setRoomUrl01(null);
+        residenceRoomMapper.updateRoom(room);
     }
 
     // 방 사진 관리
@@ -140,26 +148,6 @@ public class ResidenceRoomService {
         residenceRoomMapper.updateRoom(room);
 
         return fileName;
-    }
-
-    // 방 사진 삭제 및 DB 업데이트
-    public void deleteRoomPhoto(Long roomNo) {
-        String existingPhoto = residenceRoomMapper.getRoomImageByRoomNo(roomNo);
-        if (existingPhoto != null) {
-            Path filePath = Paths.get(UPLOAD_DIR).resolve(existingPhoto);
-            try {
-                Files.deleteIfExists(filePath);
-                log.info("방 사진 삭제 완료: {}", existingPhoto);
-            } catch (IOException e) {
-                log.error("방 사진 삭제 실패: {}", existingPhoto, e);
-            }
-        }
-
-        // DB에서 이미지 정보 제거 (updateRoom 활용)
-        ResidenceRoom room = new ResidenceRoom();
-        room.setRoomNo(roomNo);
-        room.setRoomUrl01(null);
-        residenceRoomMapper.updateRoom(room);
     }
 
     // 사진 유효성 검사

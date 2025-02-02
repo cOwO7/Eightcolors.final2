@@ -21,4 +21,6 @@ public interface ResidenceRoomMapper {
     // 방 삭제
     void deleteRoom(Long roomNo);
 
+    // 방 삭제(여러개)
+    void deleteRooms(@Param("roomNos") List<Long> roomNos);
 }

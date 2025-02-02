@@ -84,9 +84,6 @@
                 <td th:text="${residence.residType}"></td>
                 <td th:text="${#dates.format(residence.residDate, 'yyyy-MM-dd')}"></td>
                 <td>
-                    <!--<a th:href="@{/room/{id}(id=${residence.residNo})/addRoom}" class="btn btn-primary">방 추가</a>
-                    <a th:href="@{/edit/{id}(id=${residence.residNo})/room}" class="btn btn-warning">방 수정</a>
-                    <form th:action="@{/delete/{residNo}(residNo=${residence.residNo})/room}" method="post" style="display:inline-block;">-->
                     <!-- 방 추가 -->
                     <a th:href="@{/room/{id}/addRoom(id=${residence.residNo})}" class="btn btn-primary">방 추가</a>
 
@@ -94,11 +91,7 @@
                     <a th:href="@{/update/{id}/room(id=${residence.residNo})}" class="btn btn-warning">방 수정</a>
 
                     <!-- 방 삭제 -->
-                    <form th:action="@{/delete/{id}/room(id=${residence.residNo})}" method="post" style="display:inline-block;">
-                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('정말 삭제하시겠습니까?');">
-                            방 삭제
-                        </button>
-                    </form>
+                    <a th:href="@{/delete/{id}/rooms(id=${residence.residNo})}" class="btn btn-danger">방 삭제</a>
                 </td>
                 <td>
                     <a th:href="@{/update/{id}(id=${residence.residNo})}" class="btn btn-warning btn-sm">수정</a>

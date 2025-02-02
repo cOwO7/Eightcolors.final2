@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 import java.io.File;
@@ -326,20 +327,31 @@ public class ResidenceController {
         return "redirect:/list"; // 업데이트 완료 후 목록으로 이동
     }
 
+    // 방 삭제
+    @GetMapping("/delete/{residNo}/rooms")
+    public String showDeleteRoomForm(@PathVariable Long residNo, Model model) {
+        List<ResidenceRoom> rooms = residenceRoomService.getRoomsByResidenceId(residNo);
+        model.addAttribute("rooms", rooms);
+        model.addAttribute("residNo", residNo);
+        return "views/residence/ResidenceRoomDelete"; // 삭제 폼 뷰 이름
+    }
 
     // 개별 삭제
     @PostMapping("/delete/{residNo}/room")
-    public ResponseEntity<String> deleteSelectedRooms(@RequestBody Map<String, List<Long>> requestData) {
-        List<Long> roomNos = requestData.get("roomNos");
+    public String deleteSelectedRooms(@PathVariable Long residNo,
+                                      @RequestParam(required = false) List<Long> roomNos,
+                                      RedirectAttributes redirectAttributes) {
         if (roomNos == null || roomNos.isEmpty()) {
-            return ResponseEntity.badRequest().body("삭제할 방을 선택하세요.");
+            redirectAttributes.addFlashAttribute("message", "삭제할 방을 선택하세요.");
+            return "redirect:/delete/" + residNo + "/rooms"; // 다시 삭제 폼으로 이동
         }
 
-        for (Long roomNo : roomNos) {
-            residenceRoomService.deleteRoom(roomNo);
-        }
-        return ResponseEntity.ok("선택한 방 삭제 완료");
+        residenceRoomService.deleteRooms(roomNos); // 여러 개 삭제 실행
+
+        redirectAttributes.addFlashAttribute("message", "선택한 방이 삭제되었습니다.");
+        return "redirect:/delete/" + residNo + "/rooms"; // 삭제 후 리다이렉트
     }
+
 
 
     // 날씨 데이터
