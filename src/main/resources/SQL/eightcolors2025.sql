@@ -59,6 +59,7 @@ CREATE TABLE IF NOT EXISTS users (
                                      role VARCHAR(50) DEFAULT 'ROLE_USER'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+
 -- 4. 숙소 테이블
 CREATE TABLE IF NOT EXISTS residence (
                                          resid_no BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -103,16 +104,6 @@ CREATE TABLE IF NOT EXISTS reservations (
                                             FOREIGN KEY (room_no) REFERENCES residence_rooms(room_no) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- 7. 댓글 테이블
-CREATE TABLE IF NOT EXISTS reviews (
-                                       review_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                       resid_no BIGINT,
-                                       user_id BIGINT,
-                                       comment TEXT,
-                                       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                       FOREIGN KEY (resid_no) REFERENCES residence(resid_no),
-                                       FOREIGN KEY (user_id) REFERENCES users(user_no)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- 8. 고객센터 테이블
 CREATE TABLE IF NOT EXISTS inquiries (
@@ -215,6 +206,7 @@ FROM reservations r
 ORDER BY r.created_at DESC
 LIMIT 5;
 
+
 -- 1. 관리자 계정 데이터 삽입
 INSERT INTO admin_users (admin_id, admin_passwd, admin_name, role)
 VALUES ('admin01', 'adminpass123', '관리자1', 'ROLE_ADMIN'),
@@ -254,12 +246,6 @@ INSERT INTO reservations (user_no, room_no, checkin_date, checkout_date, total_p
 VALUES
     (1, 1, '2025-02-01', '2025-02-03', 100000, 95000, 'txn12345', '완료', '예약 완료'),
     (2, 3, '2025-02-05', '2025-02-07', 300000, 290000, 'txn67890', '완료', '예약 완료');
-
--- 7. 리뷰 데이터 삽입
-INSERT INTO reviews (resid_no, user_id, comment)
-VALUES
-    (1, 1, '편안하고 좋았어요! 다시 올게요.'),
-    (2, 2, '서비스가 최고였습니다. 다시 방문하고 싶어요.');
 
 -- 8. 고객센터 문의 데이터 삽입
 INSERT INTO inquiries (user_no, title, content)
