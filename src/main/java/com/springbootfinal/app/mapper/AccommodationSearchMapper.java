@@ -14,4 +14,6 @@ public interface AccommodationSearchMapper {
 		        @Param("checkinDate") String checkinDate, 
 		        @Param("checkoutDate") String checkoutDate
 		    );
+	   
+	   List<ResidenceSearch> findAllResidences();
 }

@@ -17,4 +17,8 @@ public class AccommodationSearchService {
     public List<ResidenceSearch> getAvailableResidences(String checkinDate, String checkoutDate) {
         return accommodationSearchMapper.findAvailableResidences(checkinDate, checkoutDate);
     }
+    
+    public List<ResidenceSearch> getAllResidences() {
+        return accommodationSearchMapper.findAllResidences();
+    }
 }

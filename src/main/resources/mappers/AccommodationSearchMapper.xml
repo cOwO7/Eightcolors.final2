@@ -37,6 +37,21 @@
 	GROUP BY r.resid_no, pp.thumbnailUrls;
 
     </select>
+    
+    <select id="findAllResidences" resultType="com.springbootfinal.app.domain.ResidenceSearch">
+    SELECT 
+        r.resid_no, 
+        r.resid_name, 
+        r.resid_address, 
+        r.resid_type, 
+        MIN(rr.price_per_night) AS min_price, 
+        pp.thumbnailUrls 
+    FROM residence r
+    LEFT JOIN residence_rooms rr ON r.resid_no = rr.resid_no
+    LEFT JOIN property_photos pp ON r.resid_no = pp.resid_no
+    GROUP BY r.resid_no, r.resid_name, r.resid_address, r.resid_type, pp.thumbnailUrls;
+</select>
+    
 
 
 

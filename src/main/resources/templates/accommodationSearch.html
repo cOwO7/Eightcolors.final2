@@ -25,10 +25,25 @@
             overflow: hidden;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease;
-            height: 320px;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: inherit;
+            height: 100%;
         }
         .accommodation-item:hover {
             transform: translateY(-10px);
+        }
+        .card-img-top {
+            width: 100%;
+            height: 200px; /* 고정 높이 설정 */
+            object-fit: cover; /* 이미지가 카드 크기에 맞게 조정됨 */
+        }
+        .card-body {
+            flex-grow: 1; /* 카드 본문이 남은 공간을 채우도록 설정 */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         .no-results {
             text-align: center;
@@ -59,27 +74,28 @@
             </div>
         </div>
 
+        <!-- 검색 결과 리스트 -->
         <div id="accommodationList" class="row g-4" th:if="${results != null and results.size() > 0}">
             <div class="col-lg-3 col-md-4 col-sm-6" th:each="residence : ${results}">
-                <div class="accommodation-item card">
-                    <!-- 이미지 URL과 이름을 domain에 맞게 변경 -->
-                    <!-- <img th:src="${residence.residImageUrl}" class="card-img-top" th:alt="${residence.residName}"> -->
-                   <img th:src="@{|/images/files/${residence.thumbnailUrls}|}"
-                             alt="숙소 사진" class="img-fluid"/> 
+                <!-- 카드 전체를 클릭 가능하도록 a 태그로 감싸기 -->
+                <a th:href="@{|/accommodation/${residence.residNo}|}" class="accommodation-item card">
+                    <img th:src="@{|/images/files/${residence.thumbnailUrls}|}" alt="숙소 사진" class="card-img-top"/>
                     <div class="card-body">
                         <h5 class="card-title" th:text="${residence.residName}"></h5>
-                        <!-- 숙박지 설명을 추가할 경우, 관련 필드를 업데이트 -->
                         <p class="card-text" th:text="${residence.residAddress}"></p>
                         <div class="price">가격: <span th:text="'₩' + ${residence.minPrice}"></span></div>
-                        <button class="btn btn-primary">예약하기</button>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
 
-        <div id="noResults" class="no-results" th:if="${results == null or results.size() == 0}">검색 결과가 없습니다.</div>
+        <!-- 검색 결과 없음 메시지 -->
+        <div id="noResults" class="no-results" th:if="${results == null or results.size() == 0}">
+            검색 결과가 없습니다.
+        </div>
     </div>
 
+    <!-- JS 라이브러리 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
