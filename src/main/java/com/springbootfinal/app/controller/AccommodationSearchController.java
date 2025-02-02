@@ -1,8 +1,10 @@
 package com.springbootfinal.app.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,15 +34,18 @@ public class AccommodationSearchController {
     
     @GetMapping("/search")
     public String searchResidences(
-        @RequestParam(name = "checkinDate") String checkinDate, 
-        @RequestParam(name = "checkoutDate") String checkoutDate,
+    		 @RequestParam(name = "searchKeyword", required = false) String searchKeyword,
+    		@RequestParam(name = "checkinDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate checkinDate, 
+    	    @RequestParam(name = "checkoutDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate checkoutDate, 
         RedirectAttributes redirectAttributes
     ) {
-        List<ResidenceSearch> results = accommodationSearchService.getAvailableResidences(checkinDate, checkoutDate);
+        List<ResidenceSearch> results = accommodationSearchService.getAvailableResidences(searchKeyword,checkinDate, checkoutDate);
         
         redirectAttributes.addFlashAttribute("results", results);
         redirectAttributes.addFlashAttribute("checkinDate", checkinDate);
         redirectAttributes.addFlashAttribute("checkoutDate", checkoutDate);
+        redirectAttributes.addFlashAttribute("searchKeyword", searchKeyword);
+
 
         return "redirect:/accomSearch";
     }
