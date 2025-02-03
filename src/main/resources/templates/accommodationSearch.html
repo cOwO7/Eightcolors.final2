@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layouts/main_layout}">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,24 +27,29 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease;
             display: flex;
-            flex-direction: column;
+            flex-direction: row; /* Flexbox로 이미지와 텍스트 배치 */
             text-decoration: none;
             color: inherit;
-            height: 100%;
+            height: 250px;
+            max-height: 250px;
+            flex-shrink: 0;
+            margin-bottom: 20px;
         }
         .accommodation-item:hover {
             transform: translateY(-10px);
         }
         .card-img-top {
-            width: 100%;
-            height: 200px; /* 고정 높이 설정 */
-            object-fit: cover; /* 이미지가 카드 크기에 맞게 조정됨 */
+            width: 300px; /* 이미지 크기 300px로 설정 */
+            height: 100%;
+            object-fit: cover;
         }
         .card-body {
-            flex-grow: 1; /* 카드 본문이 남은 공간을 채우도록 설정 */
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: flex-start; /* 텍스트 정렬을 위쪽으로 설정 */
+            padding-left: 20px;
+            padding-top: 10px;
         }
         .no-results {
             text-align: center;
@@ -54,9 +60,52 @@
         .price {
             font-size: 1.1rem;
             font-weight: bold;
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+        }
+        .address {
+            font-size: 0.9rem;
+            color: #777;
+            margin-top: 3px; /* 주소와 숙소 이름 간의 간격을 더 좁혔습니다. */
+        }
+        .range-wrapper {
+            margin-bottom: 20px;
+        }
+        .slider-wrapper {
+            display: flex;
+            justify-content: space-between;
+        }
+        .form-select {
+            margin-bottom: 20px;
+        }
+        .accommodation-filters {
+            margin-bottom: 20px;
+        }
+        .filter-divider {
+            border-left: 2px solid #ddd;
+            padding-left: 20px;
+            height: 100%;
+            margin-left: 20px;
+        }
+        .form-check-label {
+            margin-left: 10px;
+        }
+        .filter-container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .price-range-wrapper {
+            margin-bottom: 20px;
+        }
+        .price-range-wrapper .price-range-header {
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
         }
     </style>
 </head>
+
 <body>
 <th:block layout:fragment="content">
     <div class="container">
@@ -68,82 +117,131 @@
                 <form id="searchForm" action="/search" method="get">
                     <div class="search-container d-flex gap-2">
                         <input type="text" name="searchKeyword" id="searchKeyword" class="form-control" placeholder="숙소명 또는 지역" required th:value="${searchKeyword}">
-                        
                         <!-- 체크인 날짜 필드 (오늘 이후 날짜만 선택 가능) -->
-                        <input type="date" name="checkinDate" id="checkinDate" class="form-control" placeholder="체크인 날짜" required th:value="${checkinDate}" 
-                               min="{{ today() }}" onchange="updateCheckoutMinDate()" />
-                        
+                        <input type="date" name="checkinDate" id="checkinDate" class="form-control" placeholder="체크인 날짜" required th:value="${checkinDate}" min="{{ today() }}" onchange="updateCheckoutMinDate()" />
                         <!-- 체크아웃 날짜 필드 (체크인 날짜 이후 날짜만 선택 가능) -->
-                        <input type="date" name="checkoutDate" id="checkoutDate" class="form-control" placeholder="체크아웃 날짜" required th:value="${checkoutDate}" 
-                               min="{{ today() }}" />
-                        
+                        <input type="date" name="checkoutDate" id="checkoutDate" class="form-control" placeholder="체크아웃 날짜" required th:value="${checkoutDate}" min="{{ today() }}" />
                         <button type="submit" class="btn btn-primary">검색</button>
                     </div>
                 </form>
             </div>
         </div>
 
-        <!-- 검색 결과 리스트 -->
-        <div id="accommodationList" class="row g-4" th:if="${results != null and results.size() > 0}">
-            <div class="col-lg-3 col-md-4 col-sm-6" th:each="residence : ${results}">
-                <!-- 카드 전체를 클릭 가능하도록 a 태그로 감싸기 -->
-                <a th:href="@{|/accommodation/${residence.residNo}|}" class="accommodation-item card">
-                    <img th:src="@{|/images/files/${residence.thumbnailUrls}|}" alt="숙소 사진" class="card-img-top"/>
-                    <div class="card-body">
-                        <h5 class="card-title" th:text="${residence.residName}"></h5>
-                        <p class="card-text" th:text="${residence.residAddress}"></p>
-                        <div class="price">가격: <span th:text="'₩' + ${residence.minPrice}"></span></div>
+        <div class="row justify-content-center">
+            <div class="col-md-3">
+                <!-- 필터 -->
+                <div class="accommodation-filters">
+                    <h5>숙소 타입</h5>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="resort" id="resort" name="accommodationType" onchange="filterAccommodationTypes()">
+                        <label class="form-check-label" for="resort">
+                            리조트
+                        </label>
                     </div>
-                </a>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="hotel" id="hotel" name="accommodationType" onchange="filterAccommodationTypes()">
+                        <label class="form-check-label" for="hotel">
+                            호텔
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="pension" id="pension" name="accommodationType" onchange="filterAccommodationTypes()">
+                        <label class="form-check-label" for="pension">
+                            펜션
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="motel" id="motel" name="accommodationType" onchange="filterAccommodationTypes()">
+                        <label class="form-check-label" for="motel">
+                            모텔
+                        </label>
+                    </div>
+                    <!-- 금액 범위 필터 -->
+                    <div class="price-range-wrapper">
+                        <div class="price-range-header">금액 범위</div>
+                        <div class="slider-wrapper">
+                            <input type="range" class="form-range" id="priceRange" name="priceRange" min="0" max="1000000" step="10000" value="1000000">
+                        </div>
+                        <div>
+                            ₩0 ~ <span id="priceRangeValue">1000000</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <!-- 검색 결과 없음 메시지 -->
-        <div id="noResults" class="no-results" th:if="${results == null or results.size() == 0}">
-            검색 결과가 없습니다.
+            <div class="col-md-1">
+                <div class="filter-divider"></div>
+            </div>
+
+            <div class="col-md-8">
+                <div id="accommodationList" class="row g-4" th:if="${results != null and results.size() > 0}">
+                    <div class="col-lg-12" th:each="residence : ${results}">
+                        <a th:href="@{|/accommodation/${residence.residNo}|}" class="accommodation-item card" th:data-type="${residence.residType}">
+                            <img th:src="@{|/images/files/${residence.thumbnailUrls}|}" alt="숙소 사진" class="card-img-top"/>
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${residence.residName}"></h5>
+                                <!-- 주소는 숙소명 바로 아래로 위치 -->
+                                <p class="address" th:text="${residence.residAddress}"></p>
+                                <!-- 가격은 오른쪽 하단에 배치 -->
+                                <div class="price">가격: <span th:text="'₩' + ${residence.minPrice}"></span></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div id="noResults" class="no-results" th:if="${results == null or results.size() == 0}">
+                    검색 결과가 없습니다.
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- JS 라이브러리 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script>
-        // 오늘 날짜를 반환하는 함수
-        function today() {
-            const today = new Date();
-            const dd = String(today.getDate()).padStart(2, '0');
-            const mm = String(today.getMonth() + 1).padStart(2, '0'); // 1월은 0이므로 +1
-            const yyyy = today.getFullYear();
-            return yyyy + '-' + mm + '-' + dd; // "yyyy-mm-dd" 형식
+        function filterAccommodationTypes() {
+            const selectedTypes = [];
+            document.querySelectorAll('input[name="accommodationType"]:checked').forEach(checkbox => {
+                selectedTypes.push(checkbox.value);
+            });
+
+            const accommodationItems = document.querySelectorAll('.accommodation-item');
+            accommodationItems.forEach(item => {
+                const itemType = item.getAttribute('data-type');
+                if (selectedTypes.length === 0 || selectedTypes.includes(itemType)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none'; // hide unchecked types
+                }
+            });
         }
 
-        // 체크인 날짜가 변경되면 체크아웃 날짜의 최소값을 업데이트하는 함수
         function updateCheckoutMinDate() {
             const checkinDate = document.getElementById('checkinDate').value;
             const checkoutDate = document.getElementById('checkoutDate');
             if (checkinDate) {
-                const checkinDateObj = new Date(checkinDate);
-                checkinDateObj.setDate(checkinDateObj.getDate() + 1); // 체크인 날짜의 다음 날로 설정
-                const day = String(checkinDateObj.getDate()).padStart(2, '0');
-                const month = String(checkinDateObj.getMonth() + 1).padStart(2, '0');
-                const year = checkinDateObj.getFullYear();
-                const nextDay = `${year}-${month}-${day}`;
-                checkoutDate.min = nextDay; // 체크인 날짜의 다음 날만 선택 가능하도록 설정
+                const minCheckoutDate = new Date(checkinDate);
+                minCheckoutDate.setDate(minCheckoutDate.getDate() + 1); // 체크인 날짜 이후로 설정
+                checkoutDate.setAttribute('min', minCheckoutDate.toISOString().split('T')[0]);
             }
         }
 
-        // 페이지 로드 시 초기화
-        document.addEventListener("DOMContentLoaded", function () {
-            // 기본적으로 오늘 날짜를 체크인 날짜와 체크아웃 날짜의 최소값으로 설정
-            const todayDate = today();
-            document.getElementById('checkinDate').setAttribute('min', todayDate);
-            document.getElementById('checkoutDate').setAttribute('min', todayDate);
-            
-            // 체크인 날짜에 이벤트 리스너 추가
-            document.getElementById('checkinDate').addEventListener('change', updateCheckoutMinDate);
+        $(document).ready(function() {
+            $('#priceRange').on('input', function() {
+                $('#priceRangeValue').text($(this).val());
+            });
+
+            // 오늘 날짜를 기본으로 설정
+            const today = new Date().toISOString().split('T')[0];
+            $('#checkinDate').attr('min', today);
+            $('#checkoutDate').attr('min', today);
+        });
+
+        // 가격 범위 실시간 표시
+        document.getElementById("priceRange").addEventListener("input", function() {
+            document.getElementById("priceRangeValue").textContent = this.value;
         });
     </script>
 </th:block>
 </body>
+
 </html>

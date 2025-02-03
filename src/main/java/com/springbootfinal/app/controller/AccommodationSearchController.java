@@ -49,6 +49,10 @@ public class AccommodationSearchController {
 
         return "redirect:/accomSearch";
     }
+    @GetMapping("/test")
+    public String test(){
+        return "test";
+    }
 
 
 
