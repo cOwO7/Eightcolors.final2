@@ -11,6 +11,9 @@ import java.util.List;
 @Mapper
 public interface TransferMapper {
 
+    @Select("SELECT COUNT(*) FROM transfers WHERE reservation_no = #{reservationNo}")
+    int countByReservationNo(Long reservationNo);
+
     // 게시글 번호에 해당하는 게시글을 읽어오는 메서드
     @Select("SELECT * FROM transfers WHERE partner_order_id = #{partnerOrderId}")
     TransferDto findByPartnerOrderId(@Param("partnerOrderId") String partnerOrderId);

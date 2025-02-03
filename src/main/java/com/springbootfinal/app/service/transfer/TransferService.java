@@ -21,6 +21,11 @@ public class TransferService {
     @Autowired
     private ReservationMapper reservationMapper;
 
+    // TransferService.java
+    public boolean isTransferExistsByReservationNo(Long reservationNo) {
+        return transferMapper.countByReservationNo(reservationNo) > 0;
+    }
+
     // 게시글 번호에 해당하는 게시글을 읽어오는 메서드
     public void updateTransferStatus(String partnerOrderId, String status) {
         TransferDto transfer = transferMapper.findByPartnerOrderId(partnerOrderId);
