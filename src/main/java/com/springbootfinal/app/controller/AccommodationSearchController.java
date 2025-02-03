@@ -2,6 +2,7 @@ package com.springbootfinal.app.controller;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -21,13 +22,14 @@ public class AccommodationSearchController {
 	private AccommodationSearchService accommodationSearchService;
 
     @GetMapping("/accomSearch")
-    public String accomSearch(Model model){
-    	  List<ResidenceSearch> residences = (List<ResidenceSearch>) model.asMap().get("results");
-    	    
+    public String accomSearch(Model model,@RequestParam(value="pageNum", required=false,
+    		defaultValue="1") int pageNum){
+    	   Map<String, Object> modelMap = (Map<String, Object>) model.asMap().get("modelMap");
+    	
     	    // "results"가 없으면 기본적으로 모든 숙소를 가져옵니다.
-    	    if (residences == null) {
-    	        residences = accommodationSearchService.getAllResidences();
-    	        model.addAttribute("results",residences);
+    	    if (modelMap == null) {
+    	    	 modelMap = accommodationSearchService.getAllResidences(pageNum);
+    	    	  model.addAllAttributes(modelMap);
     	    }
         return "accommodationSearch";
     }
@@ -37,11 +39,14 @@ public class AccommodationSearchController {
     		 @RequestParam(name = "searchKeyword", required = false) String searchKeyword,
     		@RequestParam(name = "checkinDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate checkinDate, 
     	    @RequestParam(name = "checkoutDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate checkoutDate, 
+    	    Model model,@RequestParam(value="pageNum", required=false,
+    		defaultValue="1") int pageNum,
+    	  
         RedirectAttributes redirectAttributes
     ) {
-        List<ResidenceSearch> results = accommodationSearchService.getAvailableResidences(searchKeyword,checkinDate, checkoutDate);
+    	Map<String, Object> modelMap = accommodationSearchService.getAvailableResidences(searchKeyword,checkinDate,checkoutDate,pageNum);
         
-        redirectAttributes.addFlashAttribute("results", results);
+        redirectAttributes.addFlashAttribute("modelMap",modelMap);
         redirectAttributes.addFlashAttribute("checkinDate", checkinDate);
         redirectAttributes.addFlashAttribute("checkoutDate", checkoutDate);
         redirectAttributes.addFlashAttribute("searchKeyword", searchKeyword);
