@@ -7,9 +7,16 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Slf4j
 @Controller
@@ -21,40 +28,28 @@ public class LoginController {
         this.userService = userService;
     }
 
-    @GetMapping("/user-info")
-    public String userInfoPage(@AuthenticationPrincipal Object principal, Model model) {
-        Users user = null;
+    @PostMapping("/clear-error-messages")
+    public void clearErrorMessages(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        session.removeAttribute("loginError");
+        session.removeAttribute("socialLoginError");
+        log.info("Error messages cleared from session");
+    }
 
-        if (principal instanceof OAuth2User) {
-            // 소셜 로그인 사용자 처리
-            OAuth2User oAuth2User = (OAuth2User) principal;
-            String email = oAuth2User.getAttribute("email");
-            user = userService.findByEmail(email);
-
-            if (user == null) {
-                log.info("No user found with email: {}", email);
-                throw new UsernameNotFoundException("User not found with email: " + email);
-            }
-
-        } else if (principal instanceof UserDetails) {
-            // 일반 로그인 사용자 처리
-            UserDetails userDetails = (UserDetails) principal;
-            String username = userDetails.getUsername(); // 일반 로그인 사용자의 ID를 가져옴
-            user = userService.findById(username); // ID로 사용자 정보 조회
-
-            if (user == null) {
-                log.info("No user found with ID: {}", username);
-                throw new UsernameNotFoundException("User not found with ID: " + username);
-            }
-
+    @ExceptionHandler(OAuth2AuthenticationException.class)
+    public String handleOAuth2AuthenticationException(OAuth2AuthenticationException ex, RedirectAttributes redirectAttributes) {
+        log.error("OAuth2AuthenticationException 발생: " + ex.getError().getErrorCode() + " - " + ex.getMessage());
+        String error = "소셜 로그인 중 오류가 발생했습니다.";
+        if ("email_exists".equals(ex.getError().getErrorCode())) {
+            error = "동일한 이메일로 가입된 로컬 계정이 존재합니다.";
+        } else if ("provider_mismatch".equals(ex.getError().getErrorCode())) {
+            error = "동일한 이메일로 다른 소셜 로그인 제공자가 존재합니다.";
         } else {
-            // 인증되지 않은 경우 로그인 페이지로 리다이렉트
-            log.info("No authenticated user found.");
-            return "redirect:/loginPage";
+            error = "알 수 없는 오류가 발생했습니다.";
         }
-
-        model.addAttribute("user", user);
-        log.info("User info page accessed");
-        return "user/userInfo"; // 인증된 사용자 정보 페이지 반환
+        log.error("설정된 에러 메시지: " + error);
+        redirectAttributes.addFlashAttribute("error", error);
+        log.error("Flash attribute 설정 완료: error={}", error);
+        return "redirect:/loginPage";
     }
 }
