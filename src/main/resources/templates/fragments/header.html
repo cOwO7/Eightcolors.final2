@@ -51,22 +51,64 @@
 						<a href="/host">호스트 페이지로 가기</a>
 					</div>
 
-					<li class="nav-item"><a class="nav-link" th:href="@{/main}">Home</a>
-					</li>
+					<li class="nav-item"><a class="nav-link" th:href="@{/main}">Home</a></li>
 
-					<!-- 로그인한 경우 정보 수정 페이지로 이동 -->
-					<!-- <li class="nav-item"><th:block th:if="${session.isLogin}">
-							<a class="nav-link" href="memberUpdateForm">정보 수정</a>
-						</th:block></li> -->
-					<li class="nav-item"><th:block th:if="${session.isLogin}">
+					<li class="nav-item">
+						<th:block th:if="${session.isLogin}">
 							<a class="nav-link" th:href="@{/myPage/info}">마이 페이지</a>
-						</th:block></li>
+						</th:block>
+					</li>
 					<li class="nav-item"><a class="nav-link" th:href="@{/helper}">고객 센터</a>
 				</ul>
 			</div>
 		</div>
-		<!-- 로그인한 경우 인사말 표시 -->
-		<div class="row">
+		<!-- 로그인한 사용자가 유저 or Null일 때 유저용 버튼 표시 -->
+		<div th:if="${session['role'] == 'user' or session['role'] == null}">
+			<div class="row">
+				<div class="col-11">
+					<nav id="menu" class="btn-group text-center" role="group"
+						 aria-label="Basic outlined example">
+						<a href="/weather" class="btn btn-outline-primary">날씨</a>
+						<a href="/weatherResult" class="btn btn-outline-primary">통합날씨</a>
+						<a th:href="@{/transfers}" class="btn btn-outline-primary">양도게시판</a>
+						<a th:href="@{/inquiries}" class="btn btn-outline-primary">고객센터</a>
+					</nav>
+				</div>
+			</div>
+		</div>
+		<!-- 로그인한 사용자가 호스트일 때 호스트용 버튼 표시 -->
+		<div th:if="${session['role'] == 'host'}">
+			<div class="row">
+				<div class="col-11">
+					<nav id="menu" class="btn-group text-center" role="group"
+						 aria-label="Basic outlined example">
+						<a href="/weather" class="btn btn-outline-primary">날씨</a>
+						<a href="/weatherResult" class="btn btn-outline-primary">통합날씨</a>
+						<a th:href="@{/list}" class="btn btn-outline-primary">숙소(업자)</a>
+						<a th:href="@{/list/{hostUserNo}(hostUserNo=${session.hostUserNo})}" class="btn btn-primary">내 숙소</a>
+						<a th:href="@{/transfers}" class="btn btn-outline-primary">양도게시판</a>
+						<a th:href="@{/inquiries}" class="btn btn-outline-primary">고객센터</a>
+					</nav>
+				</div>
+			</div>
+		</div>
+		<!-- 로그인한 사용자가 관리자일 때 관리자용 버튼 표시 -->
+		<li class="nav-item" th:if="${session['role'] == 'admin'}">
+			<div class="row">
+				<div class="col-11">
+					<nav id="menu" class="btn-group text-center" role="group"
+						 aria-label="Basic outlined example">
+						<a href="/weather" class="btn btn-outline-primary">날씨</a>
+						<a href="/weatherResult" class="btn btn-outline-primary">통합날씨</a>
+						<a th:href="@{/list}" class="btn btn-outline-primary">숙소(업자)</a>
+						<a th:href="@{/list/{hostUserNo}(hostUserNo=${session.hostUserNo})}" class="btn btn-primary">내 숙소</a>
+						<a th:href="@{/transfers}" class="btn btn-outline-primary">양도게시판</a>
+						<a th:href="@{/inquiries}" class="btn btn-outline-primary">고객센터</a>
+					</nav>
+				</div>
+			</div>
+		</li>
+		<!--<div class="row">
 			<div class="col-11">
 				<nav id="menu" class="btn-group text-center" role="group"
 					aria-label="Basic outlined example">
@@ -78,7 +120,7 @@
 					<a th:href="@{/inquiries}" class="btn btn-outline-primary">고객센터</a>
 				</nav>
 			</div>
-		</div>
+		</div>-->
 	</div>
 </div>
 
