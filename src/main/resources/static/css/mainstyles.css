@@ -1,32 +1,12 @@
 @charset "UTF-8";
 /* 메인 페이지 스타일 */
 #main-resultTable {
-	display: block;
-	position: fixed;
 	width: 400px;
 	text-align: center;
 }
 
 .text-center {
 	text-align: justify;
-}
-
-.container {
-	display: flex;
-	align-items: flex-start;  /* 수직 정렬 */
-	flex-wrap: wrap; /* 화면 크기에 따라 요소가 줄바꿈 될 수 있도록 설정 */
-	margin: 0 auto; /* 화면 중앙에 배치 */
-	height: 100%;
-	width: 100%;
-	padding: 20px;
-}
-
-/* 지도 영역 */
-.map-container {
-	flex: 1; /* 지도는 남은 공간을 차지 */
-	width: 400px; /* 지도 최소 너비 */
-	height: 400px; /* 지도 고정 높이 */
-	position: static;
 }
 
 /* 날씨 테이블 영역 */
