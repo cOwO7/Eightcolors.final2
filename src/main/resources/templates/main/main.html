@@ -6,7 +6,6 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" integrity="sha512-aOG0c6nPNzGk+5zjwyJaoRUgCdOrfSDhmMID2u4+OIslr0GjpLKo7Xm0Ao3xmpM4T8AmIouRkqwj1nrdVsLKEQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-	<link rel="stylesheet" href="/swiper/swiper.min.css">
 	<script th:src="@{/js/mainPage/mainpage.js}"></script>
 </head>
 <title>오늘 어때?</title>
@@ -100,8 +99,8 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-2">
-								<button type="submit" class="btn btn-primary">검색</button>
+							<div class="col-2 align-self-center">
+								<button type="submit" class="btn btn-primary btn-lg">검색</button>
 							</div>
 						</div>
 					</form>
@@ -160,104 +159,104 @@
 			</a>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-auto">
-			<div class="card" style="width: 10rem;">
-				<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
-				<div class="card-body">
-					<h5 class="card-title">부산</h5>
-				</div>
-			</div>
-		</div>
-		<div class="col-auto">
-			<div class="card" style="width: 10rem;">
-				<img src="/images/sample/sample2.jpg" class="card-img-top" alt="...">
-				<div class="card-body">
-					<h5 class="card-title">강릉</h5>
-				</div>
-			</div>
-		</div>
-		<div class="col-auto">
-			<div class="card" style="width: 10rem;">
-				<img src="/images/sample/sample3.jpg" class="card-img-top" alt="...">
-				<div class="card-body">
-					<h5 class="card-title">서울</h5>
-				</div>
-			</div>
-		</div>
-		<div class="col-auto">
-			<div class="card" style="width: 10rem;">
-				<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
-				<div class="card-body">
-					<h5 class="card-title">어디?</h5>
-				</div>
-			</div>
-		</div>
-		<div class="col-auto">
-			<div class="card" style="width: 10rem;">
-				<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
-				<div class="card-body">
-					<h5 class="card-title">어디?</h5>
-				</div>
-			</div>
-		</div>
-		<div class="col-auto">
-			<div class="card" style="width: 10rem;">
-				<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
-				<div class="card-body">
-					<h5 class="card-title">어디?</h5>
-				</div>
-			</div>
-		</div>
-		<div class="col-auto">
-			<div class="card" style="width: 10rem;">
-				<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
-				<div class="card-body">
-					<h5 class="card-title">어디?</h5>
-				</div>
-			</div>
-		</div>
-		<div class="col-auto">
-			<div class="card" style="width: 10rem;">
-				<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
-				<div class="card-body">
-					<h5 class="card-title">어디?</h5>
-				</div>
-			</div>
-		</div>
-	</div>
+
 
 	<div class="row">
-		<div class="col">
-			<div class="swiper-container">
-				<div class="swiper-wrapper">
-					<div class="swiper-slide">
-						1번 슬라이드입니다.<br>마우스로 움직여보세요.
+		<div class="col-1 align-self-center">
+			<a class="nav-link text-end" href="#travelfirst">
+				<img src="/button/arrow_left.png" class="w-25 h-25">
+			</a>
+		</div>
+		<div class="col-10">
+			<div class="row flex-nowrap overflow-x-hidden">
+				<div class="col-auto" id="travelfirst">
+					<div class="card" style="width: 10rem;">
+						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
+						<div class="card-body">
+							<h5 class="card-title">부산</h5>
+						</div>
 					</div>
-					<div class="swiper-slide">
-						2번 슬라이드입니다.<br>
-						레이아웃만 제대로 설정되어 있다면 슬라이드에 어떤 것이든 넣을 수 있습니다.
-					</div>
-					<div class="swiper-slide">
-						<img src="https://image.flaticon.com/icons/png/128/1933/1933588.png" alt=""><br>
-						이렇게 이미지도 넣을 수 있습니다.
-					</div>
-
-					...
-
 				</div>
-				<!-- If we need pagination -->
-				<div class="swiper-pagination"></div>
-
-				<!-- If we need navigation buttons -->
-				<div class="swiper-button-prev"></div>
-				<div class="swiper-button-next"></div>
-
-				<div class="swiper-scrollbar"></div>
+				<div class="col-auto">
+					<div class="card" style="width: 10rem;">
+						<img src="/images/sample/sample2.jpg" class="card-img-top" alt="...">
+						<div class="card-body">
+							<h5 class="card-title">강릉</h5>
+						</div>
+					</div>
+				</div>
+				<div class="col-auto">
+					<div class="card" style="width: 10rem;">
+						<img src="/images/sample/sample3.jpg" class="card-img-top" alt="...">
+						<div class="card-body">
+							<h5 class="card-title">서울</h5>
+						</div>
+					</div>
+				</div>
+				<div class="col-auto">
+					<div class="card" style="width: 10rem;">
+						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
+						<div class="card-body">
+							<h5 class="card-title">어디?</h5>
+						</div>
+					</div>
+				</div>
+				<div class="col-auto">
+					<div class="card" style="width: 10rem;">
+						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
+						<div class="card-body">
+							<h5 class="card-title">어디?</h5>
+						</div>
+					</div>
+				</div>
+				<div class="col-auto">
+					<div class="card" style="width: 10rem;">
+						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
+						<div class="card-body">
+							<h5 class="card-title">어디?</h5>
+						</div>
+					</div>
+				</div>
+				<div class="col-auto">
+					<div class="card" style="width: 10rem;">
+						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
+						<div class="card-body">
+							<h5 class="card-title">어디?</h5>
+						</div>
+					</div>
+				</div>
+				<div class="col-auto">
+					<div class="card" style="width: 10rem;">
+						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
+						<div class="card-body">
+							<h5 class="card-title">어디?</h5>
+						</div>
+					</div>
+				</div>
+				<div class="col-auto">
+					<div class="card" style="width: 10rem;">
+						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
+						<div class="card-body">
+							<h5 class="card-title">어디?</h5>
+						</div>
+					</div>
+				</div>
+				<div class="col-auto" id="travellast">
+					<div class="card" style="width: 10rem;">
+						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
+						<div class="card-body">
+							<h5 class="card-title">어디?</h5>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
+		<div class="col-1 align-self-center">
+			<a class="nav-link" href="#travellast">
+				<img src="/button/arrow_right.png" class="w-25 h-25" style="width: 100%; height: auto; max-width: 200px;">
+			</a>
+		</div>
 	</div>
-
 
 <!--	여행지 끝-->
 
@@ -341,6 +340,5 @@
 </th:block>
 
 
-<script src="/swiper/swiper.min.js"></script>
 </body>
 </html>
