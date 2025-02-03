@@ -14,6 +14,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class myPageController {
@@ -25,7 +27,6 @@ public class myPageController {
 
     @Autowired
     UserService userService;
-
 
     @GetMapping("/myPage/merge")
     public String mergeAccountPage(@AuthenticationPrincipal Object principal, Model model) {
@@ -74,8 +75,6 @@ public class myPageController {
         return "redirect:/myPage/info";
     }
 
-
-
     @GetMapping("/myPage/info")
     public String userInfoPage(@AuthenticationPrincipal Object principal, Model model) {
         Users user = null;
@@ -113,10 +112,45 @@ public class myPageController {
         return "myPage/info"; // 인증된 사용자 정보 페이지 반환
     }
 
+    @GetMapping("/myPage/edit")
+    public String showEditForm(@AuthenticationPrincipal Object principal, Model model) {
+        Users user = null;
 
-    @GetMapping("/myPage/myReservationStatus")
-    public String myPageReservationStauts() {
-        return "myPage/myReservationStatus";
+        if (principal instanceof OAuth2User) {
+            // 소셜 로그인 사용자 처리
+            OAuth2User oAuth2User = (OAuth2User) principal;
+            String email = oAuth2User.getAttribute("email");
+            user = userService.findByEmail(email);
+        } else if (principal instanceof UserDetails) {
+            // 일반 로그인 사용자 처리
+            UserDetails userDetails = (UserDetails) principal;
+            String username = userDetails.getUsername();
+            user = userService.findById(username);
+        }
+
+        model.addAttribute("user", user);
+        return "myPage/edit";
     }
 
+    @PostMapping("/myPage/update")
+    public String updateUser(@ModelAttribute Users user, @AuthenticationPrincipal Object principal, RedirectAttributes redirectAttributes) {
+        // 비밀번호 필드가 비어 있는 경우, 기존 비밀번호를 유지
+        if (user.getPassword() == null || user.getPassword().isEmpty()) {
+            Users currentUser = userService.getCurrentUser();
+            user.setPassword(currentUser.getPassword());
+        } else {
+            // 새로운 비밀번호를 암호화하여 설정
+            user.setPassword(userService.encodePassword(user.getPassword()));
+        }
+
+        // 사용자 정보 업데이트
+        userService.updateUser(user);
+        redirectAttributes.addFlashAttribute("message", "회원 정보가 성공적으로 업데이트되었습니다.");
+        return "redirect:/myPage/info";
+    }
+
+    @GetMapping("/myPage/myReservationStatus")
+    public String myPageReservationStatus() {
+        return "myPage/myReservationStatus";
+    }
 }

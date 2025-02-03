@@ -20,33 +20,33 @@ public interface ReservationMapper {
                               @Param("checkinDate") LocalDate checkinDate,
                               @Param("checkoutDate") LocalDate checkoutDate);
 
+    // 숙소 및 방 정보 조회
     Map<String, String> findResidenceAndRoomById(@Param("residNo") Long residNo, @Param("roomNo") Long roomNo);
+
     // 방 가격 조회
     int getRoomPrice(@Param("roomNo") Long roomNo);
 
     // 예약 정보 저장
     void insertReservation(Reservation reservation);
-    
+
     //예약하는 사용자 정보 조회
     ReservationUserDTO getReservationUserByUserNo(@Param("userNo") Long userNo);
 
-    public List<Reservations> getReservations(Reservations param);
-    public void newReservations(Reservations param);
-    public void putReservations(Reservations param);
-    public void delReservations(Reservations param);
+    // 예약 정보 조회
+    List<Reservations> getReservations(Reservations param);
+    void newReservations(Reservations param);
+    void putReservations(Reservations param);
+    void delReservations(Reservations param);
 
-
+    // 예약 정보 조회
     Reservation selectReservationByTransactionId(@Param("transactionId") String transactionId);
 
+    // 예약 정보 조회
     @Select("SELECT COUNT(*) FROM reservations WHERE user_no = #{userNo}")
     int countReservationsByUserNo(@Param("userNo") String userNo);
 
-    @Select("SELECT r.reservation_no, r.user_no, r.room_no, res.resid_name AS residName, r.checkin_date, r.checkout_date, r.total_price, r.discount_rate, r.discounted_price, r.transaction_id, r.payment_status, r.reservation_status, r.created_at, r.updated_at " +
-            "FROM reservations r " +
-            "JOIN residence_rooms rr ON r.room_no = rr.room_no " +
-            "JOIN residence res ON rr.resid_no = res.resid_no " +
-            "WHERE r.user_no = #{userNo} LIMIT 1")
-    Reservations getReservationByUserNo(@Param("userNo") String userNo);
+    // 예약 정보 조회
+    Reservations getReservationByUserNo(@Param("userNo") Long userNo);
 
 
 

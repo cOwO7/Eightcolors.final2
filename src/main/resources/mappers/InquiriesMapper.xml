@@ -16,8 +16,8 @@
 
 	<!-- 문의 추가 -->
 	<insert id="insertInquiry" useGeneratedKeys="true" keyProperty="inquiryNo">
-		INSERT INTO inquiries (user_no, title, content, status)
-		VALUES (#{userNo}, #{title}, #{content}, #{status});
+		INSERT INTO inquiries (user_no, title, content, user_id)
+		VALUES (#{userNo}, #{title}, #{content}, #{userId});
 	</insert>
 
 	<!-- 문의 업데이트 -->

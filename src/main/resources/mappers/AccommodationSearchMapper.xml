@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--	
+	마이바티스 참고 사이트
+	  - http://blog.mybatis.org/
+	  - http://www.mybatis.org/mybatis-3/ko/index.html
+	  
+	@Mapper 애노테이션이 적용된 인터페이스와 맵퍼 XML파일은
+	namespace 속성으로 연결되기 때문에 맵퍼 XML의 namespace를
+	지정할 때 @Mapper 애노테이션이 적용된 맵퍼 인터페이스의
+	완전한 클래스 이름(패키지를 포함한 이름)을 지정하면 된다.   
+-->
+<mapper namespace="com.springbootfinal.app.mapper.AccommodationSearchMapper">
+
+    <select id="findAvailableResidences" resultType="ResidenceSearch">
+    SELECT r.resid_no, r.resid_name, r.resid_address, r.resid_type,
+           MIN(rr.price_per_night) AS min_price,
+           pp.thumbnailUrls
+    FROM residence r
+    LEFT JOIN residence_rooms rr ON r.resid_no = rr.resid_no
+    LEFT JOIN reservations res ON rr.room_no = res.room_no
+    LEFT JOIN property_photos pp ON r.resid_no = pp.resid_no  -- 사진 테이블 조인
+    WHERE NOT EXISTS (
+        -- 예약된 기간과 겹치는 방이 모두 존재하는 경우를 제외
+        SELECT 1
+        FROM residence_rooms rr2
+        LEFT JOIN reservations res_check ON rr2.room_no = res_check.room_no
+        WHERE rr2.resid_no = r.resid_no
+        AND (
+            -- 예약된 기간과 사용자가 예약하려는 기간이 겹치는지 체크
+            (#{checkoutDate} >= res_check.checkin_date  AND res_check.checkout_date >= #{checkinDate})
+        )
+        GROUP BY rr2.resid_no
+        HAVING COUNT(rr2.room_no) = (SELECT COUNT(*) FROM residence_rooms WHERE resid_no = r.resid_no)
+    )
+    <if test="searchKeyword != null and searchKeyword != ''">
+        AND (r.resid_name LIKE CONCAT('%', #{searchKeyword}, '%')
+            OR r.resid_address LIKE CONCAT('%', #{searchKeyword}, '%'))
+    </if>
+    GROUP BY r.resid_no, pp.thumbnailUrls;
+</select>
+
+    
+    <select id="findAllResidences" resultType="com.springbootfinal.app.domain.ResidenceSearch">
+    SELECT 
+        r.resid_no, 
+        r.resid_name, 
+        r.resid_address, 
+        r.resid_type, 
+        MIN(rr.price_per_night) AS min_price, 
+        pp.thumbnailUrls 
+    FROM residence r
+    LEFT JOIN residence_rooms rr ON r.resid_no = rr.resid_no
+    LEFT JOIN property_photos pp ON r.resid_no = pp.resid_no
+    GROUP BY r.resid_no, r.resid_name, r.resid_address, r.resid_type, pp.thumbnailUrls;
+</select>
+    
+
+
+
+</mapper>
+
+
+
+

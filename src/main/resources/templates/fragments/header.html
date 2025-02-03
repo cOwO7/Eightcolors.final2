@@ -12,53 +12,45 @@
 </style>
 	<!-- 헤더 이미지 로고 -->
 	<div class="col-2">
-		<a href="/main"> <img src="/images/mainLogo.png" style="width: 100%; height: auto; max-width: 200px;">
-		</a>
+		<a href="/main"><img src="/images/mainLogo.png" style="width: 100%; height: auto; max-width: 200px;"></a>
 	</div>
 	<div class="col">
 		<div class="row-12">
 			<div class="col-12">
 				<ul class="col-12 nav justify-content-end">
 					<a class="nav-link" th:href="@{/user-info}">임시 내정보 확인(로그인 여부 확인겸)</a>
-
-
+					<!-- 로그인한 사용자가 관리자일 때만 "관리자 페이지로 가기" 링크를 표시 -->
+					<li class="nav-item" th:if="${session['role'] == 'admin'}">
+						<a class="nav-link" href="/admin/admin">관리자 페이지로 가기</a>
+					</li>
+					<!-- 일반유저용 테스트 -->
+					<div th:if="${session['role'] == 'user'}">
+						<a href="/user-info">일반유저용(테스트)</a>
+					</div>
+					<!-- 로그인한 사용자가 호스트일 때만 "호스트 페이지로 가기" 링크를 표시 -->
+					<div th:if="${session['role'] == 'host'}">
+						<a href="/host">호스트 페이지로 가기</a>
+					</div>
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/main}">Home</a>
+					</li>
+					<li class="nav-item">
+						<th:block th:if="${session.isLogin}">
+							<a class="nav-link" th:href="@{/myPage/info}">마이 페이지</a>
+						</th:block>
+					</li>
 					<!-- 로그인 안 한 경우 로그인 버튼 표시 -->
 					<li class="nav-item">
 						<th:block th:unless="${session['isLogin']}">
 							<a class="nav-link" th:href="@{login}">로그인</a>
 						</th:block>
 					</li>
-
 					<!-- 로그인한 경우 로그아웃 버튼 표시 -->
 					<li class="nav-item">
 						<th:block th:if="${session['isLogin']}">
 							<a class="nav-link" th:href="@{/logout}">로그아웃</a>
 						</th:block>
 					</li>
-
-					<!-- 로그인한 사용자가 관리자일 때만 "관리자 페이지로 가기" 링크를 표시 -->
-					<li class="nav-item" th:if="${session['role'] == 'admin'}">
-						<a class="nav-link" href="/admin/admin">관리자 페이지로 가기</a>
-					</li>
-
-					<!-- 일반유저용 테스트 -->
-					<div th:if="${session['role'] == 'user'}">
-						<a href="/user-info">일반유저용(테스트)</a>
-					</div>
-
-					<!-- 로그인한 사용자가 호스트일 때만 "호스트 페이지로 가기" 링크를 표시 -->
-					<div th:if="${session['role'] == 'host'}">
-						<a href="/host">호스트 페이지로 가기</a>
-					</div>
-
-					<li class="nav-item"><a class="nav-link" th:href="@{/main}">Home</a></li>
-
-					<li class="nav-item">
-						<th:block th:if="${session.isLogin}">
-							<a class="nav-link" th:href="@{/myPage/info}">마이 페이지</a>
-						</th:block>
-					</li>
-					<li class="nav-item"><a class="nav-link" th:href="@{/helper}">고객 센터</a>
 				</ul>
 			</div>
 		</div>
@@ -93,35 +85,19 @@
 			</div>
 		</div>
 		<!-- 로그인한 사용자가 관리자일 때 관리자용 버튼 표시 -->
-		<li class="nav-item" th:if="${session['role'] == 'admin'}">
+		<div th:if="${session['role'] == 'admin'}">
 			<div class="row">
 				<div class="col-11">
-					<nav id="menu" class="btn-group text-center" role="group"
-						 aria-label="Basic outlined example">
+					<nav id="menu" class="btn-group text-center" role="group" aria-label="Basic outlined example">
 						<a href="/weather" class="btn btn-outline-primary">날씨</a>
 						<a href="/weatherResult" class="btn btn-outline-primary">통합날씨</a>
 						<a th:href="@{/list}" class="btn btn-outline-primary">숙소(업자)</a>
-						<a th:href="@{/list/{hostUserNo}(hostUserNo=${session.hostUserNo})}" class="btn btn-primary">내 숙소</a>
 						<a th:href="@{/transfers}" class="btn btn-outline-primary">양도게시판</a>
 						<a th:href="@{/inquiries}" class="btn btn-outline-primary">고객센터</a>
 					</nav>
 				</div>
 			</div>
-		</li>
-		<!--<div class="row">
-			<div class="col-11">
-				<nav id="menu" class="btn-group text-center" role="group"
-					aria-label="Basic outlined example">
-					<a href="/weather" class="btn btn-outline-primary">날씨</a>
-					<a href="/weatherResult" class="btn btn-outline-primary">통합날씨</a>
-					<a th:href="@{/list}" class="btn btn-outline-primary">숙소(업자)</a>
-					<a th:href="@{/list/{hostUserNo}(hostUserNo=${session.hostUserNo})}" class="btn btn-primary">내 숙소</a>
-					<a th:href="@{/transfers}" class="btn btn-outline-primary">양도게시판</a>
-					<a th:href="@{/inquiries}" class="btn btn-outline-primary">고객센터</a>
-				</nav>
-			</div>
-		</div>-->
+		</div>
 	</div>
 </div>
-
 </html>

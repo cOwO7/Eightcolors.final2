@@ -59,6 +59,7 @@ CREATE TABLE IF NOT EXISTS users (
     role VARCHAR(50) DEFAULT 'ROLE_USER'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+select * from users;
 
 -- 4. 숙소 테이블
 CREATE TABLE IF NOT EXISTS residence (
@@ -86,7 +87,7 @@ CREATE TABLE IF NOT EXISTS residence_rooms (
 ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 ALTER TABLE residence_rooms
-    ADD COLUMN room_url01  VARCHAR(255);
+    ADD COLUMN room_url01 VARCHAR(255);
 
 select * from residence_rooms;
 
@@ -120,17 +121,23 @@ CREATE TABLE IF NOT EXISTS inquiries (
     status ENUM('대기중', '답변완료') DEFAULT '대기중',
     FOREIGN KEY (user_no) REFERENCES users(user_no) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+ALTER TABLE inquiries
+    ADD COLUMN user_id VARCHAR(255);
+
+select * from inquiries;
 
 -- 9. 답변 테이블
 CREATE TABLE IF NOT EXISTS answers (
     answer_no BIGINT AUTO_INCREMENT PRIMARY KEY,
     inquiry_no BIGINT,
-    admin_user_no BIGINT,
-    content TEXT,
+    content VARCHAR(3000),
     answer_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (inquiry_no) REFERENCES inquiries(inquiry_no) ON DELETE CASCADE,
-    FOREIGN KEY (admin_user_no) REFERENCES admin_users(admin_user_no) ON DELETE CASCADE
+    FOREIGN KEY (inquiry_no) REFERENCES inquiries(inquiry_no) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+ALTER TABLE answers
+    ADD COLUMN admin_name VARCHAR(255);
+
+select * from answers;
 
 -- 10. 숙소 사진 테이블
 CREATE TABLE IF NOT EXISTS property_photos (

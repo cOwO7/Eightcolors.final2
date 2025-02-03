@@ -2,11 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>에러</title>
+    <title>에러 페이지</title>
 </head>
 <body>
-    <h1>에러 페이지</h1>
-    <p th:text="${errorMessage}"></p>
-    <button onclick="history.back()">뒤로가기</button>
+<div th:if="${script}" th:utext="${script}"></div>
 </body>
 </html>
