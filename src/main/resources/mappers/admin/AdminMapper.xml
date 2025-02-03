@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springbootfinal.app.mapper.admin.AdminMapper">
+
+    <select id="findAllUsers" resultType="com.springbootfinal.app.domain.login.Users">
+        SELECT * FROM users
+    </select>
+
+    <select id="searchUsers" resultType="com.springbootfinal.app.domain.login.Users">
+        SELECT * FROM users
+        WHERE
+            id LIKE CONCAT('%', #{keyword}, '%') OR
+            name LIKE CONCAT('%', #{keyword}, '%') OR
+            email LIKE CONCAT('%', #{keyword}, '%') OR
+            REPLACE(phone, '-', '') LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+    <select id="findAllResidences" resultType="com.springbootfinal.app.domain.residence.ResidenceDto">
+        SELECT * FROM residence
+    </select>
+
+    <delete id="deleteUserById" parameterType="java.lang.String">
+        DELETE FROM users WHERE id = #{userId}
+    </delete>
+
+    <select id="findAllHostUsers" resultType="com.springbootfinal.app.domain.login.HostUser">
+        SELECT * FROM host_users
+    </select>
+
+    <select id="searchHostUsers" resultType="com.springbootfinal.app.domain.login.HostUser">
+        SELECT * FROM host_users
+        WHERE
+            id LIKE CONCAT('%', #{keyword}, '%') OR
+            name LIKE CONCAT('%', #{keyword}, '%') OR
+            email LIKE CONCAT('%', #{keyword}, '%') OR
+            REPLACE(phone, '-', '') LIKE CONCAT('%', #{keyword}, '%') OR
+            REPLACE(business_license_no, '-', '') LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+    <delete id="deleteHostUserByNos">
+        DELETE FROM host_users WHERE host_user_no = #{hostUserNo}
+    </delete>
+
+    <delete id="deleteReservationsByHostUserNos">
+        DELETE r
+    FROM reservations r
+    JOIN residence_rooms rr ON r.room_no = rr.room_no
+    JOIN residence res ON rr.resid_no = res.resid_no
+    WHERE res.host_user_no = #{hostUserNo}
+    </delete>
+
+
+    <select id="findRecentOrders" resultType="com.springbootfinal.app.domain.admin.RecentOrderDto">
+        SELECT r.reservation_no, u.name AS user_name, h.name AS host_name, h.phone, r.checkin_date, r.discounted_price, r.created_at
+        FROM reservations r
+                 JOIN host_users h ON r.room_no = h.host_user_no
+                 JOIN users u ON r.user_no = u.user_no
+        ORDER BY r.created_at DESC
+            LIMIT 5
+    </select>
+
+    <delete id="deleteTransferById" parameterType="java.lang.Long">
+        DELETE FROM transfers WHERE transfer_no = #{transferNo}
+    </delete>
+
+    <select id="findAllTransfers" resultType="com.springbootfinal.app.domain.transfer.TransferDto">
+        SELECT
+        t.transfer_no AS transferNo,
+        u1.id AS sellerId,
+        u2.id AS buyerId,
+        t.reservation_no AS reservationNo,
+        t.transfer_price AS transferPrice,
+        t.status AS status,
+        t.created_at AS createdAt
+        FROM
+        transfers t
+        LEFT JOIN users u1 ON t.seller_user_no = u1.user_no
+        LEFT JOIN users u2 ON t.buyer_user_no = u2.user_no
+        LEFT JOIN reservations r ON t.reservation_no = r.reservation_no
+    </select>
+
+
+    <select id="getTransferList" resultType="com.springbootfinal.app.domain.transfer.TransferDto">
+        SELECT
+        t.transfer_no AS transferNo,
+        u1.id AS sellerId,
+        u2.id AS buyerId,
+        t.reservation_no AS reservationNo,
+        t.transfer_price AS transferPrice,
+        t.status AS status,
+        t.created_at AS createdAt
+        FROM
+        transfers t
+        LEFT JOIN users u1 ON t.seller_user_no = u1.user_no
+        LEFT JOIN users u2 ON t.buyer_user_no = u2.user_no
+        LEFT JOIN reservations r ON t.reservation_no = r.reservation_no
+        <where>
+            <if test="status != null and status != ''">
+                AND t.status = #{status}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (
+                t.transfer_no LIKE CONCAT('%', #{keyword}, '%')
+                OR u1.id LIKE CONCAT('%', #{keyword}, '%')
+                OR u2.id LIKE CONCAT('%', #{keyword}, '%')
+                OR t.reservation_no LIKE CONCAT('%', #{keyword}, '%')
+                OR t.transfer_title LIKE CONCAT('%', #{keyword}, '%')
+                OR t.transfer_content LIKE CONCAT('%', #{keyword}, '%')
+                )
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteRoomByResidNo" parameterType="java.lang.Long">
+        DELETE FROM residence WHERE resid_no = #{residNo}
+    </delete>
+
+    <select id="getRoomVacancyRates" resultType="map">
+        WITH total_rooms AS (
+            SELECT
+                resid_no,
+                COUNT(*) AS total_room_count
+            FROM residence_rooms
+            GROUP BY resid_no
+        ),
+             occupied_rooms AS (
+                 SELECT
+                     r.resid_no,
+                     COUNT(*) AS occupied_room_count
+                 FROM reservations res
+                          JOIN residence_rooms r ON res.room_no = r.room_no
+                 WHERE res.reservation_status NOT IN ('예약 취소', '체크아웃 완료')
+                 GROUP BY r.resid_no
+             )
+        SELECT
+            res.resid_no,
+            res.resid_name,
+            COALESCE(tr.total_room_count, 0) AS total_rooms,
+            COALESCE(oroom.occupied_room_count, 0) AS occupied_rooms,
+            COALESCE(tr.total_room_count, 0) - COALESCE(oroom.occupied_room_count, 0) AS available_rooms,
+            CASE
+                WHEN COALESCE(tr.total_room_count, 0) = 0 THEN 100
+                ELSE ROUND((COALESCE(tr.total_room_count, 0) - COALESCE(oroom.occupied_room_count, 0)) * 100.0 / COALESCE(tr.total_room_count, 0), 2)
+                END AS vacancy_rate
+        FROM residence res
+                 LEFT JOIN total_rooms tr ON res.resid_no = tr.resid_no
+                 LEFT JOIN occupied_rooms oroom ON res.resid_no = oroom.resid_no
+        ORDER BY vacancy_rate DESC;
+    </select>
+
+</mapper>

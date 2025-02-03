@@ -21,6 +21,13 @@ public class ResidenceDto {
     private String residType;  // Enum 대신 String으로 저장
     private Date residDate;  // TIMESTAMP는 String으로 매핑
     private boolean soldOut; // 매진 여부 추가
+    private String hostId; // 호스트 이름
+
+    // 공실률 관련 데이터
+    private Number totalRooms;
+    private Number occupiedRooms;
+    private Number availableRooms;
+    private Number vacancyRate;
 
 
     // 예약 페이지 데이터

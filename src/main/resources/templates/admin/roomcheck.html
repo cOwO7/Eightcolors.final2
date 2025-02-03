@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main_layout}">
+
+<head>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f7fa;
+            color: #333;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f0f0f0;
+        }
+
+        .search-bar {
+            max-width: 800px;
+        }
+
+        .btn {
+            transition: all 0.3s ease;
+            border-radius: 50px;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+        }
+
+        .table th {
+            background-color: #4e73df;
+            color: #fff;
+        }
+
+        .table-bordered td, .table-bordered th {
+            border: 1px solid #dee2e6;
+        }
+
+        .btn-danger {
+            background-color: #ff5c5c;
+            border: none;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #e74c3c;
+        }
+
+        .btn-primary {
+            background-color: #4e73df;
+            border: none;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2e59d9;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .container {
+            max-width: 90%;
+            margin: 0 auto;
+        }
+
+        .search-bar input, .search-bar select {
+            border-radius: 50px;
+            padding-left: 20px;
+            font-size: 1rem;
+        }
+
+        .search-bar button {
+            border-radius: 50px;
+            padding-right: 20px;
+            background-color: #4e73df;
+            color: white;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .alert {
+            border-radius: 5px;
+            padding: 15px;
+            font-size: 1rem;
+            margin-top: 20px;
+        }
+
+        h1 {
+            color: #4e73df;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .search-bar .input-group {
+            margin-bottom: 20px;
+        }
+
+        .btn-container {
+            margin-top: 20px;
+        }
+
+        /* 공실 비율 정렬 화살표 스타일 */
+        .sort-arrow {
+            font-size: 0.9rem;
+            padding-left: 5px;
+        }
+
+        /* 테이블 삭제 버튼 위치 조정 */
+        td button {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<th:block layout:fragment="content">
+    <div class="container my-5">
+        <h1 class="text-center">숙소 조회</h1>
+
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <form th:action="@{/admin/roomcheck}" method="get">
+                    <div class="input-group search-bar">
+                        <select class="form-select" name="region">
+                            <option value="">전체</option>
+                            <option th:each="region : ${regions}" th:value="${region}" th:text="${region}"></option>
+                        </select>
+                        <button class="btn btn-primary" type="submit">검색</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-4">
+                <form th:action="@{/admin/roomcheck}" method="get">
+                    <div class="input-group search-bar">
+                        <input type="text" class="form-control" name="keyword" placeholder="숙소명 또는 호스트 검색">
+                        <button class="btn btn-primary" type="submit">검색</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-4 text-end">
+                <a href="/admin/admin" class="btn btn-secondary">뒤로가기</a>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+                <thead>
+                <tr>
+                    <th>숙소번호</th>
+                    <th>숙소명</th>
+                    <th>호스트</th>
+                    <th>주소</th>
+                    <th>숙소 유형</th>
+                    <th>공실 개수</th>
+                    <th>공실 비율</th>
+                    <th>삭제</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="residence : ${residences}">
+                    <td th:text="${residence.residNo}"></td>
+                    <td th:text="${residence.residName}"></td>
+                    <td th:text="${residence.hostId}"></td>
+                    <td th:text="${residence.residAddress}"></td>
+                    <td th:text="${residence.residType}"></td>
+                    <td th:text="${residence.availableRooms}">공실은 아까 짠 쿼리</td>
+                    <td th:text="${residence.vacancyRate} + '%'">비율은 이따가 계산...</td>
+                    <td>
+                        <form th:action="@{/admin/roomcheck/{residNo}(residNo=${residence.residNo})}" method="get">
+                            <button type="submit" class="btn btn-danger btn-sm">삭제</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</th:block>
+
+</html>
