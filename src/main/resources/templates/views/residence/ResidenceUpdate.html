@@ -14,7 +14,8 @@
             <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=36a75517ce82693ff837cc79c740e197&libraries=services,clusterer"></script>
         </div>
         <h1>숙소 수정</h1>
-        <form th:action="@{/edit/{residNo}(residNo=${residence.residNo})}" th:object="${residence}" method="post" enctype="multipart/form-data">
+        <form th:action="@{/update/{residNo}(residNo=${residence.residNo})}" th:object="${residence}" method="post"
+              enctype="multipart/form-data">
             <div class="row">
 
                 <!-- 기존 숙소 입력 필드들 -->
@@ -40,7 +41,7 @@
                 <textarea id="residDescription" th:field="*{residDescription}"></textarea>
             </div>
             <!-- 사진 수정 -->
-            <label>기존 등록된 사진</label>
+            <!--<label>기존 등록된 사진</label>
             <div id="photo-preview">
                 <th:block th:each="photo : ${photos}">
                     <div class="photo-container" th:id="|photo-${photo.photoNo}|">
@@ -59,16 +60,57 @@
                         <button type="button" th:onclick="|removePhoto(${photo.photoNo})|">삭제</button>
                     </div>
                 </th:block>
+            </div>-->
+            <label>기존 등록된 사진</label>
+            <div id="photo-preview">
+                <th:block th:each="photo : ${photos}">
+                    <div class="photo-container" th:id="|photo-${photo.photoNo}|">
+                        <div class="existing-photo" th:id="|photo-box-${photo.photoNo}-1|">
+                            <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl01})}" width="150"
+                                 th:id="|photo-img-${photo.photoNo}-1|">
+                            <input type="hidden" name="existingPhotos" th:value="${photo.photoNo}">
+                            <button type="button"
+                                    th:onclick="|removePhoto(${photo.photoNo}, 'photo-box-${photo.photoNo}-1')|">삭제
+                            </button>
+                            <input type="file" th:id="|file-input-${photo.photoNo}-1|"
+                                   onchange="replacePhoto(event, ${photo.photoNo}, 1)">
+                        </div>
+
+                        <div class="existing-photo" th:id="|photo-box-${photo.photoNo}-2|">
+                            <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl02})}" width="150"
+                                 th:id="|photo-img-${photo.photoNo}-2|">
+                            <input type="hidden" name="existingPhotos" th:value="${photo.photoNo}">
+                            <button type="button"
+                                    th:onclick="|removePhoto(${photo.photoNo}, 'photo-box-${photo.photoNo}-2')|">삭제
+                            </button>
+                            <input type="file" th:id="|file-input-${photo.photoNo}-2|"
+                                   onchange="replacePhoto(event, ${photo.photoNo}, 2)">
+                        </div>
+
+                        <div class="existing-photo" th:id="|photo-box-${photo.photoNo}-3|">
+                            <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl03})}" width="150"
+                                 th:id="|photo-img-${photo.photoNo}-3|">
+                            <input type="hidden" name="existingPhotos" th:value="${photo.photoNo}">
+                            <button type="button"
+                                    th:onclick="|removePhoto(${photo.photoNo}, 'photo-box-${photo.photoNo}-3')|">삭제
+                            </button>
+                            <input type="file" th:id="|file-input-${photo.photoNo}-3|"
+                                   onchange="replacePhoto(event, ${photo.photoNo}, 3)">
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+            <!-- 빈 필드 -->
+            <div class="empty-photo" style="display:none;">
+                <!--<input type="file" name="newPhotos" onchange="uploadNewPhoto(this, ${photo.photoNo})">-->
             </div>
 
             <label>새로운 사진 추가</label>
             <input type="file" name="photos" multiple>
-
             <input type="hidden" name="deletedPhotoIds" id="deletedPhotoIds">
             <br><br>
             <button type="submit">수정하기</button>
             <button><a href="/list">뒤로 가기</a></button>
-
             <!-- 날씨 데이터 -->
             <div class="col-md-6">
                 <div class="mb-3">
@@ -80,183 +122,62 @@
                             <!-- <td>예보지점 y값</td> -->
                             <td><input type="hidden" id="ny" th:field="*{ny}"/></td>
                             <!-- <td>위도(latitude)</td> -->
-                            <td><input type="hidden" id="latitudeNum" name="latitudeNum" th:field="*{latitudeNum}"/>
-                            </td>
+                            <td><input type="hidden" id="latitudeNum" name="latitudeNum" th:field="*{latitudeNum}"/></td>
                             <!-- <td>경도(longitude)</td> -->
-                            <td><input type="hidden" id="longitudeNum" name="longitudeNum" th:field="*{longitudeNum}"/>
-                            </td>
+                            <td><input type="hidden" id="longitudeNum" name="longitudeNum" th:field="*{longitudeNum}"/></td>
                         </tr>
                     </table>
                     <br/>
                     <div class="d-flex">
-                        <input type="hidden" id="address" value="" placeholder="검색 버튼을 눌러주세요." class="form-control me-2"
-                               style="flex: 1;">
-                        <!-- 도시와 구/시만 표시하는 필드 -->
-                        <input type="hidden" id="address-hidden" value="" placeholder="좌표 조회는 여기서"
-                               class="form-control me-2"
-                               style="flex: 1;">
-                        <input type="hidden" id="regId" th:field="*{regId}" placeholder="예: 11B00000" required>
-                        <input type="hidden" id="regIdTemp" th:field="*{regIdTemp}" placeholder="예: 11B10101" required>
+                        <input type="hidden" id="address" value="" class="form-control me-2" style="flex: 1;">
+                        <input type="hidden" id="address-hidden" value="" class="form-control me-2" style="flex: 1;">
+                        <input type="hidden" id="regId" th:field="*{regId}">
+                        <input type="hidden" id="regIdTemp" th:field="*{regIdTemp}">
                     </div>
                 </div>
             </div>
         </form>
-        <!-- 날씨 데이터 출력폼 -->
-        <table>
-            <tbody id="combinedWeatherTableBody"></tbody>
-            <div id="weatherContainer" class="weather-container">
-                <div id="row1" class="row1"></div>
-            </div>
-            <div class="weather-scroll-container">
-                <button class="scroll-btn left" onclick="scrollToLeft()">&#10094;</button>
-                <div id="row2" class="weather-row"></div>
-                <button class="scroll-btn right" onclick="scrollToRight()">&#10095;</button>
-            </div>
-        </table>
+    <!-- 날씨 데이터 출력폼 -->
+    <table>
+        <tbody id="combinedWeatherTableBody"></tbody>
+        <div id="weatherContainer" class="weather-container">
+            <div id="row1" class="row1"></div>
+        </div>
+        <div class="weather-scroll-container">
+            <button class="scroll-btn left" onclick="scrollToLeft()">&#10094;</button>
+            <div id="row2" class="weather-row"></div>
+            <button class="scroll-btn right" onclick="scrollToRight()">&#10095;</button>
+        </div>
+    </table>
     </div>
+</th:block>
+<script>
+    // 특정 이미지 제거 후 해당 위치 비우기
+    function removePhoto(photoNo, elementId) {
+        document.getElementById(elementId).innerHTML = `
+        <input type="file" id="file-input-${photoNo}" onchange="replacePhoto(event, ${photoNo}, elementId)">
+    `;
+    }
 
-    <script>
-        let deletedPhotos = [];
-
-        function removePhoto(photoNo) {
-            var deletedPhotoIds = document.getElementById('deletedPhotoIds');
-            var currentDeletedIds = deletedPhotoIds.value ? deletedPhotoIds.value.split(',') : [];
-            currentDeletedIds.push(photoNo);
-            deletedPhotoIds.value = currentDeletedIds.join(',');
-            // 삭제된 사진을 화면에서 제거 (선택 사항)
-            document.getElementById('photo-' + photoNo).remove();
+    // 새 이미지 선택 후 기존 이미지 교체
+    function replacePhoto(event, photoNo, index) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById(`photo-img-${photoNo}-${index}`).src = e.target.result;
+            };
+            reader.readAsDataURL(file);
         }
-    </script>
+    }
 
-    <script>
-        const existingImages = [
-            { fileName: 'image1.jpg', filePath: '/uploads/image1.jpg' },
-            { fileName: 'image2.jpg', filePath: '/uploads/image2.jpg' },
-            // 추가된 기존 이미지 목록
-        ];
+</script>
 
-        // 미리보기 및 수정 폼 초기화
-        function initializeExistingImages() {
-            const preview = document.getElementById('imagePreview');
-            existingImages.forEach((image, index) => {
-                const imgElement = document.createElement('img');
-                imgElement.src = image.filePath;
-                imgElement.style.width = '150px'; // 이미지 크기 조정
-                imgElement.style.marginRight = '10px'; // 이미지 간격
-
-                // 취소 버튼 생성 (삭제 기능)
-                const cancelBtn = document.createElement('button');
-                cancelBtn.innerText = 'X';
-                cancelBtn.style.position = 'absolute';
-                cancelBtn.style.top = '0';
-                cancelBtn.style.right = '0';
-                cancelBtn.style.backgroundColor = 'rgba(255, 0, 0, 0.5)';
-                cancelBtn.style.color = 'white';
-                cancelBtn.style.border = 'none';
-                cancelBtn.style.borderRadius = '50%';
-                cancelBtn.style.width = '20px';
-                cancelBtn.style.height = '20px';
-                cancelBtn.style.cursor = 'pointer';
-
-                // 취소 버튼 클릭 시 이미지 삭제
-                cancelBtn.onclick = function () {
-                    removeFileFromExisting(index); // 기존 파일 목록에서 해당 이미지 삭제
-                    imgElement.remove(); // 미리보기에서 이미지 삭제
-                    cancelBtn.remove(); // 취소 버튼 삭제
-                };
-
-                // 미리보기 이미지 컨테이너
-                const imgContainer = document.createElement('div');
-                imgContainer.style.position = 'relative';
-                imgContainer.style.display = 'inline-block';
-
-                imgContainer.appendChild(imgElement);
-                imgContainer.appendChild(cancelBtn);
-                preview.appendChild(imgContainer);
-            });
-        }
-
-        // 기존 이미지 목록에서 해당 이미지를 삭제하는 함수
-        function removeFileFromExisting(index) {
-            existingImages.splice(index, 1); // DB에서 이미지 목록을 삭제하고
-        }
-
-        // 파일을 추가하거나 수정하는 기능
-        function previewImages() {
-            const preview = document.getElementById('imagePreview');
-            preview.innerHTML = ""; // 기존 미리보기 지우기
-            const files = document.getElementById('photoFiles').files;
-
-            // 새로 추가된 파일들을 미리보기로 출력
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                const reader = new FileReader();
-
-                reader.onload = function (e) {
-                    const imgElement = document.createElement('img');
-                    imgElement.src = e.target.result;
-                    imgElement.style.width = '150px'; // 이미지 크기 조정
-                    imgElement.style.marginRight = '10px'; // 이미지 간격
-
-                    // 취소 버튼 생성
-                    const cancelBtn = document.createElement('button');
-                    cancelBtn.innerText = 'X';
-                    cancelBtn.style.position = 'absolute';
-                    cancelBtn.style.top = '0';
-                    cancelBtn.style.right = '0';
-                    cancelBtn.style.backgroundColor = 'rgba(255, 0, 0, 0.5)';
-                    cancelBtn.style.color = 'white';
-                    cancelBtn.style.border = 'none';
-                    cancelBtn.style.borderRadius = '50%';
-                    cancelBtn.style.width = '20px';
-                    cancelBtn.style.height = '20px';
-                    cancelBtn.style.cursor = 'pointer';
-
-                    // 미리보기 이미지 컨테이너
-                    const imgContainer = document.createElement('div');
-                    imgContainer.style.position = 'relative';
-                    imgContainer.style.display = 'inline-block';
-
-                    // 취소 버튼 클릭 시 이미지 삭제
-                    cancelBtn.onclick = function () {
-                        imgContainer.remove(); // 미리보기에서 이미지 삭제
-                        removeFileFromInput(i); // 파일 목록에서 해당 이미지 삭제
-                    };
-
-                    imgContainer.appendChild(imgElement);
-                    imgContainer.appendChild(cancelBtn);
-                    preview.appendChild(imgContainer);
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        // input에서 파일을 삭제하는 함수
-        function removeFileFromInput(index) {
-            const input = document.getElementById('photoFiles');
-            const dt = new DataTransfer();
-            const files = input.files;
-
-            // 선택된 파일을 제외하고 새로운 DataTransfer 객체에 추가
-            for (let i = 0; i < files.length; i++) {
-                if (i !== index) {
-                    dt.items.add(files[i]);
-                }
-            }
-
-            input.files = dt.files; // 수정된 파일 목록을 input에 적용
-        }
-
-        // 페이지 로딩 시 기존 이미지 미리보기 출력
-        window.onload = function () {
-            initializeExistingImages(); // 기존 이미지 목록 출력
-        };
-    </script>
-    <link href="/css/weather/allW.css" rel="stylesheet"/>
-    <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
-    <script th:src="@{/js/map/geolocation.js}"></script>
-    <script th:src="@{/js/weather/allMapChoiceN.js}"></script>
-    <script th:src="@{/js/map/kakaomapN.js}"></script>
+<link href="/css/weather/allW.css" rel="stylesheet"/>
+<script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+<script th:src="@{/js/map/geolocation.js}"></script>
+<script th:src="@{/js/weather/allMapChoiceN.js}"></script>
+<script th:src="@{/js/map/kakaomapN.js}"></script>
 </th:block>
 </body>
 </html>

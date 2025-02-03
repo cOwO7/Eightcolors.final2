@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{/layouts/transfer_layout}">
+      layout:decorate="~{layouts/transfer_layout}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -57,7 +57,7 @@
                     </div>
                     <div class="col-8 offset-md-2 text-center mt-5">
                         <input type="submit" value="수정하기" class="btn btn-primary"/>
-                        <a href="/transfers?pageCount=${pageCount}" class="btn btn-secondary">목록으로</a>
+                        <a th:href="@{/transfers(pageCount=${pageCount})}" class="btn btn-secondary">목록으로</a>
                     </div>
                 </form>
             </div>

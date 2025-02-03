@@ -12,18 +12,27 @@ import com.springbootfinal.app.service.residence.ResidenceRoomService;
 import com.springbootfinal.app.service.residence.ResidenceService;
 import com.springbootfinal.app.service.weather.AllWeatherService;
 import com.springbootfinal.app.service.weather.WeatherService;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 //@RequestMapping("/residence")
@@ -58,13 +67,24 @@ public class ResidenceController {
     @GetMapping("/list")
     public String listResidences(Model model) {
         List<ResidenceDto> residences = residenceService.getAllResidences();
+        //List<ResidenceRoom> rooms = new ArrayList<>();
         model.addAttribute("residences", residences);
         return "views/residence/Residence"; // "Residence" 페이지에 데이터를 전달
     }
+    // 업자 목록 조회
+    @GetMapping("/list/{hostUserNo}")
+    public String listPosts(@PathVariable Long hostUserNo, Model model) {
+        System.out.println("Received hostUserNo: " + hostUserNo);
+        List<ResidenceDto> residences = residenceService.findPostsByHostUserNo(hostUserNo);
+        model.addAttribute("residences", residences);
+        return "views/residence/Residence1";
+    }
+
 
     // 숙소 상세정보
     @GetMapping("/detail/{residNo}")
-    public String viewResidence(@PathVariable Long residNo, Model model) throws IOException {
+    public String viewResidence(@PathVariable Long residNo,
+                                Model model) {
         // 숙소 정보를 가져옴
         var residence = residenceService.getResidenceById(residNo);
         List<ResidenceRoom> rooms = residenceService.getRoomsByResidenceId(residNo);
@@ -88,7 +108,9 @@ public class ResidenceController {
     @Transactional
     @PostMapping("/new")
     public String createResidence(@ModelAttribute ResidenceDto residence,
-                                  @RequestParam("photoFiles") MultipartFile[] photoFiles) throws IOException {
+                                  @RequestParam("photoFiles") MultipartFile[] photoFiles,
+                                  HttpSession httpSession) {
+        residence.setHostUserNo((Long)httpSession.getAttribute("hostUserNo"));
         log.info("Received ResidenceDto: {}", residence);
 
         try {
@@ -160,7 +182,7 @@ public class ResidenceController {
     }
 
     // 숙소 수정 페이지
-    @GetMapping("/edit/{residNo}")
+    @GetMapping("/update/{residNo}")
     public String editResidenceForm(@PathVariable Long residNo, Model model) {
         // 숙소 정보 불러오기
         ResidenceDto residence = residenceService.getResidenceById(residNo);
@@ -173,7 +195,7 @@ public class ResidenceController {
     }
 
     // 숙소 수정 처리
-    @PostMapping("/edit/{residNo}")
+    @PostMapping("/update/{residNo}")
     public String updateResidence(@PathVariable Long residNo,
                                   @ModelAttribute ResidenceDto residence,
                                   @RequestParam("photos") List<MultipartFile> photos,
@@ -187,8 +209,19 @@ public class ResidenceController {
                 propertyPhotosService.deletePhotos(photoNo);  // 사진 파일과 DB에서 삭제
             }
         }
+
+        // 2. 새로운 사진 URL 추가 (새로운 사진만 처리) 새로 추가된거 문제 발생시 이 구문 삭제
+        /*if (!photos.isEmpty()) {
+            residence.setNewPhotoUrls(new ArrayList<>());  // 새로운 사진을 담을 리스트 초기화
+            for (MultipartFile photo : photos) {
+                // 사진 저장 처리
+                String fileName = propertyPhotosService.savePhoto(photo, fileName, residNo); // 사진 저장 후 파일명 반환
+                residence.getNewPhotoUrls().add(fileName);  // 새 사진 URL 추가
+            }
+        }*/
+
         // 2. ResidenceDto의 새로운 사진 URL 리스트에 추가
-        residence.setNewPhotoUrls(new ArrayList<>());  // 기존 사진 처리 후 새로 추가된 사진만
+        //residence.setNewPhotoUrls(new ArrayList<>());  // 기존 사진 처리 후 새로 추가된 사진만
         // 3. Residence 정보 업데이트
         residenceService.updateResidence(residence, residNo, photos);  // photos를 전달하여 처리
         return "redirect:/list";  // 업데이트 완료 후 목록으로 리다이렉트
@@ -217,7 +250,8 @@ public class ResidenceController {
     // Room
     // 방 등록 페이지
     @GetMapping("/room/{residNo}/addRoom")
-    public String newResidenceRoomForm(@PathVariable Long residNo, Model model) {
+    public String newResidenceRoomForm(@PathVariable Long residNo,
+                                       Model model) {
         if (residNo == null) {
             return "redirect:/error";  // residNo가 null일 경우 예외 처리
         }
@@ -238,7 +272,9 @@ public class ResidenceController {
     // 방 등록 처리
     @PostMapping("/room/{residNo}/addRoom")
     public String createResidenceRoom(@ModelAttribute ResidenceRoom residenceRoom,
-                                      @PathVariable Long residNo) throws IOException {
+                                      @PathVariable Long residNo,
+                                      MultipartFile roomImage
+                                      ) throws IOException {
         if (residNo == null) {
             throw new IllegalArgumentException("resid_no가 null입니다.");
         }
@@ -249,44 +285,74 @@ public class ResidenceController {
         }
 
         residenceRoom.setResidNo(residNo);  // 방에 해당하는 숙소 번호를 세팅
-        residenceRoomService.createResidenceRoom(residenceRoom);  // 방 등록
+        residenceRoomService.createResidenceRoom(residenceRoom, roomImage);  // 방 등록
 
         return "redirect:/list";  // 방 등록 후 목록 페이지로 리디렉션
     }
 
 
     // 방 수정 페이지
-    @GetMapping("/edit/{roomNo}/room")
-    public String editResidenceRoomForm(@PathVariable Long roomNo,
-                                        @PathVariable Long residNo,
-                                        Model model) {
-        // 숙소 정보 불러오기
-        ResidenceDto residence = residenceService.getResidenceById(residNo);
+    @GetMapping("/update/{residNo}/room")
+    public String editResidenceRoomForm(@PathVariable("residNo") Long residNo, Model model) {
+        List<ResidenceRoom> residenceRooms = residenceRoomService.getRoomsByResidenceId(residNo);
         List<PropertyPhotosDto> photos = propertyPhotosService.getPhotosByResidenceId(residNo);
 
-        model.addAttribute("residence", residence);
-        model.addAttribute("photos", photos);
-        model.addAttribute("roomNo", roomNo);
+        // residence 객체를 추가해야 함
+        ResidenceDto residence = residenceService.getResidenceById(residNo);
 
-        return "views/residence/ResidenceRoomUpdate"; // 수정 페이지
+        model.addAttribute("residenceRooms", residenceRooms);
+        model.addAttribute("photos", photos);
+        model.addAttribute("resid", residNo);
+        model.addAttribute("residence", residence);  // 추가
+
+        return "views/residence/ResidenceRoomUpdate";
     }
 
-    // 방 수정 처리
-    @PostMapping("/edit/{roomNo}/room")
-    public String updateResidenceRoom(@PathVariable Long roomNo,
-                                  @ModelAttribute ResidenceRoom residenceRoom) {
-        // 3. Residence 정보 업데이트
-        residenceRoomService.updateRoom(residenceRoom, roomNo);  // photos를 전달하여 처리
-        return "redirect:/list";  // 업데이트 완료 후 목록으로 리다이렉트
+
+    // 방 수정 처리 (residNo에 해당하는 여러 개의 방을 수정)
+    @PostMapping("/update/{residNo}/room")
+    public String updateResidenceRooms(@PathVariable("residNo") Long residNo,
+                                       @ModelAttribute ResidenceRoom residenceRoom, // 여러 개의 방 데이터를 받기 위한 Wrapper
+                                       @RequestParam(value = "roomImages", required = false) List<MultipartFile> roomImages) throws IOException {
+        List<ResidenceRoom> residenceRooms = residenceRoom.getResidenceRooms();
+
+        // 각 방에 대해 업데이트 진행
+        for (int i = 0; i < residenceRooms.size(); i++) {
+            ResidenceRoom room = residenceRooms.get(i);
+            MultipartFile roomImage = (roomImages != null && i < roomImages.size()) ? roomImages.get(i) : null;
+
+            residenceRoomService.updateRoom(room, residNo, room.getRoomNo(), roomImage);
+        }
+
+        return "redirect:/list"; // 업데이트 완료 후 목록으로 이동
     }
 
     // 방 삭제
-    @PostMapping("/delete/{roomNo}/room")
-    public String deleteResidenceRoom(@PathVariable Long roomNo
-                                      ) {
-        residenceRoomService.deleteRoom(roomNo);
-        return "redirect:/list";
+    @GetMapping("/delete/{residNo}/rooms")
+    public String showDeleteRoomForm(@PathVariable Long residNo, Model model) {
+        List<ResidenceRoom> rooms = residenceRoomService.getRoomsByResidenceId(residNo);
+        model.addAttribute("rooms", rooms);
+        model.addAttribute("residNo", residNo);
+        return "views/residence/ResidenceRoomDelete"; // 삭제 폼 뷰 이름
     }
+
+    // 개별 삭제
+    @PostMapping("/delete/{residNo}/room")
+    public String deleteSelectedRooms(@PathVariable Long residNo,
+                                      @RequestParam(required = false) List<Long> roomNos,
+                                      RedirectAttributes redirectAttributes) {
+        if (roomNos == null || roomNos.isEmpty()) {
+            redirectAttributes.addFlashAttribute("message", "삭제할 방을 선택하세요.");
+            return "redirect:/delete/" + residNo + "/rooms"; // 다시 삭제 폼으로 이동
+        }
+
+        residenceRoomService.deleteRooms(roomNos); // 여러 개 삭제 실행
+
+        redirectAttributes.addFlashAttribute("message", "선택한 방이 삭제되었습니다.");
+        return "redirect:/delete/" + residNo + "/rooms"; // 삭제 후 리다이렉트
+    }
+
+
 
     // 날씨 데이터
     @PostMapping("/residence/processAllWeather")

@@ -3,83 +3,56 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layouts/main_layout}">
 <head>
-    <link href="bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="/bootstrap/bootstrap.min.css" rel="stylesheet">
     <meta charset="UTF-8">
     <title>숙소 등록</title>
 <body>
 <th:block layout:fragment="content">
     <div class="container">
-        <div>
-            <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-            <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=36a75517ce82693ff837cc79c740e197&libraries=services,clusterer"></script>
-        </div>
         <h1>방 수정</h1>
-        <form th:action="@{/edit/{id}/room(id=${residence.residNo})}" th:object="${residenceRoom}" method="post" enctype="multipart/form-data">
+        <!-- 방 수정 폼 -->
+        <form th:action="@{/update/{residNo}/room(residNo=${resid})}" method="post" enctype="multipart/form-data">
             <div class="row">
-                <div>
-                    <label>숙소 No:</label><br>
-                    <input type="text" name="residNo" th:value="${residence.residNo}" />
-                    <label>방 No</label><br>
-                    <input type="text" th:value="roomNo">
-                    <label>방 이름:</label><br>
-                    <input type="text" id="roomName" th:value="${roomName}" th:field="*{room.roomName}"><br><br>
-                    <label>가격:</label><br>
-                    <input type="text" id="roomPrice" th:value="${PricePerNight}" th:field="*{room.pricePerNight}"><br><br>
-                    <label>방 이미지: (추가 고민중)</label><br>
+                <div th:each="room, iterStat : ${residenceRooms}">
+                    <input type="text" th:name="|residenceRooms[${iterStat.index}].roomNo|" th:value="${room.roomNo}"/>
+                    <input type="text" th:name="|residenceRooms[${iterStat.index}].roomName|" th:value="${room.roomName}"/>
+                    <input type="number" th:name="|residenceRooms[${iterStat.index}].pricePerNight|" th:value="${room.pricePerNight}"/>
+                    <input type="file" name="roomImages"/>
+                    <div id="room-photo-preview">
+                        <div class="room-container" th:id="|room-${room.roomNo}|">
+                            <!-- 미리보기 이미지 -->
+                            <div class="existing-photo" th:id="|room-box-${room.roomNo}|">
+                                <img th:src="@{/images/files/{fileName}(fileName=${room.roomUrl01})}" width="150"
+                                     th:id="|room-img-${room.roomNo}|">
+                                <input type="hidden" name="existingRoomPhotos" th:value="${room.roomNo}">
+                                <button type="button" th:onclick="|removeRoomPhoto(${room.roomNo}, 'room-box-${room.roomNo}')|">
+                                    이미지 삭제
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <button type="submit" id="registerButton">수정</button>
-            <button><a href="/list">뒤로 가기</a></button>
+            <br><br><br>
+            <button><a href="/list" class="text-decoration-none text-black btn-warning">뒤로 가기</a></button>
+            <button type="submit" id="registerButton" class="btn btn-primary">수정</button>
         </form>
-
-        <form th:action="@{/edit/{id}/room(id=${residence.residNo})}" th:object="${residenceRoom}" method="post" enctype="multipart/form-data">
-            <div class="row">
-                <div>
-                    <label>숙소 No:</label><br>
-                    <input type="text" name="residNo" th:value="${residence.residNo}" />
-
-                    <label>방 개수:</label><br>
-                    <input type="number" id="roomCount" name="roomCount" min="1" max="10" value="1">
-                    <button type="button" onclick="generateRoomForms()">방 수정 폼 생성</button><br><br>
-
-                    <!-- 여기에 동적으로 방 수정 폼이 추가될 자리 -->
-                    <div id="roomFormsContainer"></div>
-                </div>
-            </div>
-
-            <button type="submit" id="registerButton2">수정</button>
-            <button><a href="/list">뒤로 가기</a></button>
-        </form>
-
-        <script>
-            function generateRoomForms() {
-                // 먼저 기존 폼들을 모두 제거
-                const container = document.getElementById("roomFormsContainer");
-                container.innerHTML = '';
-
-                // 방 개수에 맞는 폼 생성
-                const roomCount = document.getElementById("roomCount").value;
-
-                for (let i = 0; i < roomCount; i++) {
-                    const formHtml = `
-                <div class="roomForm">
-                    <h4>방 ${i + 1} 수정</h4>
-                    <label>방 이름:</label><br>
-                    <input type="text" name="roomName_${i}" /><br><br>
-
-                    <label>가격:</label><br>
-                    <input type="text" name="pricePerNight_${i}" /><br><br>
-
-                    <label>방 이미지:</label><br>
-                    <input type="file" name="roomImage_${i}" /><br><br>
-                </div>
-            `;
-                    container.innerHTML += formHtml;
-                }
-            }
-        </script>
     </div>
-    <script th:src="@{js/jquery-3.7.1.min.js}"></script>
+    <script>
+        function removeRoomPhoto(roomNo, boxId) {
+            // 해당 요소를 찾습니다.
+            var photoBox = document.getElementById(boxId);
+            if (photoBox) {
+                // 완전히 삭제하려면 DOM에서 제거합니다.
+                photoBox.parentNode.removeChild(photoBox);
+                // 또는 숨기고 싶다면:
+                // photoBox.style.display = 'none';
+            } else {
+                console.log("삭제할 요소를 찾을 수 없습니다: " + boxId);
+            }
+        }
+    </script>
+    <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
 </th:block>
 </body>
 </html>
