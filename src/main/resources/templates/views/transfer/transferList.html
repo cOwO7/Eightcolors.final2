@@ -1,49 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{/layouts/transfer_layout}">
+      layout:decorate="~{layouts/transfer_layout}">
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/transferList.css" rel="stylesheet">
     <meta charset="UTF-8">
     <title>양도게시판</title>
-    <script>
-        function updateSearchInputType() {
-            let searchType = document.getElementById("searchType").value;
-            let searchKeyword = document.getElementById("searchKeyword");
-            console.log(searchType); // 값 확인용 출력
-
-            // 'checkInDate' 또는 'checkOutDate'일 경우 date 타입을 설정
-            if (searchType === "checkInDate" || "checkOutDate") {
-                searchKeyword.setAttribute('type', 'date');  // 'type'을 date로 설정
-                searchKeyword.value = "";  // 날짜를 초기화
-            } else {
-                searchKeyword.setAttribute('type', 'text');  // 'type'을 text로 설정
-                searchKeyword.value = "";  // 날짜를 텍스트로 변경할 때 기존 값을 초기화
-            }
-        }
-    </script>
-    <style>
-        .container-narrow {
-            max-width: 1000px; /* 원하는 최대 너비 설정 */
-            margin: 0 auto; /* 가운데 정렬 */
-        }
-        .status-available {
-            background-color: #EEE8AA; /* 양도가능 배경 */
-            font-weight: bold;
-        }
-        .status-completed {
-            background-color: #a9a9a9; /* 양도완료 배경 */
-        }
-        .no-underline {
-            text-decoration: none; /* 밑줄 제거 */
-        }
-        .line-through {
-            text-decoration: line-through; /* 글의 중간에 줄 긋기 */
-        }
-        .bold {
-            font-weight: bold; /* 글자 굵게 */
-        }
-    </style>
 </head>
 <body>
 <th:block layout:fragment="content">
@@ -53,19 +16,20 @@
         <table class="table table-striped">
             <thead>
             <tr>
+                <th scope="col">번호</th>
                 <th scope="col">제목</th>
                 <th scope="col">숙소명</th>
                 <th scope="col">체크인 날짜</th>
                 <th scope="col">체크아웃 날짜</th>
                 <th scope="col">가격</th>
                 <th scope="col">상태</th>
-                <th scope="col">작성일</th>
             </tr>
             </thead>
             <tbody>
             <th:block th:if="${searchOption and not #lists.isEmpty(transferList)}">
                 <th:block th:each="transfer : ${transferList}">
                     <tr th:classappend="${transfer.status == '양도가능'} ? 'status-available' : (transfer.status == '양도완료' ? 'status-completed' : '')">
+                        <td th:text="${transfer.transferNo}"></td>
                         <td>
                             <span th:if="${transfer.status == '양도완료'}" th:text="${transfer.transferTitle}" class="no-underline line-through"></span>
                             <a th:if="${transfer.status != '양도완료'}" th:href="@{/transferDetail(transferNo=${transfer.transferNo}, pageCount=${currentPage}, type=${type}, keyword=${keyword})}" th:text="${transfer.transferTitle}" class="no-underline"></a>
@@ -89,18 +53,18 @@
                             <span th:if="${transfer.status != '양도완료' && transfer.status != '양도가능'}" th:text="${transfer.formattedTransferPrice}"></span>
                         </td>
                         <td th:text="${transfer.status}" th:classappend="${transfer.status == '양도가능'} ? 'bold' : ''"></td>
-                        <td th:text="${transfer.formattedCreatedAt}"></td>
                     </tr>
                 </th:block>
                 <th:block th:if="${searchOption and #lists.isEmpty(transferList)}">
                     <tr>
-                        <td colspan="7" class="text-center">"[[${keyword}]]"가 포함된 게시글이 존재하지 않음</td>
+                        <td colspan="8" class="text-center">"[[${keyword}]]"가 포함된 게시글이 존재하지 않음</td>
                     </tr>
                 </th:block>
             </th:block>
             <th:block th:if="${not searchOption and not #lists.isEmpty(transferList)}">
                 <th:block th:each="transfer : ${transferList}">
                     <tr th:classappend="${transfer.status == '양도가능'} ? 'status-available' : (transfer.status == '양도완료' ? 'status-completed' : '')">
+                        <td th:text="${transfer.transferNo}"></td>
                         <td>
                             <span th:if="${transfer.status == '양도완료'}" th:text="${transfer.transferTitle}" class="no-underline line-through"></span>
                             <a th:if="${transfer.status != '양도완료'}" th:href="@{/transferDetail(transferNo=${transfer.transferNo})}" th:text="${transfer.transferTitle}" class="no-underline"></a>
@@ -124,13 +88,12 @@
                             <span th:if="${transfer.status != '양도완료' && transfer.status != '양도가능'}" th:text="${transfer.formattedTransferPrice}"></span>
                         </td>
                         <td th:text="${transfer.status}" th:classappend="${transfer.status == '양도가능'} ? 'bold' : ''"></td>
-                        <td th:text="${transfer.formattedCreatedAt}"></td>
                     </tr>
                 </th:block>
             </th:block>
             <th:block th:if="${not searchOption and #lists.isEmpty(transferList)}">
                 <tr>
-                    <td colspan="7" class="text-center">게시글이 없습니다.</td>
+                    <td colspan="8" class="text-center">게시글이 없습니다.</td>
                 </tr>
             </th:block>
             </tbody>

@@ -6,7 +6,6 @@ import lombok.ToString;
 import org.apache.ibatis.type.Alias;
 
 import java.sql.Date;
-import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -14,22 +13,19 @@ import java.time.LocalDate;
 @Alias("Reservations")
 public class Reservations {
 
-    private Long reservation_no;
-    private Long user_no;
-    private Long room_no;
-
+    private Long reservationNo;  // reservation_no mapping
+    private Long userNo;         // user_no mapping
+    private Long roomNo;
     private String residName; // 숙소명 필드 추가
-    private Date checkin_date; // 필드 이름 변경
-    private Date checkout_date; // 필드 이름 변경
     private Date checkinDate; // 필드 이름 변경
     private Date checkoutDate; // 필드 이름 변경
-    private Integer total_price;
-    private Integer discount_rate;
-    private Float discounted_price;
-    private String transaction_id;
-    private String payment_status;
-    private String reservation_status;
-    private String created_at;
-    private String updated_at;
+    private Integer totalPrice;
+    private Integer discountRate;
+    private Float discountedPrice;
+    private String transactionId;
+    private String paymentStatus;
+    private String reservationStatus;
+    private String createdAt;
+    private String updatedAt;
 
 }

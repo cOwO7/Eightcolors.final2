@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<!--	
-	마이바티스 참고 사이트
-	  - http://blog.mybatis.org/
-	  - http://www.mybatis.org/mybatis-3/ko/index.html
-	  
-	@Mapper 애노테이션이 적용된 인터페이스와 맵퍼 XML파일은
-	namespace 속성으로 연결되기 때문에 맵퍼 XML의 namespace를
-	지정할 때 @Mapper 애노테이션이 적용된 맵퍼 인터페이스의
-	완전한 클래스 이름(패키지를 포함한 이름)을 지정하면 된다.   
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+   마이바티스 참고 사이트
+     - http://blog.mybatis.org/
+     - http://www.mybatis.org/mybatis-3/ko/index.html
+
+   @Mapper 애노테이션이 적용된 인터페이스와 맵퍼 XML파일은
+   namespace 속성으로 연결되기 때문에 맵퍼 XML의 namespace를
+   지정할 때 @Mapper 애노테이션이 적용된 맵퍼 인터페이스의
+   완전한 클래스 이름(패키지를 포함한 이름)을 지정하면 된다.
 -->
 <mapper namespace="com.springbootfinal.app.mapper.ReservationMapper">
 
@@ -18,10 +18,10 @@
         SELECT COUNT(*)
         FROM reservations
         WHERE room_no = #{roomNo}
-        AND (#{checkoutDate} > checkin_date
-        AND checkout_date > #{checkinDate})
-        AND reservation_status != '예약 취소'
-           </select>
+          AND (#{checkoutDate} > checkin_date
+            AND checkout_date > #{checkinDate})
+          AND reservation_status != '예약 취소'
+    </select>
 
     <!-- 방 가격 조회 -->
     <select id="getRoomPrice" resultType="int">
@@ -122,45 +122,47 @@
         FROM reservations
         WHERE
         1=1
-        <if test="user_no != null and user_no != '' ">
-            reservation_no = #{reservation_no}
+        <if test="reservationNo != null and reservationNo != '' ">
+            AND reservation_no = #{reservationNo}
         </if>
-        ORDER BY created_at DESC
     </select>
 
     <!-- 예약 수정 -->
     <update id="putReservations" parameterType="Reservations">
         UPDATE reservations
         SET
-        <if test="room_no != null and room_no != '' ">
-            room_no = #{room_no},
+        <if test="roomNo != null and roomNo != '' ">
+            room_no = #{roomNo},
         </if>
-        <if test="checkin_date != null and checkin_date != '' ">
-            checkin_date = #{checkin_date},
+        <if test="userNo != null and userNo != '' ">
+            user_no = #{userNo},
         </if>
-        <if test="checkout_date != null and checkout_date != '' ">
-            checkout_date = #{checkout_date},
+        <if test="checkinDate != null and checkinDate != '' ">
+            checkin_date = #{checkinDate},
         </if>
-        <if test="total_price != null and total_price != '' ">
-            total_price = #{total_price},
+        <if test="checkoutDate != null and checkoutDate != '' ">
+            checkout_date = #{checkoutDate},
         </if>
-        <if test="discount_rate != null and discount_rate != '' ">
-            discount_rate = #{discount_rate},
+        <if test="totalPrice != null and totalPrice != '' ">
+            total_price = #{totalPrice},
         </if>
-        <if test="discounted_price != null and discounted_price != '' ">
-            discounted_price = #{discounted_price},
+        <if test="discountRate != null and discountRate != '' ">
+            discount_rate = #{discountRate},
         </if>
-        <if test="transaction_id != null and transaction_id != '' ">
-            transaction_id = #{transaction_id},
+        <if test="discountedPrice != null and discountedPrice != '' ">
+            discounted_price = #{discountedPrice},
         </if>
-        <if test="payment_status != null and payment_status != '' ">
-            payment_status = #{payment_status},
+        <if test="transactionId != null and transactionId != '' ">
+            transaction_id = #{transactionId},
         </if>
-        <if test="reservation_status != null and reservation_status != '' ">
-            reservation_status = #{reservation_status},
+        <if test="paymentStatus != null and paymentStatus != '' ">
+            payment_status = #{paymentStatus},
+        </if>
+        <if test="reservationStatus != null and reservationStatus != '' ">
+            reservation_status = #{reservationStatus},
         </if>
         updated_at = NOW()
-        WHERE reservation_no = #{reservation_no}
+        WHERE reservation_no = #{reservationNo}
     </update>
 
     <!-- 예약 삭제 -->
@@ -168,25 +170,33 @@
         DELETE FROM reservations WHERE reservation_no = #{reservationNo}
     </delete>
 
-
     <resultMap id="reservationResultMap" type="com.springbootfinal.app.domain.reservations.Reservations">
-    <id property="reservation_no" column="reservation_no"/>
-    <result property="user_no" column="user_no"/>
-    <result property="room_no" column="room_no"/>
-    <result property="residName" column="residName"/>
-    <result property="checkinDate" column="checkin_date"/>
-    <result property="checkoutDate" column="checkout_date"/>
-    <result property="total_price" column="total_price"/>
-    <result property="discount_rate" column="discount_rate"/>
-    <result property="discounted_price" column="discounted_price"/>
-    <result property="transaction_id" column="transaction_id"/>
-    <result property="payment_status" column="payment_status"/>
-    <result property="reservation_status" column="reservation_status"/>
-    <result property="created_at" column="created_at"/>
-    <result property="updated_at" column="updated_at"/>
+        <id property="reservationNo" column="reservation_no"/> <!-- 수정된 부분 -->
+        <result property="userNo" column="user_no"/>
+        <result property="roomNo" column="room_no"/>
+        <result property="roomName" column="room_name"/>
+        <result property="residName" column="residName"/>
+        <result property="checkinDate" column="checkin_date"/>
+        <result property="checkoutDate" column="checkout_date"/>
+        <result property="totalPrice" column="total_price"/>
+        <result property="discountRate" column="discount_rate"/>
+        <result property="discountedPrice" column="discounted_price"/>
+        <result property="transactionId" column="transaction_id"/>
+        <result property="paymentStatus" column="payment_status"/>
+        <result property="reservationStatus" column="reservation_status"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
     </resultMap>
+
+    <select id="getReservationByUserNo" resultMap="reservationResultMap">
+        SELECT r.reservation_no, r.user_no, r.room_no, res.resid_name AS residName, r.checkin_date, r.checkout_date,
+               r.total_price, r.discount_rate, r.discounted_price, r.transaction_id, r.payment_status,
+               r.reservation_status, r.created_at, r.updated_at
+        FROM reservations r
+                 JOIN residence_rooms rr ON r.room_no = rr.room_no
+                 JOIN residence res ON rr.resid_no = res.resid_no
+        WHERE r.user_no = #{userNo}
+    </select>
+
+
 </mapper>
-
-
-
-
