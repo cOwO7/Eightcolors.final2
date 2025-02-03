@@ -48,6 +48,7 @@ public class KakaopayService {
     private String partnerUserId;
     private String partnerOrderId;
 
+    // 결제 준비 요청
     public ReadyResponse ready(String agent, String openType, long transferNo, String userNo) {
         this.transferNo = transferNo;
         HttpHeaders headers = new HttpHeaders();
@@ -71,6 +72,7 @@ public class KakaopayService {
 
         log.info("KakaoPay ReadyRequest: {}", readyRequest);
 
+        // API 호출
         HttpEntity<ReadyRequest> entityMap = new HttpEntity<>(readyRequest, headers);
         ResponseEntity<ReadyResponse> response = new RestTemplate().postForEntity(
                 "https://open-api.kakaopay.com/online/v1/payment/ready", entityMap,
@@ -83,6 +85,7 @@ public class KakaopayService {
         return readyResponse;
     }
 
+    // 결제 승인 요청
     public String approve(String pgToken, Long userNo) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "SECRET_KEY " + kakaopaySecretKey);
@@ -101,7 +104,7 @@ public class KakaopayService {
                     "https://open-api.kakaopay.com/online/v1/payment/approve",
                     entityMap,
                     String.class);
-//            // 결제 승인 후 양도 상태를 "양도 완료"로 업데이트
+//            결제 승인 후 양도 상태를 "양도 완료"로 업데이트
 //            updateTransferStatus(approveRequest.getPartnerOrderId(), "양도 완료");
             return response.getBody();
         } catch (Exception e) {
@@ -119,14 +122,14 @@ public class KakaopayService {
             transferMapper.putTransfer(transParam);
         }
     }
-
+//   양도 상태 업데이트
     public void updateTransferStatus(String partnerOrderId, String status) {
         TransferDto transfer = transferMapper.findByPartnerOrderId(partnerOrderId);
         if (transfer != null) {
-            log.info("양도게시판 상태 변경 for order ID {}: {}", partnerOrderId, status);
+            log.info("주문에 대한 전송 ID {}: {}", partnerOrderId, status);
             transferMapper.updateTransferStatus(partnerOrderId, status);
         } else {
-            log.warn("Transfer not found for order ID {}", partnerOrderId);
+            log.warn("주문 ID에 대한 전송을 찾을 수 없습니다 {}", partnerOrderId);
         }
     }
 }

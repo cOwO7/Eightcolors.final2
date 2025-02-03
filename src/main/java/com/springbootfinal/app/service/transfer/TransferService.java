@@ -21,22 +21,7 @@ public class TransferService {
     @Autowired
     private ReservationMapper reservationMapper;
 
-
-
-/*    public TransferDto getTransferDto(Long transferNo, boolean isCount) {
-        log.info("getTransferDto: {}, Long transferNo, boolean isCount", transferNo, isCount);
-        TransferDto transfer = transferMapper.transferRead(transferNo);
-        log.info("transferRead: {}", transferNo);
-
-        if (isCount) {
-            transferMapper.incrementReadCount(transferNo);
-        }
-
-        return transferMapper.transferRead(transferNo);
-
-    }*/
-
-
+    // 게시글 번호에 해당하는 게시글을 읽어오는 메서드
     public void updateTransferStatus(String partnerOrderId, String status) {
         TransferDto transfer = transferMapper.findByPartnerOrderId(partnerOrderId);
         if (transfer != null) {
@@ -44,27 +29,28 @@ public class TransferService {
         }
     }
 
-
+    // no에 해당하는 게시글의 읽은 횟수를 DB 테이블에서 증가시키는 메서드
     public void deleteTransfer(Long transferNo) {
         log.info("TransferService: 삭제하기{}", transferNo);
         transferMapper.deleteTransfer(transferNo);
     }
 
+    // 게시글을 수정하는 메서드
     public void updateBoard(TransferDto transferDto) {
         log.info("TransferService: 수정하기{}", transferDto);
         transferMapper.updateBoard(transferDto);
     }
 
+    // 한 페이지에 해당하는 게시글 리스트를 DB 테이블에서 읽어와 반환하는 메서드
+    private static final int PAGE_SIZE = 10;
+    private static final int PAGE_GROUP = 10;
 
-    private static final int PAGE_SIZE = 20;
-    private static final int PAGE_GROUP = 20;
-
-
+    // 게시글을 transferDto 객체로 받아서 DB 테이블에 추가하는 메서드
     public TransferService(TransferMapper transferMapper) {
         this.transferMapper = transferMapper;
     }
 
-
+    // 전체 게시글 리스트를 반환하는 메서드
     public Map<String, Object> transferList(int pageCount, String type, String keyword) {
         log.info("transferList(int pageCount, String type, String keyword");
         int currentPage = pageCount;
@@ -81,6 +67,7 @@ public class TransferService {
             endPage = totalPageCount;
         }
 
+        // 전체 게시글 리스트와 전체 페이지 수를 Map에 저장
         Map<String, Object> modelMap = new HashMap<String, Object>();
 
         modelMap.put("transferList", transferList);
@@ -101,25 +88,19 @@ public class TransferService {
         return modelMap;
     }
 
-
+    // 게시글을 transferDto 객체로 받아서 DB 테이블에 추가하는 메서드
     public void addTransfer(TransferDto transfer) {
         log.info("게시글 추가", transfer);
         transferMapper.transferInsert(transfer);
         log.info("게시글 transfers DB 저장완료", transfer);
     }
 
+    // 특정 게시글을 읽어오는 메서드
     public Reservations getReservationByUserNo(Long userNo) {
         return reservationMapper.getReservationByUserNo(userNo);
     }
 
-
-    /* public TransferDto getTransfer(Long transferNo, boolean isCount) {
-         log.info("getTransfer: {}", transferNo);
-         TransferDto transfer = transferMapper.transferRead(transferNo , isCount);
-         log.info("getTransfer: {}", transfer);
-         return transfer;
-
-     }*/
+    // 특정 게시글을 읽어오는 메서드
     public TransferDto getTransfer(Long transferNo, boolean isCount) {
         log.info("getTransfer: {}", transferNo);
         if(isCount) {
@@ -128,6 +109,7 @@ public class TransferService {
         return transferMapper.transferRead(transferNo, false);
     }
 
+    // 전체 게시글 리스트를 반환하는 메서드
     public List<TransferDto> getTransferList() {
         log.info("양도게시글 리스트 받아오기 완료");
         List<TransferDto> transferList = transferMapper.transferList();

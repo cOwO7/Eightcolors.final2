@@ -170,7 +170,6 @@
         DELETE FROM reservations WHERE reservation_no = #{reservationNo}
     </delete>
 
-
     <resultMap id="reservationResultMap" type="com.springbootfinal.app.domain.reservations.Reservations">
         <id property="reservationNo" column="reservation_no"/> <!-- 수정된 부분 -->
         <result property="userNo" column="user_no"/>
@@ -188,7 +187,6 @@
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
     </resultMap>
-
 
     <select id="getReservationByUserNo" resultMap="reservationResultMap">
         SELECT r.reservation_no, r.user_no, r.room_no, res.resid_name AS residName, r.checkin_date, r.checkout_date,

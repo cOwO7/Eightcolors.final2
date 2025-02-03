@@ -12,6 +12,7 @@
         WHERE transfer_no = #{transferNo}
     </update>
 
+    <!--게시판 테이블에서 no에 해당하는 게시글을 삭제하는 맵핑 구문 -->
     <delete id="deleteTransfer">
         DELETE FROM transfers
         WHERE transfer_no = #{transferNo}

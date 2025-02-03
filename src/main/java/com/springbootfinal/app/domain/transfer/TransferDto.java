@@ -16,25 +16,21 @@ import java.time.format.DateTimeFormatter;
 public class TransferDto {
 
     private Long transferNo;
-    private String transferTitle;             // 글 제목
+    private String transferTitle;
     private Long sellerUserNo;
     private Long buyerUserNo;
     private Long reservationNo;
     private BigDecimal transferPrice;
-    private String status;                    // 상태
+    private String status;
     private LocalDateTime createdAt;
-    private String transferContent;           // 글 내용
-
+    private String transferContent;
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
-
-    private String sellerId;                  // 양도자 아이디
-    private String buyerId;                   // 양수자 아이디
-    private String reservationResidName;      // 예약한 숙소명 (residence 테이블의 resid_name)
-    private String roomNo;                    // 예약한 방 번호
-
-    private Reservations reservation; // 예약 정보 추가
-
+    private String sellerId;
+    private String buyerId;
+    private String reservationResidName;
+    private String roomNo;
+    private Reservations reservation;
 
     // 포맷팅된 가격을 반환하는 메서드 추가
     public String getFormattedTransferPrice() {
@@ -45,6 +41,7 @@ public class TransferDto {
         return format.format(transferPrice) + " 원";
     }
 
+    // 포맷팅된 생성일시를 반환하는 메서드 추가
     public String getFormattedCreatedAt() {
         if (createdAt == null) {
             return "날짜 없음";
@@ -52,5 +49,4 @@ public class TransferDto {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return createdAt.format(formatter);
     }
-
 }
