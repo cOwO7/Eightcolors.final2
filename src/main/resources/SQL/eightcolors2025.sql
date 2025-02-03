@@ -18,45 +18,45 @@ use eightcolors2025;
 
 -- 1. 관리자 계정 테이블
 CREATE TABLE IF NOT EXISTS admin_users (
-                                           admin_user_no BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                           admin_id VARCHAR(50) UNIQUE,
-                                           admin_passwd VARCHAR(255),
-                                           admin_name VARCHAR(100),
-                                           role VARCHAR(50) DEFAULT 'ROLE_ADMIN'
+    admin_user_no BIGINT AUTO_INCREMENT PRIMARY KEY,
+    admin_id VARCHAR(50) UNIQUE,
+    admin_passwd VARCHAR(255),
+    admin_name VARCHAR(100),
+    role VARCHAR(50) DEFAULT 'ROLE_ADMIN'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- 2. 숙박업소 회원가입 테이블
 CREATE TABLE IF NOT EXISTS host_users (
-                                          host_user_no BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                          id VARCHAR(100) UNIQUE,
-                                          passwd VARCHAR(255),
-                                          email VARCHAR(255),
-                                          phone VARCHAR(100),
-                                          phone_verify INT DEFAULT 0,
-                                          name VARCHAR(100),
-                                          zipcode VARCHAR(50),
-                                          address1 VARCHAR(255),
-                                          address2 VARCHAR(255),
-                                          business_license_no VARCHAR(100),
-                                          regdate DATETIME DEFAULT CURRENT_TIMESTAMP,
-                                          role VARCHAR(50) DEFAULT 'ROLE_HOST'
+    host_user_no BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id VARCHAR(100) UNIQUE,
+    passwd VARCHAR(255),
+    email VARCHAR(255),
+    phone VARCHAR(100),
+    phone_verify INT DEFAULT 0,
+    name VARCHAR(100),
+    zipcode VARCHAR(50),
+    address1 VARCHAR(255),
+    address2 VARCHAR(255),
+    business_license_no VARCHAR(100),
+    regdate DATETIME DEFAULT CURRENT_TIMESTAMP,
+    role VARCHAR(50) DEFAULT 'ROLE_HOST'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- 3. 회원가입 테이블
 CREATE TABLE IF NOT EXISTS users (
-                                     user_no BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                     id VARCHAR(100),
-                                     password VARCHAR(255),
-                                     email VARCHAR(255),
-                                     phone VARCHAR(100),
-                                     name VARCHAR(100),
-                                     zipcode VARCHAR(50),
-                                     address1 VARCHAR(255),
-                                     address2 VARCHAR(255),
-                                     login_type VARCHAR(50),
-                                     provider_id VARCHAR(255),
-                                     reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                     role VARCHAR(50) DEFAULT 'ROLE_USER'
+    user_no BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id VARCHAR(100),
+    password VARCHAR(255),
+    email VARCHAR(255),
+    phone VARCHAR(100),
+    name VARCHAR(100),
+    zipcode VARCHAR(50),
+    address1 VARCHAR(255),
+    address2 VARCHAR(255),
+    login_type VARCHAR(50),
+    provider_id VARCHAR(255),
+    reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    role VARCHAR(50) DEFAULT 'ROLE_USER'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
@@ -84,6 +84,7 @@ CREATE TABLE IF NOT EXISTS residence_rooms (
     room_url01   VARCHAR(255),
     FOREIGN KEY (resid_no) REFERENCES residence (resid_no) ON DELETE CASCADE)
 ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+
 ALTER TABLE residence_rooms
     ADD COLUMN room_url01  VARCHAR(255);
 
@@ -91,44 +92,44 @@ select * from residence_rooms;
 
 -- 6. 예약 페이지 테이블
 CREATE TABLE IF NOT EXISTS reservations (
-                                            reservation_no BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                            user_no BIGINT,
-                                            room_no BIGINT,
-                                            checkin_date DATE,
-                                            checkout_date DATE,
-                                            total_price INT,
-                                            discount_rate INT DEFAULT 0,
-                                            discounted_price INT,
-                                            transaction_id VARCHAR(255) UNIQUE,
-                                            payment_status ENUM('대기중', '완료', '실패', '취소') DEFAULT '대기중',
-                                            reservation_status ENUM('예약 완료', '체크인 완료', '체크아웃 완료', '예약 취소') DEFAULT '예약 완료',
-                                            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                                            updated_at DATETIME,
-                                            FOREIGN KEY (user_no) REFERENCES users(user_no) ON DELETE CASCADE,
-                                            FOREIGN KEY (room_no) REFERENCES residence_rooms(room_no) ON DELETE CASCADE
+    reservation_no BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_no BIGINT,
+    room_no BIGINT,
+    checkin_date DATE,
+    checkout_date DATE,
+    total_price INT,
+    discount_rate INT DEFAULT 0,
+    discounted_price INT,
+    transaction_id VARCHAR(255) UNIQUE,
+    payment_status ENUM('대기중', '완료', '실패', '취소') DEFAULT '대기중',
+    reservation_status ENUM('예약 완료', '체크인 완료', '체크아웃 완료', '예약 취소') DEFAULT '예약 완료',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME,
+    FOREIGN KEY (user_no) REFERENCES users(user_no) ON DELETE CASCADE,
+    FOREIGN KEY (room_no) REFERENCES residence_rooms(room_no) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 -- 8. 고객센터 테이블
 CREATE TABLE IF NOT EXISTS inquiries (
-                                         inquiry_no BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                         user_no BIGINT,
-                                         title VARCHAR(255),
-                                         content TEXT,
-                                         inquiry_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-                                         status ENUM('대기중', '답변완료') DEFAULT '대기중',
-                                         FOREIGN KEY (user_no) REFERENCES users(user_no) ON DELETE CASCADE
+    inquiry_no BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_no BIGINT,
+    title VARCHAR(255),
+    content TEXT,
+    inquiry_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('대기중', '답변완료') DEFAULT '대기중',
+    FOREIGN KEY (user_no) REFERENCES users(user_no) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- 9. 답변 테이블
 CREATE TABLE IF NOT EXISTS answers (
-                                       answer_no BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                       inquiry_no BIGINT,
-                                       admin_user_no BIGINT,
-                                       content TEXT,
-                                       answer_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-                                       FOREIGN KEY (inquiry_no) REFERENCES inquiries(inquiry_no) ON DELETE CASCADE,
-                                       FOREIGN KEY (admin_user_no) REFERENCES admin_users(admin_user_no) ON DELETE CASCADE
+    answer_no BIGINT AUTO_INCREMENT PRIMARY KEY,
+    inquiry_no BIGINT,
+    admin_user_no BIGINT,
+    content TEXT,
+    answer_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (inquiry_no) REFERENCES inquiries(inquiry_no) ON DELETE CASCADE,
+    FOREIGN KEY (admin_user_no) REFERENCES admin_users(admin_user_no) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- 10. 숙소 사진 테이블
@@ -154,13 +155,13 @@ select * from property_photos;
 
 -- 11. 공지사항 테이블
 CREATE TABLE IF NOT EXISTS notices (
-                                       notice_no BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                       admin_user_no BIGINT,
-                                       title VARCHAR(255),
-                                       content TEXT,
-                                       notice_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-                                       is_active TINYINT(1) DEFAULT 1,
-                                       FOREIGN KEY (admin_user_no) REFERENCES admin_users(admin_user_no) ON DELETE CASCADE
+    notice_no BIGINT AUTO_INCREMENT PRIMARY KEY,
+    admin_user_no BIGINT,
+    title VARCHAR(255),
+    content TEXT,
+    notice_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    is_active TINYINT(1) DEFAULT 1,
+    FOREIGN KEY (admin_user_no) REFERENCES admin_users(admin_user_no) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- 12. 양도 테이블
@@ -215,14 +216,11 @@ INSERT INTO admin_users (admin_id, admin_passwd, admin_name, role)
 VALUES ('admin01', 'adminpass123', '관리자1', 'ROLE_ADMIN'),
        ('admin02', 'adminpass456', '관리자2', 'ROLE_ADMIN');
 
-
 -- 2. 숙박업소 회원가입 데이터 삽입
 INSERT INTO host_users (id, passwd, email, phone, name, zipcode, address1, address2, business_license_no, role)
 VALUES
     ('hostuser01', 'hostpass123', 'hostuser01@email.com', '010-1234-5678', '호스트1', '12345', '서울시 강남구', '역삼동 123', '1234567890', 'ROLE_HOST'),
     ('hostuser02', 'hostpass456', 'hostuser02@email.com', '010-2345-6789', '호스트2', '54321', '서울시 서초구', '반포동 456', '0987654321', 'ROLE_HOST');
-
-
 
 -- 3. 일반 회원가입 데이터 삽입
 INSERT INTO users (id, password, email, phone, name, zipcode, address1, address2, login_type, provider_id, role)
@@ -428,7 +426,6 @@ VALUES ('kor1150000000', '서울특별시 강서구', 58, 126, 126.0, 37.5586);
 -- 서울특별시 구로구
 INSERT INTO weather_coordinate (kor_code, area_name, grid_x, grid_y, longitude, latitude)
 VALUES ('kor1153000000', '서울특별시 구로구', 58, 125, 126.0, 37.4952);
-
 -- 서울특별시 금천구
 INSERT INTO weather_coordinate (kor_code, area_name, grid_x, grid_y, longitude, latitude)
 VALUES ('kor1154500000', '서울특별시 금천구', 59, 124, 126.0, 37.4592);
@@ -1116,9 +1113,6 @@ INSERT INTO weather_coordinate (kor_code, area_name, grid_x, grid_y, longitude, 
 VALUES ('kor5183000000', '강원특별자치도 양양군', 88, 138, 128.0, 38.0722);
 
 
-
 commit;
 
 select * from weather_coordinate;
-
-
