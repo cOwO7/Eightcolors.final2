@@ -114,8 +114,11 @@
 					aria-label="Basic outlined example">
 					<a href="/weather" class="btn btn-outline-primary">날씨</a>
 					<a href="/weatherResult" class="btn btn-outline-primary">통합날씨</a>
+
+					<a th:href="@{/accomSearch}" class="btn btn-outline-primary">숙소(사용자)</a>
 					<a th:href="@{/list}" class="btn btn-outline-primary">숙소(업자)</a>
 					<a th:href="@{/list/{hostUserNo}(hostUserNo=${session.hostUserNo})}" class="btn btn-primary">내 숙소</a>
+
 					<a th:href="@{/transfers}" class="btn btn-outline-primary">양도게시판</a>
 					<a th:href="@{/inquiries}" class="btn btn-outline-primary">고객센터</a>
 				</nav>
