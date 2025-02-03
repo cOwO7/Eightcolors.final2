@@ -10,6 +10,7 @@ public interface ResidenceRoomMapper {
 
     // 방 목록 조회
     List<ResidenceRoom> getRoomsByResidenceId(Long residNo);
+    String getRoomImageByRoomNo(Long roomNo);
 
     // 방 등록
     void insertRoom(ResidenceRoom room);
@@ -19,4 +20,7 @@ public interface ResidenceRoomMapper {
 
     // 방 삭제
     void deleteRoom(Long roomNo);
+
+    // 방 삭제(여러개)
+    void deleteRooms(@Param("roomNos") List<Long> roomNos);
 }

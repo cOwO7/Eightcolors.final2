@@ -29,4 +29,5 @@ public class PropertyPhotosDto {
     private String photoUrl09;
     private String photoUrl10;
     private String roomUrl01;
+
 }

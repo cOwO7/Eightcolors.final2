@@ -14,22 +14,52 @@
             <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=36a75517ce82693ff837cc79c740e197&libraries=services,clusterer"></script>
         </div>
         <h1>방 등록</h1>
-        <form th:action="@{/room/{id}/addRoom(id=${residence.residNo})}" th:object="${residenceRoom}" method="post" enctype="multipart/form-data">
+        <form th:action="@{/room/{id}/addRoom(id=${residence.residNo})}" th:object="${residenceRoom}" method="post"
+              enctype="multipart/form-data">
             <div class="row">
                 <div>
                     <!--<label>숙소 No:</label><br>-->
-                    <input type="hidden" name="residNo" th:value="${residence.residNo}" />
+                    <input type="hidden" name="residNo" th:value="${residence.residNo}"/>
                     <label>방 이름:</label><br>
                     <input type="text" id="roomName" th:field="*{roomName}"><br><br>
                     <label>가격:</label><br>
                     <input type="text" id="roomPrice" th:field="*{pricePerNight}"><br><br>
-                    <label>방 이미지: (추가 고민중)</label><br>
+                    <h3>사진 추가</h3>
+                    <label for="roomImage">사진 파일 업로드:</label>
+                    <input type="file" id="roomImage" name="roomImage" onchange="previewImages()">
+
+                    <div id="imagePreview">
+                        <div id="field1" class="image-field">이미지 미리보기</div>
+                    </div>
                 </div>
             </div>
             <button type="submit" id="registerButton">등록</button>
             <button><a href="/list">뒤로 가기</a></button>
         </form>
     </div>
+    <!-- 미리보기 기능을 위한 자바스크립트 -->
+    <script>
+        function previewImages() {
+            const previewContainer = document.getElementById('imagePreview');
+            previewContainer.innerHTML = ''; // 이전 미리보기 이미지들 초기화
+            const files = document.getElementById('photoFiles').files;
+
+            Array.from(files).forEach((file, index) => {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.classList.add('preview-image');
+                    img.style.maxWidth = '100px'; // 미리보기 이미지 크기
+                    img.style.marginRight = '10px';
+                    previewContainer.appendChild(img);
+                }
+
+                reader.readAsDataURL(file); // 파일을 읽고 이미지 미리보기 표시
+            });
+        }
+    </script>
     <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
 </th:block>
 </body>

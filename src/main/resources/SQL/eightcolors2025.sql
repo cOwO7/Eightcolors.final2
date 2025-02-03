@@ -79,10 +79,12 @@ CREATE TABLE IF NOT EXISTS residence_rooms (
     room_name       VARCHAR(255),
     price_per_night INT,
     room_url01   VARCHAR(255),
-    room_url02   VARCHAR(255),
-    room_url03   VARCHAR(255),
     FOREIGN KEY (resid_no) REFERENCES residence (resid_no) ON DELETE CASCADE)
 ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+ALTER TABLE residence_rooms
+    ADD COLUMN room_url01  VARCHAR(255);
+
+select * from residence_rooms;
 
 -- 6. 예약 페이지 테이블
 CREATE TABLE IF NOT EXISTS reservations (
@@ -152,7 +154,6 @@ CREATE TABLE IF NOT EXISTS property_photos (
     photo_url08   VARCHAR(255),
     photo_url09   VARCHAR(255),
     photo_url10   VARCHAR(255),
-    room_url01    VARCHAR(255),
     FOREIGN KEY (resid_no) REFERENCES residence (resid_no) ON DELETE CASCADE
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
