@@ -62,16 +62,18 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- 4. 숙소 테이블
 CREATE TABLE IF NOT EXISTS residence (
-                                         resid_no BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                         resid_name VARCHAR(255),
-                                         host_user_no BIGINT,
-                                         resid_description TEXT,
-                                         resid_address VARCHAR(255),
-                                         resid_type ENUM('resort', 'hotel', 'pension', 'motel'),
-                                         resid_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                         UNIQUE (host_user_no),
-                                         FOREIGN KEY (host_user_no) REFERENCES host_users(host_user_no) ON DELETE CASCADE
+    resid_no BIGINT AUTO_INCREMENT PRIMARY KEY,
+    resid_name VARCHAR(255),
+    host_user_no BIGINT,
+    resid_description TEXT,
+    resid_address VARCHAR(255),
+    resid_type ENUM('resort', 'hotel', 'pension', 'motel'),
+    resid_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (host_user_no),
+    FOREIGN KEY (host_user_no) REFERENCES host_users(host_user_no) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+select * from residence;
 
 -- 5. 숙소 방 정보 테이블
 CREATE TABLE IF NOT EXISTS residence_rooms (

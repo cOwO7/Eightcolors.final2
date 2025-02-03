@@ -161,6 +161,7 @@ function getWeatherData() {
 						console.log("응답 받은 날씨 데이터:", items);
 
 						let resultTable = $("#main-resultTable tbody");
+						console.log(resultTable.length);
 						resultTable.empty(); // 기존 테이블 초기화
 
 						let weatherDataByTime = {};
