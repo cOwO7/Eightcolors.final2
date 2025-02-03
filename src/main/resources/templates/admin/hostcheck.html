@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main_layout}">
+
+<head>
+    <style>
+        /* 스타일 코드 */
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $(".btn-delete").click(function(event) {
+                event.preventDefault();
+                var hostUserNo = $(this).data("host-user-no");
+                var row = $(this).closest("tr");
+
+                if (confirm("정말 이 호스트를 삭제하시겠습니까?")) {
+                    $.ajax({
+                        url: '/admin/hostcheck/delete',
+                        type: 'POST',
+                        data: { hostUserNo: parseInt(hostUserNo) },
+                        success: function(response) {
+                            console.log(response);
+                            row.remove();
+                            alert("호스트가 삭제되었습니다.");
+                        },
+                        error: function() {
+                            alert("삭제 중 오류가 발생했습니다.");
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</head>
+
+<th:block layout:fragment="content">
+    <div class="container my-5">
+        <h1 class="text-center">호스트 조회</h1>
+
+        <div class="row mb-4 d-flex justify-content-between align-items-center">
+            <div class="col-md-6">
+                <form th:action="@{/admin/hostcheck}" method="get">
+                    <div class="input-group search-bar">
+                        <input type="text" class="form-control" name="keyword" placeholder="검색어 입력...">
+                        <button class="btn btn-primary" type="submit">검색</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-4 text-end">
+                <a href="/admin/admin" class="btn btn-secondary">뒤로가기</a>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+                <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>이름</th>
+                    <th>아이디</th>
+                    <th>이메일</th>
+                    <th>전화번호</th>
+                    <th>주소</th>
+                    <th>가입일</th>
+                    <th>사업자등록번호</th>
+                    <th>삭제</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${not #lists.isEmpty(hostUserList)}" th:each="hostUser : ${hostUserList}">
+                    <td th:text="${hostUser.hostUserNo}"></td>
+                    <td th:text="${hostUser.name}"></td>
+                    <td th:text="${hostUser.id}"></td>
+                    <td th:text="${hostUser.email}"></td>
+                    <td th:text="${hostUser.phone}"></td>
+                    <td th:text="${hostUser.zipcode + ' ' + hostUser.address1 + ' ' + hostUser.address2}"></td>
+                    <td th:text="${hostUser.regdate}"></td>
+                    <td th:text="${hostUser.businessLicenseNo}"></td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm btn-delete" th:data-host-user-no="${hostUser.hostUserNo}">삭제</button>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(hostUserList)}">
+                    <td colspan="9" class="text-center text-muted">검색 결과가 없습니다.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</th:block>
+
+</html>
