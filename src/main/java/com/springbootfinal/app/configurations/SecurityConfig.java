@@ -104,6 +104,7 @@ public class SecurityConfig {
                         .permitAll()
                 );
 
+
         http.csrf(csrf -> csrf.disable());
         http.headers(headers -> headers.frameOptions(frame -> frame.disable()));
 
