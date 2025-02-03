@@ -16,18 +16,23 @@ import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 //@RequestMapping("/residence")
@@ -267,8 +272,9 @@ public class ResidenceController {
     // 방 등록 처리
     @PostMapping("/room/{residNo}/addRoom")
     public String createResidenceRoom(@ModelAttribute ResidenceRoom residenceRoom,
-                                      @PathVariable Long residNo
-                                      ) {
+                                      @PathVariable Long residNo,
+                                      MultipartFile roomImage
+                                      ) throws IOException {
         if (residNo == null) {
             throw new IllegalArgumentException("resid_no가 null입니다.");
         }
@@ -279,7 +285,7 @@ public class ResidenceController {
         }
 
         residenceRoom.setResidNo(residNo);  // 방에 해당하는 숙소 번호를 세팅
-        residenceRoomService.createResidenceRoom(residenceRoom);  // 방 등록
+        residenceRoomService.createResidenceRoom(residenceRoom, roomImage);  // 방 등록
 
         return "redirect:/list";  // 방 등록 후 목록 페이지로 리디렉션
     }
@@ -287,37 +293,66 @@ public class ResidenceController {
 
     // 방 수정 페이지
     @GetMapping("/update/{residNo}/room")
-    public String editResidenceRoomForm(@PathVariable("residNo") Long residNo,
-                                        Model model) {
-        // 숙소 정보 불러오기
-        //ResidenceDto residence = residenceService.getResidenceById(residNo);
+    public String editResidenceRoomForm(@PathVariable("residNo") Long residNo, Model model) {
         List<ResidenceRoom> residenceRooms = residenceRoomService.getRoomsByResidenceId(residNo);
         List<PropertyPhotosDto> photos = propertyPhotosService.getPhotosByResidenceId(residNo);
+
+        // residence 객체를 추가해야 함
+        ResidenceDto residence = residenceService.getResidenceById(residNo);
 
         model.addAttribute("residenceRooms", residenceRooms);
         model.addAttribute("photos", photos);
         model.addAttribute("resid", residNo);
+        model.addAttribute("residence", residence);  // 추가
 
-        return "views/residence/ResidenceRoomUpdate"; // 수정 페이지
+        return "views/residence/ResidenceRoomUpdate";
     }
 
-    // 방 수정 처리
+
+    // 방 수정 처리 (residNo에 해당하는 여러 개의 방을 수정)
     @PostMapping("/update/{residNo}/room")
-    public String updateResidenceRoom(@PathVariable("roomNo") Long roomNo,
-                                      @PathVariable("residNo") Long residNo,
-                                      @ModelAttribute ResidenceRoom residenceRoom) {
-        // 3. Residence 정보 업데이트
-        residenceRoomService.updateRoom(residenceRoom, residNo, roomNo);  // photos를 전달하여 처리
-        return "redirect:/list";  // 업데이트 완료 후 목록으로 리다이렉트
+    public String updateResidenceRooms(@PathVariable("residNo") Long residNo,
+                                       @ModelAttribute ResidenceRoom residenceRoom, // 여러 개의 방 데이터를 받기 위한 Wrapper
+                                       @RequestParam(value = "roomImages", required = false) List<MultipartFile> roomImages) throws IOException {
+        List<ResidenceRoom> residenceRooms = residenceRoom.getResidenceRooms();
+
+        // 각 방에 대해 업데이트 진행
+        for (int i = 0; i < residenceRooms.size(); i++) {
+            ResidenceRoom room = residenceRooms.get(i);
+            MultipartFile roomImage = (roomImages != null && i < roomImages.size()) ? roomImages.get(i) : null;
+
+            residenceRoomService.updateRoom(room, residNo, room.getRoomNo(), roomImage);
+        }
+
+        return "redirect:/list"; // 업데이트 완료 후 목록으로 이동
     }
 
     // 방 삭제
-    @PostMapping("/delete/{roomNo}/room")
-    public String deleteResidenceRoom(@PathVariable Long roomNo
-                                      ) {
-        residenceRoomService.deleteRoom(roomNo);
-        return "redirect:/list";
+    @GetMapping("/delete/{residNo}/rooms")
+    public String showDeleteRoomForm(@PathVariable Long residNo, Model model) {
+        List<ResidenceRoom> rooms = residenceRoomService.getRoomsByResidenceId(residNo);
+        model.addAttribute("rooms", rooms);
+        model.addAttribute("residNo", residNo);
+        return "views/residence/ResidenceRoomDelete"; // 삭제 폼 뷰 이름
     }
+
+    // 개별 삭제
+    @PostMapping("/delete/{residNo}/room")
+    public String deleteSelectedRooms(@PathVariable Long residNo,
+                                      @RequestParam(required = false) List<Long> roomNos,
+                                      RedirectAttributes redirectAttributes) {
+        if (roomNos == null || roomNos.isEmpty()) {
+            redirectAttributes.addFlashAttribute("message", "삭제할 방을 선택하세요.");
+            return "redirect:/delete/" + residNo + "/rooms"; // 다시 삭제 폼으로 이동
+        }
+
+        residenceRoomService.deleteRooms(roomNos); // 여러 개 삭제 실행
+
+        redirectAttributes.addFlashAttribute("message", "선택한 방이 삭제되었습니다.");
+        return "redirect:/delete/" + residNo + "/rooms"; // 삭제 후 리다이렉트
+    }
+
+
 
     // 날씨 데이터
     @PostMapping("/residence/processAllWeather")
