@@ -3,11 +3,19 @@ package com.springbootfinal.app.mapper.transfer;
 import com.springbootfinal.app.domain.transfer.TransferDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
 @Mapper
 public interface TransferMapper {
+
+    @Select("SELECT * FROM transfers WHERE partner_order_id = #{partnerOrderId}")
+    TransferDto findByPartnerOrderId(@Param("partnerOrderId") String partnerOrderId);
+
+    @Update("UPDATE transfers SET status = #{status} WHERE partner_order_id = #{partnerOrderId}")
+    void updateTransferStatus(@Param("partnerOrderId") String partnerOrderId, @Param("status") String status);
 
     // no에 해당하는 게시글의 읽은 횟수를 DB 테이블에서 증가시키는 메서드
     public void incrementReadCount(Long transferNo);

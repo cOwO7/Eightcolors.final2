@@ -132,20 +132,25 @@
             <input type="hidden" id="tmFc" name="tmFc" th:value="${tmFc}"/>
         </form>
 
-        <div class="row" style="display: flex; flex-wrap: wrap;">
+        <div class="row">
             <!-- 추가는 여기에서 Start-->
             <!--<div class="col-md-4" th:each="residence : ${residenceList}">-->
-            <div class="col-md-4">
-                <div class="card" th:each="room : ${rooms}">
-                    <p><strong>Room No:</strong> <span th:text="${room.roomNo}"></span></p>
-                    <p><strong>Room Name:</strong> <span th:text="${room.roomName}"></span></p>
-                    <p><strong>Price:</strong> <span th:text="${room.pricePerNight}"></span>원</p>
+            <div class="col-md-9 card-container" style="display: flex; flex-wrap: wrap; gap: 1px;">
+                <div class="card" th:each="room : ${rooms}" style="width: 280px; height: 280px;">
+                    <p><strong><span th:text="${room.roomName}"></span></strong></p>
+                    <p><span th:text="${#numbers.formatInteger(room.pricePerNight, 3, 'COMMA')}"></span>원</p>
+                    <img th:src="@{|/images/files/${room.roomUrl01}|}" alt="방 사진" class="d-block w-100"/>
+                    <button class="btn btn-danger">예약하기</button>
                 </div>
             </div>
-            <!-- 여기까지 추가 END -->
-
-            <!-- 날씨 데이터 표시 -->
-            <div class="col-md-8">
+            <div class="col-md-3">
+                <p>뭘 추가하지??</p>
+            </div>
+        </div>
+        <!-- 여기까지 추가 END -->
+        <div class="row">
+            <div class="col-md-12">
+                <!-- 날씨 데이터 표시 -->
                 <table>
                     <tbody id="combinedWeatherTableBody"></tbody>
                     <div id="weatherContainer" class="weather-container">

@@ -19,13 +19,10 @@ public class Users {
     @Column(name = "user_no") // 기본 키 생성을 위한 전략 지정
     private Long userNo;
 
-    @Column(nullable = false, unique = true) // ID는 null이 될 수 없고 유일해야 함
     private String id;
 
-    @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false, unique = true)
     private String email;
 
     private String phone;
@@ -39,11 +36,9 @@ public class Users {
 
     private String providerId;
 
-    @Column(nullable = false, updatable = false)
     private LocalDateTime regDate = LocalDateTime.now();
 
-    @Column(nullable = false)
-    private Integer point = 0;
+
 
     @Column(nullable = false)
     private String Role;

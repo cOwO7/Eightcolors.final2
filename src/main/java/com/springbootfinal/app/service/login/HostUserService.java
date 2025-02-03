@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -113,5 +114,14 @@ public class HostUserService implements UserDetailsService {
                 hostUser.getPasswd(),
                 authorities
         );
+    }
+
+    /**
+     * 현재 인증된 호스트 사용자의 정보를 반환합니다.
+     * @return 현재 인증된 호스트 사용자 정보
+     */
+    public HostUser getCurrentHostUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return hostUserMapper.findHostUserById(username);
     }
 }

@@ -38,23 +38,23 @@ public class RoomService {
 	        return roomMapper.getReservationsForHotel(currentDate, hotelId);
 	    }*/
 	    /*오늘기준 예약가능한방*/
-	    public List<RoomDTO> getAvailableRoomsByHostAndDate(int hostUserNo) {
+	    public List<RoomDTO> getAvailableRoomsByHostAndDate(Long residNo) {
 	    	String currentDate = LocalDate.now().toString(); // 오늘 날짜를 가져옴
-	        return roomMapper.findAvailableRoomsByHostAndDate(hostUserNo, currentDate);
+	        return roomMapper.findAvailableRoomsByHostAndDate(residNo, currentDate);
 	    }
 		/*오늘기준 투숙중인 내역*/
-	    public List<ReservationDTO> getReservations(int hotelId) {
+	    public List<ReservationDTO> getReservations(Long residNo) {
 	    	String currentDate = LocalDate.now().toString(); // 오늘 날짜를 가져옴
-	        return roomMapper.getReservationsByHotelIdAndDate(hotelId, currentDate);
+	        return roomMapper.getReservationsByHotelIdAndDate(residNo, currentDate);
 	    }
 
-		public Map<String, Object> getReservationsByResidence(int hotelId, String type, String keyword) {
+		public Map<String, Object> getReservationsByResidence(Long residNo, String type, String keyword) {
 			boolean searchOption = (type.equals("null")
 					|| keyword.equals("null")) ? false : true;
 			Map<String, Object> modelMap = new HashMap<String, Object>();
 
 			modelMap.put("searchOption",searchOption);
-			List<ReservationDTO> BookingList=roomMapper.getReservationsByResidence(hotelId,type,keyword);
+			List<ReservationDTO> BookingList=roomMapper.getReservationsByResidence(residNo,type,keyword);
 			if(searchOption){
 				modelMap.put("type", type);
 				modelMap.put("keyword", keyword);

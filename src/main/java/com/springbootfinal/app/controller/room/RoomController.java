@@ -38,21 +38,21 @@ public class RoomController {
 	    
 	 // 예약된 방 조회 (오늘 날짜 기준) 및 예약가능한 방 조회
 	    @GetMapping("/availableAndBookedRooms")
-	    public String getavailableAndBookedRooms(@RequestParam("hotelId") int hotelId, Model model) {
-	        List<ReservationDTO> bookedRooms = roomService.getReservations(hotelId);
-	        List<RoomDTO> rooms = roomService.getAvailableRoomsByHostAndDate(hotelId);
+	    public String getavailableAndBookedRooms(@RequestParam("residNo") Long residNo, Model model) {
+	        List<ReservationDTO> bookedRooms = roomService.getReservations(residNo);
+	        List<RoomDTO> rooms = roomService.getAvailableRoomsByHostAndDate(residNo);
 	        model.addAttribute("rooms", rooms);
 	        model.addAttribute("bookedRooms", bookedRooms);
 	        return "availableAndBookedRooms"; // 예약된 방을 보여줄 뷰
 	    }
 	    
 	    @GetMapping("/room")
-	    public String rooms(Model model,@RequestParam("hotelId") int hotelId,
+	    public String rooms(Model model,@RequestParam("residNo") Long residNo,
 							@RequestParam(value = "type", required = false, defaultValue = "null") String type,
 							@RequestParam(value = "keyword", required = false, defaultValue = "null") String keyword) {
-			Map<String, Object> modelMap = roomService.getReservationsByResidence(hotelId,type,keyword);
+			Map<String, Object> modelMap = roomService.getReservationsByResidence(residNo,type,keyword);
 
-			model.addAttribute("hotelId",hotelId);
+			model.addAttribute("hotelId",residNo);
 			model.addAllAttributes(modelMap);
 	    	return "stayBookingLookup";
 	    }
