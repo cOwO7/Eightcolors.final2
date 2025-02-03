@@ -33,10 +33,20 @@
                                 <label for="residName" class="form-label">숙소명</label>
                                 <input type="text" class="form-control" name="residName" id="residName" th:value="${reservation.residName}" readonly>
                             </div>
-                            <div class="col-md-6">
-                                <label for="transferPrice" class="form-label">양도 가격</label>
-                                <input type="number" class="form-control" name="transferPrice" id="transferPrice" placeholder="가격을 입력하세요">
-                            </div>
+                         <div class="col-md-6">
+                            <label for="transferPrice" class="form-label">양도 가격</label>
+                            <input type="number" class="form-control" name="transferPrice" id="transferPrice" placeholder="가격을 입력하세요" oninput="validatePrice(this)">
+                        </div>
+
+                        <script>
+                            function validatePrice(input) {
+                                const MAX_PRICE = 999000;
+                                if (parseInt(input.value, 10) > MAX_PRICE) {
+                                    alert("양도 가격으로 입력 가능한 금액은 최대 999,000원 입니다.");
+                                    input.value = MAX_PRICE;
+                                }
+                            }
+                        </script>
                         </div>
                         <div class="mb-3">
                             <label for="transferTitle" class="form-label">제 목</label>

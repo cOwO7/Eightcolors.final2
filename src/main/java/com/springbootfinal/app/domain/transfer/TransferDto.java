@@ -20,7 +20,9 @@ public class TransferDto {
     private Long sellerUserNo;
     private Long buyerUserNo;
     private Long reservationNo;
-    private BigDecimal transferPrice;
+
+    private Long transferPrice;
+
     private String status;
     private LocalDateTime createdAt;
     private String transferContent;
