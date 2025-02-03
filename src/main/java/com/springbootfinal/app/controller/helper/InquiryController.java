@@ -6,15 +6,14 @@ import com.springbootfinal.app.service.helper.AnswerService;
 import com.springbootfinal.app.service.helper.InquiryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSession;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Controller
@@ -31,21 +30,26 @@ public class InquiryController {
     public String listInquiries(Model model) {
         List<InquiryDto> inquiries = inquiryService.getAllInquiries();
         model.addAttribute("inquiries", inquiries);
-        return "views/helper";
+        return "views/helper/helper";
     }
     // 문의 상세 페이지
     @GetMapping("/inquiries/{inquiryNo}")
-    public String viewInquiry(@PathVariable Long inquiryNo, Model model) {
+    public String viewInquiry(@PathVariable Long inquiryNo,
+                              Model model) {
+
         InquiryDto inquiry = inquiryService.getInquiryById(inquiryNo);
+        List<AnswerDto> answers = answerService.getAnswersByInquiryId(inquiryNo);
+
         model.addAttribute("inquiry", inquiry);
-        return "views/InquiriesDetail";
+        model.addAttribute("answers", answers);
+        return "views/helper/InquiriesDetail";
     }
 
     // 문의 작성 폼
     @GetMapping("/inquiries/create")
     public String createInquiryForm(Model model) {
         model.addAttribute("inquiry", new InquiryDto());
-        return "views/InquiriesWriter";
+        return "views/helper/InquiriesWriter";
     }
 
     // 문의 등록 처리
@@ -60,7 +64,7 @@ public class InquiryController {
     public String editInquiryForm(@PathVariable Long inquiryNo, Model model) {
         InquiryDto inquiry = inquiryService.getInquiryById(inquiryNo);
         model.addAttribute("inquiry", inquiry);
-        return "views/InquiriesUpdate";
+        return "views/helper/InquiriesUpdate";
     }
 
     // 문의 수정 처리
@@ -80,15 +84,25 @@ public class InquiryController {
 
     // 답변 추가
     @PostMapping("/inquiries/{inquiryNo}/answer")
-    public String addAnswer(@PathVariable Long inquiryNo, @RequestParam String content) {
+    public String addAnswer(@PathVariable Long inquiryNo,
+                            @RequestParam String content,
+                            Model model) {
+        // AnswerDto 객체 생성 및 값 설정
         AnswerDto answer = new AnswerDto();
         answer.setInquiryNo(inquiryNo);
         answer.setContent(content);
         log.info("답변 전송: {}", answer);
-        // 관리자 번호는 로그인 정보에서 가져와야 합니다.
-        answer.setAdminUserNo(1L);  // 예시로 관리자 번호를 1로 설정
+
+        // 답변 추가 서비스 호출
         answerService.addAnswer(answer);
+
+        // 모델에 답변 추가
+        model.addAttribute("answer", answer);
+
+        // 답변이 등록된 후 원래 문의 상세 페이지로 리디렉션
         return "redirect:/inquiries/{inquiryNo}";
     }
+
+
 }
 

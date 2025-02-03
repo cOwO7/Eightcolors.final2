@@ -10,5 +10,6 @@ public interface AnswersMapper {
 
     // 답변 추가
     void insertAnswer(AnswerDto answer);
+    // 답변 조회
+    List<AnswerDto> allAnswerByInquiryId(Long inquiryId);
 }
-

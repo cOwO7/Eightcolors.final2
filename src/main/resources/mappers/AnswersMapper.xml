@@ -6,8 +6,17 @@
 
     <!-- 답변 추가 -->
     <insert id="insertAnswer" useGeneratedKeys="true" keyProperty="answerNo">
-        INSERT INTO answers (inquiry_no, admin_user_no, content)
-        VALUES (#{inquiryNo}, #{adminUserNo}, #{content});
+        INSERT INTO answers (inquiry_no, content)
+        VALUES (#{inquiryNo}, #{content});
     </insert>
+    <!-- 답변 조회 -->
+    <select id="allAnswerByInquiryId" parameterType="Long" resultType="AnswerDto">
+        SELECT answer_no AS answerNo,
+               inquiry_no AS inquiryNo,
+               admin_name AS adminName,
+               content
+        FROM answers
+        WHERE inquiry_no = #{inquiryId}
+    </select>
 
 </mapper>
