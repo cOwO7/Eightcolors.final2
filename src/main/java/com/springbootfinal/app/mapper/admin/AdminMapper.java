@@ -14,7 +14,7 @@ import java.util.Map;
 @Mapper
 public interface AdminMapper {
     List<RecentOrderDto> findRecentOrders();
-    List<ResidenceDto> findAllResidences();
+    /*List<ResidenceDto> findAllResidences();*/
     void deleteRoomByResidNo(Long residNo);
 
     List<Users> findAllUsers();
@@ -39,4 +39,8 @@ public interface AdminMapper {
                                       @Param("keyword") String keyword);
 
     List<Map<String, Object>> getRoomVacancyRates();
+
+    List<ResidenceDto> findResidences(@Param("residType") String residType,
+                                      @Param("keyword") String keyword);
+
 }

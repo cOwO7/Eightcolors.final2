@@ -7,7 +7,6 @@
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #f4f7fa;
             color: #333;
         }
 
@@ -125,34 +124,58 @@
             margin-top: 5px;
         }
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $(".btn-delete").click(function(event) {
+                event.preventDefault();
+                var residNo = $(this).data("resid-no");
+                var row = $(this).closest("tr");
+
+                if (confirm("정말 이 숙소를 삭제하시겠습니까?")) {
+                    $.ajax({
+                        url: '/admin/roomcheck/delete',
+                        type: 'POST',
+                        data: { residNo: residNo },
+                        success: function(response) {
+                            console.log(response);
+                            if (response.status === "success") {
+                                row.remove();
+                                alert("숙소가 삭제되었습니다.");
+                            } else {
+                                alert("삭제 중 오류가 발생했습니다: " + response.message);
+                            }
+                        },
+                        error: function() {
+                            alert("삭제 중 오류가 발생했습니다.");
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 </head>
 
 <th:block layout:fragment="content">
     <div class="container my-5">
         <h1 class="text-center">숙소 조회</h1>
 
-        <div class="row mb-4">
-            <div class="col-md-4">
+        <div class="row mb-4 d-flex justify-content-between align-items-center">
+            <div class="col-md-8">
                 <form th:action="@{/admin/roomcheck}" method="get">
                     <div class="input-group search-bar">
-                        <select class="form-select" name="region">
-                            <option value="">전체</option>
-                            <option th:each="region : ${regions}" th:value="${region}" th:text="${region}"></option>
+                        <select class="form-select" name="residType" style="max-width: 120px;">
+                            <option value="" th:selected="${residType == ''}">전체</option>
+                            <option value="motel" th:selected="${residType == 'motel'}">모텔</option>
+                            <option value="hotel" th:selected="${residType == 'hotel'}">호텔</option>
+                            <option value="resort" th:selected="${residType == 'resort'}">리조트</option>
+                            <option value="pension" th:selected="${residType == 'pension'}">펜션</option>
                         </select>
+                        <input type="text" class="form-control" name="keyword" style="max-width: 500px;" placeholder="숙소명, 호스트 ID로 검색">
                         <button class="btn btn-primary" type="submit">검색</button>
                     </div>
                 </form>
             </div>
-
-            <div class="col-md-4">
-                <form th:action="@{/admin/roomcheck}" method="get">
-                    <div class="input-group search-bar">
-                        <input type="text" class="form-control" name="keyword" placeholder="숙소명 또는 호스트 검색">
-                        <button class="btn btn-primary" type="submit">검색</button>
-                    </div>
-                </form>
-            </div>
-
             <div class="col-md-4 text-end">
                 <a href="/admin/admin" class="btn btn-secondary">뒤로가기</a>
             </div>
@@ -179,8 +202,8 @@
                     <td th:text="${residence.hostId}"></td>
                     <td th:text="${residence.residAddress}"></td>
                     <td th:text="${residence.residType}"></td>
-                    <td th:text="${residence.availableRooms}">공실은 아까 짠 쿼리</td>
-                    <td th:text="${residence.vacancyRate} + '%'">비율은 이따가 계산...</td>
+                    <td th:text="${residence.availableRooms}"></td>
+                    <td th:text="${residence.vacancyRate} + '%'"></td>
                     <td>
                         <form th:action="@{/admin/roomcheck/{residNo}(residNo=${residence.residNo})}" method="get">
                             <button type="submit" class="btn btn-danger btn-sm">삭제</button>
