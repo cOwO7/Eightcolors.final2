@@ -19,14 +19,6 @@ function formatTime(date, time) {
 
 	return { date: formattedDate, time: formattedTime };
 }
-
-// 페이지가 로딩이 완료되면 자동 출력
-
-/*$(window).on('load', function() {
-	// 페이지가 완전히 로드된 후 자동으로 날씨 데이터 조회
-	getWeatherData();  // 날씨 데이터를 직접 호출하는 함수로 대체
-});*/
-
 // 로딩 스피너 HTML 추가
 const loaderHtml = `
     <div id="loader" style="display: none;">
@@ -188,7 +180,8 @@ function getWeatherData() {
 									pty: "-",          // 강수 형태 (예: 없음, 비, 눈, 비/눈, 빗방울 등)
 									temp: "-",         // 기온 (예: 20℃)
 									pcp: "-",          // 강수량 (예: 0mm)
-									sno: "-"           // 적설량 (예: 0cm)
+									sno: "-",          // 적설량 (예: 0cm)
+									humidity: "-"	   // 습도
 								};
 							}
 							// 각 카테고리별 데이터 처리
@@ -234,11 +227,19 @@ function getWeatherData() {
 							}
 						});
 
+						// ✅ 여기에 `<th>` 변경 코드 추가 ✅
+						let firstWeather = Object.values(weatherDataByTime)[0]; // 첫 번째 데이터 기준
+						if (firstWeather.pcp === "강수없음" || firstWeather.sno === "적설없음") {
+							$("#main-resultTable thead tr th:nth-child(4)").text("습도");
+						} else {
+							$("#main-resultTable thead tr th:nth-child(4)").text("강수 량");
+						}
+
 						let count = 0;
 						for (let time in weatherDataByTime) {
 							let weather = weatherDataByTime[time];
 
-							if (count >= 3) break;
+							if (count >= 5) break;
 
 							let formatted = formatTime(weather.date, weather.time);
 							let row = $("<tr></tr>");
@@ -251,7 +252,14 @@ function getWeatherData() {
 							row.append(`<td><img src="${weatherImg}" alt="weather icon" style="width: 50px; height: 50px; text-align: center;"/><br>${skyLabel}</td>`);
 							row.append(`<td><br>${weather.temp}℃</td>`);
 							row.append(`<td><br>${weather.pty}%</td>`);
-							row.append(`<td><br>${weather.pcp}<br>${weather.sno}</td>`);
+							//row.append(`<td><br>${weather.pcp}<br>${weather.sno}</td>`);
+							if (weather.pcp === "강수없음" || weather.sno === "적설없음") {
+								// 강수량 대신 습도를 표시
+								row.append(`<td><br>${weather.humidity}</td>`);
+							} else {
+								// 기존 강수량과 적설량 표시
+								row.append(`<td><br>${weather.pcp}<br>${weather.sno}</td>`);
+							}
 							resultTable.append(row);
 							count++;
 						}
