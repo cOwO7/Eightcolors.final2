@@ -31,7 +31,14 @@ public class UserService implements UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private Users currentUser;  // 현재 사용자 정보를 보관
+    private Users currentUser;//// 현재 사용자 정보를 보관
+
+
+    // 비밀번호 암호화 메서드
+    public String encodePassword(String password) {
+        return passwordEncoder.encode(password);
+    }
+
 
     public void mergeAccounts(Users localUser, Users socialUser) {
         // 로컬 계정 정보를 소셜 계정으로 병합
@@ -72,6 +79,11 @@ public class UserService implements UserDetailsService {
         user.setLoginType(LoginType.LOCAL);
         user.setRole("ROLE_USER");
         userMapper.insertUser(user);
+    }
+
+    // 사용자 정보 업데이트 메서드 추가
+    public void updateUser(Users user) {
+        userMapper.updateUser(user);
     }
 
     // 소셜 로그인 사용자 저장

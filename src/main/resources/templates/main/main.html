@@ -162,6 +162,7 @@
                 </div>
             </div> <!--	디자인 1 끝-->
 
+
             <!-- 디자인 2-->
             <div class="card">
                 <div class="card-body">
@@ -202,121 +203,174 @@
         </div>
     </div><!-- 검색파트 끝-->
 
-    <!-- 여행지 -->
-    <div class="row my-3">
-        <div class="col-lg-6 col-sm-12 text-lg-start text-center">
-            <h3>인기 여행지</h3>
-        </div>
-        <div class="col-lg-6 col-sm-12 text-lg-end text-center">
-            <a class="icon-link icon-link-hover" href="#">
-                자세히 보러가기
-                <svg class="bi" aria-hidden="true">
-                    <use xlink:href="#arrow-right"></use>
-                </svg>
-            </a>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-auto">
-            <div class="card" style="width: 10rem;">
-                <img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">부산</h5>
-                </div>
-            </div>
-        </div>
-        <div class="col-auto">
-            <div class="card" style="width: 10rem;">
-                <img src="/images/sample/sample2.jpg" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">강릉</h5>
-                </div>
-            </div>
-        </div>
-        <div class="col-auto">
-            <div class="card" style="width: 10rem;">
-                <img src="/images/sample/sample3.jpg" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">서울</h5>
-                </div>
-            </div>
-        </div>
-        <div class="col-auto">
-            <div class="card" style="width: 10rem;">
-                <img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">어디?</h5>
-                </div>
-            </div>
-        </div>
-        <div class="col-auto">
-            <div class="card" style="width: 10rem;">
-                <img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">어디?</h5>
-                </div>
-            </div>
-        </div>
-        <div class="col-auto">
-            <div class="card" style="width: 10rem;">
-                <img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">어디?</h5>
-                </div>
-            </div>
-        </div>
-        <div class="col-auto">
-            <div class="card" style="width: 10rem;">
-                <img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">어디?</h5>
-                </div>
-            </div>
-        </div>
-        <div class="col-auto">
-            <div class="card" style="width: 10rem;">
-                <img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">어디?</h5>
-                </div>
-            </div>
-        </div>
-    </div><!-- 여행지 끝 -->
+<!-- 검색파트 시작	-->
+	<div class="row justify-content-center my-5">
+		<div class="col">
+<!--			디자인 1 -->
+			<div class="card">
+				<div class="card-body">
+					<form id="searchForm">
+						<div class="row">
+							<div class="col-10">
+								<div class="row">
+									<div class="col">
+										<div class="mb-1">
+											<label for="location" class="form-label">지역</label>
+											<input type="text" class="form-control" id="location" name="location" placeholder="지역을 입력하세요">
+										</div>
+									</div>
+									<div class="col">
+										<div class="mb-1">
+											<label for="guests" class="form-label">인원수</label>
+											<input type="number" class="form-control" id="guests" name="guests" placeholder="인원수를 입력하세요" min="1">
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col">
+										<div class="mb-1">
+											<label for="checkin" class="form-label">체크인 날짜</label>
+											<input type="date" class="form-control datepicker" id="checkin" name="checkin" placeholder="체크인 날짜를 선택하세요">
+										</div>
+									</div>
+									<div class="col">
+										<div class="mb-1">
+											<label for="checkout" class="form-label">체크아웃 날짜</label>
+											<input type="date" class="form-control datepicker" id="checkout" name="checkout" placeholder="체크아웃 날짜를 선택하세요">
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-2 align-self-center">
+								<button type="submit" class="btn btn-primary btn-lg">검색</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+<!--			디자인 1 끝-->
 
-    <div class="row">
-        <div class="col">
-            <div class="swiper-container">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide">
-                        1번 슬라이드입니다.<br>마우스로 움직여보세요.
-                    </div>
-                    <div class="swiper-slide">
-                        2번 슬라이드입니다.<br>
-                        레이아웃만 제대로 설정되어 있다면 슬라이드에 어떤 것이든 넣을 수 있습니다.
-                    </div>
-                    <div class="swiper-slide">
-                        <img src="https://image.flaticon.com/icons/png/128/1933/1933588.png" alt=""><br>
-                        이렇게 이미지도 넣을 수 있습니다.
-                    </div>
+<!--여행지	-->
+	<div class="row my-3">
+		<div class="col-lg-6 col-sm-12 text-lg-start text-center">
+			<h3>인기 여행지</h3>
+		</div>
+		<div class="col-lg-6 col-sm-12 text-lg-end text-center">
+			<a class="icon-link icon-link-hover" href="#">
+				자세히 보러가기
+				<svg class="bi" aria-hidden="true"><use xlink:href="#arrow-right"></use></svg>
+			</a>
+		</div>
+	</div>
 
-                    ...
 
-                </div>
-                <!-- If we need pagination -->
-                <div class="swiper-pagination"></div>
+	<div class="row">
+		<div class="col-1 align-self-center">
+			<a class="nav-link text-end" href="#travelfirst">
+				<img src="/button/arrow_left.png" class="w-25 h-25">
+			</a>
+		</div>
+		<div class="col-10">
+			<div class="row flex-nowrap overflow-x-hidden">
+				<div class="col-auto" id="travelfirst">
+					<div class="card" style="width: 10rem;">
+						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
+						<div class="card-body">
+							<h5 class="card-title">부산</h5>
+						</div>
+					</div>
+				</div>
+				<div class="col-auto">
+					<div class="card" style="width: 10rem;">
+						<img src="/images/sample/sample2.jpg" class="card-img-top" alt="...">
+						<div class="card-body">
+							<h5 class="card-title">강릉</h5>
+						</div>
+					</div>
+				</div>
+				<div class="col-auto">
+					<div class="card" style="width: 10rem;">
+						<img src="/images/sample/sample3.jpg" class="card-img-top" alt="...">
+						<div class="card-body">
+							<h5 class="card-title">서울</h5>
+						</div>
+					</div>
+				</div>
+				<div class="col-auto">
+					<div class="card" style="width: 10rem;">
+						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
+						<div class="card-body">
+							<h5 class="card-title">어디?</h5>
+						</div>
+					</div>
+				</div>
+				<div class="col-auto">
+					<div class="card" style="width: 10rem;">
+						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
+						<div class="card-body">
+							<h5 class="card-title">어디?</h5>
+						</div>
+					</div>
+				</div>
+				<div class="col-auto">
+					<div class="card" style="width: 10rem;">
+						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
+						<div class="card-body">
+							<h5 class="card-title">어디?</h5>
+						</div>
+					</div>
+				</div>
+				<div class="col-auto">
+					<div class="card" style="width: 10rem;">
+						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
+						<div class="card-body">
+							<h5 class="card-title">어디?</h5>
+						</div>
+					</div>
+				</div>
+				<div class="col-auto">
+					<div class="card" style="width: 10rem;">
+						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
+						<div class="card-body">
+							<h5 class="card-title">어디?</h5>
+						</div>
+					</div>
+				</div>
+				<div class="col-auto">
+					<div class="card" style="width: 10rem;">
+						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
+						<div class="card-body">
+							<h5 class="card-title">어디?</h5>
+						</div>
+					</div>
+				</div>
+				<div class="col-auto" id="travellast">
+					<div class="card" style="width: 10rem;">
+						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
+						<div class="card-body">
+							<h5 class="card-title">어디?</h5>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-1 align-self-center">
+			<a class="nav-link" href="#travellast">
+				<img src="/button/arrow_right.png" class="w-25 h-25" style="width: 100%; height: auto; max-width: 200px;">
+			</a>
+		</div>
+	</div>
 
-                <!-- If we need navigation buttons -->
-                <div class="swiper-button-prev"></div>
-                <div class="swiper-button-next"></div>
+<!--	여행지 끝-->
 
-                <div class="swiper-scrollbar"></div>
-            </div>
-        </div>
-    </div><!-- 여행지 끝-->
+<!--	추천 숙소-->
+	<div class="row">
+		<div class="col">
 
-    <!-- 추천 숙소-->
-    <div class="row">
-        <div class="col">
+		</div>
+	</div>
+<!--	추천 숙소 끝-->
+
 
         </div>
     </div><!-- 추천 숙소 끝-->
