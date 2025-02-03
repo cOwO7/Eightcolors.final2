@@ -29,13 +29,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2User oAuth2User;
-        try {
-            oAuth2User = new DefaultOAuth2UserService().loadUser(userRequest);
-        } catch (OAuth2AuthenticationException e) {
-            OAuth2Error oauth2Error = new OAuth2Error("oauth2_error", "Failed to load user info from OAuth2 provider", null);
-            throw new OAuth2AuthenticationException(oauth2Error, e);
-        }
+        OAuth2User oAuth2User = new DefaultOAuth2UserService().loadUser(userRequest);
 
         String provider = userRequest.getClientRegistration().getRegistrationId();
         Map<String, Object> attributes = oAuth2User.getAttributes();
@@ -43,7 +37,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         String name = null;
         String providerId = null;
 
-        // 사용자 정보 파싱
         if ("google".equals(provider)) {
             providerId = oAuth2User.getName();
             email = (String) attributes.get("email");
@@ -71,24 +64,21 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             throw new OAuth2AuthenticationException(new OAuth2Error("oauth2_error"), "Email or Name not found from OAuth2 provider");
         }
 
-        // 사용자 정보 디버깅 로그
-        System.out.println("OAuth2 Provider: " + provider);
-        System.out.println("Provider ID: " + providerId);
-        System.out.println("Email: " + email);
-        System.out.println("Name: " + name);
-
-        // 사용자 조회 또는 생성
         Users user = userService.findByEmail(email);
-        if (user == null) {
+        if (user != null) {
+            if ("LOCAL".equals(user.getLoginType())) {
+                throw new OAuth2AuthenticationException(new OAuth2Error("email_exists"), "동일한 이메일로 가입된 로컬 계정이 존재합니다.");
+            } else if (!provider.equalsIgnoreCase(user.getLoginType().name())) {
+                throw new OAuth2AuthenticationException(new OAuth2Error("provider_mismatch"), "동일한 이메일로 다른 소셜 로그인 제공자가 존재합니다.");
+            }
+        } else {
             user = userService.saveSocialUser(email, name, providerId, LoginType.valueOf(provider.toUpperCase()));
         }
 
-        // 세션에 로그인 정보 저장
         httpSession.setAttribute("isLogin", true);
         httpSession.setAttribute("role", "user");
-        httpSession.setAttribute("userNo", user.getUserNo()); // 유저 번호 세션에 저장
+        httpSession.setAttribute("userNo", user.getUserNo());
 
-        // 사용자 정보 반환
         Map<String, Object> customAttributes = Map.of(
                 "email", email,
                 "name", name,
