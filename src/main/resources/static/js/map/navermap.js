@@ -108,9 +108,9 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // 버튼 클릭 시 현재 위치로 이동
-    document.getElementById("current-location-btn").addEventListener("click", function() {
+    /*document.getElementById("current-location-btn").addEventListener("click", function() {
         getCurrentLocation(); // 현재 위치로 이동하는 함수 호출
-    });
+    });*/
 
     // 초기 위치를 가져옴
     getCurrentLocation();

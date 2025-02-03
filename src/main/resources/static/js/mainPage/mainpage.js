@@ -4,14 +4,14 @@ document.addEventListener("DOMContentLoaded", function() {
     const checkinCalendar = document.getElementById('checkinCalendar');
     const checkoutCalendar = document.getElementById('checkoutCalendar');
 
-    const checkinPicker = flatpickr(checkinCalendar, {
+    /*const checkinPicker = flatpickr(checkinCalendar, {
         inline: true,
         onChange: function(selectedDates, dateStr, instance) {
             checkinInput.value = dateStr;
             checkoutPicker.set('minDate', dateStr);
             hideDropdown(checkinInput);
         }
-    });
+    });*/
 
     const checkoutPicker = flatpickr(checkoutCalendar, {
         inline: true,
