@@ -27,7 +27,7 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease;
             display: flex;
-            flex-direction: row; /* Flexbox로 이미지와 텍스트 배치 */
+            flex-direction: row;
             text-decoration: none;
             color: inherit;
             height: 250px;
@@ -39,7 +39,7 @@
             transform: translateY(-10px);
         }
         .card-img-top {
-            width: 300px; /* 이미지 크기 300px로 설정 */
+            width: 300px;
             height: 100%;
             object-fit: cover;
         }
@@ -47,7 +47,7 @@
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start; /* 텍스트 정렬을 위쪽으로 설정 */
+            justify-content: flex-start;
             padding-left: 20px;
             padding-top: 10px;
         }
@@ -67,7 +67,7 @@
         .address {
             font-size: 0.9rem;
             color: #777;
-            margin-top: 3px; /* 주소와 숙소 이름 간의 간격을 더 좁혔습니다. */
+            margin-top: 3px;
         }
         .range-wrapper {
             margin-bottom: 20px;
@@ -160,7 +160,7 @@
                     <div class="price-range-wrapper">
                         <div class="price-range-header">금액 범위</div>
                         <div class="slider-wrapper">
-                            <input type="range" class="form-range" id="priceRange" name="priceRange" min="0" max="1000000" step="10000" value="1000000">
+                            <input type="range" class="form-range" id="priceRange" name="priceRange" min="0" max="1000000" step="10000" value="1000000" onchange="filterAccommodationTypes()">
                         </div>
                         <div>
                             ₩0 ~ <span id="priceRangeValue">1000000</span>
@@ -176,14 +176,12 @@
             <div class="col-md-8">
                 <div id="accommodationList" class="row g-4" th:if="${results != null and results.size() > 0}">
                     <div class="col-lg-12" th:each="residence : ${results}">
-                        <a th:href="@{|/accommodation/${residence.residNo}|}" class="accommodation-item card" th:data-type="${residence.residType}">
+                        <a th:href="@{|/accommodation/${residence.residNo}|}" class="accommodation-item card" th:data-type="${residence.residType}" th:data-price="${residence.minPrice}">
                             <img th:src="@{|/images/files/${residence.thumbnailUrls}|}" alt="숙소 사진" class="card-img-top"/>
                             <div class="card-body">
                                 <h5 class="card-title" th:text="${residence.residName}"></h5>
-                                <!-- 주소는 숙소명 바로 아래로 위치 -->
                                 <p class="address" th:text="${residence.residAddress}"></p>
-                                <!-- 가격은 오른쪽 하단에 배치 -->
-                                <div class="price">가격: <span th:text="'₩' + ${residence.minPrice}"></span></div>
+                                <div class="price">가격: <span th:text="'₩' + ${residence.minPrice}" data-price="${residence.minPrice}"></span>/1박</div>
                             </div>
                         </a>
                     </div>
@@ -204,13 +202,19 @@
                 selectedTypes.push(checkbox.value);
             });
 
+            const maxPrice = parseInt(document.getElementById('priceRange').value);
+
             const accommodationItems = document.querySelectorAll('.accommodation-item');
+
             accommodationItems.forEach(item => {
                 const itemType = item.getAttribute('data-type');
-                if (selectedTypes.length === 0 || selectedTypes.includes(itemType)) {
+                const itemPrice = parseInt(item.getAttribute('data-price'));
+
+                // 필터 조건 추가: 숙소 유형과 가격을 기준으로 필터링
+                if ((selectedTypes.length === 0 || selectedTypes.includes(itemType)) && (itemPrice <= maxPrice)) {
                     item.style.display = 'flex';
                 } else {
-                    item.style.display = 'none'; // hide unchecked types
+                    item.style.display = 'none';
                 }
             });
         }
