@@ -23,13 +23,15 @@ public class AccommodationSearchController {
 	private AccommodationSearchService accommodationSearchService;
 
     @GetMapping("/accomSearch")
-    public String accomSearch(Model model, @RequestParam(value="pageNum", required=false, defaultValue="1") int pageNum
+    public String accomSearch(Model model, @RequestParam(value="pageNum", required=false, defaultValue="1") int pageNum,
+    		@RequestParam(name = "accommodationType", required = false) List<String> accommodationTypes, // 체크된 타입 리스트 받기
+            @RequestParam(name = "maxPrice", required = false) Integer maxPrice
     		) {
         // "modelMap"이 없으면 기본적으로 모든 숙소를 가져옴
         Map<String, Object> modelMap = (Map<String, Object>) model.asMap().get("modelMap");
 
         if (modelMap == null) {
-            modelMap = accommodationSearchService.getAllResidences(pageNum);
+            modelMap = accommodationSearchService.getAllResidences(pageNum,accommodationTypes,maxPrice);
         }
 
         model.addAllAttributes(modelMap); // 모델에 데이터 추가

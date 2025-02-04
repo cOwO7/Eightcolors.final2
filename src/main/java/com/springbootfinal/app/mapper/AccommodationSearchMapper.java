@@ -22,9 +22,11 @@ public interface AccommodationSearchMapper {
 	       
 	    );
 	   
-	List<ResidenceSearch> findAllResidences(@Param("startRow") int startRow, @Param("pageSize") int pageSize);
+	List<ResidenceSearch> findAllResidences(@Param("startRow") int startRow, @Param("pageSize") int pageSize,@Param("accommodationTypes") List<String> accommodationTypes,
+			 @Param("maxPrice") Integer maxPrice);
 
-	int accommodationCount();
+	int accommodationCount(@Param("accommodationTypes") List<String> accommodationTypes,
+			 @Param("maxPrice") Integer maxPrice);
 	   
 	int findAvailableResidencesCount(@Param("searchKeyword") String searchKeyword,
                                      @Param("checkinDate") LocalDate checkinDate,

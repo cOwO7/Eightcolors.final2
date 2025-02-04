@@ -89,14 +89,44 @@
     FROM residence r
     LEFT JOIN residence_rooms rr ON r.resid_no = rr.resid_no
     LEFT JOIN property_photos pp ON r.resid_no = pp.resid_no
+    <where>
+    	<if test="accommodationTypes != null and accommodationTypes.size() > 0">
+            AND r.resid_type IN
+            <foreach item="type" collection="accommodationTypes" open="(" close=")" separator=",">
+                #{type}
+            </foreach>
+        </if>
+
+    
+   
+        <if test="maxPrice != null">
+            and rr.price_per_night <![CDATA[<=]]> #{maxPrice}
+        </if>
+    
+    </where>
     GROUP BY r.resid_no, r.resid_name, r.resid_address, r.resid_type, pp.thumbnailUrls
     LIMIT #{startRow}, #{pageSize};
 </select>
 <select id="accommodationCount">
-SELECT
-COUNT(resid_no)
-FROM residence;
+SELECT COUNT(DISTINCT r.resid_no)
+FROM residence r
+JOIN residence_rooms rr ON r.resid_no = rr.resid_no
+<where>
+    <if test="accommodationTypes != null and accommodationTypes.size() > 0">
+        resid_type IN
+        <foreach item="type" collection="accommodationTypes" open="(" close=")" separator=",">
+            #{type}
+        </foreach>
+    </if>
+    
+  
+
+    <if test="maxPrice != null">
+        AND rr.price_per_night <![CDATA[<=]]> #{maxPrice}
+    </if>
+</where>
 </select>
+
 
     <select id="findAvailableResidencesCount" parameterType="map" resultType="int">
         SELECT COUNT(DISTINCT r.resid_no)

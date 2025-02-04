@@ -65,14 +65,15 @@ public class AccommodationSearchService {
 		}
 
     
-	public Map<String, Object> getAllResidences(int pageNum) {
+	public Map<String, Object> getAllResidences(int pageNum,List<String> accommodationTypes,
+			Integer maxPrice) {
 	    int currentPage = pageNum;
 	    int startRow = (currentPage - 1) * PAGE_SIZE;
 
-	    int listCount = accommodationSearchMapper.accommodationCount();
+	    int listCount = accommodationSearchMapper.accommodationCount(accommodationTypes,maxPrice);
 
 	    // 숙소 목록 가져오기, pageSize를 전달
-	    List<ResidenceSearch> searchList = accommodationSearchMapper.findAllResidences(startRow, PAGE_SIZE);
+	    List<ResidenceSearch> searchList = accommodationSearchMapper.findAllResidences(startRow, PAGE_SIZE,accommodationTypes,maxPrice);
 
 	    int pageCount = listCount / PAGE_SIZE + (listCount % PAGE_SIZE == 0 ? 0 : 1);
 	    int startPage = (currentPage / PAGE_GROUP) * PAGE_GROUP + 1 - (currentPage % PAGE_GROUP == 0 ? PAGE_GROUP : 0);
