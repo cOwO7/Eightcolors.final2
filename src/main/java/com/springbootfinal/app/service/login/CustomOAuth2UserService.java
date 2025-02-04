@@ -13,9 +13,12 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Collections;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
@@ -61,19 +64,26 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         }
 
         if (email == null || name == null) {
+            log.error("Email or Name not found from OAuth2 provider");
             throw new OAuth2AuthenticationException(new OAuth2Error("oauth2_error"), "Email or Name not found from OAuth2 provider");
         }
 
         Users user = userService.findByEmail(email);
         if (user != null) {
             if ("LOCAL".equals(user.getLoginType())) {
+                log.error("동일한 이메일로 가입된 로컬 계정이 존재합니다.");
+                log.info("email_exists 생성(서비스)");
                 throw new OAuth2AuthenticationException(new OAuth2Error("email_exists"), "동일한 이메일로 가입된 로컬 계정이 존재합니다.");
             } else if (!provider.equalsIgnoreCase(user.getLoginType().name())) {
+                log.error("동일한 이메일로 다른 소셜 로그인 제공자가 존재합니다.");
+                log.info("provider_mismatch 생성(서비스)");
                 throw new OAuth2AuthenticationException(new OAuth2Error("provider_mismatch"), "동일한 이메일로 다른 소셜 로그인 제공자가 존재합니다.");
             }
         } else {
             user = userService.saveSocialUser(email, name, providerId, LoginType.valueOf(provider.toUpperCase()));
         }
+
+        log.info("소셜 로그인 성공 - 이메일: " + email);
 
         httpSession.setAttribute("isLogin", true);
         httpSession.setAttribute("role", "user");
