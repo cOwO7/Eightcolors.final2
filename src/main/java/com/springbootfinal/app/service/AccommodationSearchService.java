@@ -34,8 +34,7 @@ public class AccommodationSearchService {
 		    
 		    int listCount = accommodationSearchMapper.findAvailableResidencesCount(searchKeyword, checkinDate, checkoutDate);
 		    
-		    List<ResidenceSearch> searchList = accommodationSearchMapper.findAvailableResidences(searchKeyword, checkinDate, checkoutDate, currentPage, startRow);
-		    
+
 		    int pageCount = 
 		        listCount / PAGE_SIZE + (listCount % PAGE_SIZE == 0 ? 0 : 1); // 상수 PAGE_SIZE 사용
 		    
@@ -47,7 +46,11 @@ public class AccommodationSearchService {
 		    if (endPage > pageCount) {
 		        endPage = pageCount;
 		    }
-		    
+
+		List<ResidenceSearch> searchList = accommodationSearchMapper.findAvailableResidences(searchKeyword, checkinDate, checkoutDate,  startRow,PAGE_SIZE);
+
+		System.out.println("==>"+startPage+","+endPage+","+pageCount);
+
 		    Map<String, Object> modelMap = new HashMap<>();
 		    modelMap.put("results", searchList);
 		    modelMap.put("pageCount", pageCount);

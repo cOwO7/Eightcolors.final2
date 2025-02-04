@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -22,38 +23,43 @@ public class AccommodationSearchController {
 	private AccommodationSearchService accommodationSearchService;
 
     @GetMapping("/accomSearch")
-    public String accomSearch(Model model,@RequestParam(value="pageNum", required=false,
-    		defaultValue="1") int pageNum){
-    	   Map<String, Object> modelMap = (Map<String, Object>) model.asMap().get("modelMap");
-    	
-    	    // "results"가 없으면 기본적으로 모든 숙소를 가져옵니다.
-    	    if (modelMap == null) {
-    	    	 modelMap = accommodationSearchService.getAllResidences(pageNum);
-    	    	  model.addAllAttributes(modelMap);
-    	    }
-        return "accommodationSearch";
+    public String accomSearch(Model model, @RequestParam(value="pageNum", required=false, defaultValue="1") int pageNum) {
+        // "modelMap"이 없으면 기본적으로 모든 숙소를 가져옴
+        Map<String, Object> modelMap = (Map<String, Object>) model.asMap().get("modelMap");
+
+        if (modelMap == null) {
+            modelMap = accommodationSearchService.getAllResidences(pageNum);
+        }
+
+        model.addAllAttributes(modelMap); // 모델에 데이터 추가
+        return "accommodationSearch"; // 숙소 검색 페이지로 반환
     }
-    
+
+
     @GetMapping("/search")
     public String searchResidences(
-    		 @RequestParam(name = "searchKeyword", required = false) String searchKeyword,
-    		@RequestParam(name = "checkinDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate checkinDate, 
-    	    @RequestParam(name = "checkoutDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate checkoutDate, 
-    	    Model model,@RequestParam(value="pageNum", required=false,
-    		defaultValue="1") int pageNum,
-    	  
-        RedirectAttributes redirectAttributes
+            @RequestParam(name = "searchKeyword", required = false) String searchKeyword,
+            @RequestParam(name = "checkinDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate checkinDate,
+            @RequestParam(name = "checkoutDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate checkoutDate,
+            Model model,
+            @RequestParam(value="pageNum", required=false, defaultValue="1") int pageNum,
+            RedirectAttributes redirectAttributes
     ) {
-    	Map<String, Object> modelMap = accommodationSearchService.getAvailableResidences(searchKeyword,checkinDate,checkoutDate,pageNum);
-        
-        redirectAttributes.addFlashAttribute("modelMap",modelMap);
-        redirectAttributes.addFlashAttribute("checkinDate", checkinDate);
-        redirectAttributes.addFlashAttribute("checkoutDate", checkoutDate);
-        redirectAttributes.addFlashAttribute("searchKeyword", searchKeyword);
+        // 숙소 검색 결과 조회
+        Map<String, Object> modelMap = accommodationSearchService.getAvailableResidences(searchKeyword, checkinDate, checkoutDate, pageNum);
 
+        // RedirectAttributes에 모델 추가
+        model.addAllAttributes(modelMap);
 
-        return "redirect:/accomSearch";
+        model.addAttribute("searchKeyword", searchKeyword);
+        model.addAttribute("checkinDate", checkinDate);
+        model.addAttribute("checkoutDate", checkoutDate);
+
+        return "accommodationSearch"; // 숙소 검색 페이지로 반환
     }
+
+
+
     @GetMapping("/test")
     public String test(){
         return "test";
