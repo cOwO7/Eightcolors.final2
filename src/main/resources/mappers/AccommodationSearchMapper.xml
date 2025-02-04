@@ -14,26 +14,10 @@
 <mapper namespace="com.springbootfinal.app.mapper.AccommodationSearchMapper">
 
     <select id="findAvailableResidences" parameterType="map" resultType="ResidenceSearch">
-        SELECT r.resid_no, r.resid_name, r.resid_address, r.resid_type,
-        MIN(rr.price_per_night) AS min_price,
-        pp.thumbnailUrls
-        FROM residence r
-        LEFT JOIN residence_rooms rr ON r.resid_no = rr.resid_no
-        LEFT JOIN reservations res ON rr.room_no = res.room_no
-        LEFT JOIN property_photos pp ON r.resid_no = pp.resid_no
-        WHERE NOT EXISTS (
-
-        SELECT 1
-        FROM residence_rooms rr2
-        LEFT JOIN reservations res_check ON rr2.room_no = res_check.room_no
-        WHERE rr2.resid_no = r.resid_no
-        AND (
-
-        (#{checkoutDate} >= res_check.checkin_date AND res_check.checkout_date >= #{checkinDate})
-        )
-        GROUP BY rr2.resid_no
-        HAVING COUNT(rr2.room_no) = (SELECT COUNT(*) FROM residence_rooms WHERE resid_no = r.resid_no)
-        )
+        SELECT r.resid_no, r.resid_name, r.resid_address, r.resid_type, rr.price_per_night min_price, pp.thumbnailUrls
+        FROM residence r LEFT JOIN residence_rooms rr ON r.resid_no = rr.resid_no LEFT JOIN reservations res
+        ON rr.room_no = res.room_no LEFT JOIN property_photos pp ON r.resid_no = pp.resid_no
+        WHERE rr.resid_no = r.resid_no AND not ( (res.checkin_date <![CDATA[>=]]> #{checkinDate} AND res.checkout_date <![CDATA[<=]]> #{checkoutDate}) )
 
         <!-- 숙소 타입 필터링 추가 -->
         <if test="accommodationTypes != null and accommodationTypes.size() > 0">
@@ -43,14 +27,20 @@
             </foreach>
         </if>
 
+        <!-- 검색 키워드 필터링 추가 -->
         <if test="searchKeyword != null and searchKeyword != ''">
             AND (r.resid_name LIKE CONCAT('%', #{searchKeyword}, '%')
             OR r.resid_address LIKE CONCAT('%', #{searchKeyword}, '%'))
         </if>
 
-        GROUP BY r.resid_no, pp.thumbnailUrls
+        <!-- 가격 필터링 추가 (maxPrice) -->
+        <if test="maxPrice != null">
+             and rr.price_per_night <![CDATA[<=]]> #{maxPrice}
+        </if>
         LIMIT #{startRow}, #{pageSize};
     </select>
+
+
 
 
 
@@ -76,23 +66,9 @@ FROM residence;
 
     <select id="findAvailableResidencesCount" parameterType="map" resultType="int">
         SELECT COUNT(DISTINCT r.resid_no)
-        FROM residence r
-        LEFT JOIN residence_rooms rr ON r.resid_no = rr.resid_no
-        LEFT JOIN reservations res ON rr.room_no = res.room_no
-        LEFT JOIN property_photos pp ON r.resid_no = pp.resid_no
-        WHERE NOT EXISTS (
-
-        SELECT 1
-        FROM residence_rooms rr2
-        LEFT JOIN reservations res_check ON rr2.room_no = res_check.room_no
-        WHERE rr2.resid_no = r.resid_no
-        AND (
-
-        (#{checkoutDate} >= res_check.checkin_date AND res_check.checkout_date >= #{checkinDate})
-        )
-        GROUP BY rr2.resid_no
-        HAVING COUNT(rr2.room_no) = (SELECT COUNT(*) FROM residence_rooms WHERE resid_no = r.resid_no)
-        )
+        FROM residence r LEFT JOIN residence_rooms rr ON r.resid_no = rr.resid_no LEFT JOIN reservations res
+        ON rr.room_no = res.room_no LEFT JOIN property_photos pp ON r.resid_no = pp.resid_no
+        WHERE rr.resid_no = r.resid_no AND not ( (res.checkin_date <![CDATA[>=]]> #{checkinDate} AND res.checkout_date <![CDATA[<=]]> #{checkoutDate}) )
 
         <!-- 숙소 타입 필터링 추가 -->
         <if test="accommodationTypes != null and accommodationTypes.size() > 0">
@@ -102,10 +78,17 @@ FROM residence;
             </foreach>
         </if>
 
+        <!-- 검색 키워드 필터링 추가 -->
         <if test="searchKeyword != null and searchKeyword != ''">
             AND (r.resid_name LIKE CONCAT('%', #{searchKeyword}, '%')
             OR r.resid_address LIKE CONCAT('%', #{searchKeyword}, '%'))
         </if>
+
+        <!-- 가격 필터링 추가 (maxPrice) -->
+        <if test="maxPrice != null">
+            and rr.price_per_night <![CDATA[<=]]> #{maxPrice}
+        </if>
+
     </select>
 
 

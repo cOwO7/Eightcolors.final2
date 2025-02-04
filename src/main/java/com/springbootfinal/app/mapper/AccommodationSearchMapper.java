@@ -16,7 +16,9 @@ public interface AccommodationSearchMapper {
 			 @Param("searchKeyword") String searchKeyword,
 	        @Param("checkinDate") LocalDate checkinDate, 
 	        @Param("checkoutDate") LocalDate checkoutDate,
-	        @Param("startRow") int startRow, @Param("pageSize") int pageSize,@Param("accommodationTypes") List<String> accommodationTypes
+	        @Param("startRow") int startRow, @Param("pageSize") int pageSize,
+			 @Param("accommodationTypes") List<String> accommodationTypes
+			 , @Param("maxPrice") Integer maxPrice
 	       
 	    );
 	   
@@ -26,6 +28,7 @@ public interface AccommodationSearchMapper {
 	   
 	int findAvailableResidencesCount(@Param("searchKeyword") String searchKeyword,
                                      @Param("checkinDate") LocalDate checkinDate,
-                                     @Param("checkoutDate") LocalDate checkoutDate,@Param("accommodationTypes") List<String> accommodationTypes);
+                                     @Param("checkoutDate") LocalDate checkoutDate,@Param("accommodationTypes") List<String> accommodationTypes,
+									 @Param("maxPrice") Integer maxPrice  						 );
 
 }

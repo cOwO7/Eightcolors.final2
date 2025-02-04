@@ -353,24 +353,41 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const checkboxes = document.querySelectorAll(".form-check-input");
+            const priceRange = document.getElementById("priceRange");
+            const priceRangeValue = document.getElementById("priceRangeValue");
 
-            // 체크박스를 URL 파라미터에서 가져와 체크 상태를 설정
+            // URL 파라미터에서 값 가져오기
             const urlParams = new URLSearchParams(window.location.search);
             const selectedTypes = urlParams.getAll("accommodationType");
+            const maxPriceFromUrl = urlParams.get("maxPrice");  // 최대 금액 파라미터 가져오기
 
+            // 체크박스 상태 설정
             checkboxes.forEach(checkbox => {
                 if (selectedTypes.includes(checkbox.value)) {
                     checkbox.checked = true;
                 }
 
                 checkbox.addEventListener("change", function () {
-                    updateUrlWithSelectedTypes();
+                    updateUrlWithSelectedTypesAndPrice(true);  // 페이지 새로고침을 위해 true로 설정
                 });
+            });
+
+            // 슬라이더 값 설정 (최대 금액)
+            if (maxPriceFromUrl) {
+                priceRange.value = maxPriceFromUrl;
+                priceRangeValue.textContent = maxPriceFromUrl;
+            }
+
+            // 슬라이더 값 변경 시
+            priceRange.addEventListener("input", function () {
+                priceRangeValue.textContent = priceRange.value;
+                updateUrlWithSelectedTypesAndPrice(true);  // 페이지 새로고침을 위해 true로 설정
             });
         });
 
-        function updateUrlWithSelectedTypes() {
+        function updateUrlWithSelectedTypesAndPrice(reloadPage = false) {
             let selectedTypes = [];
+            let maxPrice = document.getElementById("priceRange").value; // 슬라이더 값 가져오기
 
             // 체크된 체크박스 값들을 selectedTypes 배열에 담기
             document.querySelectorAll(".form-check-input:checked").forEach(checkbox => {
@@ -379,19 +396,30 @@
 
             // 현재 URL을 기반으로 새로운 URL 생성
             let url = new URL(window.location.href);
-            url.searchParams.delete("accommodationType"); // 기존에 있던 accommodationType 파라미터 제거
 
+            // 기존에 있던 accommodationType, maxPrice 파라미터 제거
+            url.searchParams.delete("accommodationType"); // 기존에 있던 accommodationType 파라미터 제거
+            url.searchParams.delete("maxPrice"); // 기존에 있던 maxPrice 파라미터 제거
+
+            // selectedTypes 배열에 있는 값들을 URL 파라미터로 추가
             if (selectedTypes.length > 0) {
-                // selectedTypes 배열에 있는 값들을 URL 파라미터로 추가
                 selectedTypes.forEach(type => {
                     url.searchParams.append("accommodationType", type);
                 });
             }
 
-            // 페이지 리다이렉트 (새로 고침)
-            window.location.href = url.toString(); // 페이지가 새로운 URL로 리다이렉트됨
-        }
+            // 최대 금액을 URL에 추가 (중복 방지)
+            if (maxPrice && maxPrice > 0) {
+                url.searchParams.set("maxPrice", maxPrice);  // 최대 금액을 URL에 추가 (중복 방지)
+            }
 
+            // URL을 갱신하되 페이지를 리다이렉트
+            if (reloadPage) {
+                window.location.href = url.toString();  // 페이지를 새로 고침
+            } else {
+                window.history.pushState({}, "", url.toString());  // 페이지를 새로 고침하지 않고 URL만 갱신
+            }
+        }
 
 
         function updateCheckoutMinDate() {
