@@ -121,17 +121,24 @@ public String createTransferForm(Model model, HttpServletRequest request) {
 
     // 게시글 쓰기 요청 처리 메서드
     @PostMapping("/transferAdd")
-    public String addTransfer(TransferDto transfer,HttpSession httpSession) {
-        Reservations reservation = transferService.getReservationByUserNo((Long)httpSession.getAttribute("userNo"));
+    public String addTransfer(TransferDto transfer, HttpSession httpSession) {
+        Long userNo = (Long) httpSession.getAttribute("userNo");
+        Reservations reservation = transferService.getReservationByUserNo(userNo);
         log.info("예약 상태: {}", reservation);
 
-        log.info("예약번호"+reservation.getReservationNo());
-        transfer.setSellerUserNo((Long)httpSession.getAttribute("userNo"));
-        transfer.setReservationNo(reservation.getReservationNo());
+        Long reservationNo = reservation.getReservationNo();
+        log.info("예약번호: {}", reservationNo);
+
+        // Delete existing transfers with the same reservation_no
+        transferService.deleteTransferByReservationNo(reservationNo);
+
+        // Set the necessary fields and add the new transfer
+        transfer.setSellerUserNo(userNo);
+        transfer.setReservationNo(reservationNo);
         transferService.addTransfer(transfer);
+
         return "redirect:/transfers";
     }
-
     // 게시글 상세보기 요청 처리 메서드
     @GetMapping("/transferDetail")
     public String getTransferDetail(Model model, @RequestParam("transferNo") long transferNo,

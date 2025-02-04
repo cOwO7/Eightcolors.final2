@@ -13,10 +13,6 @@ public class MainController {
 	@Autowired
 	private MainService mainService;
 
-	@GetMapping("/login")
-	public String showLoginForm() {
-		return "user/login";
-	}
 
 	@GetMapping("/userJoin")
 	public String userJoin() {

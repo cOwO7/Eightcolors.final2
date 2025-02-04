@@ -134,14 +134,37 @@ public class myPageController {
 
     @PostMapping("/myPage/update")
     public String updateUser(@ModelAttribute Users user, @AuthenticationPrincipal Object principal, RedirectAttributes redirectAttributes) {
+        Users currentUser = null;
+
+        // 현재 로그인된 사용자 정보를 가져옴
+        if (principal instanceof OAuth2User) {
+            OAuth2User oAuth2User = (OAuth2User) principal;
+            String email = oAuth2User.getAttribute("email");
+            currentUser = userService.findByEmail(email);
+        } else if (principal instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) principal;
+            String username = userDetails.getUsername();
+            currentUser = userService.findById(username);
+        }
+
+        if (currentUser == null) {
+            redirectAttributes.addFlashAttribute("error", "사용자 정보를 찾을 수 없습니다.");
+            return "redirect:/myPage/edit";
+        }
+
         // 비밀번호 필드가 비어 있는 경우, 기존 비밀번호를 유지
         if (user.getPassword() == null || user.getPassword().isEmpty()) {
-            Users currentUser = userService.getCurrentUser();
             user.setPassword(currentUser.getPassword());
         } else {
             // 새로운 비밀번호를 암호화하여 설정
             user.setPassword(userService.encodePassword(user.getPassword()));
         }
+
+        // 현재 사용자 정보를 기반으로 userNo 설정
+        user.setUserNo(currentUser.getUserNo());
+
+        // 디버깅 로그 추가
+        log.debug("Updating user: {}", user);
 
         // 사용자 정보 업데이트
         userService.updateUser(user);

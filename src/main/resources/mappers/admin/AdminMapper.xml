@@ -18,9 +18,9 @@
             REPLACE(phone, '-', '') LIKE CONCAT('%', #{keyword}, '%')
     </select>
 
-    <select id="findAllResidences" resultType="com.springbootfinal.app.domain.residence.ResidenceDto">
-        SELECT * FROM residence
-    </select>
+    <!--    <select id="findAllResidences" resultType="com.springbootfinal.app.domain.residence.ResidenceDto">
+            SELECT * FROM residence
+        </select>-->
 
     <delete id="deleteUserById" parameterType="java.lang.String">
         DELETE FROM users WHERE id = #{userId}
@@ -35,8 +35,6 @@
         WHERE
             id LIKE CONCAT('%', #{keyword}, '%') OR
             name LIKE CONCAT('%', #{keyword}, '%') OR
-            email LIKE CONCAT('%', #{keyword}, '%') OR
-            REPLACE(phone, '-', '') LIKE CONCAT('%', #{keyword}, '%') OR
             REPLACE(business_license_no, '-', '') LIKE CONCAT('%', #{keyword}, '%')
     </select>
 
@@ -68,18 +66,18 @@
 
     <select id="findAllTransfers" resultType="com.springbootfinal.app.domain.transfer.TransferDto">
         SELECT
-        t.transfer_no AS transferNo,
-        u1.id AS sellerId,
-        u2.id AS buyerId,
-        t.reservation_no AS reservationNo,
-        t.transfer_price AS transferPrice,
-        t.status AS status,
-        t.created_at AS createdAt
+            t.transfer_no AS transferNo,
+            u1.id AS sellerId,
+            u2.id AS buyerId,
+            t.reservation_no AS reservationNo,
+            t.transfer_price AS transferPrice,
+            t.status AS status,
+            t.created_at AS createdAt
         FROM
-        transfers t
-        LEFT JOIN users u1 ON t.seller_user_no = u1.user_no
-        LEFT JOIN users u2 ON t.buyer_user_no = u2.user_no
-        LEFT JOIN reservations r ON t.reservation_no = r.reservation_no
+            transfers t
+                LEFT JOIN users u1 ON t.seller_user_no = u1.user_no
+                LEFT JOIN users u2 ON t.buyer_user_no = u2.user_no
+                LEFT JOIN reservations r ON t.reservation_no = r.reservation_no
     </select>
 
 
@@ -107,8 +105,6 @@
                 OR u1.id LIKE CONCAT('%', #{keyword}, '%')
                 OR u2.id LIKE CONCAT('%', #{keyword}, '%')
                 OR t.reservation_no LIKE CONCAT('%', #{keyword}, '%')
-                OR t.transfer_title LIKE CONCAT('%', #{keyword}, '%')
-                OR t.transfer_content LIKE CONCAT('%', #{keyword}, '%')
                 )
             </if>
         </where>
@@ -142,13 +138,29 @@
             COALESCE(oroom.occupied_room_count, 0) AS occupied_rooms,
             COALESCE(tr.total_room_count, 0) - COALESCE(oroom.occupied_room_count, 0) AS available_rooms,
             CASE
-                WHEN COALESCE(tr.total_room_count, 0) = 0 THEN 100
+                WHEN COALESCE(tr.total_room_count, 0) = 0 THEN 0
                 ELSE ROUND((COALESCE(tr.total_room_count, 0) - COALESCE(oroom.occupied_room_count, 0)) * 100.0 / COALESCE(tr.total_room_count, 0), 2)
                 END AS vacancy_rate
         FROM residence res
                  LEFT JOIN total_rooms tr ON res.resid_no = tr.resid_no
                  LEFT JOIN occupied_rooms oroom ON res.resid_no = oroom.resid_no
         ORDER BY vacancy_rate DESC;
+    </select>
+
+    <select id="findResidences" parameterType="map" resultType="com.springbootfinal.app.domain.residence.ResidenceDto">
+        SELECT r.*
+        FROM residence r
+        LEFT JOIN host_users hu ON r.host_user_no = hu.host_user_no
+        WHERE 1=1
+        <if test="residType != null and residType != ''">
+            AND r.resid_type = #{residType}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            AND (
+            r.resid_name LIKE CONCAT('%', #{keyword}, '%')
+            OR hu.id LIKE CONCAT('%', #{keyword}, '%')
+            )
+        </if>
     </select>
 
 </mapper>
