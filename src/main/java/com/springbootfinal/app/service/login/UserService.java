@@ -52,7 +52,6 @@ public class UserService implements UserDetailsService {
         socialUser.setZipcode(localUser.getZipcode());
         socialUser.setAddress1(localUser.getAddress1());
         socialUser.setAddress2(localUser.getAddress2());
-
         userMapper.updateUser(socialUser);
         userMapper.deleteUser(localUser.getUserNo()); // 로컬 계정 삭제
     }

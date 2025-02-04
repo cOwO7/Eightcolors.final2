@@ -229,11 +229,6 @@ VALUES
     ('hostuser01', 'hostpass123', 'hostuser01@email.com', '010-1234-5678', '호스트1', '12345', '서울시 강남구', '역삼동 123', '1234567890', 'ROLE_HOST'),
     ('hostuser02', 'hostpass456', 'hostuser02@email.com', '010-2345-6789', '호스트2', '54321', '서울시 서초구', '반포동 456', '0987654321', 'ROLE_HOST');
 
--- 3. 일반 회원가입 데이터 삽입
-INSERT INTO users (id, password, email, phone, name, zipcode, address1, address2, login_type, provider_id, role)
-VALUES
-    ('user01', 'userpass123', 'user01@email.com', '010-5678-1234', '회원1', '11111', '서울시 마포구', '상암동 789', 'LOCAL', '', 'ROLE_USER'),
-    ('user02', 'userpass456', 'user02@email.com', '010-6789-2345', '회원2', '22222', '서울시 동작구', '신대방동 101', 'GOOGLE', 'google123', 'ROLE_USER');
 
 -- 4. 숙소 데이터 삽입
 INSERT INTO residence (resid_name, host_user_no, resid_description, resid_address, resid_type)

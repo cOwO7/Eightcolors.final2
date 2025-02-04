@@ -33,16 +33,8 @@
             </form>
 
             <!-- 에러 메시지 -->
-            <div th:if="${param.error}" class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>Warning!</strong>
-                <div th:if="${session.loginError != null}" th:text="${session.loginError}"></div>
-                <div th:if="${session.socialLoginError != null}" th:text="${session.socialLoginError}"></div>
-                <script th:inline="javascript">
-                    /*<![CDATA[*/
-                    /* Clear the session error messages */
-                    fetch('/clear-error-messages', { method: 'POST' });
-                    /*]]>*/
-                </script>
+            <div th:if="${session.socialLoginError != null}" class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Warning!</strong> <span th:text="${session.socialLoginError}">에러 메시지</span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
 
