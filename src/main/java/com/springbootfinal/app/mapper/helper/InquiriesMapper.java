@@ -24,5 +24,9 @@ public interface InquiriesMapper {
 
     // 문의 삭제
     void deleteInquiry(Long inquiryNo);
+
+    // 답변 등록시 status 수정
+    void updateStatus(@Param("inquiryNo") Long inquiryNo,
+                      @Param("status") String status);
 }
 

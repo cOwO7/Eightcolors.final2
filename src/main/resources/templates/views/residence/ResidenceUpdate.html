@@ -12,24 +12,21 @@
         <div>
             <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
             <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=36a75517ce82693ff837cc79c740e197&libraries=services,clusterer"></script>
+            <script th:src="@{/js/residence/residenceImages.js}"></script>
+            <link href="/css/residence/residenceFome.css" rel="stylesheet">
         </div>
         <h1>숙소 수정</h1>
         <form th:action="@{/update/{residNo}(residNo=${residence.residNo})}" th:object="${residence}" method="post"
               enctype="multipart/form-data">
             <div class="row">
-
                 <!-- 기존 숙소 입력 필드들 -->
                 <label for="residName">숙소 이름:</label><br>
                 <input type="text" id="residName" th:field="*{residName}" required><br><br>
-                <div>
-                    <label for="residAddress">숙소 주소:</label><br>
-                    <input type="text" id="residAddress" th:field="*{residAddress}" placeholder="검색 버튼을 눌러주세요."
-                           style="width: 80%;" required>
-                    <!-- 버튼 -->
-                    <button type="button" id="addressBtn" class="btn btn-outline-primary" style="width: 20%;">
-                        검색
-                    </button>
-                </div>
+                <label for="residAddress">숙소 주소:</label>
+                <input type="text" id="residAddress" th:field="*{residAddress}" placeholder="검색 버튼을 눌러주세요." required class="form-control">
+                <button type="button" id="addressBtn" class="btn btn-outline-primary ml-2">
+                    검색
+                </button>
                 <br><br>
                 <label for="residType">숙소 유형:</label>
                 <select id="residType" th:field="*{residType}">
@@ -42,26 +39,6 @@
             </div>
             <!-- 사진 수정 -->
             <!--<label>기존 등록된 사진</label>
-            <div id="photo-preview">
-                <th:block th:each="photo : ${photos}">
-                    <div class="photo-container" th:id="|photo-${photo.photoNo}|">
-                        <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl01})}" width="150">
-                        <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl02})}" width="150">
-                        <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl03})}" width="150">
-                        <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl04})}" width="150">
-                        <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl05})}" width="150">
-                        <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl06})}" width="150">
-                        <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl07})}" width="150">
-                        <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl08})}" width="150">
-                        <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl09})}" width="150">
-                        <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl10})}" width="150">
-                        <input type="hidden" name="existingPhotos" th:value="${photo.photoNo}">
-                        <br><br>
-                        <button type="button" th:onclick="|removePhoto(${photo.photoNo})|">삭제</button>
-                    </div>
-                </th:block>
-            </div>-->
-            <label>기존 등록된 사진</label>
             <div id="photo-preview">
                 <th:block th:each="photo : ${photos}">
                     <div class="photo-container" th:id="|photo-${photo.photoNo}|">
@@ -99,18 +76,74 @@
                         </div>
                     </div>
                 </th:block>
+            </div>-->
+            <div class="my-4">
+                <label>기존 등록된 사진</label>
+                <div id="photo-preview" class="d-flex flex-wrap">
+                    <th:block th:each="photo : ${photos}">
+                        <div class="photo-container position-relative m-2" id="photo-box-${photo.photoNo}">
+                            <!-- 기존 등록된 사진을 imagePreview 내에 추가 -->
+                            <div id="imagePreview">
+                                <div id="field1" class="image-field">
+                                    <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl01})}" width="150" th:id="|photo-img-${photo.photoNo}-1|" class="img-thumbnail">
+                                    <input type="hidden" name="existingPhotos" th:value="${photo.photoNo}">
+                                </div>
+                                <div id="field2" class="image-field">
+                                    <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl02})}" width="150" th:id="|photo-img-${photo.photoNo}-2|" class="img-thumbnail">
+                                    <input type="hidden" name="existingPhotos" th:value="${photo.photoNo}">
+                                </div>
+                                <div id="field3" class="image-field">
+                                    <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl03})}" width="150" th:id="|photo-img-${photo.photoNo}-3|" class="img-thumbnail">
+                                    <input type="hidden" name="existingPhotos" th:value="${photo.photoNo}">
+                                </div>
+                                <div id="field4" class="image-field">
+                                    <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl04})}" width="150" th:id="|photo-img-${photo.photoNo}-3|" class="img-thumbnail">
+                                    <input type="hidden" name="existingPhotos" th:value="${photo.photoNo}">
+                                </div>
+                                <div id="field5" class="image-field">
+                                    <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl05})}" width="150" th:id="|photo-img-${photo.photoNo}-3|" class="img-thumbnail">
+                                    <input type="hidden" name="existingPhotos" th:value="${photo.photoNo}">
+                                </div>
+                                <div id="field6" class="image-field">
+                                    <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl06})}" width="150" th:id="|photo-img-${photo.photoNo}-3|" class="img-thumbnail">
+                                    <input type="hidden" name="existingPhotos" th:value="${photo.photoNo}">
+                                </div>
+                                <div id="field7" class="image-field">
+                                    <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl07})}" width="150" th:id="|photo-img-${photo.photoNo}-3|" class="img-thumbnail">
+                                    <input type="hidden" name="existingPhotos" th:value="${photo.photoNo}">
+                                </div>
+                                <div id="field8" class="image-field">
+                                    <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl08})}" width="150" th:id="|photo-img-${photo.photoNo}-3|" class="img-thumbnail">
+                                    <input type="hidden" name="existingPhotos" th:value="${photo.photoNo}">
+                                </div>
+                                <div id="field9" class="image-field">
+                                    <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl09})}" width="150" th:id="|photo-img-${photo.photoNo}-3|" class="img-thumbnail">
+                                    <input type="hidden" name="existingPhotos" th:value="${photo.photoNo}">
+                                </div>
+                                <div id="field10" class="image-field">
+                                    <img th:src="@{/images/files/{fileName}(fileName=${photo.photoUrl10})}" width="150" th:id="|photo-img-${photo.photoNo}-3|" class="img-thumbnail">
+                                    <input type="hidden" name="existingPhotos" th:value="${photo.photoNo}">
+                                </div>
+
+                            </div>
+                            <input type="file" th:id="|file-input-${photo.photoNo}-1|" onchange="replacePhoto(event, ${photo.photoNo}, 1)" class="form-control-file mt-2">
+                        </div>
+                    </th:block>
+                </div>
             </div>
+
             <!-- 빈 필드 -->
             <div class="empty-photo" style="display:none;">
                 <!--<input type="file" name="newPhotos" onchange="uploadNewPhoto(this, ${photo.photoNo})">-->
             </div>
-
             <label>새로운 사진 추가</label>
             <input type="file" name="photos" multiple>
             <input type="hidden" name="deletedPhotoIds" id="deletedPhotoIds">
             <br><br>
-            <button type="submit">수정하기</button>
-            <button><a href="/list">뒤로 가기</a></button>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <a href="/list" id="back" class="text-decoration-none">뒤로 가기</a>
+                <button type="submit" id="registerButton" class="btn btn-primary">수정 하기</button>
+            </div>
             <!-- 날씨 데이터 -->
             <div class="col-md-6">
                 <div class="mb-3">
@@ -122,9 +155,11 @@
                             <!-- <td>예보지점 y값</td> -->
                             <td><input type="hidden" id="ny" th:field="*{ny}"/></td>
                             <!-- <td>위도(latitude)</td> -->
-                            <td><input type="hidden" id="latitudeNum" name="latitudeNum" th:field="*{latitudeNum}"/></td>
+                            <td><input type="hidden" id="latitudeNum" name="latitudeNum" th:field="*{latitudeNum}"/>
+                            </td>
                             <!-- <td>경도(longitude)</td> -->
-                            <td><input type="hidden" id="longitudeNum" name="longitudeNum" th:field="*{longitudeNum}"/></td>
+                            <td><input type="hidden" id="longitudeNum" name="longitudeNum" th:field="*{longitudeNum}"/>
+                            </td>
                         </tr>
                     </table>
                     <br/>
@@ -137,47 +172,71 @@
                 </div>
             </div>
         </form>
-    <!-- 날씨 데이터 출력폼 -->
-    <table>
-        <tbody id="combinedWeatherTableBody"></tbody>
-        <div id="weatherContainer" class="weather-container">
-            <div id="row1" class="row1"></div>
-        </div>
-        <div class="weather-scroll-container">
-            <button class="scroll-btn left" onclick="scrollToLeft()">&#10094;</button>
-            <div id="row2" class="weather-row"></div>
-            <button class="scroll-btn right" onclick="scrollToRight()">&#10095;</button>
-        </div>
-    </table>
+        <!-- 날씨 데이터 출력폼 -->
+        <table>
+            <tbody id="combinedWeatherTableBody"></tbody>
+            <div id="weatherContainer" class="weather-container">
+                <div id="row1" class="row1"></div>
+            </div>
+            <div class="weather-scroll-container">
+                <button class="scroll-btn left" onclick="scrollToLeft()">&#10094;</button>
+                <div id="row2" class="weather-row"></div>
+                <button class="scroll-btn right" onclick="scrollToRight()">&#10095;</button>
+            </div>
+        </table>
     </div>
-</th:block>
-<script>
-    // 특정 이미지 제거 후 해당 위치 비우기
-    function removePhoto(photoNo, elementId) {
-        document.getElementById(elementId).innerHTML = `
+    <!--<script>
+        // 특정 이미지 제거 후 해당 위치 비우기
+        function removePhoto(photoNo, elementId) {
+            document.getElementById(elementId).innerHTML = `
         <input type="file" id="file-input-${photoNo}" onchange="replacePhoto(event, ${photoNo}, elementId)">
-    `;
-    }
-
-    // 새 이미지 선택 후 기존 이미지 교체
-    function replacePhoto(event, photoNo, index) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                document.getElementById(`photo-img-${photoNo}-${index}`).src = e.target.result;
-            };
-            reader.readAsDataURL(file);
+        `;
         }
-    }
 
-</script>
+        // 새 이미지 선택 후 기존 이미지 교체
+        function replacePhoto(event, photoNo, index) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById(`photo-img-${photoNo}-${index}`).src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
 
-<link href="/css/weather/allW.css" rel="stylesheet"/>
-<script th:src="@{/js/jquery-3.7.1.min.js}"></script>
-<script th:src="@{/js/map/geolocation.js}"></script>
-<script th:src="@{/js/weather/allMapChoiceN.js}"></script>
-<script th:src="@{/js/map/kakaomapN.js}"></script>
+    </script>-->
+    <script>
+        // 이미지 삭제 함수
+        function removePhoto(photoNo, photoBoxId) {
+            // 이미지와 파일 선택 필드 삭제
+            const photoBox = document.getElementById(photoBoxId);
+            if (photoBox) {
+                photoBox.remove();
+            }
+
+            // 추가적으로, 삭제된 사진의 id를 hidden 필드에 저장하여 서버에 전송할 수 있도록 할 수 있음
+            const deletedPhotoIds = document.getElementById('deletedPhotoIds');
+            deletedPhotoIds.value += photoNo + ",";
+        }
+
+        // 새 이미지 선택 후 기존 이미지 교체
+        function replacePhoto(event, photoNo, index) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById(`photo-img-${photoNo}-${index}`).src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+    <link href="/css/weather/allW.css" rel="stylesheet"/>
+    <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+    <script th:src="@{/js/map/geolocation.js}"></script>
+    <script th:src="@{/js/weather/allMapChoiceN.js}"></script>
+    <script th:src="@{/js/map/kakaomapN.js}"></script>
 </th:block>
 </body>
 </html>
