@@ -14,14 +14,14 @@
 <mapper namespace="com.springbootfinal.app.mapper.AccommodationSearchMapper">
 
     <select id="findAvailableResidences" parameterType="map" resultType="ResidenceSearch">
-    SELECT r.resid_no, r.resid_name, r.resid_address, r.resid_type,
-           MIN(rr.price_per_night) AS min_price,
-           pp.thumbnailUrls
-    FROM residence r
-    LEFT JOIN residence_rooms rr ON r.resid_no = rr.resid_no
-    LEFT JOIN reservations res ON rr.room_no = res.room_no
-    LEFT JOIN property_photos pp ON r.resid_no = pp.resid_no
-    WHERE NOT EXISTS (
+        SELECT r.resid_no, r.resid_name, r.resid_address, r.resid_type,
+        MIN(rr.price_per_night) AS min_price,
+        pp.thumbnailUrls
+        FROM residence r
+        LEFT JOIN residence_rooms rr ON r.resid_no = rr.resid_no
+        LEFT JOIN reservations res ON rr.room_no = res.room_no
+        LEFT JOIN property_photos pp ON r.resid_no = pp.resid_no
+        WHERE NOT EXISTS (
 
         SELECT 1
         FROM residence_rooms rr2
@@ -29,20 +29,31 @@
         WHERE rr2.resid_no = r.resid_no
         AND (
 
-            (#{checkoutDate} >= res_check.checkin_date  AND res_check.checkout_date >= #{checkinDate})
+        (#{checkoutDate} >= res_check.checkin_date AND res_check.checkout_date >= #{checkinDate})
         )
         GROUP BY rr2.resid_no
         HAVING COUNT(rr2.room_no) = (SELECT COUNT(*) FROM residence_rooms WHERE resid_no = r.resid_no)
-    )
-    <if test="searchKeyword != null and searchKeyword != ''">
-        AND (r.resid_name LIKE CONCAT('%', #{searchKeyword}, '%')
-            OR r.resid_address LIKE CONCAT('%', #{searchKeyword}, '%'))
-    </if>
-    GROUP BY r.resid_no, pp.thumbnailUrls
-    LIMIT #{startRow}, #{pageSize};
-</select>
+        )
 
-    
+        <!-- 숙소 타입 필터링 추가 -->
+        <if test="accommodationTypes != null and accommodationTypes.size() > 0">
+            AND r.resid_type IN
+            <foreach item="type" collection="accommodationTypes" open="(" close=")" separator=",">
+                #{type}
+            </foreach>
+        </if>
+
+        <if test="searchKeyword != null and searchKeyword != ''">
+            AND (r.resid_name LIKE CONCAT('%', #{searchKeyword}, '%')
+            OR r.resid_address LIKE CONCAT('%', #{searchKeyword}, '%'))
+        </if>
+
+        GROUP BY r.resid_no, pp.thumbnailUrls
+        LIMIT #{startRow}, #{pageSize};
+    </select>
+
+
+
     <select id="findAllResidences" parameterType="map" resultType="ResidenceSearch">
     SELECT 
         r.resid_no, 
@@ -63,13 +74,13 @@ COUNT(resid_no)
 FROM residence;
 </select>
 
-<select id="findAvailableResidencesCount" parameterType="map" resultType="int">
-    SELECT COUNT(DISTINCT r.resid_no)
-    FROM residence r
-    LEFT JOIN residence_rooms rr ON r.resid_no = rr.resid_no
-    LEFT JOIN reservations res ON rr.room_no = res.room_no
-    LEFT JOIN property_photos pp ON r.resid_no = pp.resid_no
-    WHERE NOT EXISTS (
+    <select id="findAvailableResidencesCount" parameterType="map" resultType="int">
+        SELECT COUNT(DISTINCT r.resid_no)
+        FROM residence r
+        LEFT JOIN residence_rooms rr ON r.resid_no = rr.resid_no
+        LEFT JOIN reservations res ON rr.room_no = res.room_no
+        LEFT JOIN property_photos pp ON r.resid_no = pp.resid_no
+        WHERE NOT EXISTS (
 
         SELECT 1
         FROM residence_rooms rr2
@@ -77,16 +88,26 @@ FROM residence;
         WHERE rr2.resid_no = r.resid_no
         AND (
 
-            (#{checkoutDate} >= res_check.checkin_date  AND res_check.checkout_date >= #{checkinDate})
+        (#{checkoutDate} >= res_check.checkin_date AND res_check.checkout_date >= #{checkinDate})
         )
         GROUP BY rr2.resid_no
         HAVING COUNT(rr2.room_no) = (SELECT COUNT(*) FROM residence_rooms WHERE resid_no = r.resid_no)
-    )
-    <if test="searchKeyword != null and searchKeyword != ''">
-        AND (r.resid_name LIKE CONCAT('%', #{searchKeyword}, '%')
+        )
+
+        <!-- 숙소 타입 필터링 추가 -->
+        <if test="accommodationTypes != null and accommodationTypes.size() > 0">
+            AND r.resid_type IN
+            <foreach item="type" collection="accommodationTypes" open="(" close=")" separator=",">
+                #{type}
+            </foreach>
+        </if>
+
+        <if test="searchKeyword != null and searchKeyword != ''">
+            AND (r.resid_name LIKE CONCAT('%', #{searchKeyword}, '%')
             OR r.resid_address LIKE CONCAT('%', #{searchKeyword}, '%'))
-    </if>
-</select>
+        </if>
+    </select>
+
 
     
 

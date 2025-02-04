@@ -27,12 +27,12 @@ public class AccommodationSearchService {
 		    String searchKeyword, 
 		    LocalDate checkinDate, 
 		    LocalDate checkoutDate, 
-		    int pageNum) {
+		    int pageNum,List<String> accommodationTypes) {
 		    
 		    int currentPage = pageNum;
 		    int startRow = (currentPage - 1) * PAGE_SIZE;  // 상수 PAGE_SIZE 사용
 		    
-		    int listCount = accommodationSearchMapper.findAvailableResidencesCount(searchKeyword, checkinDate, checkoutDate);
+		    int listCount = accommodationSearchMapper.findAvailableResidencesCount(searchKeyword, checkinDate, checkoutDate,accommodationTypes);
 		    
 
 		    int pageCount = 
@@ -47,7 +47,7 @@ public class AccommodationSearchService {
 		        endPage = pageCount;
 		    }
 
-		List<ResidenceSearch> searchList = accommodationSearchMapper.findAvailableResidences(searchKeyword, checkinDate, checkoutDate,  startRow,PAGE_SIZE);
+		List<ResidenceSearch> searchList = accommodationSearchMapper.findAvailableResidences(searchKeyword, checkinDate, checkoutDate,  startRow,PAGE_SIZE,accommodationTypes);
 
 		System.out.println("==>"+startPage+","+endPage+","+pageCount);
 

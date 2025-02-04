@@ -351,28 +351,48 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function filterAccommodationTypes() {
-            const selectedTypes = [];
-            document.querySelectorAll('input[name="accommodationType"]:checked').forEach(checkbox => {
+        document.addEventListener("DOMContentLoaded", function () {
+            const checkboxes = document.querySelectorAll(".form-check-input");
+
+            // 체크박스를 URL 파라미터에서 가져와 체크 상태를 설정
+            const urlParams = new URLSearchParams(window.location.search);
+            const selectedTypes = urlParams.getAll("accommodationType");
+
+            checkboxes.forEach(checkbox => {
+                if (selectedTypes.includes(checkbox.value)) {
+                    checkbox.checked = true;
+                }
+
+                checkbox.addEventListener("change", function () {
+                    updateUrlWithSelectedTypes();
+                });
+            });
+        });
+
+        function updateUrlWithSelectedTypes() {
+            let selectedTypes = [];
+
+            // 체크된 체크박스 값들을 selectedTypes 배열에 담기
+            document.querySelectorAll(".form-check-input:checked").forEach(checkbox => {
                 selectedTypes.push(checkbox.value);
             });
 
-            const maxPrice = parseInt(document.getElementById('priceRange').value);
+            // 현재 URL을 기반으로 새로운 URL 생성
+            let url = new URL(window.location.href);
+            url.searchParams.delete("accommodationType"); // 기존에 있던 accommodationType 파라미터 제거
 
-            const accommodationItems = document.querySelectorAll('.accommodation-item');
+            if (selectedTypes.length > 0) {
+                // selectedTypes 배열에 있는 값들을 URL 파라미터로 추가
+                selectedTypes.forEach(type => {
+                    url.searchParams.append("accommodationType", type);
+                });
+            }
 
-            accommodationItems.forEach(item => {
-                const itemType = item.getAttribute('data-type');
-                const itemPrice = parseInt(item.getAttribute('data-price'));
-
-                // 필터 조건 추가: 숙소 유형과 가격을 기준으로 필터링
-                if ((selectedTypes.length === 0 || selectedTypes.includes(itemType)) && (itemPrice <= maxPrice)) {
-                    item.style.display = 'flex';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
+            // 페이지 리다이렉트 (새로 고침)
+            window.location.href = url.toString(); // 페이지가 새로운 URL로 리다이렉트됨
         }
+
+
 
         function updateCheckoutMinDate() {
             const checkinDate = document.getElementById('checkinDate').value;

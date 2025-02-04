@@ -41,12 +41,13 @@ public class AccommodationSearchController {
             @RequestParam(name = "searchKeyword", required = false) String searchKeyword,
             @RequestParam(name = "checkinDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate checkinDate,
             @RequestParam(name = "checkoutDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate checkoutDate,
+            @RequestParam(name = "accommodationType", required = false) List<String> accommodationTypes, // 체크된 타입 리스트 받기
             Model model,
-            @RequestParam(value="pageNum", required=false, defaultValue="1") int pageNum,
+            @RequestParam(value = "pageNum", required = false, defaultValue = "1") int pageNum,
             RedirectAttributes redirectAttributes
     ) {
         // 숙소 검색 결과 조회
-        Map<String, Object> modelMap = accommodationSearchService.getAvailableResidences(searchKeyword, checkinDate, checkoutDate, pageNum);
+        Map<String, Object> modelMap = accommodationSearchService.getAvailableResidences(searchKeyword, checkinDate, checkoutDate, pageNum,accommodationTypes);
 
         // RedirectAttributes에 모델 추가
         model.addAllAttributes(modelMap);
@@ -54,9 +55,11 @@ public class AccommodationSearchController {
         model.addAttribute("searchKeyword", searchKeyword);
         model.addAttribute("checkinDate", checkinDate);
         model.addAttribute("checkoutDate", checkoutDate);
+        model.addAttribute("accommodationTypes", accommodationTypes); // accommodationTypes를 모델에 추가
 
         return "accommodationSearch"; // 숙소 검색 페이지로 반환
     }
+
 
 
 
