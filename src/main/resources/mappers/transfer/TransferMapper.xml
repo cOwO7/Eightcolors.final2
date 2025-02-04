@@ -12,6 +12,7 @@
         WHERE transfer_no = #{transferNo}
     </update>
 
+    <!--게시판 테이블에서 no에 해당하는 게시글을 삭제하는 맵핑 구문 -->
     <delete id="deleteTransfer">
         DELETE FROM transfers
         WHERE transfer_no = #{transferNo}
@@ -105,10 +106,8 @@
     </select>
 
     <insert id="transferInsert" parameterType="com.springbootfinal.app.domain.transfer.TransferDto">
-        INSERT INTO transfers (transfer_title, seller_user_no, buyer_user_no,
-                               reservation_no, transfer_price, transfer_content, status)
-        VALUES (#{transferTitle}, #{sellerUserNo}, #{buyerUserNo},
-                #{reservationNo}, #{transferPrice}, #{transferContent}, '양도가능')
+        INSERT INTO transfers (transfer_title, seller_user_no, buyer_user_no, reservation_no, transfer_price, transfer_content, status)
+        VALUES (#{transferTitle}, #{sellerUserNo}, #{buyerUserNo}, #{reservationNo}, #{transferPrice}, #{transferContent}, '양도가능')
     </insert>
 
     <select id="transferRead" resultType="com.springbootfinal.app.domain.transfer.TransferDto">
@@ -136,4 +135,10 @@
         WHERE t.transfer_no = #{transferNo}
     </select>
 
+    <update id="putTransfer" parameterType="com.springbootfinal.app.domain.transfer.TransferDto">
+        UPDATE transfers
+        SET buyer_user_no = ${buyerUserNo},
+            status = '양도완료'
+        WHERE transfer_no = #{transferNo}
+    </update>
 </mapper>

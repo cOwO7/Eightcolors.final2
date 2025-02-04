@@ -11,16 +11,25 @@ import java.util.List;
 @Mapper
 public interface TransferMapper {
 
+    @Select("SELECT COUNT(*) FROM transfers WHERE reservation_no = #{reservationNo}")
+    int countByReservationNo(Long reservationNo);
+
+    // 게시글 번호에 해당하는 게시글을 읽어오는 메서드
     @Select("SELECT * FROM transfers WHERE partner_order_id = #{partnerOrderId}")
     TransferDto findByPartnerOrderId(@Param("partnerOrderId") String partnerOrderId);
 
+    // 게시글 번호에 해당하는 게시글의 조회수를 증가시키는 메서드
     @Update("UPDATE transfers SET status = #{status} WHERE partner_order_id = #{partnerOrderId}")
     void updateTransferStatus(@Param("partnerOrderId") String partnerOrderId, @Param("status") String status);
 
     // no에 해당하는 게시글의 읽은 횟수를 DB 테이블에서 증가시키는 메서드
     public void incrementReadCount(Long transferNo);
 
+    // no에 해당하는 게시글을 DB 테이블에서 삭제하는 메서드
     public void deleteTransfer(Long transferNo);
+
+    // 게시글을 DB 테이블에 추가하는 메서드
+    public void putTransfer(TransferDto transferDto);
 
     // 게시글을 수정하는 메서드
     public void updateBoard(TransferDto transferDto);
@@ -40,4 +49,5 @@ public interface TransferMapper {
 
     // 전체 게시글 리스트를 반환하는 메서드
     List<TransferDto> transferList();
+
 }

@@ -36,8 +36,7 @@
     <update id="updateUser" parameterType="com.springbootfinal.app.domain.login.Users">
         UPDATE users
         SET password = #{password}, email = #{email}, phone = #{phone}, name = #{name},
-            zipcode = #{zipcode}, address1 = #{address1}, address2 = #{address2}, login_type = #{loginType}, provider_id = #{providerId},
-            point = #{point}, role = #{role}
+            zipcode = #{zipcode}, address1 = #{address1}, address2 = #{address2}, login_type = #{loginType}, provider_id = #{providerId}
         WHERE user_no = #{userNo}
     </update>
 

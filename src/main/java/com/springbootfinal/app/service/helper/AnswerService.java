@@ -10,11 +10,17 @@ import java.util.List;
 
 @Service
 public class AnswerService {
+
     @Autowired
     private AnswersMapper answerMapper;
 
     public void addAnswer(AnswerDto answer) {
         answerMapper.insertAnswer(answer);
+    }
+
+    // 답변 조회
+    public List<AnswerDto> getAnswersByInquiryId(Long inquiryId) {
+        return answerMapper.allAnswerByInquiryId(inquiryId);
     }
 }
 

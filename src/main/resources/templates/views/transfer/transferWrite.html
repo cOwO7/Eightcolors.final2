@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{/layouts/transfer_layout}">
+      layout:decorate="~{layouts/transfer_layout}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,45 +11,57 @@
 <body>
 <th:block layout:fragment="content">
     <div class="container mt-5">
-        <div class="row my-5" id="global-content">
-            <div class="col">
-                <div class="row text-center">
-                    <div class="col">
+        <div class="row justify-content-center">
+            <div class="col-lg-8"> <!-- 폭을 두 배로 증가 -->
+                <div class="card p-4 shadow-lg">
+                    <div class="text-center mb-4">
                         <h2 class="fs-3 fw-bold">양도 게시글 작성</h2>
                     </div>
+                    <form name="writeForm" th:action="@{/transferAdd}" id="trwriteForm" method="post">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="checkInDate" class="form-label">체크인 날짜</label>
+                                <input type="date" class="form-control" name="checkInDate" id="checkInDate" th:value="${reservation.checkinDate}" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="checkOutDate" class="form-label">체크아웃 날짜</label>
+                                <input type="date" class="form-control" name="checkOutDate" id="checkOutDate" th:value="${reservation.checkoutDate}" readonly>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="residName" class="form-label">숙소명</label>
+                                <input type="text" class="form-control" name="residName" id="residName" th:value="${reservation.residName}" readonly>
+                            </div>
+                         <div class="col-md-6">
+                            <label for="transferPrice" class="form-label">양도 가격</label>
+                            <input type="number" class="form-control" name="transferPrice" id="transferPrice" placeholder="가격을 입력하세요" oninput="validatePrice(this)">
+                        </div>
+
+                        <script>
+                            function validatePrice(input) {
+                                const MAX_PRICE = 999000;
+                                if (parseInt(input.value, 10) > MAX_PRICE) {
+                                    alert("양도 가격으로 입력 가능한 금액은 최대 999,000원 입니다.");
+                                    input.value = MAX_PRICE;
+                                }
+                            }
+                        </script>
+                        </div>
+                        <div class="mb-3">
+                            <label for="transferTitle" class="form-label">제 목</label>
+                            <input type="text" class="form-control" name="transferTitle" id="transferTitle" placeholder="양도 글 제목을 입력하세요">
+                        </div>
+                        <div class="mb-3">
+                            <label for="transferContent" class="form-label">내 용</label>
+                            <textarea class="form-control" name="transferContent" id="transferContent" rows="10" placeholder="양도 글의 내용을 작성하세요"></textarea>
+                        </div>
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary">등록하기</button>
+                            <a href="/transfers" class="btn btn-success">목록으로</a>
+                        </div>
+                    </form>
                 </div>
-                <form name="writeForm" th:action="@{/transferAdd}" id="trwriteForm" class="row border-primary" method="post">
-                    <div class="col-lg-4 offset-md-2">
-                        <label for="checkInDate" class="form-label">체크인 날짜</label>
-                        <input type="date" class="form-control" name="checkInDate" id="checkInDate" th:value="${reservation.checkinDate}" readonly>
-                    </div>
-                    <div class="col-lg-4">
-                        <label for="residName" class="form-label">숙소명</label>
-                        <input type="text" class="form-control" name="residName" id="residName" th:value="${reservation.residName}" readonly>
-                    </div>
-                    <div class="col-lg-4 offset-md-2">
-                        <label for="checkOutDate" class="form-label">체크아웃 날짜</label>
-                        <input type="date" class="form-control" name="checkOutDate" id="checkOutDate" th:value="${reservation.checkoutDate}" readonly>
-                    </div>
-                    <div class="col-lg-4">
-                        <label for="transferPrice" class="form-label">양도 가격</label>
-                        <input type="number" class="form-control" name="transferPrice" id="transferPrice" placeholder="100원 단위 입력 불가">
-                    </div>
-                    <div class="col-lg-8 offset-md-2">
-                        <label for="transferTitle" class="form-label">제 목</label>
-                        <input type="text" class="form-control" name="transferTitle" id="transferTitle" placeholder="양도 글 제목을 입력하세요">
-                    </div>
-                    <div class="col-8 offset-md-2">
-                        <label for="transferContent" class="form-label">내 용</label>
-                        <textarea class="form-control" name="transferContent" id="transferContent" rows="14" placeholder="양도 글의 내용을 작성하세요"></textarea>
-                    </div>
-                    <div class="col-8 offset-md-2 text-center mt-3">
-                        <input type="submit" value="등록하기" class="btn btn-primary w-100"/>
-                    </div>
-                    <div class="col-8 offset-md-2 text-center mt-3">
-                        <a href="/transfers" class="btn btn-success w-100">목록으로</a>
-                    </div>
-                </form>
             </div>
         </div>
     </div>

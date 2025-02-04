@@ -17,4 +17,9 @@ public class RecentOrderDto {
     private Date checkinDate;
     private BigDecimal discountedPrice;
     private Date createdAt;
+
+    private int totalRooms;
+    private int emptyRooms;
+    private double occupancyRate;
+
 }

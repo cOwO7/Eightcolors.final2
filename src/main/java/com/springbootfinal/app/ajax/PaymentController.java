@@ -37,12 +37,8 @@ public class PaymentController {
 	            throws IamportResponseException, IOException {
 	        return iamportClient.paymentByImpUid(imp_uid);
 	    }
-	    
-	    @GetMapping("/test")
-	    public String test() {
-	    	return "test2";
-	    }
 
+	
 	    
 	    // 결제 성공 데이터 처리 및 성공 페이지로 리다이렉트
 	    @PostMapping("/payment/success")

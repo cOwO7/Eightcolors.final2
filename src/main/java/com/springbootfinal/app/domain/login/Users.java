@@ -39,7 +39,6 @@ public class Users {
     private LocalDateTime regDate = LocalDateTime.now();
 
 
-
     @Column(nullable = false)
     private String Role;
 }

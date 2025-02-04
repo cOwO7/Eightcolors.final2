@@ -11,12 +11,9 @@ import com.springbootfinal.app.service.residence.PropertyPhotosService;
 import com.springbootfinal.app.service.residence.ResidenceRoomService;
 import com.springbootfinal.app.service.residence.ResidenceService;
 import com.springbootfinal.app.service.weather.AllWeatherService;
-import com.springbootfinal.app.service.weather.WeatherService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,14 +22,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
-import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 //@RequestMapping("/residence")
@@ -209,16 +200,6 @@ public class ResidenceController {
                 propertyPhotosService.deletePhotos(photoNo);  // 사진 파일과 DB에서 삭제
             }
         }
-
-        // 2. 새로운 사진 URL 추가 (새로운 사진만 처리) 새로 추가된거 문제 발생시 이 구문 삭제
-        /*if (!photos.isEmpty()) {
-            residence.setNewPhotoUrls(new ArrayList<>());  // 새로운 사진을 담을 리스트 초기화
-            for (MultipartFile photo : photos) {
-                // 사진 저장 처리
-                String fileName = propertyPhotosService.savePhoto(photo, fileName, residNo); // 사진 저장 후 파일명 반환
-                residence.getNewPhotoUrls().add(fileName);  // 새 사진 URL 추가
-            }
-        }*/
 
         // 2. ResidenceDto의 새로운 사진 URL 리스트에 추가
         //residence.setNewPhotoUrls(new ArrayList<>());  // 기존 사진 처리 후 새로 추가된 사진만
