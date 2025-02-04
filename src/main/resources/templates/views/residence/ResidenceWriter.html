@@ -9,36 +9,14 @@
 <body>
 <th:block layout:fragment="content">
     <style>
-        #imageFields {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
 
-        }
-
-        .imageField {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 1px solid #ccc;
-            padding: 10px;
-            cursor: pointer;
-            text-align: center;
-            width: 150px;
-            height: 150px;
-        }
-
-        #imagePreview {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
     </style>
     <div class="container">
         <div>
             <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
             <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=36a75517ce82693ff837cc79c740e197&libraries=services,clusterer"></script>
+            <script th:src="@{/js/residence/residenceImages.js}"></script>
+            <link href="/css/residence/residenceFome.css" rel="stylesheet">
         </div>
         <h1>숙소 등록</h1>
         <form th:action="@{/new}" th:object="${residence}" method="post" enctype="multipart/form-data">
@@ -46,17 +24,12 @@
                 <!-- 기존 숙소 입력 필드들 -->
                 <label for="residName">숙소 이름:</label>
                 <input type="text" id="residName" th:field="*{residName}" required><br><br>
-                <div>
-                    <label for="residAddress">숙소 주소:</label>
-                    <input type="text" id="residAddress" th:field="*{residAddress}" placeholder="검색 버튼을 눌러주세요."
-                           required>
-                    <!-- 버튼 -->
-                    <button type="button" id="addressBtn" class="btn btn-outline-primary">
-                        검색
-                    </button>
-                </div>
+                <label for="residAddress">숙소 주소:</label>
+                <input type="text" id="residAddress" th:field="*{residAddress}" placeholder="검색 버튼을 눌러주세요." required class="form-control">
+                <button type="button" id="addressBtn" class="btn btn-outline-primary ml-2">
+                    검색
+                </button>
                 <br><br>
-
                 <label for="residType">숙소 유형:</label>
                 <select id="residType" th:field="*{residType}">
                     <option value="resort">리조트</option>
@@ -64,12 +37,9 @@
                     <option value="pension">펜션</option>
                     <option value="motel">모텔</option>
                 </select><br><br>
-
                 <label>소개 글:</label><br><br>
                 <textarea id="residDescription" th:field="*{residDescription}"></textarea>
             </div>
-
-
             <!-- 사진 추가 -->
             <h3>사진 추가</h3>
             <label for="photoFiles">사진 파일 업로드:</label>
@@ -106,8 +76,6 @@
                         </tr>
                     </table>
                     <br/>
-
-                    <!--<label for="town-selector" class="form-label">주소 검색</label>-->
                     <div class="d-flex">
                         <!-- input 필드 -->
                         <input type="hidden" id="address" value="" placeholder="검색 버튼을 눌러주세요." class="form-control me-2"
@@ -123,11 +91,13 @@
                     </div>
                 </div>
             </div>
-            <button type="submit" id="registerButton">등록</button>
-            <button><a href="/list">뒤로 가기</a></button>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <a href="/list" id="back" class="text-decoration-none">뒤로 가기</a>
+                <button type="submit" id="registerButton" class="btn btn-primary">등록</button>
+            </div>
         </form>
         <!-- 날씨 데이터 출력폼 -->
-        <table>
+        <table style="display: none">
             <tbody id="combinedWeatherTableBody"></tbody>
             <div id="weatherContainer" class="weather-container">
                 <div id="row1" class="row1"></div>
@@ -138,212 +108,7 @@
                 <button class="scroll-btn right" onclick="scrollToRight()">&#10095;</button>
             </div>
         </table>
-        <!--<script>
-            function previewImages() {
-                const files = document.getElementById('photoFiles').files;
 
-                // 각 필드에 이미지를 삽입하기
-                for (let i = 0; i < files.length; i++) {
-                    const file = files[i];
-                    const reader = new FileReader();
-
-                    reader.onload = function (e) {
-                        const imgElement = document.createElement('img');
-                        imgElement.src = e.target.result;
-                        imgElement.style.width = '100px';  // 이미지 크기 조정
-                        imgElement.style.height = '100px'; // 이미지 크기 조정
-                        imgElement.style.marginBottom = '10px'; // 하단 여백 추가
-
-                        const cancelBtn = document.createElement('button');
-                        cancelBtn.innerText = 'X';
-                        cancelBtn.style.position = 'absolute';
-                        cancelBtn.style.top = '0';
-                        cancelBtn.style.right = '0';
-                        cancelBtn.style.backgroundColor = 'rgba(255, 0, 0, 0.5)';
-                        cancelBtn.style.color = 'white';
-                        cancelBtn.style.border = 'none';
-                        cancelBtn.style.borderRadius = '50%';
-                        cancelBtn.style.width = '20px';
-                        cancelBtn.style.height = '20px';
-                        cancelBtn.style.cursor = 'pointer';
-
-                        const imgContainer = document.createElement('div');
-                        imgContainer.style.position = 'relative';
-                        imgContainer.style.display = 'inline-block';
-                        imgContainer.style.marginBottom = '10px'; // 하단 여백 추가
-                        imgContainer.style.width = 'calc(20% - 10px)'; // 한 줄에 5개씩 보여주기 위한 크기 설정
-
-                        cancelBtn.onclick = function () {
-                            imgContainer.remove();
-                            removeFileFromInput(i); // 파일 목록에서 해당 이미지 삭제
-                        };
-
-                        imgContainer.appendChild(imgElement);
-                        imgContainer.appendChild(cancelBtn);
-
-                        // 해당 필드에 이미지와 취소 버튼 추가
-                        const field = document.getElementById(`field${i + 1}`);
-                        field.innerHTML = ''; // 기존 내용 지우기 (이미지가 들어갈 자리 확보)
-                        field.appendChild(imgContainer);
-
-                        // 파일 입력창이 여러 개일 경우, 나머지 필드는 텍스트 그대로 유지되도록 설정
-                        if (i >= 10) return; // 10개까지만 삽입
-                    };
-
-                    reader.readAsDataURL(file);
-                }
-            }
-            // input에서 파일을 삭제하는 함수
-            function removeFileFromInput(index) {
-                const input = document.getElementById('photoFiles');
-                const dt = new DataTransfer();
-                const files = input.files;
-
-                for (let i = 0; i < files.length; i++) {
-                    if (i !== index) {
-                        dt.items.add(files[i]);
-                    }
-                }
-
-                input.files = dt.files;
-            }
-        </script>-->
-
-            <script>
-                function previewImages() {
-                    const files = document.getElementById('photoFiles').files;
-
-                    // 각 필드에 이미지를 삽입하기
-                    for (let i = 0; i < files.length; i++) {
-                        const file = files[i];
-                        const reader = new FileReader();
-
-                        reader.onload = function (e) {
-                            const imgElement = document.createElement('img');
-                            imgElement.src = e.target.result;
-                            imgElement.style.width = '100px';  // 이미지 크기 조정
-                            imgElement.style.height = '100px'; // 이미지 크기 조정
-                            imgElement.style.marginBottom = '10px'; // 하단 여백 추가
-
-                            const cancelBtn = document.createElement('button');
-                            cancelBtn.innerText = 'X';
-                            cancelBtn.style.position = 'absolute';
-                            cancelBtn.style.top = '0';
-                            cancelBtn.style.right = '0';
-                            cancelBtn.style.backgroundColor = 'rgba(255, 0, 0, 0.5)';
-                            cancelBtn.style.color = 'white';
-                            cancelBtn.style.border = 'none';
-                            cancelBtn.style.borderRadius = '50%';
-                            cancelBtn.style.width = '20px';
-                            cancelBtn.style.height = '20px';
-                            cancelBtn.style.cursor = 'pointer';
-
-                            const imgContainer = document.createElement('div');
-                            imgContainer.style.position = 'relative';
-                            imgContainer.style.display = 'inline-block';
-                            imgContainer.style.marginBottom = '10px'; // 하단 여백 추가
-                            imgContainer.style.width = 'calc(20% - 10px)'; // 한 줄에 5개씩 보여주기 위한 크기 설정
-
-                            cancelBtn.onclick = function () {
-                                imgContainer.remove();
-                                removeFileFromInput(i); // 파일 목록에서 해당 이미지 삭제
-                            };
-
-                            imgContainer.appendChild(imgElement);
-                            imgContainer.appendChild(cancelBtn);
-
-                            // field${i+1} 요소가 존재하는지 확인
-                            const field = document.getElementById(`field${i + 1}`);
-                            if (field) {  // 요소가 존재하면
-                                field.innerHTML = ''; // 기존 내용 지우기
-                                field.appendChild(imgContainer); // 이미지와 취소 버튼 추가
-                            }
-
-                            // 파일 입력창이 여러 개일 경우, 나머지 필드는 텍스트 그대로 유지되도록 설정
-                            if (i >= 10) return; // 10개까지만 삽입
-                        };
-
-                        reader.readAsDataURL(file);
-                    }
-                }
-
-                // input에서 파일을 삭제하는 함수
-                function removeFileFromInput(index) {
-                    const input = document.getElementById('photoFiles');
-                    const dt = new DataTransfer();
-                    const files = input.files;
-
-                    for (let i = 0; i < files.length; i++) {
-                        if (i !== index) {
-                            dt.items.add(files[i]);
-                        }
-                    }
-
-                    input.files = dt.files;
-                }
-
-                // 특정 div 필드를 클릭하면 해당 위치에 이미지 추가하는 함수
-                function handleImageClick(event) {
-                const index = event.currentTarget.getAttribute('data-index');
-                const inputFile = document.getElementById('photoFiles');
-
-                // 파일 입력을 트리거하여 이미지를 선택하게끔 함
-                inputFile.click();
-
-                // 파일 선택 후 미리보기 함수
-                inputFile.onchange = function () {
-                const file = inputFile.files[0]; // 선택된 파일
-                const reader = new FileReader();
-
-                reader.onload = function (e) {
-                const imgElement = document.createElement('img');
-                imgElement.src = e.target.result;
-                imgElement.style.width = '100px';  // 이미지 크기 조정
-                imgElement.style.height = '100px'; // 이미지 크기 조정
-                imgElement.style.marginBottom = '10px'; // 하단 여백 추가
-
-                const cancelBtn = document.createElement('button');
-                cancelBtn.innerText = 'X';
-                cancelBtn.style.position = 'absolute';
-                cancelBtn.style.top = '0';
-                cancelBtn.style.right = '0';
-                cancelBtn.style.backgroundColor = 'rgba(255, 0, 0, 0.5)';
-                cancelBtn.style.color = 'white';
-                cancelBtn.style.border = 'none';
-                cancelBtn.style.borderRadius = '50%';
-                cancelBtn.style.width = '20px';
-                cancelBtn.style.height = '20px';
-                cancelBtn.style.cursor = 'pointer';
-
-                const imgContainer = document.createElement('div');
-                imgContainer.style.position = 'relative';
-                imgContainer.style.display = 'inline-block';
-                imgContainer.style.marginBottom = '10px'; // 하단 여백 추가
-                imgContainer.style.width = 'calc(20% - 10px)'; // 한 줄에 5개씩 보여주기 위한 크기 설정
-
-                cancelBtn.onclick = function () {
-                imgContainer.remove();
-                removeFileFromInput(index); // 파일 목록에서 해당 이미지 삭제
-            };
-
-                imgContainer.appendChild(imgElement);
-                imgContainer.appendChild(cancelBtn);
-
-                // 해당 필드에 이미지와 취소 버튼 추가
-                const field = document.getElementById(`field${index}`);
-                field.innerHTML = ''; // 기존 내용 지우기 (이미지가 들어갈 자리 확보)
-                field.appendChild(imgContainer);
-            };
-
-                reader.readAsDataURL(file);
-            };
-            }
-
-                // 필드 클릭 이벤트에 핸들러 추가
-                document.querySelectorAll('.image-field').forEach(function (field) {
-                field.addEventListener('click', handleImageClick);
-            });
-        </script>
     </div>
     <link href="/css/weather/allW.css" rel="stylesheet"/>
     <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
