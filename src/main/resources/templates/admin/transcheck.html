@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main_layout}">
+
+<head>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: #333;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f0f0f0;
+        }
+
+        .search-bar {
+            max-width: 800px;
+        }
+
+        .btn {
+            transition: all 0.3s ease;
+            border-radius: 50px;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+        }
+
+        .table th {
+            background-color: #4e73df;
+            color: #fff;
+        }
+
+        .table-bordered td, .table-bordered th {
+            border: 1px solid #dee2e6;
+        }
+
+        .btn-danger {
+            background-color: #ff5c5c;
+            border: none;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #e74c3c;
+        }
+
+        .btn-primary {
+            background-color: #4e73df;
+            border: none;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2e59d9;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .container {
+            max-width: 90%;
+            margin: 0 auto;
+        }
+
+        .search-bar input, .search-bar select {
+            border-radius: 50px;
+            padding-left: 20px;
+            font-size: 1rem;
+        }
+
+        .search-bar button {
+            border-radius: 50px;
+            padding-right: 20px;
+            background-color: #4e73df;
+            color: white;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .alert {
+            border-radius: 5px;
+            padding: 15px;
+            font-size: 1rem;
+            margin-top: 20px;
+        }
+
+        h1 {
+            color: #4e73df;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .btn-container {
+            margin-top: 20px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $(".btn-delete").click(function(event) {
+                event.preventDefault();
+                var transferNo = $(this).attr("data-transfer-no");
+                var row = $(this).closest("tr");
+
+                if (confirm("정말 이 양도를 삭제하시겠습니까?")) {
+                    $.ajax({
+                        url: '/admin/transcheck/delete',
+                        type: 'POST',
+                        data: { transferNo: transferNo },
+                        success: function(response) {
+                            if (response.status === "success") {
+                                row.remove();
+                                alert("양도가 삭제되었습니다.");
+                            } else {
+                                alert("삭제 중 오류가 발생했습니다: " + response.message);
+                            }
+                        },
+                        error: function(error) {
+                            console.log(error);
+                            alert("삭제 중 오류가 발생했습니다.");
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</head>
+
+<th:block layout:fragment="content">
+    <div class="container my-5">
+        <h1 class="text-center">양도 조회</h1>
+
+        <div class="row mb-4 d-flex justify-content-between align-items-center">
+            <div class="col-md-8">
+                <form th:action="@{/admin/transcheck}" method="get">
+                    <div class="input-group search-bar">
+                        <select class="form-select" name="status" style="max-width: 120px;">
+                            <option value="">전체</option>
+                            <option value="양도가능">양도가능</option>
+                            <option value="양도완료">양도완료</option>
+                        </select>
+                        <input type="text" class="form-control" name="keyword" style="max-width: 500px;" placeholder="양도번호, 판매자/구매자ID, 예약번호로 검색">
+                        <button class="btn btn-primary" type="submit">검색</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-4 text-end">
+                <a href="/admin/admin" class="btn btn-secondary">뒤로가기</a>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+                <thead>
+                <tr>
+                    <th>양도번호</th>
+                    <th>판매자</th>
+                    <th>구매자</th>
+                    <th>예약번호</th>
+                    <th>가격</th>
+                    <th>상태</th>
+                    <th>등록일</th>
+                    <th>삭제</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${not #lists.isEmpty(transList)}" th:each="trans : ${transList}">
+                    <td th:text="${trans.transferNo}"></td>
+                    <td th:text="${trans.sellerId}"></td>
+                    <td th:text="${trans.buyerId}"></td>
+                    <td th:text="${trans.reservationNo}"></td>
+                    <td th:text="${trans.getFormattedTransferPrice()}"></td>
+                    <td th:text="${trans.status}"></td>
+                    <td th:text="${trans.getFormattedCreatedAt()}"></td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm btn-delete" th:data-transfer-no="${trans.transferNo}">삭제</button>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(transList)}">
+                    <td colspan="8" class="text-center text-muted">조회 결과가 없습니다.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</th:block>
+
+</html>

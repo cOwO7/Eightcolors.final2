@@ -62,4 +62,3 @@ public class LoginController {
         session.removeAttribute("socialLoginError");
         log.info("세션 에러 메시지 초기화");
     }
-}

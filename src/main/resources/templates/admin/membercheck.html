@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main_layout}">
+<head>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: #333;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f0f0f0;
+        }
+
+        .search-bar {
+            max-width: 600px;
+        }
+
+        .btn {
+            transition: all 0.3s ease;
+            border-radius: 50px;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+        }
+
+        .table th {
+            background-color: #4e73df;
+            color: #fff;
+        }
+
+        .table-bordered td, .table-bordered th {
+            border: 1px solid #dee2e6;
+        }
+
+        .btn-danger {
+            background-color: #ff5c5c;
+            border: none;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #e74c3c;
+        }
+
+        .btn-primary {
+            background-color: #4e73df;
+            border: none;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2e59d9;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .container {
+            max-width: 90%;
+            margin: 0 auto;
+        }
+
+        .search-bar input {
+            border-radius: 50px 0 0 50px;
+            border-right: 0;
+            padding-left: 20px;
+            font-size: 1rem;
+        }
+
+        .search-bar button {
+            border-radius: 0 50px 50px 0;
+            padding-right: 20px;
+            background-color: #4e73df;
+            color: white;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .alert {
+            border-radius: 5px;
+            padding: 15px;
+            font-size: 1rem;
+            margin-top: 20px;
+        }
+
+        h1 {
+            color: #4e73df;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .btn-container {
+            margin-top: 20px;
+        }
+
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $(".btn-delete").click(function(event) {
+                event.preventDefault();
+                var userId = $(this).attr("data-user-id");
+                var row = $(this).closest("tr");
+
+                if (confirm("정말 이 사용자를 삭제하시겠습니까?")) {
+                    $.ajax({
+                        url: '/admin/user/delete',
+                        type: 'POST',
+                        data: { userId: userId },
+                        success: function(response) {
+                            row.remove();
+                            alert("사용자가 삭제되었습니다.");
+                        },
+                        error: function(error) {
+                            console.log(error)
+                            alert("삭제 중 오류가 발생했습니다.");
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</head>
+<th:block layout:fragment="content">
+    <div class="container my-5">
+        <h1 class="text-center">사용자 조회</h1>
+
+        <div class="row mb-4 d-flex justify-content-between align-items-center">
+            <div class="col-md-6">
+                <form th:action="@{/admin/membercheck}" method="get">
+                    <div class="input-group search-bar">
+                        <input type="text" class="form-control" name="keyword" placeholder="이름, 아이디, 이메일, 전화번호로 검색">
+                        <button class="btn btn-primary" type="submit">검색</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-4 text-end">
+                <a href="/admin/admin" class="btn btn-secondary">뒤로가기</a>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+                <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>이름</th>
+                    <th>아이디</th>
+                    <th>이메일</th>
+                    <th>전화번호</th>
+                    <th>주소</th>
+                    <th>타입</th>
+                    <th>가입일</th>
+                    <th>삭제</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${not #lists.isEmpty(userList)}" th:each="user : ${userList}">
+                    <td th:text="${user.userNo}"></td>
+                    <td th:text="${user.name}"></td>
+                    <td th:text="${user.id}"></td>
+                    <td th:text="${user.email}"></td>
+                    <td th:text="${user.phone}"></td>
+                    <td th:text="${user.zipcode + ' ' + user.address1 + ' ' + user.address2}"></td>
+                    <td th:text="${user.loginType}"></td>
+                    <td th:text="${user.regDate}"></td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm btn-delete" th:data-user-id="${user.id}">삭제</button>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(userList)}">
+                    <td colspan="9" class="text-center text-muted">검색 결과가 없습니다.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</th:block>
+</html>

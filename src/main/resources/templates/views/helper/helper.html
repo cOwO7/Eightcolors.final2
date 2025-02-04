@@ -61,10 +61,8 @@
                 </div>
             </div>
         </div>
-
         <div class="mb-5">
             <h3 class="mb-3">문의하기</h3>
-
             <form id="searchForm" class="mb-3">
                 <div class="input-group row g-2 align-content-center">
                     <div class="col-md-3">
@@ -88,8 +86,8 @@
                 <thead>
                 <tr>
                     <th>No</th>
-                    <th>제목</th>
                     <th>상태</th>
+                    <th>제목</th>
                     <th>작성자</th>
                     <th>작성일</th>
                 </tr>
@@ -97,12 +95,12 @@
                 <tbody>
                 <tr th:each="inquiry : ${inquiries}">
                     <td th:text="${inquiry.inquiryNo}"></td>
+                    <td th:text="${inquiry.status}"></td>
                     <td>
                         <a class="text-decoration-none text-black"
                            th:href="@{/inquiries/{inquiryNo}(inquiryNo=${inquiry.inquiryNo})}"
                            th:text="${inquiry.title}"></a>
                     </td>
-                    <td th:text="${inquiry.status}"></td>
                     <td th:text="${inquiry.userId}"></td>
                     <td th:text="${inquiry.inquiryDate}"></td>
                 </tr>

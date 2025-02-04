@@ -1,105 +1,114 @@
-package com.springbootfinal.app.service.login;
+package com.springbootfinal.app.configurations;
 
-import com.springbootfinal.app.domain.login.LoginType;
-import com.springbootfinal.app.domain.login.Users;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.OAuth2Error;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
-import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.stereotype.Service;
+import com.springbootfinal.app.security.login.CustomAuthenticationProvider;
+import com.springbootfinal.app.security.login.CustomAuthenticationSuccessHandler;
+import com.springbootfinal.app.service.login.CustomOAuth2UserService;
+import com.springbootfinal.app.service.login.UserService;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import jakarta.servlet.http.HttpSession;
-import lombok.extern.slf4j.Slf4j;
-
-import java.util.Collections;
-import java.util.Map;
-
-@Slf4j
-@Service
-public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
 
     private final UserService userService;
-    private final HttpSession httpSession;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomAuthenticationProvider customAuthenticationProvider;
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
 
-    public CustomOAuth2UserService(UserService userService, HttpSession httpSession) {
-        this.userService = userService;
-        this.httpSession = httpSession;
+    @Bean
+    public static PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
-    @Override
-    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2User oAuth2User = new DefaultOAuth2UserService().loadUser(userRequest);
+    public SecurityConfig(UserService userService, CustomOAuth2UserService customOAuth2UserService, CustomAuthenticationProvider customAuthenticationProvider, CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) {
+        this.userService = userService;
+        this.customOAuth2UserService = customOAuth2UserService;
+        this.customAuthenticationProvider = customAuthenticationProvider;
+        this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
+    }
 
-        String provider = userRequest.getClientRegistration().getRegistrationId();
-        Map<String, Object> attributes = oAuth2User.getAttributes();
-        String email = null;
-        String name = null;
-        String providerId = null;
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/", "user/**", "/userJoin", "/login", "/oauth2/**", "/register", "/oauth2.0/*", "/overlapIdCheck").permitAll()
+                        .requestMatchers("/static/**", "/bootstrap/**", "/css/**", "/js/**", "/images/**", "/joinResult", "/h2-console/**", "/userInfo", "/hostUserJoin").permitAll()
+                        .requestMatchers("/hostJoinResult").permitAll()
+                        .requestMatchers("/list", "**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/host/**").hasAnyRole("HOST", "ADMIN")
+                        .anyRequest().authenticated()
+                )
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .successHandler(customAuthenticationSuccessHandler)
+                        .failureHandler((request, response, exception) -> {
+                            log.info("로그인 실패: " + exception.getMessage());
+                            String errorMessage = "로그인에 실패했습니다. 다시 시도해주세요.";
+                            if (exception.getMessage().contains("Bad credentials")) {
+                                errorMessage = "아이디 또는 비밀번호가 잘못되었습니다.";
+                            }
+                            request.getSession().setAttribute("loginError", errorMessage);
+                            response.sendRedirect("/login?error=true");
+                        })
+                        .permitAll()
+                )
+                .oauth2Login(oauth -> oauth
+                        .loginPage("/login")
+                        .successHandler(customAuthenticationSuccessHandler)
+                        .failureHandler((request, response, exception) -> {
+                            log.info("소셜 로그인 실패: " + exception.getMessage());
+                            String errorMessage = "소셜 로그인 중 오류가 발생했습니다.";
+                            if (exception.getMessage().contains("email_exists")) {
+                                errorMessage = "동일한 이메일로 가입된 로컬 계정이 존재합니다.";
+                            } else if (exception.getMessage().contains("provider_mismatch")) {
+                                errorMessage = "동일한 이메일로 다른 소셜 로그인 제공자가 존재합니다.";
+                            }
+                            request.getSession().setAttribute("socialLoginError", errorMessage);
+                            response.sendRedirect("/login?error=true");
+                        })
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService)
+                        )
+                )
+                .sessionManagement(session -> session
+                        .sessionFixation().none()
+                        .maximumSessions(1)
+                        .maxSessionsPreventsLogin(false)
+                        .expiredSessionStrategy(event -> {
+                            log.info("Session expired for: " + event.getSessionInformation().getPrincipal());
+                            event.getRequest().getSession().setAttribute("sessionExpired", true);
+                            event.getRequest().getRequestDispatcher("/login?expired=true").forward(event.getRequest(), event.getResponse());
+                        })
+                )
+                .logout(logout -> logout
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .logoutSuccessUrl("/login?logout=true")
+                        .permitAll()
+                );
 
-        if ("google".equals(provider)) {
-            providerId = oAuth2User.getName();
-            email = (String) attributes.get("email");
-            name = (String) attributes.get("name");
-        } else if ("kakao".equals(provider)) {
-            Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
-            if (kakaoAccount != null) {
-                email = (String) kakaoAccount.get("email");
-                Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
-                if (profile != null) {
-                    name = (String) profile.get("nickname");
-                }
-            }
-            providerId = String.valueOf(attributes.get("id"));
-        } else if ("naver".equals(provider)) {
-            Map<String, Object> response = (Map<String, Object>) attributes.get("response");
-            if (response != null) {
-                email = (String) response.get("email");
-                name = (String) response.get("name");
-                providerId = (String) response.get("id");
-            }
-        }
+        http.csrf(csrf -> csrf.disable());
+        http.headers(headers -> headers.frameOptions(frame -> frame.disable()));
 
-        if (email == null || name == null) {
-            log.error("Email or Name not found from OAuth2 provider");
-            throw new OAuth2AuthenticationException(new OAuth2Error("oauth2_error"), "Email or Name not found from OAuth2 provider");
-        }
+        return http.build();
+    }
 
-        Users user = userService.findByEmail(email);
-        if (user != null) {
-            if ("LOCAL".equals(user.getLoginType())) {
-                log.error("동일한 이메일로 가입된 로컬 계정이 존재합니다.");
-                log.info("email_exists 생성(서비스)");
-                throw new OAuth2AuthenticationException(new OAuth2Error("email_exists"), "동일한 이메일로 가입된 로컬 계정이 존재합니다.");
-            } else if (!provider.equalsIgnoreCase(user.getLoginType().name())) {
-                log.error("동일한 이메일로 다른 소셜 로그인 제공자가 존재합니다.");
-                log.info("provider_mismatch 생성(서비스)");
-                throw new OAuth2AuthenticationException(new OAuth2Error("provider_mismatch"), "동일한 이메일로 다른 소셜 로그인 제공자가 존재합니다.");
-            }
-        } else {
-            user = userService.saveSocialUser(email, name, providerId, LoginType.valueOf(provider.toUpperCase()));
-        }
-
-        log.info("소셜 로그인 성공 - 이메일: " + email);
-
-        httpSession.setAttribute("isLogin", true);
-        httpSession.setAttribute("role", "user");
-        httpSession.setAttribute("userNo", user.getUserNo());
-
-        Map<String, Object> customAttributes = Map.of(
-                "email", email,
-                "name", name,
-                "providerId", providerId,
-                "provider", provider
-        );
-
-        return new DefaultOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
-                customAttributes,
-                "email"
-        );
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .authenticationProvider(customAuthenticationProvider)
+                .build();
     }
 }

@@ -46,7 +46,7 @@ public class AdminService {
     }
 
     public List<HostUser> getHostUserList(String keyword) {
-         return adminMapper.searchHostUsers(keyword);
+        return adminMapper.searchHostUsers(keyword);
     }
 
     @Transactional
@@ -77,9 +77,10 @@ public class AdminService {
         return recentOrders;
     }
 
-    public List<ResidenceDto> getAllResidences() {
+    /*public List<ResidenceDto> getAllResidences() {
         return adminMapper.findAllResidences();
-    }
+    }*/
+
 
     public List<TransferDto> getAllTransfers() {
         return adminMapper.findAllTransfers();
@@ -98,6 +99,15 @@ public class AdminService {
         } catch (Exception e) {
             throw new RuntimeException("양도 삭제 실패: " + e.getMessage(), e);
         }
+    }
+
+    @Transactional
+    public List<ResidenceDto> findResidences(String residType, String keyword) {
+        return adminMapper.findResidences(residType, keyword);
+    }
+
+    public void deleteRoomByResidNo(Long residNo) {
+        adminMapper.deleteRoomByResidNo(residNo);
     }
 
 }
