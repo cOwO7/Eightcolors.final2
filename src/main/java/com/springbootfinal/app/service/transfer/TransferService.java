@@ -21,6 +21,10 @@ public class TransferService {
     @Autowired
     private ReservationMapper reservationMapper;
 
+    public void deleteTransferByReservationNo(Long reservationNo) {
+        transferMapper.deleteTransferByReservationNo(reservationNo);
+    }
+
 
     public boolean isTransferExistsByReservationNo(Long reservationNo) {
         return transferMapper.countByReservationNo(reservationNo) > 1;
