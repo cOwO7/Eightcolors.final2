@@ -21,9 +21,13 @@ public class TransferService {
     @Autowired
     private ReservationMapper reservationMapper;
 
-    // TransferService.java
+    public void deleteTransferByReservationNo(Long reservationNo) {
+        transferMapper.deleteTransferByReservationNo(reservationNo);
+    }
+
+
     public boolean isTransferExistsByReservationNo(Long reservationNo) {
-        return transferMapper.countByReservationNo(reservationNo) > 0;
+        return transferMapper.countByReservationNo(reservationNo) > 1;
     }
 
     // 게시글 번호에 해당하는 게시글을 읽어오는 메서드

@@ -6,7 +6,6 @@
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #f4f7fa;
             color: #333;
         }
 
@@ -146,7 +145,7 @@
             <div class="col-md-6">
                 <form th:action="@{/admin/membercheck}" method="get">
                     <div class="input-group search-bar">
-                        <input type="text" class="form-control" name="keyword" placeholder="검색어 입력...">
+                        <input type="text" class="form-control" name="keyword" placeholder="이름, 아이디, 이메일, 전화번호로 검색">
                         <button class="btn btn-primary" type="submit">검색</button>
                     </div>
                 </form>

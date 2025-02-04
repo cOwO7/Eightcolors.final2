@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -28,30 +29,28 @@ public class UserService implements UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private Users currentUser;//// 현재 사용자 정보를 보관
+    private Users currentUser; // 현재 사용자 정보를 보관
 
+    public UserService(UserMapper userMapper, PasswordEncoder passwordEncoder) {
+        this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     // 비밀번호 암호화 메서드
     public String encodePassword(String password) {
         return passwordEncoder.encode(password);
     }
 
-
+    // 로컬 계정 정보를 소셜 계정으로 병합
+    @Transactional
     public void mergeAccounts(Users localUser, Users socialUser) {
-        // 로컬 계정 정보를 소셜 계정으로 병합
         socialUser.setPassword(localUser.getPassword());
         socialUser.setPhone(localUser.getPhone());
         socialUser.setZipcode(localUser.getZipcode());
         socialUser.setAddress1(localUser.getAddress1());
         socialUser.setAddress2(localUser.getAddress2());
-
         userMapper.updateUser(socialUser);
         userMapper.deleteUser(localUser.getUserNo()); // 로컬 계정 삭제
-    }
-
-    public UserService(UserMapper userMapper, PasswordEncoder passwordEncoder) {
-        this.userMapper = userMapper;
-        this.passwordEncoder = passwordEncoder;
     }
 
     // 아이디 중복 확인 메서드
@@ -62,12 +61,14 @@ public class UserService implements UserDetailsService {
     }
 
     // 사용자 저장 메서드
+    @Transactional
     public void insertUser(Users user) {
         user.setPassword(passwordEncoder.encode(user.getPassword())); // 비밀번호 암호화
         userMapper.insertUser(user);
     }
 
     // 로컬 로그인 사용자 저장
+    @Transactional
     public void registerUser(RegisterRequest request) {
         Users user = new Users();
         user.setName(request.getName());
@@ -78,12 +79,8 @@ public class UserService implements UserDetailsService {
         userMapper.insertUser(user);
     }
 
-    // 사용자 정보 업데이트 메서드 추가
-    public void updateUser(Users user) {
-        userMapper.updateUser(user);
-    }
-
     // 소셜 로그인 사용자 저장
+    @Transactional
     public Users saveSocialUser(String email, String name, String providerId, LoginType loginType) {
         Users user = new Users();
         user.setEmail(email);
@@ -93,6 +90,13 @@ public class UserService implements UserDetailsService {
         user.setRole("ROLE_USER");
         userMapper.insertUser(user);
         return user;
+    }
+
+    // 사용자 정보 업데이트 메서드 추가
+    @Transactional
+    public void updateUser(Users user) {
+        log.debug("Updating user: {}", user);
+        userMapper.updateUser(user);
     }
 
     // 회원 ID에 해당하는 회원 정보를 읽어와 반환하는 메서드
@@ -114,7 +118,7 @@ public class UserService implements UserDetailsService {
         if (user != null) {
             log.info("User found: {}", user);
         } else {
-            log.warn("No user found with userNo: {}", userNo);
+            log.warn("No user found with userNo: " + userNo);
         }
         return user;
     }
@@ -144,6 +148,7 @@ public class UserService implements UserDetailsService {
         );
     }
 
+    // 현재 로그인된 사용자 정보 가져오기
     public Users getCurrentUser() {
         return currentUser;
     }
