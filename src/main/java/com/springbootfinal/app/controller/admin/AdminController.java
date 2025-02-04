@@ -191,8 +191,11 @@ public class AdminController {
     }
 
     @GetMapping("/roomcheck")
-    public String showRoomCheckPage(Model model) {
-        List<ResidenceDto> allResidences = adminService.getAllResidences();
+    public String showRoomCheckPage(@RequestParam(value = "residType", required = false) String residType,
+                                    @RequestParam(value = "keyword", required = false) String keyword,
+                                    Model model) {
+
+        List<ResidenceDto> allResidences = adminService.findResidences(residType, keyword);
         List<HostUser> AllHosts = adminService.getAllHostUsers();
         List<Map<String, Object>> roomVacancyRates = adminService.getRoomVacancyRates();
 
@@ -222,24 +225,9 @@ public class AdminController {
     @GetMapping("/roomcheck/{residNo}")
     public String test(@PathVariable Long residNo) {
         log.info("residNo: {}", residNo);
-        adminMapper.deleteRoomByResidNo(residNo);
-        return "/admin/roomcheck";
+        adminService.deleteRoomByResidNo(residNo);
+        return "redirect:/admin/roomcheck";
     }
 
-
-
-
-    /*@GetMapping("/roomcheck")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String showRoomCheckPage(Model model) {
-        List<ResidenceDto> residenceList = adminService.getAllResidences();
-        if (residenceList == null || residenceList.isEmpty()) {
-            System.out.println("No residences found.");
-        } else {
-            System.out.println("Found " + residenceList.size() + " residences.");
-        }
-        model.addAttribute("residenceList", residenceList);
-        return "admin/roomcheck";
-    }*/
-
 }
+
