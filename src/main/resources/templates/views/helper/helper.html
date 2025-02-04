@@ -95,14 +95,15 @@
                 <tbody>
                 <tr th:each="inquiry : ${inquiries}">
                     <td th:text="${inquiry.inquiryNo}"></td>
-                    <td th:text="${inquiry.status}"></td>
+                    <td th:text="${inquiry.status}"
+                        th:classappend="${inquiry.status == '답변완료' ? 'text-success' : 'text-danger'}"></td>
                     <td>
                         <a class="text-decoration-none text-black"
                            th:href="@{/inquiries/{inquiryNo}(inquiryNo=${inquiry.inquiryNo})}"
                            th:text="${inquiry.title}"></a>
                     </td>
                     <td th:text="${inquiry.userId}"></td>
-                    <td th:text="${inquiry.inquiryDate}"></td>
+                    <td th:text="${#temporals.format(inquiry.inquiryDate, 'yyyy-MM-dd HH:mm')}"></td>
                 </tr>
                 </tbody>
             </table>

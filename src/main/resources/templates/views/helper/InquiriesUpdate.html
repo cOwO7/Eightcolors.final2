@@ -10,23 +10,23 @@
 <th:block layout:fragment="content">
     <div class="container">
         <div class="mb-5">
-            <h3 class="mb-3">문의 쓰기</h3>
+            <h3 class="mb-3">문의 수정</h3>
             <!-- 작성자 유형을 선택하는 폼 (User 또는 AdminUser) -->
-            <form action="#" th:action="@{/inquiries}" method="post">
+            <form th:action="@{/inquiries/{id}/update(id=${inquiry.inquiryNo})}" th:object="${inquiry}" method="post">
                 <input type="hidden" name="userNo" th:value="${session.userNo}">
                 <div class="mb-3">
                     <label for="userId" class="form-label">작성자</label>
-                    <input type="text" class="form-control" id="userId" name="userId" th:value="${userName}" required readonly>
+                    <input type="text" class="form-control" id="userId" name="userId" th:field="*{userId}" required readonly>
                 </div>
                 <div class="mb-3">
                     <label for="title" class="form-label">제목</label>
-                    <input type="text" class="form-control" id="title" name="title" required>
+                    <input type="text" class="form-control" id="title" th:field="*{title}" required>
                 </div>
                 <div class="mb-3">
                     <label for="content" class="form-label">내용</label>
-                    <textarea class="form-control" id="content" name="content" rows="5" required></textarea>
+                    <textarea class="form-control" id="content" th:field="*{content}" rows="5" required></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">문의 등록</button>
+                <button type="submit" class="btn btn-primary">문의 수정</button>
                 <a href="/inquiries" class="btn btn-secondary mt-3">목록으로</a>
             </form>
         </div>

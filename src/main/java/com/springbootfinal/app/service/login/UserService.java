@@ -21,13 +21,10 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private UserMapper userMapper;
-
     @Autowired
     private HostUserMapper hostUserMapper;
-
     @Autowired
     private AdminUserMapper adminUserMapper;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -149,5 +146,14 @@ public class UserService implements UserDetailsService {
 
     public Users getCurrentUser() {
         return currentUser;
+    }
+
+    // 성중 추가 문제시 삭제
+    public String getUserNameByUserNo(Long userNo) {
+        Users user = findByUserNo(userNo);  // userNo로 사용자 찾기
+        if (user != null) {
+            return user.getName();  // 해당 사용자의 name 반환
+        }
+        return null;  // 사용자 없으면 null 반환
     }
 }

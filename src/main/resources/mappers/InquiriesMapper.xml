@@ -23,8 +23,14 @@
 	<!-- 문의 업데이트 -->
 	<update id="updateInquiry">
 		UPDATE inquiries
-		SET title = #{title}, content = #{content}, status = #{status}
+		SET title = #{title}, content = #{content}
 		WHERE inquiry_no = #{inquiryNo};
+	</update>
+	<!-- 답변 등록시 문의 Status 업데이트 -->
+	<update id="updateStatus">
+		UPDATE inquiries
+		SET status = '답변완료'
+		WHERE inquiry_no = #{inquiryNo}
 	</update>
 
 	<!-- 문의 삭제 -->
