@@ -23,7 +23,8 @@ public class AccommodationSearchController {
 	private AccommodationSearchService accommodationSearchService;
 
     @GetMapping("/accomSearch")
-    public String accomSearch(Model model, @RequestParam(value="pageNum", required=false, defaultValue="1") int pageNum) {
+    public String accomSearch(Model model, @RequestParam(value="pageNum", required=false, defaultValue="1") int pageNum
+    		) {
         // "modelMap"이 없으면 기본적으로 모든 숙소를 가져옴
         Map<String, Object> modelMap = (Map<String, Object>) model.asMap().get("modelMap");
 

@@ -13,13 +13,13 @@
 -->
 <mapper namespace="com.springbootfinal.app.mapper.AccommodationSearchMapper">
 
-    <select id="findAvailableResidences" parameterType="map" resultType="ResidenceSearch">
+    <!-- <select id="findAvailableResidences" parameterType="map" resultType="ResidenceSearch">
         SELECT r.resid_no, r.resid_name, r.resid_address, r.resid_type, rr.price_per_night min_price, pp.thumbnailUrls
         FROM residence r LEFT JOIN residence_rooms rr ON r.resid_no = rr.resid_no LEFT JOIN reservations res
         ON rr.room_no = res.room_no LEFT JOIN property_photos pp ON r.resid_no = pp.resid_no
         WHERE rr.resid_no = r.resid_no AND not ( (res.checkin_date <![CDATA[>=]]> #{checkinDate} AND res.checkout_date <![CDATA[<=]]> #{checkoutDate}) )
 
-        <!-- 숙소 타입 필터링 추가 -->
+        숙소 타입 필터링 추가
         <if test="accommodationTypes != null and accommodationTypes.size() > 0">
             AND r.resid_type IN
             <foreach item="type" collection="accommodationTypes" open="(" close=")" separator=",">
@@ -27,18 +27,52 @@
             </foreach>
         </if>
 
-        <!-- 검색 키워드 필터링 추가 -->
+        검색 키워드 필터링 추가
         <if test="searchKeyword != null and searchKeyword != ''">
             AND (r.resid_name LIKE CONCAT('%', #{searchKeyword}, '%')
             OR r.resid_address LIKE CONCAT('%', #{searchKeyword}, '%'))
         </if>
 
-        <!-- 가격 필터링 추가 (maxPrice) -->
+        가격 필터링 추가 (maxPrice)
         <if test="maxPrice != null">
              and rr.price_per_night <![CDATA[<=]]> #{maxPrice}
         </if>
         LIMIT #{startRow}, #{pageSize};
-    </select>
+    </select> -->
+    
+    <select id="findAvailableResidences" parameterType="map" resultType="ResidenceSearch">
+        SELECT DISTINCT r.resid_no, r.resid_name, r.resid_address, r.resid_type, MIN(rr.price_per_night) AS min_price, 
+       MIN(pp.thumbnailUrls) AS thumbnailUrl
+        FROM residence r LEFT JOIN residence_rooms rr ON r.resid_no = rr.resid_no LEFT JOIN reservations res
+        ON rr.room_no = res.room_no LEFT JOIN property_photos pp ON r.resid_no = pp.resid_no
+        WHERE rr.resid_no = r.resid_no AND r.resid_no IN (( SELECT DISTINCT r.resid_no
+		FROM residence r
+		JOIN residence_rooms rr ON r.resid_no = rr.resid_no
+		LEFT JOIN reservations res ON rr.room_no = res.room_no 
+		    AND (res.checkin_date <![CDATA[<=]]> #{checkoutDate} AND res.checkout_date <![CDATA[>=]]> #{checkinDate})
+		WHERE res.room_no IS NULL))
+
+        
+        <if test="accommodationTypes != null and accommodationTypes.size() > 0">
+            AND r.resid_type IN
+            <foreach item="type" collection="accommodationTypes" open="(" close=")" separator=",">
+                #{type}
+            </foreach>
+        </if>
+
+      
+        <if test="searchKeyword != null and searchKeyword != ''">
+            AND (r.resid_name LIKE CONCAT('%', #{searchKeyword}, '%')
+            OR r.resid_address LIKE CONCAT('%', #{searchKeyword}, '%'))
+        </if>
+
+    
+        <if test="maxPrice != null">
+             and rr.price_per_night <![CDATA[<=]]> #{maxPrice}
+        </if>
+        GROUP BY r.resid_no, r.resid_name, r.resid_address, r.resid_type
+        LIMIT #{startRow}, #{pageSize};
+        </select>
 
 
 
@@ -68,7 +102,12 @@ FROM residence;
         SELECT COUNT(DISTINCT r.resid_no)
         FROM residence r LEFT JOIN residence_rooms rr ON r.resid_no = rr.resid_no LEFT JOIN reservations res
         ON rr.room_no = res.room_no LEFT JOIN property_photos pp ON r.resid_no = pp.resid_no
-        WHERE rr.resid_no = r.resid_no AND not ( (res.checkin_date <![CDATA[>=]]> #{checkinDate} AND res.checkout_date <![CDATA[<=]]> #{checkoutDate}) )
+        WHERE rr.resid_no = r.resid_no AND r.resid_no IN (( SELECT DISTINCT r.resid_no
+		FROM residence r
+		JOIN residence_rooms rr ON r.resid_no = rr.resid_no
+		LEFT JOIN reservations res ON rr.room_no = res.room_no 
+		    AND (res.checkin_date <![CDATA[<=]]> #{checkoutDate} AND res.checkout_date <![CDATA[>=]]> #{checkinDate})
+		WHERE res.room_no IS NULL))
 
         <!-- 숙소 타입 필터링 추가 -->
         <if test="accommodationTypes != null and accommodationTypes.size() > 0">
