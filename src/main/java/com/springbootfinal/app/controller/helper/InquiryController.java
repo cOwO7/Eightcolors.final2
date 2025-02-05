@@ -10,11 +10,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
+/**
+ * 문의(고객센터) 관련 컨트롤러
+ */
 @Slf4j
 @Controller
 public class InquiryController {
@@ -25,18 +25,21 @@ public class InquiryController {
     @Autowired
     private AnswerService answerService;
 
-    // 문의 목록 페이지
+    /**
+     * 문의 목록 페이지
+     */
     @GetMapping("/inquiries")
     public String listInquiries(Model model) {
         List<InquiryDto> inquiries = inquiryService.getAllInquiries();
         model.addAttribute("inquiries", inquiries);
         return "views/helper/helper";
     }
-    // 문의 상세 페이지
-    @GetMapping("/inquiries/{inquiryNo}")
-    public String viewInquiry(@PathVariable Long inquiryNo,
-                              Model model) {
 
+    /**
+     * 문의 상세 페이지
+     */
+    @GetMapping("/inquiries/{inquiryNo}")
+    public String viewInquiry(@PathVariable Long inquiryNo, Model model) {
         InquiryDto inquiry = inquiryService.getInquiryById(inquiryNo);
         List<AnswerDto> answers = answerService.getAnswersByInquiryId(inquiryNo);
 
@@ -45,21 +48,30 @@ public class InquiryController {
         return "views/helper/InquiriesDetail";
     }
 
-    // 문의 작성 폼
+    /**
+     * 문의 작성 폼
+     */
     @GetMapping("/inquiries/create")
     public String createInquiryForm(Model model) {
-        model.addAttribute("inquiry", new InquiryDto());
+        // Builder 사용 예시: 빈 객체를 미리 넘길 수도 있지만,
+        // 단순 폼에선 굳이 객체 생성 없이도 가능하다.
+        model.addAttribute("inquiry", InquiryDto.builder().build());
         return "views/helper/InquiriesWriter";
     }
 
-    // 문의 등록 처리
+    /**
+     * 문의 등록 처리
+     */
     @PostMapping("/inquiries")
     public String createInquiry(@ModelAttribute InquiryDto inquiry) {
+        // inquiry도 Builder 사용 가능(현재 @ModelAttribute 받기 때문에 필요 시 내부 Builder 구성)
         inquiryService.createInquiry(inquiry);
         return "redirect:/inquiries";
     }
 
-    // 문의 수정 폼
+    /**
+     * 문의 수정 폼
+     */
     @GetMapping("/inquiries/{inquiryNo}/edit")
     public String editInquiryForm(@PathVariable Long inquiryNo, Model model) {
         InquiryDto inquiry = inquiryService.getInquiryById(inquiryNo);
@@ -67,42 +79,34 @@ public class InquiryController {
         return "views/helper/InquiriesUpdate";
     }
 
-    // 문의 수정 처리
+    /**
+     * 문의 수정 처리
+     * Setter 대신 Builder로 새로운 객체 생성 후 업데이트 진행
+     */
     @PostMapping("/inquiries/{inquiryNo}")
-    public String editInquiry(@PathVariable Long inquiryNo, @ModelAttribute InquiryDto inquiry) {
-        inquiry.setInquiryNo(inquiryNo);
-        inquiryService.updateInquiry(inquiry);
+    public String editInquiry(@PathVariable Long inquiryNo,
+                              @ModelAttribute InquiryDto inquiry) {
+
+        // 기존 inquiry의 필드들을 Builder로 복사해 새로운 객체 생성
+        InquiryDto updated = InquiryDto.builder()
+                .inquiryNo(inquiryNo)
+                .title(inquiry.getTitle())
+                .content(inquiry.getContent())
+                .userId(inquiry.getUserId())
+                .status(inquiry.getStatus())
+                .inquiryDate(inquiry.getInquiryDate())
+                .build();
+
+        inquiryService.updateInquiry(updated);
         return "redirect:/inquiries/{inquiryNo}";
     }
 
-    // 문의 삭제 처리
+    /**
+     * 문의 삭제 처리
+     */
     @PostMapping("/inquiries/{inquiryNo}/delete")
     public String deleteInquiry(@PathVariable Long inquiryNo) {
         inquiryService.deleteInquiry(inquiryNo);
         return "redirect:/inquiries";
     }
-
-    // 답변 추가
-    @PostMapping("/inquiries/{inquiryNo}/answer")
-    public String addAnswer(@PathVariable Long inquiryNo,
-                            @RequestParam String content,
-                            Model model) {
-        // AnswerDto 객체 생성 및 값 설정
-        AnswerDto answer = new AnswerDto();
-        answer.setInquiryNo(inquiryNo);
-        answer.setContent(content);
-        log.info("답변 전송: {}", answer);
-
-        // 답변 추가 서비스 호출
-        answerService.addAnswer(answer);
-
-        // 모델에 답변 추가
-        model.addAttribute("answer", answer);
-
-        // 답변이 등록된 후 원래 문의 상세 페이지로 리디렉션
-        return "redirect:/inquiries/{inquiryNo}";
-    }
-
-
 }
-

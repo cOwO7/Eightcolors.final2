@@ -14,6 +14,7 @@
         .menu-card:hover {
             background-color: #f8f9fa;
             cursor: pointer;
+            transform: scale(1.05);
         }
         .menu-link {
             text-decoration: none;
@@ -22,12 +23,22 @@
             display: block;
             padding: 15px;
         }
+        .btn {
+            transition: all 0.3s ease;
+            border-radius: 50px;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
 
         h1 {
             color: #4e73df;
             font-weight: 700;
             margin-bottom: 30px;
         }
+
+
     </style>
 </head>
 <th:block layout:fragment="content">
@@ -54,11 +65,11 @@
                     <a href="/admin/transcheck" class="menu-link">양도 조회</a>
                 </div>
             </div>
-            <!--<div class="col">
+            <div class="col">
                 <div class="menu-card bg-light shadow-sm">
-                    <a href="/inquiries" class="menu-link">고객센터</a>
+                    <a href="/admin/inquire" class="menu-link">고객센터</a>
                 </div>
-            </div>-->
+            </div>
         </div>
     </div>
 </th:block>

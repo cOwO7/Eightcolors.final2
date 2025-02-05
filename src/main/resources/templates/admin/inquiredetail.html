@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/main_layout}">
+<head>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>문의 상세보기</title>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      color: #333;
+    }
+    .container {
+      max-width: 80%;
+      margin: 40px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .btn {
+      transition: all 0.3s ease;
+      border-radius: 50px;
+      width: 100%;
+      padding: 12px 0;
+      color: white;
+    }
+    .btn:hover {
+      transform: scale(1.05);
+      color: white;
+    }
+    .table-hover tbody tr:hover {
+      background-color: #f0f0f0;
+    }
+    .btn-custom {
+      background-color: #5cb85c;
+      color: white;
+      border: none;
+    }
+    .btn-custom:hover {
+      background-color: #4cae4c;
+    }
+    .btn-warning-custom {
+      background-color: #f0ad4e;
+      color: white;
+      border: none;
+    }
+    .btn-warning-custom:hover {
+      background-color: #ec971f;
+    }
+    .btn-primary-custom {
+      background-color: #0275d8;
+      color: white;
+      border: none;
+    }
+    .btn-primary-custom:hover {
+      background-color: #025aa5;
+    }
+    .btn-margin {
+      margin-bottom: 1rem;
+    }
+    .alert {
+      display: none;
+    }
+  </style>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+<!-- 내용 영역 -->
+<th:block layout:fragment="content">
+  <div class="container">
+    <h2 class="mb-4">문의 상세보기</h2>
+    <div class="mb-3 p-3 border rounded bg-light">
+      <p><strong>제목:</strong> <span th:text="${inquiry.title}"></span></p>
+      <p><strong>상태:</strong> <span th:text="${inquiry.status}"></span></p>
+      <p><strong>작성자:</strong> <span th:text="${inquiry.userId}"></span></p>
+      <p><strong>작성일:</strong> <span th:text="${inquiry.inquiryDate}"></span></p>
+      <hr>
+      <p><strong>내용:</strong></p>
+      <p th:text="${inquiry.content}" class="p-3 bg-white border rounded"></p>
+    </div>
+
+    <!-- 답변 목록 영역: 항상 <ul id="answers"> 요소를 출력 -->
+    <div>
+      <h4>답변 목록</h4>
+      <ul id="answers">
+        <li th:each="answer : ${answers}" class="answer-item" th:data-answer-id="${answer.answerNo}">
+          <p><strong>답변 내용:</strong> <span th:text="${answer.content}"></span></p>
+          <!-- 답변 삭제 버튼 -->
+          <button class="btn btn-danger btn-sm delete-answer" th:data-answer-id="${answer.answerNo}">삭제</button>
+          <hr>
+        </li>
+      </ul>
+      <!-- 답변이 없을 경우 메시지 표시 -->
+      <div th:if="${answers == null or #lists.isEmpty(answers)}">
+        <p>답변이 없습니다.</p>
+      </div>
+    </div>
+
+    <!-- 관리자가 답변을 추가할 수 있는 부분 -->
+    <div class="mt-4" th:if="${session['role'] == 'admin'}">
+      <h4>답변 작성</h4>
+      <!-- inquiryNo값을 자바스크립트에서 사용할 수 있도록 hidden input -->
+      <input type="hidden" id="inquiryNo" th:value="${inquiry.inquiryNo}"/>
+
+      <!-- 답변 작성 폼 (AJAX로 처리) -->
+      <form id="answerForm" th:action="@{/admin/inquire/{inquiryNo}/answer(inquiryNo=${inquiry.inquiryNo})}" method="post">
+        <div class="mb-3">
+          <label for="content" class="form-label">답변 내용</label>
+          <textarea id="content" name="content" class="form-control" rows="5" placeholder="답변을 입력하세요"></textarea>
+        </div>
+        <button type="submit" class="btn btn-custom btn-margin">답변 추가</button>
+      </form>
+
+      <!-- 상태 변경 버튼 -->
+      <div class="text-center">
+        <form th:action="@{/admin/inquire/{inquiryNo}/status(inquiryNo=${inquiry.inquiryNo})}" method="post">
+          <input type="hidden" name="status" value="답변완료">
+          <button type="submit" class="btn btn-warning-custom btn-margin">답변완료</button>
+        </form>
+        <a href="/admin/inquire" class="btn btn-primary-custom btn-margin">목록으로</a>
+      </div>
+
+      <!-- 성공/실패 메시지 -->
+      <div id="responseMessage" class="alert alert-success mt-3" role="alert">
+        답변이 추가되었습니다.
+      </div>
+      <div id="errorMessage" class="alert alert-danger mt-3" role="alert">
+        답변 추가에 실패했습니다. 다시 시도해주세요.
+      </div>
+    </div>
+  </div>
+
+  <!-- 부트스트랩 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- AJAX 처리 로직 -->
+  <script>
+    $(document).ready(function() {
+
+      // (1) 답변 추가 AJAX
+      $('#answerForm').on('submit', function(e) {
+        e.preventDefault();
+        var content = $('#content').val();
+        var inquiryNo = $('#inquiryNo').val();
+        $.ajax({
+          url: '/admin/inquire/' + inquiryNo + '/answer',
+          type: 'POST',
+          data: {
+            content: content,
+            inquiryNo: inquiryNo
+          },
+          success: function(response) {
+            $('#responseMessage').show();
+            $('#errorMessage').hide();
+            // 반환된 HTML에서 #answers 요소의 내용을 추출하여 갱신
+            $('#answers').html($(response).find('#answers').html());
+            $('#content').val('');
+          },
+          error: function() {
+            $('#errorMessage').show();
+            $('#responseMessage').hide();
+          }
+        });
+      });
+
+      // (2) 답변 삭제 AJAX
+      $(document).on('click', '.delete-answer', function() {
+        var answerId = $(this).data('answer-id');
+        var inquiryNo = $('#inquiryNo').val();
+        $.ajax({
+          url: '/admin/inquire/answer/' + answerId + '/delete',
+          type: 'POST',
+          data: { inquiryNo: inquiryNo },
+          success: function(response) {
+            $('#answers').html($(response).find('#answers').html());
+          },
+          error: function() {
+            alert("삭제에 실패했습니다. 다시 시도해주세요.");
+          }
+        });
+      });
+    });
+  </script>
+</th:block>
+</body>
+</html>
