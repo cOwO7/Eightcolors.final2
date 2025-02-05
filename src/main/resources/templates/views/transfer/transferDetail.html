@@ -71,7 +71,7 @@
                     <div>
                         <a href="javascript:history.back()" class="btn btn-outline-primary">목록으로</a>
                     </div>
-                    <th:block th:if="${transfer.sellerUserNo == userNo}">
+                    <th:block th:if="${transfer.sellerUserNo == userNo or session['role'] == 'admin'}">
                         <form action="updateForm" method="post">
                             <input type="hidden" name="transferNo" th:value="${transfer.transferNo}" />
                             <input type="hidden" name="pageCount" th:value="${pageCount}" />

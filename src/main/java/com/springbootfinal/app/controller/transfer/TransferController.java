@@ -145,19 +145,28 @@ public String createTransferForm(Model model, HttpServletRequest request) {
                                     @RequestParam(value = "pageCount", defaultValue = "1") int pageCount,
                                     @RequestParam(value = "type", defaultValue = "") String type,
                                     @RequestParam(value = "keyword", defaultValue = "") String keyword,
-                                    HttpSession session
-    ) {
+                                    HttpSession session) {
         boolean searchOption = !(type.isEmpty() || keyword.isEmpty());
-        TransferDto transfer = transferService.getTransfer(transferNo,true);
-        log.warn(session.getAttribute("userNo").toString());
+        TransferDto transfer = transferService.getTransfer(transferNo, true);
+
+        // userNo와 hostUserNo 로그 추가 (디버깅 용도)
+        log.warn("userNo: " + session.getAttribute("userNo"));
+        log.warn("hostUserNo: " + session.getAttribute("hostUserNo"));
+        log.warn("adminUserNo: " + session.getAttribute("adminUserNo"));
+
         Reservations resvParam = new Reservations();
         resvParam.setReservationNo(transfer.getReservationNo());
         List<Reservations> resvRs = resvMapper.getReservations(resvParam);
+
         log.warn("resvNo : " + transfer.getReservationNo());
-        log.warn("resvations : " + resvRs.get(0).toString());
+        log.warn("reservations : " + resvRs.get(0).toString());
+
         transfer.setRoomNo(resvRs.get(0).getRoomNo().toString());
 
+        // 모델에 userNo와 hostUserNo 추가
         model.addAttribute("userNo", session.getAttribute("userNo"));
+        model.addAttribute("hostUserNo", session.getAttribute("hostUserNo"));
+        model.addAttribute("adminUserNo", session.getAttribute("adminUserNo"));
         model.addAttribute("transfer", transfer);
         model.addAttribute("pageCount", pageCount);
         model.addAttribute("searchOption", searchOption);
@@ -169,6 +178,7 @@ public String createTransferForm(Model model, HttpServletRequest request) {
 
         return TRANSFER_BASE_PATH + "transferDetail";
     }
+
 
     // 게시글 목록 요청 처리 메서드
     @GetMapping("/transfers")
