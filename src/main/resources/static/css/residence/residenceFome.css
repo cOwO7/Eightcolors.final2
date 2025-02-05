@@ -131,3 +131,8 @@ textarea {
 #back:hover {
 	background-color: #5a6268;
 }
+
+#roomImage {
+	max-width: 240px;
+	max-height: 150px;
+}
