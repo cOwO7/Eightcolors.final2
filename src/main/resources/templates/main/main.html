@@ -34,6 +34,25 @@
 				url.searchParams.set('checkoutDate', checkoutDate);
 				link.href = url.toString();
 			});
+
+			// 좌우 버튼 클릭 이벤트 추가
+			document.querySelector('.nav-link-prev').addEventListener('click', function(event) {
+				event.preventDefault();
+				const container = document.querySelector('.travel-card-container');
+				container.scrollBy({
+					left: -container.clientWidth * 0.8, // 5개 카드 크기만큼 스크롤
+					behavior: 'smooth'
+				});
+			});
+
+			document.querySelector('.nav-link-next').addEventListener('click', function(event) {
+				event.preventDefault();
+				const container = document.querySelector('.travel-card-container');
+				container.scrollBy({
+					left: container.clientWidth * 0.8, // 5개 카드 크기만큼 스크롤
+					behavior: 'smooth'
+				});
+			});
 		});
 	</script>
 </head>
@@ -148,15 +167,15 @@
 		</div>
 	</div>
 
-	<div class="row my-3 travel-card">
+	<div class="row my-3">
 		<div class="col-1 align-self-center">
-			<a class="nav-link text-end" href="#travelfirst">
+			<a class="nav-link nav-link-prev">
 				<img src="/button/arrow_left.png" class="w-25 h-25">
 			</a>
 		</div>
 		<div class="col-10">
-			<div class="row flex-nowrap overflow-x-hidden">
-				<div class="col-auto" id="travelfirst">
+			<div class="travel-card-container">
+				<div class="travel-card">
 					<div class="card" style="width: 10rem;">
 						<a href="/accomSearch?searchKeyword=부산">
 							<img src="/images/mainpage/busan.jpg" class="card-img-top" alt="부산">
@@ -166,7 +185,7 @@
 						</a>
 					</div>
 				</div>
-				<div class="col-auto">
+				<div class="travel-card">
 					<div class="card" style="width: 10rem;">
 						<a href="/accomSearch?searchKeyword=강릉">
 							<img src="/images/mainpage/Gangneung.jpg" class="card-img-top" alt="강릉">
@@ -176,7 +195,7 @@
 						</a>
 					</div>
 				</div>
-				<div class="col-auto">
+				<div class="travel-card">
 					<div class="card" style="width: 10rem;">
 						<a href="/accomSearch?searchKeyword=가평">
 							<img src="/images/mainpage/Gapyeong.jpg" class="card-img-top" alt="가평">
@@ -186,7 +205,7 @@
 						</a>
 					</div>
 				</div>
-				<div class="col-auto">
+				<div class="travel-card">
 					<div class="card" style="width: 10rem;">
 						<a href="/accomSearch?searchKeyword=경주">
 							<img src="/images/mainpage/gyeongju.jpg" class="card-img-top" alt="경주">
@@ -196,7 +215,7 @@
 						</a>
 					</div>
 				</div>
-				<div class="col-auto">
+				<div class="travel-card">
 					<div class="card" style="width: 10rem;">
 						<a href="/accomSearch?searchKeyword=인천">
 							<img src="/images/mainpage/incheon.jpg" class="card-img-top" alt="인천">
@@ -206,7 +225,7 @@
 						</a>
 					</div>
 				</div>
-				<div class="col-auto">
+				<div class="travel-card">
 					<div class="card" style="width: 10rem;">
 						<a href="/accomSearch?searchKeyword=제주">
 							<img src="/images/mainpage/jeju.jpg" class="card-img-top" alt="제주">
@@ -216,7 +235,7 @@
 						</a>
 					</div>
 				</div>
-				<div class="col-auto">
+				<div class="travel-card">
 					<div class="card" style="width: 10rem;">
 						<a href="/accomSearch?searchKeyword=서울">
 							<img src="/images/mainpage/seoul.jpg" class="card-img-top" alt="서울">
@@ -226,7 +245,7 @@
 						</a>
 					</div>
 				</div>
-				<div class="col-auto">
+				<div class="travel-card">
 					<div class="card" style="width: 10rem;">
 						<a href="/accomSearch?searchKeyword=속초">
 							<img src="/images/mainpage/Sokcho.jpg" class="card-img-top" alt="속초">
@@ -236,7 +255,7 @@
 						</a>
 					</div>
 				</div>
-				<div class="col-auto">
+				<div class="travel-card">
 					<div class="card" style="width: 10rem;">
 						<a href="/accomSearch?searchKeyword=여수">
 							<img src="/images/mainpage/Yeosu.jpg" class="card-img-top" alt="여수">
@@ -246,7 +265,7 @@
 						</a>
 					</div>
 				</div>
-				<div class="col-auto" id="travellast">
+				<div class="travel-card">
 					<div class="card" style="width: 10rem;">
 						<a href="/accomSearch?searchKeyword=해운대">
 							<img src="/images/mainpage/Haeundae.jpg" class="card-img-top" alt="해운대">
@@ -259,7 +278,7 @@
 			</div>
 		</div>
 		<div class="col-1 align-self-center">
-			<a class="nav-link" href="#travellast">
+			<a class="nav-link nav-link-next">
 				<img src="/button/arrow_right.png" class="w-25 h-25" style="width: 100%; height: auto; max-width: 200px;">
 			</a>
 		</div>

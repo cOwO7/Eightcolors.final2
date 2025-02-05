@@ -1,13 +1,13 @@
-# MySQL 사용자 계정 생성
-# MySQL에서 root 계정으로 접속 후 script에서 아래 코드 복사 붙여넣기 실행
-# 주석처리는 삭제 후 사용
-# drop database eightcolors2025;
-# mysql -u root -h localhost -p mysql
-# create database eightcolors2025;
-# create user 'eightcolors2025'@'%' identified by 'eightcolors2025';
-# grant all privileges on eightcolors2025.* to 'eightcolors2025'@'%';
-# flush privileges;
-# exit
+-- # MySQL 사용자 계정 생성
+-- # MySQL에서 root 계정으로 접속 후 script에서 아래 코드 복사 붙여넣기 실행
+-- # 주석처리는 삭제 후 사용
+-- # drop database eightcolors2025;
+-- # mysql -u root -h localhost -p mysql
+-- # create database eightcolors2025;
+-- # create user 'eightcolors2025'@'%' identified by 'eightcolors2025';
+-- # grant all privileges on eightcolors2025.* to 'eightcolors2025'@'%';
+-- # flush privileges;
+-- # exit
 
 drop database eightcolors2025;
 CREATE DATABASE IF NOT EXISTS eightcolors2025; -- 데이터베이스 생성
@@ -117,6 +117,7 @@ CREATE TABLE IF NOT EXISTS reservations (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
+
 -- 8. 고객센터 테이블
 CREATE TABLE IF NOT EXISTS inquiries (
     inquiry_no BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -198,7 +199,7 @@ FROM reservations r
 ORDER BY r.created_at DESC
 LIMIT 5;
 
-
+select * from users;
 
 -- 1. 관리자 계정 데이터 삽입
 INSERT INTO admin_users (admin_id, admin_passwd, admin_name, role)
@@ -210,6 +211,21 @@ INSERT INTO host_users (id, passwd, email, phone, name, zipcode, address1, addre
 VALUES
     ('hostuser01', '$2a$10$F4ns56v9RU.QXhoi1qDfjOXki0Qsc5WUaMohfR27dwE3Zvz0YVFyS', 'hostuser01@email.com', '010-1234-5678', '호스트1', '12345', '서울시 강남구', '역삼동 123', '1234567890', 'ROLE_HOST'),
     ('hostuser02', '$2a$10$F4ns56v9RU.QXhoi1qDfjOXki0Qsc5WUaMohfR27dwE3Zvz0YVFyS', 'hostuser02@email.com', '010-2345-6789', '호스트2', '54321', '서울시 서초구', '반포동 456', '0987654321', 'ROLE_HOST');
+
+-- 4. 숙소 테이블에 샘플 데이터 삽입
+INSERT INTO residence (resid_name, host_user_no, resid_description, resid_address, resid_type, nx, ny, latitudeNum, longitudeNum, regId, regIdTemp)
+VALUES
+    ('Sample Residence 1', 1, 'Sample Description 1', '123 Sample Street, Sample City', 'hotel', 0, 0, '37.5665', '126.9780', 'admin', 'admin'),
+    ('Sample Residence 2', 2, 'Sample Description 2', '456 Sample Avenue, Sample City', 'resort', 0, 0, '37.5675', '126.9790', 'admin', 'admin');
+
+-- 5. 숙소 방 정보 테이블에 샘플 데이터 삽입
+INSERT INTO residence_rooms (resid_no, room_name, price_per_night, room_url01)
+VALUES
+    (1, 'Room 101', 100000, 'http://example.com/room101.jpg'),
+    (1, 'Room 102', 150000, 'http://example.com/room102.jpg'),
+    (2, 'Room 201', 200000, 'http://example.com/room201.jpg'),
+    (2, 'Room 202', 250000, 'http://example.com/room202.jpg');
+
 
 -- 6. 예약 데이터 삽입
 INSERT INTO reservations (user_no, room_no, checkin_date, checkout_date, total_price, discounted_price, transaction_id, payment_status, reservation_status)
