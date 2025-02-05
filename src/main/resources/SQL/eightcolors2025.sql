@@ -235,6 +235,8 @@ VALUES
     (2, '201호', 150000),
     (2, '202호', 180000);
 
+select*from users;
+
 -- 6. 예약 데이터 삽입
 INSERT INTO reservations (user_no, room_no, checkin_date, checkout_date, total_price, discounted_price, transaction_id, payment_status, reservation_status)
 VALUES
