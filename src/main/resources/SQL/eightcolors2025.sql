@@ -211,6 +211,12 @@ VALUES
     ('hostuser01', '$2a$10$F4ns56v9RU.QXhoi1qDfjOXki0Qsc5WUaMohfR27dwE3Zvz0YVFyS', 'hostuser01@email.com', '010-1234-5678', '호스트1', '12345', '서울시 강남구', '역삼동 123', '1234567890', 'ROLE_HOST'),
     ('hostuser02', '$2a$10$F4ns56v9RU.QXhoi1qDfjOXki0Qsc5WUaMohfR27dwE3Zvz0YVFyS', 'hostuser02@email.com', '010-2345-6789', '호스트2', '54321', '서울시 서초구', '반포동 456', '0987654321', 'ROLE_HOST');
 
+-- 6. 예약 데이터 삽입
+INSERT INTO reservations (user_no, room_no, checkin_date, checkout_date, total_price, discounted_price, transaction_id, payment_status, reservation_status)
+VALUES
+    (1, 1, '2025-02-01', '2025-02-03', 100000, 95000, 'txn12345', '완료', '예약 완료'),
+    (2, 3, '2025-02-05', '2025-02-07', 300000, 290000, 'txn67890', '완료', '예약 완료');
+
 -- 12. 양도 데이터 삽입
 INSERT INTO transfers (seller_user_no, buyer_user_no, reservation_no, transfer_price, status, transfer_title)
 VALUES
