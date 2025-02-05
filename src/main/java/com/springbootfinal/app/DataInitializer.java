@@ -40,7 +40,7 @@ public class DataInitializer implements CommandLineRunner {
                 if (resultSet.next() && resultSet.getInt(1) == 0) {
                     insertStatement.setString(1, "admin03");
                     insertStatement.setString(2, passwordEncoder.encode("adminpass789"));
-                    insertStatement.setString(3, "관리자1");
+                    insertStatement.setString(3, "관리자");
                     insertStatement.setString(4, "ROLE_ADMIN");
                     insertStatement.executeUpdate();
                 }

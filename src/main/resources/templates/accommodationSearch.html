@@ -8,18 +8,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>숙박 검색</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
     <style>
+        /* 기본 컨테이너 스타일 */
         .container {
             margin-top: 50px;
         }
+
+        /* 검색 박스 */
         .search-box {
             background-color: #ffffff;
-            padding: 30px 20px;
+            padding: 20px;
             border-radius: 15px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 40px;
+            width: 100%;
+            margin-bottom: 20px; /* 아래 여백 없애기 */
         }
+
+        /* 숙소 항목 */
         .accommodation-item {
             background-color: #ffffff;
             border-radius: 8px;
@@ -27,36 +34,46 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease;
             display: flex;
-            flex-direction: row; /* Flexbox로 이미지와 텍스트 배치 */
+            flex-direction: row;
             text-decoration: none;
             color: inherit;
             height: 250px;
             max-height: 250px;
             flex-shrink: 0;
             margin-bottom: 20px;
+            margin-top: 30px; /* 숙소 항목 상단 여백 */
         }
+
         .accommodation-item:hover {
             transform: translateY(-10px);
         }
+
+        /* 이미지 */
         .card-img-top {
-            width: 300px; /* 이미지 크기 300px로 설정 */
+            width: 300px;
             height: 100%;
             object-fit: cover;
         }
+
+        /* 카드 본문 */
         .card-body {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start; /* 텍스트 정렬을 위쪽으로 설정 */
+            justify-content: flex-start;
             padding-left: 20px;
             padding-top: 10px;
         }
+
+        /* 검색 결과가 없을 때 */
         .no-results {
             text-align: center;
             font-size: 1.2rem;
             color: #dc3545;
             font-weight: bold;
         }
+
+        /* 가격 표시 */
         .price {
             font-size: 1.1rem;
             font-weight: bold;
@@ -64,48 +81,94 @@
             bottom: 20px;
             right: 20px;
         }
+
+        /* 숙소 주소 */
         .address {
             font-size: 0.9rem;
             color: #777;
-            margin-top: 3px; /* 주소와 숙소 이름 간의 간격을 더 좁혔습니다. */
+            margin-top: 3px;
         }
-        .range-wrapper {
-            margin-bottom: 20px;
-        }
-        .slider-wrapper {
-            display: flex;
-            justify-content: space-between;
-        }
-        .form-select {
-            margin-bottom: 20px;
-        }
+
+        /* 필터 스타일 */
         .accommodation-filters {
-            margin-bottom: 20px;
+            background-color: white;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            max-height: 90vh;
+            overflow-y: auto;
+            width: 100%;
+            margin-left: 20px;
+            margin-right: 20px;
+            margin-top: 30px; /* 필터 박스를 아래로 내려줌 */
         }
+
+        /* 필터 구분선 */
         .filter-divider {
             border-left: 2px solid #ddd;
             padding-left: 20px;
             height: 100%;
             margin-left: 20px;
         }
+
+        /* 필터 체크박스 스타일 */
         .form-check-label {
             margin-left: 10px;
         }
-        .filter-container {
+
+        /* 검색 박스 내부 스타일 */
+        .search-container {
             display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
             justify-content: space-between;
         }
+
+        .search-container input,
+        .search-container button {
+            flex: 1 1 200px; /* 최소 200px */
+            min-width: 150px; /* 최소 너비 */
+        }
+
+        /* 모바일 화면에서 검색 폼 */
+        @media (max-width: 768px) {
+            .search-container {
+                flex-direction: column;
+            }
+
+            .search-box {
+                padding: 10px;
+                width: 100%;
+            }
+
+            .accommodation-filters {
+                margin-top: 10px;
+            }
+        }
+
+        /* 금액 범위 스타일 */
         .price-range-wrapper {
             margin-bottom: 20px;
         }
+
         .price-range-wrapper .price-range-header {
             font-weight: bold;
             font-size: 1.2rem;
             margin-bottom: 10px;
         }
+
+        /* 가격 범위 슬라이더 스타일 */
+        .slider-wrapper {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .form-select {
+            margin-bottom: 20px;
+        }
+
     </style>
 </head>
-
 <body>
 <th:block layout:fragment="content">
     <div class="container">
@@ -116,11 +179,15 @@
                 <!-- 검색 폼 -->
                 <form id="searchForm" action="/search" method="get">
                     <div class="search-container d-flex gap-2">
-                        <input type="text" name="searchKeyword" id="searchKeyword" class="form-control" placeholder="숙소명 또는 지역" required th:value="${searchKeyword}">
+                        <input type="text" name="searchKeyword" id="searchKeyword" class="form-control"
+                               placeholder="숙소명 또는 지역" required th:value="${searchKeyword}">
                         <!-- 체크인 날짜 필드 (오늘 이후 날짜만 선택 가능) -->
-                        <input type="date" name="checkinDate" id="checkinDate" class="form-control" placeholder="체크인 날짜" required th:value="${checkinDate}" min="{{ today() }}" onchange="updateCheckoutMinDate()" />
+                        <input type="date" name="checkinDate" id="checkinDate" class="form-control" placeholder="체크인 날짜"
+                               required th:value="${checkinDate}" min="{{ today() }}"
+                               onchange="updateCheckoutMinDate()"/>
                         <!-- 체크아웃 날짜 필드 (체크인 날짜 이후 날짜만 선택 가능) -->
-                        <input type="date" name="checkoutDate" id="checkoutDate" class="form-control" placeholder="체크아웃 날짜" required th:value="${checkoutDate}" min="{{ today() }}" />
+                        <input type="date" name="checkoutDate" id="checkoutDate" class="form-control"
+                               placeholder="체크아웃 날짜" required th:value="${checkoutDate}" min="{{ today() }}"/>
                         <button type="submit" class="btn btn-primary">검색</button>
                     </div>
                 </form>
@@ -133,25 +200,29 @@
                 <div class="accommodation-filters">
                     <h5>숙소 타입</h5>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="resort" id="resort" name="accommodationType" onchange="filterAccommodationTypes()">
+                        <input class="form-check-input" type="checkbox" value="resort" id="resort"
+                               name="accommodationType" onchange="filterAccommodationTypes()">
                         <label class="form-check-label" for="resort">
                             리조트
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="hotel" id="hotel" name="accommodationType" onchange="filterAccommodationTypes()">
+                        <input class="form-check-input" type="checkbox" value="hotel" id="hotel"
+                               name="accommodationType" onchange="filterAccommodationTypes()">
                         <label class="form-check-label" for="hotel">
                             호텔
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="pension" id="pension" name="accommodationType" onchange="filterAccommodationTypes()">
+                        <input class="form-check-input" type="checkbox" value="pension" id="pension"
+                               name="accommodationType" onchange="filterAccommodationTypes()">
                         <label class="form-check-label" for="pension">
                             펜션
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="motel" id="motel" name="accommodationType" onchange="filterAccommodationTypes()">
+                        <input class="form-check-input" type="checkbox" value="motel" id="motel"
+                               name="accommodationType" onchange="filterAccommodationTypes()">
                         <label class="form-check-label" for="motel">
                             모텔
                         </label>
@@ -160,30 +231,34 @@
                     <div class="price-range-wrapper">
                         <div class="price-range-header">금액 범위</div>
                         <div class="slider-wrapper">
-                            <input type="range" class="form-range" id="priceRange" name="priceRange" min="0" max="1000000" step="10000" value="1000000">
+                            <input type="range" class="form-range" id="priceRange" name="priceRange" min="0"
+                                   max="1000000" step="10000" value="1000000" onchange="filterAccommodationTypes()">
                         </div>
                         <div>
-                            ₩0 ~ <span id="priceRangeValue">1000000</span>
+                            ₩0 ~ <span id="priceRangeValue">1,000,000</span>
                         </div>
                     </div>
                 </div>
             </div>
-
             <div class="col-md-1">
                 <div class="filter-divider"></div>
             </div>
-
             <div class="col-md-8">
                 <div id="accommodationList" class="row g-4" th:if="${results != null and results.size() > 0}">
                     <div class="col-lg-12" th:each="residence : ${results}">
-                        <a th:href="@{|/accommodation/${residence.residNo}|}" class="accommodation-item card" th:data-type="${residence.residType}">
-                            <img th:src="@{|/images/files/${residence.thumbnailUrls}|}" alt="숙소 사진" class="card-img-top"/>
+                        <!--<a th:href="@{|/accommodation/${residence.residNo}|}" class="accommodation-item card" th:data-type="${residence.residType}" th:data-price="${residence.minPrice}">-->
+                        <a th:href="@{|/detail/${residence.residNo}|}" class="accommodation-item card"
+                           th:data-type="${residence.residType}" th:data-price="${residence.minPrice}">
+                            <img th:src="@{|/images/files/${residence.thumbnailUrls}|}" alt="숙소 사진"
+                                 class="card-img-top"/>
                             <div class="card-body">
                                 <h5 class="card-title" th:text="${residence.residName}"></h5>
-                                <!-- 주소는 숙소명 바로 아래로 위치 -->
                                 <p class="address" th:text="${residence.residAddress}"></p>
-                                <!-- 가격은 오른쪽 하단에 배치 -->
-                                <div class="price">가격: <span th:text="'₩' + ${residence.minPrice}"></span></div>
+                                <!--<div class="price">가격: <span th:text="'₩' + ${residence.minPrice}" data-price="${residence.minPrice}"></span>/1박</div>-->
+                                <div class="price">가격: <span
+                                        th:text="'₩' + ${#numbers.formatInteger(residence.minPrice, 3, 'COMMA')}"
+                                        data-price="${residence.minPrice}"></span>/1박
+                                </div>
                             </div>
                         </a>
                     </div>
@@ -194,26 +269,305 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col">
+            <!--키워드, 체크인날짜, 체크아웃날짜, 숙소타입, 가격 있을때-->
+            <nav aria-label="Page navigation"
+                 th:if="${searchKeyword != null and checkinDate != null and checkoutDate != null and accommodationTypes != null and maxPrice != null}">
+                <ul class="pagination justify-content-center">
+                    <!-- 이전 페이지 그룹으로 이동 -->
+                    <li class="page-item" th:if="${startPage > pageGroup}">
+                        <a class="page-link"
+                           th:href="@{|?pageNum=${startPage - 1}&searchKeyword=${searchKeyword}&checkinDate=${checkinDate}&checkoutDate=${checkoutDate}&accommodationTypes=${accommodationTypes}&maxPrice=${maxPrice}|}">
+                            Pre
+                        </a>
+                    </li>
+                    <!-- 페이지 번호 출력 -->
+                    <li th:each="num : ${ #numbers.sequence(startPage, endPage) }"
+                        th:classappend="${num == currentPage} ? 'active'" class="page-item" aria-current="page">
+                        <th:block th:if="${num != currentPage}">
+                            <a class="page-link" th:text="${num}"
+                               th:href="@{|?pageNum=${num}&searchKeyword=${searchKeyword}&checkinDate=${checkinDate}&checkoutDate=${checkoutDate}&accommodationTypes=${accommodationTypes}&maxPrice=${maxPrice}|}"></a>
+                        </th:block>
+                        <th:block th:unless="${num != currentPage}">
+                            <span th:text="${num}" class="page-link"></span>
+                        </th:block>
+                    </li>
+                    <!-- 다음 페이지 그룹으로 이동 -->
+                    <li class="page-item" th:if="${endPage < pageCount}">
+                        <a class="page-link"
+                           th:href="@{|?pageNum=${startPage + pageGroup}&searchKeyword=${searchKeyword}&checkinDate=${checkinDate}&checkoutDate=${checkoutDate}&accommodationTypes=${accommodationTypes}&maxPrice=${maxPrice}|}">
+                            Next
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <!--키워드, 체크인날짜, 체크아웃날짜-->
+            <nav aria-label="Page navigation"
+                 th:if="${searchKeyword != null and checkinDate != null and checkoutDate != null and maxPrice == null}">
+                <ul class="pagination justify-content-center">
+                    <!-- 이전 페이지 그룹으로 이동 -->
+                    <li class="page-item" th:if="${startPage > pageGroup}">
+                        <a class="page-link"
+                           th:href="@{|?pageNum=${startPage - 1}&searchKeyword=${searchKeyword}&checkinDate=${checkinDate}&checkoutDate=${checkoutDate}|}">
+                            Pre
+                        </a>
+                    </li>
+                    <!-- 페이지 번호 출력 -->
+                    <li th:each="num : ${ #numbers.sequence(startPage, endPage) }"
+                        th:classappend="${num == currentPage} ? 'active'" class="page-item" aria-current="page">
+                        <th:block th:if="${num != currentPage}">
+                            <a th:text="${num}"
+                               th:href="@{|?pageNum=${num}&searchKeyword=${searchKeyword}&checkinDate=${checkinDate}&checkoutDate=${checkoutDate}|}"
+                               class="page-link"></a>
+                        </th:block>
+                        <th:block th:unless="${num != currentPage}">
+                            <span th:text="${num}" class="page-link"></span>
+                        </th:block>
+                    </li>
 
+                    <!-- 다음 페이지 그룹으로 이동 -->
+                    <li class="page-item" th:if="${endPage < pageCount}">
+                        <a class="page-link"
+                           th:href="@{|?pageNum=${startPage + pageGroup}&searchKeyword=${searchKeyword}&checkinDate=${checkinDate}|}">
+                            Next
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <!--키워드, 체크인날짜, 체크아웃날짜,가격-->
+            <nav aria-label="Page navigation"
+                 th:if="${searchKeyword != null and checkinDate != null and checkoutDate != null and checkoutDate != null and accommodationTypes == null and maxPrice != null}">
+                <ul class="pagination justify-content-center">
+                    <!-- 이전 페이지 그룹으로 이동 -->
+                    <li class="page-item" th:if="${startPage > pageGroup}">
+                        <a class="page-link"
+                           th:href="@{|?pageNum=${startPage - 1}&searchKeyword=${searchKeyword}&checkinDate=${checkinDate}&checkoutDate=${checkoutDate}&maxPrice=${maxPrice}|}">
+                            Pre
+                        </a>
+                    </li>
+                    <!-- 페이지 번호 출력 -->
+                    <li th:each="num : ${ #numbers.sequence(startPage, endPage) }"
+                        th:classappend="${num == currentPage} ? 'active'" class="page-item" aria-current="page">
+                        <th:block th:if="${num != currentPage}">
+                            <a th:text="${num}"
+                               th:href="@{|?pageNum=${num}&searchKeyword=${searchKeyword}&checkinDate=${checkinDate}&checkoutDate=${checkoutDate}&maxPrice=${maxPrice}|}"
+                               class="page-link"></a>
+                        </th:block>
+                        <th:block th:unless="${num != currentPage}">
+                            <span th:text="${num}" class="page-link"></span>
+                        </th:block>
+                    </li>
+
+                    <!-- 다음 페이지 그룹으로 이동 -->
+                    <li class="page-item" th:if="${endPage < pageCount}">
+                        <a class="page-link"
+                           th:href="@{|?pageNum=${startPage + pageGroup}&searchKeyword=${searchKeyword}&checkinDate=${checkinDate}&maxPrice=${maxPrice}|}">
+                            Next
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <!-- 검색이 아닐때(키워드,체크인날짜, 체크아웃날짜)     -->
+            <nav aria-label="Page navigation"
+                 th:if="${searchKeyword == null and checkinDate == null and checkoutDate == null and accommodationTypes == null and maxPrice == null}">
+                <ul class="pagination justify-content-center">
+                    <!--/*
+                    현재 페이지 그룹의 시작 페이지가 pageGroup보다 크다는 것은
+                    이전 페이지 그룹이 존재한다는 것으로 현재 페이지 그룹의 시작
+                    페이지에서 1을 빼면 이전 페이지 그룹의 endPage로 이동할 수 있다.
+                    */-->
+                    <li class="page-item" th:if="${ startPage > pageGroup }">
+                        <a class="page-link" th:href="@{|?pageNum=${startPage - 1}|}">Pre</a>
+                    </li>
+                    <!--/*
+                    현재 페이지 그룹의 startPage부터 endPage까지 반복하면서 페이지
+                    번호를 출력하고 링크를 설정한다. 현재 페이지는 링크에서 제외 시킨다.
+                    */-->
+                    <li th:each="num : ${ #numbers.sequence(startPage, endPage) }"
+                        th:classappend="${num == currentPage} ? 'active'"
+                        class="page-item" aria-current="page">
+                        <th:block th:if="${num != currentPage}">
+                            <a th:text="${num}" th:href="@{|?pageNum=${num}|}" class="page-link"></a>
+                        </th:block>
+                        <!--/* 현재 페이지는 링크에서 제외 시킨다.*/-->
+                        <th:block th:unless="${num != currentPage}">
+                            <span th:text="${num}" class="page-link"></span>
+                        </th:block>
+                    </li>
+                    <!--/*
+                    현재 페이지 그룹의 마지막 페이지가 전체 페이지 보다 작다는 것은
+                    다음 페이지 그룹이 존재한다는 것으로 현재 페이지 그룹의 시작 페이지에
+                    pageGroup을 더하여 링크를 설정하면 다음 페이지 그룹의 startPage로
+                    이동할 수 있다.
+                    */-->
+                    <li class="page-item" th:if="${endPage < pageCount}">
+                        <a class="page-link"
+                           th:href="@{|?pageNum=${startPage+pageGroup}|}">Next</a>
+                    </li>
+                </ul>
+            </nav>
+            <!--검색이 아닐때 - 가격은 있고 타입이 없을때-->
+            <nav aria-label="Page navigation"
+                 th:if="${searchKeyword == null and checkinDate == null and checkoutDate == null and accommodationTypes == null and maxPrice != null}">
+                <ul class="pagination justify-content-center">
+                    <!--/*
+                    현재 페이지 그룹의 시작 페이지가 pageGroup보다 크다는 것은
+                    이전 페이지 그룹이 존재한다는 것으로 현재 페이지 그룹의 시작
+                    페이지에서 1을 빼면 이전 페이지 그룹의 endPage로 이동할 수 있다.
+                    */-->
+                    <li class="page-item" th:if="${ startPage > pageGroup }">
+                        <a class="page-link" th:href="@{|?pageNum=${startPage - 1}&maxPrice=${maxPrice}|}">Pre</a>
+                    </li>
+                    <!--/*
+                    현재 페이지 그룹의 startPage부터 endPage까지 반복하면서 페이지
+                    번호를 출력하고 링크를 설정한다. 현재 페이지는 링크에서 제외 시킨다.
+                    */-->
+                    <li th:each="num : ${ #numbers.sequence(startPage, endPage) }"
+                        th:classappend="${num == currentPage} ? 'active'" class="page-item" aria-current="page">
+                        <th:block th:if="${num != currentPage}">
+                            <a th:text="${num}" th:href="@{|?pageNum=${num}&maxPrice=${maxPrice}|}"
+                               class="page-link"></a>
+                        </th:block>
+                        <!--/* 현재 페이지는 링크에서 제외 시킨다.*/-->
+                        <th:block th:unless="${num != currentPage}">
+                            <span th:text="${num}" class="page-link"></span>
+                        </th:block>
+                    </li>
+                    <!--/*
+                    현재 페이지 그룹의 마지막 페이지가 전체 페이지 보다 작다는 것은
+                    다음 페이지 그룹이 존재한다는 것으로 현재 페이지 그룹의 시작 페이지에
+                    pageGroup을 더하여 링크를 설정하면 다음 페이지 그룹의 startPage로
+                    이동할 수 있다.
+                    */-->
+                    <li class="page-item" th:if="${endPage < pageCount}">
+                        <a class="page-link"
+                           th:href="@{|?pageNum=${startPage+pageGroup}&maxPrice=${maxPrice}|}">Next</a>
+                    </li>
+                </ul>
+            </nav>
+            <!--검색이 아닐때 - 가격은 있고 타입이 있을때-->
+            <nav aria-label="Page navigation"
+                 th:if="${searchKeyword == null and checkinDate == null and checkoutDate == null and accommodationTypes != null and maxPrice != null}">
+                <ul class="pagination justify-content-center">
+                    <!--/*
+                    현재 페이지 그룹의 시작 페이지가 pageGroup보다 크다는 것은
+                    이전 페이지 그룹이 존재한다는 것으로 현재 페이지 그룹의 시작
+                    페이지에서 1을 빼면 이전 페이지 그룹의 endPage로 이동할 수 있다.
+                    */-->
+                    <li class="page-item" th:if="${ startPage > pageGroup }">
+                        <a class="page-link"
+                           th:href="@{|?pageNum=${startPage - 1}&accommodationTypes=${accommodationTypes}&maxPrice=${maxPrice}|}">
+                            Pre</a>
+                    </li>
+                    <!--/*
+                    현재 페이지 그룹의 startPage부터 endPage까지 반복하면서 페이지
+                    번호를 출력하고 링크를 설정한다. 현재 페이지는 링크에서 제외 시킨다.
+                    */-->
+                    <li th:each="num : ${ #numbers.sequence(startPage, endPage) }"
+                        th:classappend="${num == currentPage} ? 'active'"
+                        class="page-item" aria-current="page">
+                        <th:block th:if="${num != currentPage}">
+                            <a th:text="${num}"
+                               th:href="@{|?pageNum=${num}&accommodationTypes=${accommodationTypes}&maxPrice=${maxPrice}|}"
+                               class="page-link"></a>
+                        </th:block>
+                        <!--/* 현재 페이지는 링크에서 제외 시킨다.*/-->
+                        <th:block th:unless="${num != currentPage}">
+                            <span th:text="${num}" class="page-link"></span>
+                        </th:block>
+                    </li>
+                    <!--/*
+                    현재 페이지 그룹의 마지막 페이지가 전체 페이지 보다 작다는 것은
+                    다음 페이지 그룹이 존재한다는 것으로 현재 페이지 그룹의 시작 페이지에
+                    pageGroup을 더하여 링크를 설정하면 다음 페이지 그룹의 startPage로
+                    이동할 수 있다.
+                    */-->
+                    <li class="page-item" th:if="${endPage < pageCount}">
+                        <a class="page-link" th:href="@{|?pageNum=${startPage
+                        +pageGroup}&accommodationTypes=${accommodationTypes}&maxPrice=${maxPrice}|}">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function filterAccommodationTypes() {
-            const selectedTypes = [];
-            document.querySelectorAll('input[name="accommodationType"]:checked').forEach(checkbox => {
+        document.addEventListener("DOMContentLoaded", function () {
+            const checkboxes = document.querySelectorAll(".form-check-input");
+            const priceRange = document.getElementById("priceRange");
+            const priceRangeValue = document.getElementById("priceRangeValue");
+
+            // URL 파라미터에서 값 가져오기
+            const urlParams = new URLSearchParams(window.location.search);
+            const selectedTypes = urlParams.get("accommodationTypes") ? urlParams.get("accommodationTypes").split(",") : [];
+            const maxPriceFromUrl = urlParams.get("maxPrice");
+
+            // 체크박스 상태 설정
+            checkboxes.forEach(checkbox => {
+                if (selectedTypes.includes(checkbox.value)) {
+                    checkbox.checked = true;
+                }
+
+                checkbox.addEventListener("change", function () {
+                    updateUrlWithSelectedTypesAndPrice(true);  // 페이지 새로고침
+                });
+            });
+
+            // 슬라이더 값 설정
+            if (maxPriceFromUrl) {
+                priceRange.value = maxPriceFromUrl;
+                priceRangeValue.textContent = maxPriceFromUrl;
+            }
+
+            // 슬라이더 값 변경 시
+            priceRange.addEventListener("input", function () {
+                priceRangeValue.textContent = priceRange.value;
+                updateUrlWithSelectedTypesAndPrice(true);  // 페이지 새로고침
+            });
+        });
+
+        function updateUrlWithSelectedTypesAndPrice(reloadPage = false) {
+            let selectedTypes = [];
+            let maxPrice = document.getElementById("priceRange").value;
+
+            // 체크된 체크박스 값들을 selectedTypes 배열에 담기
+            document.querySelectorAll(".form-check-input:checked").forEach(checkbox => {
                 selectedTypes.push(checkbox.value);
             });
 
-            const accommodationItems = document.querySelectorAll('.accommodation-item');
-            accommodationItems.forEach(item => {
-                const itemType = item.getAttribute('data-type');
-                if (selectedTypes.length === 0 || selectedTypes.includes(itemType)) {
-                    item.style.display = 'flex';
-                } else {
-                    item.style.display = 'none'; // hide unchecked types
-                }
-            });
+            // 쉼표로 구분된 문자열로 변환
+            let accommodationTypes = selectedTypes.join(',');
+
+            // 현재 URL을 기반으로 새로운 URL 생성
+            let url = new URL(window.location.href);
+
+            // 기존에 있던 accommodationTypes, maxPrice 파라미터 제거
+            url.searchParams.delete("accommodationTypes");
+            url.searchParams.delete("maxPrice");
+
+            // accommodationTypes를 쉼표로 구분된 문자열로 URL 파라미터에 추가
+            if (accommodationTypes) {
+                let accommodationTypes = selectedTypes.join(',');
+                accommodationTypes = accommodationTypes.replaceAll("\\[|\\]", "");
+                url.searchParams.set("accommodationTypes", accommodationTypes);
+            }
+
+            // 최대 금액을 URL에 추가 (중복 방지)
+            if (maxPrice && maxPrice > 0) {
+                url.searchParams.set("maxPrice", maxPrice);
+            }
+
+            // 페이지 새로 고침
+            if (reloadPage) {
+                window.location.href = url.toString();
+                //window.location.href = 'search?searchKeyword='+ key1 + '&checkinDate=' + checkindate;
+            } else {
+                window.history.pushState({}, "", url.toString());
+            }
         }
+
 
         function updateCheckoutMinDate() {
             const checkinDate = document.getElementById('checkinDate').value;
@@ -225,8 +579,8 @@
             }
         }
 
-        $(document).ready(function() {
-            $('#priceRange').on('input', function() {
+        $(document).ready(function () {
+            $('#priceRange').on('input', function () {
                 $('#priceRangeValue').text($(this).val());
             });
 
@@ -237,11 +591,10 @@
         });
 
         // 가격 범위 실시간 표시
-        document.getElementById("priceRange").addEventListener("input", function() {
+        document.getElementById("priceRange").addEventListener("input", function () {
             document.getElementById("priceRangeValue").textContent = this.value;
         });
     </script>
 </th:block>
 </body>
-
 </html>

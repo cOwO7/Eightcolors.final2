@@ -3,84 +3,114 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/main_layout}">
 
-<th:block layout:fragment="content">
+<head>
+    <style>
+        .form-container {
+            border: 2px solid #007bff; /* 파란색 테두리 */
+            padding: 20px;
+            max-width: 600px; /* 최대 폭을 600px로 설정 */
+            margin: auto; /* 가운데 정렬 */
+        }
+    </style>
+</head>
 
+<th:block layout:fragment="content">
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <div class="row my-5" id="global-content">
         <div class="col">
             <div class="row my-3 text-center">
                 <div class="col">
-                    <h2 class="fs-3 fw-bold">회원 정보 수정</h2>
+                    <h2 class="fs-3 fw-bold text-primary">회원 정보 수정</h2>
                 </div>
             </div>
-            <form th:action="@{/myPage/update}" name="joinForm" method="post" id="joinForm" th:object="${user}">
-                <input type="hidden" name="loginType" id="loginType" th:value="*{loginType}"/>
-                <div class="row mt-5 mb-3">
-                    <div class="col-8 offset-2">
-                        <label for="name" class="form-label">* 이 름 : </label>
-                        <input type="text" class="form-control" name="name" id="name" th:field="*{name}">
+            <div class="form-container">
+                <form th:action="@{/myPage/update}" name="joinForm" method="post" id="joinForm" th:object="${user}">
+                    <input type="hidden" name="loginType" id="loginType" th:value="*{loginType}"/>
+                    <div class="mb-3">
+                        <label for="name" class="form-label fw-bold text-primary">* 이 름 : </label>
+                        <input type="text" class="form-control border-primary custom-border" name="name" id="name" th:field="*{name}">
                     </div>
-                </div>
-                <div class="row my-3">
-                    <div class="col-8 offset-2">
-                        <label for="id" class="form-label">* 아이디 : </label>
-                        <div class="row">
-                            <div class="col-6">
-                                <input type="text" class="form-control" name="id" id="id" th:field="*{id}" readonly>
-                            </div>
+                    <div class="mb-3">
+                        <label for="id" class="form-label fw-bold text-primary">* 아이디 : </label>
+                        <input type="text" class="form-control border-primary custom-border" name="id" id="id" th:field="*{id}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label fw-bold text-primary">비밀번호 : </label>
+                        <input type="password" class="form-control border-primary custom-border" name="password" id="password" th:field="*{password}" placeholder="미입력시 기존 비밀번호를 유지합니다.">
+                    </div>
+                    <!-- 우편번호 찾기 -->
+                    <div class="mb-3">
+                        <label for="zipcode" class="form-label fw-bold text-primary">우편번호</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control border-primary" name="zipcode" id="zipcode" maxlength="5" readonly>
+                            <button type="button" class="btn btn-warning" id="btnZipcode">우편번호 찾기</button>
                         </div>
                     </div>
-                </div>
-                <div class="row my-3">
-                    <div class="col-8 offset-2">
-                        <label for="password" class="form-label">비밀번호 : </label>
-                        <input type="password" class="form-control" name="password" id="password" th:field="*{password}" placeholder="새로운 비밀번호를 입력하세요">
-                    </div>
-                </div>
-                <div class="row my-3">
-                    <div class="col-8 offset-2">
-                        <label for="zipcode" class="form-label">* 우편번호 : </label>
-                        <div class="row">
-                            <div class="col-4">
-                                <input type="text" class="form-control" name="zipcode" id="zipcode" maxlength="5" th:field="*{zipcode}" readonly>
-                            </div>
-                            <div class="col-4">
-                                <input type="button" class="btn btn-warning" id="btnZipcode" value="우편번호 찾기">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row my-3">
-                    <div class="col-8 offset-2">
-                        <label for="address1" class="form-label">* 자택주소 : </label>
-                        <input type="text" class="form-control" name="address1" id="address1" th:field="*{address1}" readonly>
-                    </div>
-                </div>
-                <div class="row my-3">
-                    <div class="col-8 offset-2">
-                        <label for="address2" class="form-label">상세주소 : </label>
-                        <input type="text" class="form-control" name="address2" id="address2" th:field="*{address2}">
-                    </div>
-                </div>
-                <div class="row my-3">
-                    <div class="col-8 offset-2">
-                        <label for="email" class="form-label">* 이 메 일 : </label>
-                        <input type="email" class="form-control" name="email" id="email" th:field="*{email}">
-                    </div>
-                </div>
-                <div class="row my-3">
-                    <div class="col-8 offset-2">
-                        <label for="phone" class="form-label">* 휴 대 폰 : </label>
-                        <input type="text" class="form-control" name="phone" id="phone" th:field="*{phone}">
-                    </div>
-                </div>
 
-                <div class="row mb-3 mt-5">
-                    <div class="col-8 offset-2">
+                    <!-- 주소 입력 -->
+                    <div class="mb-3">
+                        <label for="address1" class="form-label fw-bold text-primary">자택주소</label>
+                        <input type="text" class="form-control border-primary" name="address1" id="address1" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="address2" class="form-label fw-bold text-primary">상세주소</label>
+                        <input type="text" class="form-control border-primary" name="address2" id="address2">
+                    </div>
+
+                    <!-- 이메일 입력 -->
+                    <div class="mb-3">
+                        <label for="emailId" class="form-label fw-bold text-primary">이메일</label>
+                        <div class="row gx-2">
+                            <div class="col-5">
+                                <input type="text" class="form-control border-primary" name="emailId" id="emailId">
+                            </div>
+                            <div class="col-1 text-center pt-2">@</div>
+                            <div class="col-6">
+                                <input type="text" class="form-control border-primary" name="emailDomain" id="emailDomain">
+                            </div>
+                            <div class="col-12 mt-2">
+                                <select class="form-select border-primary" name="selectDomain" id="selectDomain">
+                                    <option selected>직접입력</option>
+                                    <option>naver.com</option>
+                                    <option>daum.net</option>
+                                    <option>gmail.com</option>
+                                    <option>hanmail.net</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="mobile2" class="form-label fw-bold text-primary">휴대폰</label>
+                        <div class="row gx-2">
+                            <div class="col-2">
+                                <select class="form-select border-primary" name="mobile1" id="mobile1">
+                                    <option>010</option>
+                                    <option>011</option>
+                                    <option>016</option>
+                                    <option>017</option>
+                                    <option>018</option>
+                                    <option>019</option>
+                                </select>
+                            </div>
+                            <div class="col-5">
+                                <input type="text" class="form-control border-primary" name="mobile2" id="mobile2" maxlength="4">
+                            </div>
+                            <div class="col-5">
+                                <input type="text" class="form-control border-primary" name="mobile3" id="mobile3" maxlength="4">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3 mt-5">
                         <input type="submit" value="저장하기" class="btn btn-primary">
                     </div>
-                </div>
-            </form>
+                    <div class="row mb-3 mt-5">
+                        <button type="button" class="btn btn-secondary" onclick="history.back()">수정취소</button>
+                    </div>
+                </form>
+
+            </div>
         </div>
     </div>
 </th:block>

@@ -16,11 +16,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -74,13 +69,14 @@ public class SecurityConfig {
                         .successHandler(customAuthenticationSuccessHandler)
                         .failureHandler((request, response, exception) -> {
                             log.info("소셜 로그인 실패: " + exception.getMessage());
-                            String errorMessage = "소셜 로그인 중 오류가 발생했습니다.";
+                            String errorMessage = "소셜 로그인 중 오류가 발생했습니다. securityConfig";
                             if (exception.getMessage().contains("email_exists")) {
-                                errorMessage = "동일한 이메일로 가입된 로컬 계정이 존재합니다.";
+                                errorMessage = "동일한 이메일로 가입된 로컬 계정이 존재합니다. securityConfig";
                             } else if (exception.getMessage().contains("provider_mismatch")) {
-                                errorMessage = "동일한 이메일로 다른 소셜 로그인 제공자가 존재합니다.";
+                                errorMessage = "동일한 이메일로 다른 소셜 로그인 제공자가 존재합니다. securityConfig";
                             }
                             request.getSession().setAttribute("socialLoginError", errorMessage);
+                            log.info("세션에 설정된 socialLoginError: " + request.getSession().getAttribute("socialLoginError"));
                             response.sendRedirect("/login?error=true");
                         })
                         .userInfoEndpoint(userInfo -> userInfo
@@ -103,7 +99,6 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/login?logout=true")
                         .permitAll()
                 );
-
 
         http.csrf(csrf -> csrf.disable());
         http.headers(headers -> headers.frameOptions(frame -> frame.disable()));

@@ -32,6 +32,7 @@ public class TransferDto {
     private String buyerId;
     private String reservationResidName;
     private String roomNo;
+    private String roomName;
     private Reservations reservation;
 
     // 포맷팅된 가격을 반환하는 메서드 추가

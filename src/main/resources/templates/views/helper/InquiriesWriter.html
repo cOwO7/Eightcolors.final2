@@ -16,20 +16,11 @@
                 <input type="hidden" name="userNo" th:value="${session.userNo}">
                 <div class="mb-3">
                     <label for="userId" class="form-label">작성자</label>
-                    <!--<input type="text" name="userId" id="userId" th:value="${inquiry.userId}" th:field="*{inquiry.userId}">-->
-                    <input type="text" class="form-control" id="userId" name="userId" required>
+                    <input type="text" class="form-control" id="userId" name="userId" th:value="${userName}" required readonly>
                 </div>
                 <div class="mb-3">
                     <label for="title" class="form-label">제목</label>
                     <input type="text" class="form-control" id="title" name="title" required>
-                </div>
-                <div class="mb-3">
-                    <label for="email" class="form-label">이메일</label>
-                    <input type="text" class="form-control" id="email" name="email" required>
-                </div>
-                <div class="mb-3">
-                    <label for="phone" class="form-label">연락처</label>
-                    <input type="text" class="form-control" id="phone" name="phone" required>
                 </div>
                 <div class="mb-3">
                     <label for="content" class="form-label">내용</label>

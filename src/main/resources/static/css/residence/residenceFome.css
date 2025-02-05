@@ -1,0 +1,138 @@
+@charset "UTF-8";
+/* 페이지 컨테이너 스타일 */
+.container {
+	margin-top: 30px;
+	padding: 20px;
+	background-color: #f8f9fa;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 제목 스타일 */
+h1 {
+	text-align: center;
+	font-size: 2rem;
+	margin-bottom: 30px;
+	color: #343a40;
+}
+
+/* 입력 폼 스타일 */
+label {
+	font-size: 1rem;
+	color: #495057;
+}
+
+input, select, textarea {
+	width: 100%;
+	padding: 10px;
+	margin: 10px 0;
+	border: 1px solid #ced4da;
+	border-radius: 5px;
+	font-size: 1rem;
+}
+
+textarea {
+	height: 150px;
+}
+
+/* 사진 추가 버튼 및 미리보기 스타일 */
+#photoFiles {
+	margin-top: 10px;
+}
+
+#imagePreview {
+	display: grid;
+	grid-template-columns: repeat(5, 1fr);
+	gap: 10px;
+	margin-top: 20px;
+}
+
+.image-field {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border: 1px solid #ccc;
+	padding: 10px;
+	width: 150px;
+	height: 150px;
+	border-radius: 8px;
+	background-color: #f1f1f1;
+	position: relative;
+	cursor: pointer;
+	text-align: center;
+}
+
+.image-field img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 8px;
+}
+
+.image-field button {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	background-color: rgba(255, 0, 0, 0.5);
+	color: white;
+	border: none;
+	border-radius: 50%;
+	width: 20px;
+	height: 20px;
+	font-size: 14px;
+	cursor: pointer;
+}
+
+.image-field:hover {
+	background-color: #e9ecef;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 주소 검색 버튼 스타일 */
+#addressBtn {
+	margin-top: 10px;
+	padding: 10px 15px;
+	background-color: #007bff;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+#addressBtn:hover {
+	background-color: #0056b3;
+}
+
+/* 등록 버튼 스타일 */
+#registerButton {
+	background-color: #28a745;
+	color: white;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	font-size: 1rem;
+	margin-top: 20px;
+}
+
+#registerButton:hover {
+	background-color: #218838;
+}
+
+#back {
+	background-color: #6c757d;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 5px;
+	color: white;
+	cursor: pointer;
+}
+
+#back:hover {
+	background-color: #5a6268;
+}
+
+#roomImage {
+	max-width: 240px;
+	max-height: 150px;
+}

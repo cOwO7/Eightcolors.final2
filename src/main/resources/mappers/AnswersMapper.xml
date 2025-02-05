@@ -5,9 +5,9 @@
 <mapper namespace="com.springbootfinal.app.mapper.helper.AnswersMapper" >
 
     <!-- 답변 추가 -->
-    <insert id="insertAnswer" parameterType="map">
-        INSERT INTO answers (inquiry_no, content)
-        VALUES (#{inquiryNo}, #{content})
+    <insert id="insertAnswer" useGeneratedKeys="true" keyProperty="answerNo">
+        INSERT INTO answers (inquiry_no, content, admin_name)
+        VALUES (#{inquiryNo}, #{content}, #{adminName});
     </insert>
 
     <!-- 답변 조회 -->
@@ -15,6 +15,7 @@
         SELECT answer_no AS answerNo,
                inquiry_no AS inquiryNo,
                admin_name AS adminName,
+               answer_date AS answerDate,
                content
         FROM answers
         WHERE inquiry_no = #{inquiryId}

@@ -63,7 +63,7 @@
         </div>
         <div class="mb-5">
             <h3 class="mb-3">문의하기</h3>
-            <form id="searchForm" class="mb-3">
+            <!--<form id="searchForm" class="mb-3">
                 <div class="input-group row g-2 align-content-center">
                     <div class="col-md-3">
                         <select id="searchType" class="form-select flex-grow-2" aria-label="검색 옵션">
@@ -79,30 +79,31 @@
                         <button class="btn btn-primary" type="button" id="searchBtn">검색</button>
                     </div>
                 </div>
-            </form>
-            <a href="/inquiries/create" class="btn btn-primary">문의 작성</a>
+            </form>-->
+            <a href="/inquiries/create" class="btn btn-primary align-content-end">문의 작성</a>
             <!-- 여기는 inpuiryBoardList -->
             <table class="table">
                 <thead>
-                <tr>
-                    <th>No</th>
-                    <th>상태</th>
-                    <th>제목</th>
-                    <th>작성자</th>
-                    <th>작성일</th>
+                <tr class="text-center">
+                    <th class="col-1">No</th>
+                    <th class="col-1">상태</th>
+                    <th class="col-6">제목</th>
+                    <th class="col-2">작성자</th>
+                    <th class="col-2">작성일</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="inquiry : ${inquiries}">
+                <tr class="text-center" th:each="inquiry : ${inquiries}">
                     <td th:text="${inquiry.inquiryNo}"></td>
-                    <td th:text="${inquiry.status}"></td>
-                    <td>
+                    <td th:text="${inquiry.status}"
+                        th:classappend="${inquiry.status == '답변완료' ? 'text-success' : 'text-danger'}"></td>
+                    <td class="fw-bold">
                         <a class="text-decoration-none text-black"
                            th:href="@{/inquiries/{inquiryNo}(inquiryNo=${inquiry.inquiryNo})}"
                            th:text="${inquiry.title}"></a>
                     </td>
                     <td th:text="${inquiry.userId}"></td>
-                    <td th:text="${inquiry.inquiryDate}"></td>
+                    <td th:text="${#temporals.format(inquiry.inquiryDate, 'yyyy-MM-dd HH:mm')}"></td>
                 </tr>
                 </tbody>
             </table>

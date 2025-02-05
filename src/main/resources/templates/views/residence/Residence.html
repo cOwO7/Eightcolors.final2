@@ -11,12 +11,8 @@
             max-width: 100px;
             height: auto;
         }
-
-        .container {
-            background-image: url("/images/다운로드.jpg");
-            background-repeat: no-repeat;
-            width: 100%;
-            height: 100%;
+        th {
+            width: 120px;
         }
     </style>
 </head>
@@ -44,7 +40,7 @@
         </form>
         <!-- 숙소 등록 버튼 -->
         <div class="mb-3 text-end">
-            <a th:href="@{/new}" class="btn btn-success">숙소 등록</a>
+            <a th:href="@{/new}" class="btn btn-success btn-lg shadow-sm">숙소 등록</a>
         </div>
 
         <!-- 숙소 목록 테이블 -->
@@ -65,48 +61,36 @@
             <tr th:each="residence : ${residences}">
                 <td th:text="${residence.residNo}"></td>
                 <td>
-                    <th:block th:if="${residence.propertyPhotos !=
-                        null and not #lists.isEmpty(residence.propertyPhotos)}">
+                    <th:block th:if="${residence.propertyPhotos != null and not #lists.isEmpty(residence.propertyPhotos)}">
                         <img th:src="@{|/images/files/${residence.propertyPhotos[0].thumbnailUrls}|}"
-                             alt="숙소 사진" class="img-fluid"/>
+                             alt="숙소 사진" class="img-fluid rounded shadow-sm"/>
                     </th:block>
-                    <th:block th:unless="${residence.propertyPhotos !=
-                        null and not #lists.isEmpty(residence.propertyPhotos)}">
-                        사진 없음
+                    <th:block th:unless="${residence.propertyPhotos != null and not #lists.isEmpty(residence.propertyPhotos)}">
+                        <i class="bi bi-image-alt" style="font-size: 2rem; color: #ccc;"></i> 사진 없음
                     </th:block>
                 </td>
-                <!-- 숙소 이름을 클릭하면 상세보기로 이동 -->
                 <td>
-                    <a class="text-decoration-none text-black"
+                    <a class="text-decoration-none text-dark font-weight-bold"
                        th:href="@{/detail/{residNo}(residNo=${residence.residNo})}"
                        th:text="${residence.residName}"></a>
                 </td>
                 <td th:text="${residence.residType}"></td>
                 <td th:text="${#dates.format(residence.residDate, 'yyyy-MM-dd')}"></td>
                 <td>
-                    <!-- 방 추가 -->
-                    <a th:href="@{/room/{id}/addRoom(id=${residence.residNo})}" class="btn btn-primary">방 추가</a>
-
-                    <!-- 방 수정 -->
-                    <a th:href="@{/update/{id}/room(id=${residence.residNo})}" class="btn btn-warning">방 수정</a>
-
-                    <!-- 방 삭제 -->
-                    <a th:href="@{/delete/{id}/rooms(id=${residence.residNo})}" class="btn btn-danger">방 삭제</a>
+                    <!-- 방 관리 버튼들 -->
+                    <a th:href="@{/room/{id}/addRoom(id=${residence.residNo})}" class="btn btn-primary btn-sm m-1">방 추가</a>
+                    <a th:href="@{/update/{id}/room(id=${residence.residNo})}" class="btn btn-warning btn-sm m-1">방 수정</a>
+                    <a th:href="@{/delete/{id}/rooms(id=${residence.residNo})}" class="btn btn-danger btn-sm m-1">방 삭제</a>
                 </td>
                 <td>
-                    <a th:href="@{/update/{id}(id=${residence.residNo})}" class="btn btn-warning btn-sm">수정</a>
-                    <!-- 삭제는 POST로 처리되어야 하므로 form으로 변경 -->
+                    <a th:href="@{/update/{id}(id=${residence.residNo})}" class="btn btn-warning btn-sm m-1">수정</a><br>
                     <form th:action="@{/delete/{id}(id=${residence.residNo})}" method="post" style="display:inline-block;">
-                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('정말 삭제하시겠습니까?');">
+                        <button type="submit" class="btn btn-danger btn-sm m-1" onclick="return confirm('정말 삭제하시겠습니까?');">
                             삭제
                         </button>
                     </form>
-                    <!-- soldOut 숨김폼 -->
-                    <!--<form th:action="@{sold_out/{residNo}(residNo=${residence.hostNo})}" method="post">
-                      <button type="button" class="btn btn-secondary btn-sm">숨김</button>
-                    </form>-->
                 </td>
-                <td th:text="${residence.hostUserNo}"></td>
+                <td th:text="|${residence.hostUserName} (${residence.hostUserNo})|"></td>
             </tr>
             <th:block th:if="${#lists.isEmpty(residences)}">
                 <tr>

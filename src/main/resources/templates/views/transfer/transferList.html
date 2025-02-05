@@ -11,8 +11,14 @@
 <body>
 <th:block layout:fragment="content">
     <div class="container container-narrow mt-5">
-        <h2 class="text-center mb-4">양도 거래 게시판</h2>
-        <h6 class="text-left mb-4">양도 거래 결재시 자동으로 내역이 변경되며 <br> 예약내역에서 확인 가능합니다.</h6>
+        <h1 class="text-center mb-4">양도 거래</h1>
+        <h6 class="text-left mb-4">
+            <ul style="color: red;">
+                <li>양도 거래 결제 시 자동으로 내역이 변경됩니다.</li>
+                <li>양도 거래는 결제 취소가 불가능합니다.</li>
+                <li>결제 이후 재 양도 등록을 통해 거래가 가능합니다.</li>
+            </ul>
+        </h6>
         <table class="table table-striped">
             <thead>
             <tr>
@@ -93,13 +99,13 @@
             </th:block>
             <th:block th:if="${not searchOption and #lists.isEmpty(transferList)}">
                 <tr>
-                    <td colspan="8" class="text-center">게시글이 없습니다.</td>
+                    <td colspan="8" class="text-center">등록된 양도 게시글이 없습니다.</td>
                 </tr>
             </th:block>
             </tbody>
         </table>
         <div class="text-start mb-3">
-            <a href="/transferWrite" method="post" class="btn btn-success">글쓰기</a>
+            <a href="/transferWrite" method="post" class="btn btn-success">양도 등록</a>
         </div>
     </div>
     <div class="row">

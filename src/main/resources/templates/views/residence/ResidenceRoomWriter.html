@@ -3,64 +3,222 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layouts/main_layout}">
 <head>
-    <link href="bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="/bootstrap/bootstrap.min.css" rel="stylesheet">
     <meta charset="UTF-8">
     <title>숙소 등록</title>
 <body>
 <th:block layout:fragment="content">
     <div class="container">
-        <div>
-            <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-            <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=36a75517ce82693ff837cc79c740e197&libraries=services,clusterer"></script>
-        </div>
-        <h1>방 등록</h1>
         <form th:action="@{/room/{id}/addRoom(id=${residence.residNo})}" th:object="${residenceRoom}" method="post"
-              enctype="multipart/form-data">
-            <div class="row">
-                <div>
-                    <!--<label>숙소 No:</label><br>-->
-                    <input type="hidden" name="residNo" th:value="${residence.residNo}"/>
-                    <label>방 이름:</label><br>
-                    <input type="text" id="roomName" th:field="*{roomName}"><br><br>
-                    <label>가격:</label><br>
-                    <input type="text" id="roomPrice" th:field="*{pricePerNight}"><br><br>
-                    <h3>사진 추가</h3>
-                    <label for="roomImage">사진 파일 업로드:</label>
-                    <input type="file" id="roomImage" name="roomImage" onchange="previewImages()">
+              enctype="multipart/form-data" class="room-form">
+            <h1>방 등록</h1>
+            <div class="room-container">
+                <input type="hidden" name="residNo" th:value="${residence.residNo}"/>
 
-                    <div id="imagePreview">
-                        <div id="field1" class="image-field">이미지 미리보기</div>
-                    </div>
-                </div>
+                <label for="roomName">방 이름:</label>
+                <input type="text" id="roomName" th:field="*{roomName}" class="form-control">
+
+                <label for="roomPrice">가격:</label>
+                <input type="text" id="roomPrice" th:field="*{pricePerNight}" class="form-control">
+
+                <h3>사진 추가</h3>
+                <label for="roomImage" class="file-label">사진 파일 업로드:</label>
+                <input type="file" id="roomImage" name="roomImage" class="file-input" onchange="previewImages()">
+                <!-- 이미지 미리보기 -->
+                <div id="imagePreview">1개의 파일을 올려주세요</div>
             </div>
-            <button type="submit" id="registerButton">등록</button>
-            <button><a href="/list">뒤로 가기</a></button>
+
+            <div class="form-buttons">
+                <a href="/list" class="btn btn-warning">뒤로 가기</a>
+                <button type="submit" id="registerButton" class="btn btn-primary">등록</button>
+            </div>
         </form>
+        <style>
+            /* 전체 폼 스타일 */
+            .room-form {
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+                background: #ffffff;
+                border-radius: 10px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+
+            /* 입력 필드 스타일 */
+            .form-control {
+                width: 100%;
+                padding: 10px;
+                margin: 5px 0 15px 0;
+                border: 1px solid #ced4da;
+                border-radius: 5px;
+            }
+
+            /* 파일 업로드 필드 */
+            .file-input {
+                border: 2px dashed #aaa;
+                padding: 10px;
+                cursor: pointer;
+                width: 100%;
+                background: #f1f1f1;
+                margin-bottom: 15px;
+            }
+
+            .file-input:hover {
+                background: #e9ecef;
+            }
+
+            /* 사진 미리보기 스타일 */
+            .photo-preview {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-top: 10px;
+                border: 1px solid #ddd;
+                padding: 10px;
+                border-radius: 5px;
+                background: #f9f9f9;
+            }
+
+            .image-field {
+                text-align: center;
+                padding: 10px;
+                width: 100%;
+                color: #666;
+            }
+
+            /* 버튼 스타일 */
+            .form-buttons {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 20px;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                border-radius: 5px;
+                font-size: 16px;
+                text-decoration: none;
+                text-align: center;
+            }
+
+            .btn-warning {
+                background: orange;
+                color: #f0f0f0;
+            }
+
+            .btn-warning:hover {
+                background: darkorange;
+                color: #f0f0f0;
+            }
+
+            .btn-primary {
+                background: #007bff;
+                border: none;
+            }
+
+            .btn-primary:hover {
+                background: #0056b3;
+            }
+
+            /* 이미지 미리보기 Css */
+            #imagePreview {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-top: 10px;
+                border: 1px solid #ddd;
+                padding: 10px;
+                border-radius: 5px;
+                background: #f9f9f9;
+            }
+
+            .preview-image {
+                max-width: 300px;
+                max-height: 300px;
+                margin-right: 10px; /* 이미지 간의 간격 */
+            }
+
+            .remove-button {
+                font-size: 16px;
+                padding: 10px 20px; /* 버튼 크기 */
+                background-color: red; /* 버튼 색상 */
+                color: white; /* 글자 색상 */
+                border: none; /* 기본 버튼 테두리 제거 */
+                cursor: pointer; /* 마우스 커서 변경 */
+            }
+
+            .remove-button:hover {
+                background-color: darkred; /* 버튼 hover 시 색상 변경 */
+            }
+        </style>
     </div>
+    <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
     <!-- 미리보기 기능을 위한 자바스크립트 -->
     <script>
-        function previewImages() {
-            const previewContainer = document.getElementById('imagePreview');
-            previewContainer.innerHTML = ''; // 이전 미리보기 이미지들 초기화
-            const files = document.getElementById('photoFiles').files;
+        document.addEventListener("DOMContentLoaded", function () {
+            const fileInput = document.getElementById("roomImage");
 
-            Array.from(files).forEach((file, index) => {
+            // 이벤트 리스너가 중복 추가되지 않도록 체크
+            if (fileInput && !fileInput.hasAttribute('data-listener')) {
+                fileInput.addEventListener("change", function(event) {
+                    previewImages(event);  // event 객체를 전달하면서 함수 호출
+                });
+                fileInput.setAttribute('data-listener', 'true'); // 리스너가 이미 등록되었음을 표시
+            }
+        });
+
+        function previewImages(event) {
+            // 이벤트 객체가 null일 경우를 대비해 확인
+            if (!event || !event.target) {
+                return;
+            }
+
+            const previewContainer = document.getElementById('imagePreview');
+            previewContainer.innerHTML = ''; // 기존 미리보기 초기화
+
+            const fileInput = event.target;
+            if (!fileInput || !fileInput.files) {
+                return;
+            }
+
+            const files = fileInput.files;
+            if (files.length === 0) {
+                previewContainer.innerHTML = "<p>선택된 이미지가 없습니다.</p>";
+                return;
+            }
+
+            Array.from(files).forEach((file) => {
+                if (!file.type.startsWith('image/')) {
+                    alert("이미지 파일만 업로드할 수 있습니다!");
+                    return;
+                }
+
                 const reader = new FileReader();
 
-                reader.onload = function (e) {
+                reader.onloadend = function (e) {
+                    const imgContainer = document.createElement('div');
+                    imgContainer.classList.add('image-wrapper');
+
                     const img = document.createElement('img');
                     img.src = e.target.result;
                     img.classList.add('preview-image');
-                    img.style.maxWidth = '100px'; // 미리보기 이미지 크기
-                    img.style.marginRight = '10px';
-                    previewContainer.appendChild(img);
-                }
 
-                reader.readAsDataURL(file); // 파일을 읽고 이미지 미리보기 표시
+                    const removeButton = document.createElement('button');
+                    removeButton.innerText = "삭제";
+                    removeButton.classList.add('remove-button');
+                    removeButton.onclick = function () {
+                        imgContainer.remove();
+                    };
+
+                    imgContainer.appendChild(img);
+                    imgContainer.appendChild(removeButton);
+                    previewContainer.appendChild(imgContainer);
+                };
+
+                reader.readAsDataURL(file); // 파일 읽기 시작
             });
         }
     </script>
-    <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
 </th:block>
 </body>
 </html>
