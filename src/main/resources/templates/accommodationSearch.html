@@ -226,7 +226,7 @@
                             <input type="range" class="form-range" id="priceRange" name="priceRange" min="0" max="1000000" step="10000" value="1000000" onchange="filterAccommodationTypes()">
                         </div>
                         <div>
-                            ₩0 ~ <span id="priceRangeValue">1000000</span>
+                            ₩0 ~ <span id="priceRangeValue">1,000,000</span>
                         </div>
                     </div>
                 </div>
@@ -239,12 +239,14 @@
             <div class="col-md-8">
                 <div id="accommodationList" class="row g-4" th:if="${results != null and results.size() > 0}">
                     <div class="col-lg-12" th:each="residence : ${results}">
-                        <a th:href="@{|/accommodation/${residence.residNo}|}" class="accommodation-item card" th:data-type="${residence.residType}" th:data-price="${residence.minPrice}">
+                        <!--<a th:href="@{|/accommodation/${residence.residNo}|}" class="accommodation-item card" th:data-type="${residence.residType}" th:data-price="${residence.minPrice}">-->
+                        <a th:href="@{|/detail/${residence.residNo}|}" class="accommodation-item card" th:data-type="${residence.residType}" th:data-price="${residence.minPrice}">
                             <img th:src="@{|/images/files/${residence.thumbnailUrls}|}" alt="숙소 사진" class="card-img-top"/>
                             <div class="card-body">
                                 <h5 class="card-title" th:text="${residence.residName}"></h5>
                                 <p class="address" th:text="${residence.residAddress}"></p>
-                                <div class="price">가격: <span th:text="'₩' + ${residence.minPrice}" data-price="${residence.minPrice}"></span>/1박</div>
+                                <!--<div class="price">가격: <span th:text="'₩' + ${residence.minPrice}" data-price="${residence.minPrice}"></span>/1박</div>-->
+                                <div class="price">가격: <span th:text="'₩' + ${#numbers.formatInteger(residence.minPrice, 3, 'COMMA')}" data-price="${residence.minPrice}"></span>/1박</div>
                             </div>
                         </a>
                     </div>
