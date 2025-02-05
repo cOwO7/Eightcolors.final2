@@ -314,7 +314,7 @@
                 </ul>
             </nav>
             <!--키워드, 체크인날짜, 체크아웃날짜,가격-->
-            <nav aria-label="Page navigation" th:if="${searchKeyword != null and checkinDate != null and checkoutDate != null and checkoutDate != null and maxPrice != null}">
+            <nav aria-label="Page navigation" th:if="${searchKeyword != null and checkinDate != null and checkoutDate != null and checkoutDate != null and accommodationTypes == null and maxPrice != null}">
                 <ul class="pagination justify-content-center">
                     <!-- 이전 페이지 그룹으로 이동 -->
                     <li class="page-item" th:if="${startPage > pageGroup}">
