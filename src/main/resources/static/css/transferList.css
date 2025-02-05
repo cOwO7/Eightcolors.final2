@@ -1,14 +1,14 @@
 @charset "UTF-8";
 
 .container-narrow {
-    max-width: 2000px; /* 원하는 최대 너비 설정 */
+    max-width: 1200px; /* 원하는 최대 너비 설정 */
     margin: 0 auto; /* 가운데 정렬 */
 }
 .status-available {
     font-weight: bold;
 }
 .status-completed {
-    background-color: #8C8C8C; /* 양도완료 배경 */
+    background-color: #f0f0f0; /* 양도완료 배경 */
 }
 .no-underline {
     text-decoration: none; /* 밑줄 제거 */
@@ -18,4 +18,15 @@
 }
 .bold {
     font-weight: bold; /* 글자 굵게 */
+}
+
+.table th {
+    background-color: #4e73df;
+    color: #fff;
+}
+
+h1 {
+    color: #4e73df;
+    font-weight: 700;
+    margin-bottom: 30px;
 }
