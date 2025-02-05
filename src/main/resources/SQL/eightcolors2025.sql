@@ -77,6 +77,8 @@ CREATE TABLE IF NOT EXISTS residence (
     ny INT DEFAULT 0,
     latitudeNum VARCHAR(255),
     longitudeNum VARCHAR(255),
+    regId VARCHAR(255),
+    regIdTemp VARCHAR(255),
     UNIQUE (host_user_no),
     FOREIGN KEY (host_user_no) REFERENCES host_users(host_user_no) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -162,17 +164,6 @@ CREATE TABLE IF NOT EXISTS property_photos (
 
 select * from property_photos;
 
--- 11. 공지사항 테이블
-CREATE TABLE IF NOT EXISTS notices (
-    notice_no BIGINT AUTO_INCREMENT PRIMARY KEY,
-    admin_user_no BIGINT,
-    title VARCHAR(255),
-    content TEXT,
-    notice_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    is_active TINYINT(1) DEFAULT 1,
-    FOREIGN KEY (admin_user_no) REFERENCES admin_users(admin_user_no) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
 -- 12. 양도 테이블
 CREATE TABLE IF NOT EXISTS transfers (
     transfer_no BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -221,6 +212,7 @@ VALUES
     ('hostuser02', '$2a$10$F4ns56v9RU.QXhoi1qDfjOXki0Qsc5WUaMohfR27dwE3Zvz0YVFyS', 'hostuser02@email.com', '010-2345-6789', '호스트2', '54321', '서울시 서초구', '반포동 456', '0987654321', 'ROLE_HOST');
 
 
+
 -- 4. 숙소 데이터 삽입
 INSERT INTO residence (resid_name, host_user_no, resid_description, resid_address, resid_type)
 VALUES
@@ -265,6 +257,7 @@ VALUES
 INSERT INTO notices (admin_user_no, title, content)
 VALUES
     (1, '시스템 점검 안내', '정기적인 시스템 점검이 예정되어 있습니다. 서비스 이용에 불편을 드려 죄송합니다.');
+
 
 -- 12. 양도 데이터 삽입
 INSERT INTO transfers (seller_user_no, buyer_user_no, reservation_no, transfer_price, status, transfer_title)
