@@ -44,31 +44,6 @@ public class MyPageController {
         return user;
     }
 
-    @GetMapping("/myPage/merge")
-    public String mergeAccountPage(@AuthenticationPrincipal Object principal, Model model) {
-        Users user = getAuthenticatedUser(principal);
-
-        model.addAttribute("user", user);
-        return "myPage/merge";
-    }
-
-    @PostMapping("/myPage/merge")
-    public String mergeAccount(@AuthenticationPrincipal Object principal, String localEmail, String localPassword, Model model) {
-        Users socialUser = getAuthenticatedUser(principal);
-        Users localUser = userService.findByEmail(localEmail);
-
-        if (localUser == null) {
-            model.addAttribute("error", "로컬 계정을 찾을 수 없습니다.");
-            return "myPage/merge";
-        }
-
-        if (socialUser != null && localUser != null) {
-            userService.mergeAccounts(localUser, socialUser);
-        }
-
-        return "redirect:/myPage/info";
-    }
-
     @GetMapping("/myPage/info")
     public String userInfoPage(@AuthenticationPrincipal Object principal, Model model) {
         Users user = getAuthenticatedUser(principal);

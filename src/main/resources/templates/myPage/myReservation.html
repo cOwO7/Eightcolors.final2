@@ -36,7 +36,7 @@
                                         <h5 class="card-title" th:text="${reservation.residName}">건물이름</h5>
                                         <p class="card-text" th:text="${reservation.residDescription}">주소</p>
                                         <p class="card-text">
-                                            <small class="text-muted" th:text="${reservation.checkinDate}">체크인 날짜</small>
+                                            <small>체크인 날짜 : </small><small class="text-muted" th:text="${reservation.checkinDate}">체크인 날짜</small>
                                         </p>
                                         <a th:href="@{/myPage/myReservationDetail/{reservationNo}(reservationNo=${reservation.reservationNo})}" class="btn btn-primary">상세보기</a>
                                     </div>

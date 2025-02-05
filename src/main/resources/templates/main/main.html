@@ -1,259 +1,144 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{/layouts/main_layout}">
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{/layouts/main_layout}">
 <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
-            integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"
-            integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"
-          integrity="sha512-aOG0c6nPNzGk+5zjwyJaoRUgCdOrfSDhmMID2u4+OIslr0GjpLKo7Xm0Ao3xmpM4T8AmIouRkqwj1nrdVsLKEQ=="
-          crossorigin="anonymous" referrerpolicy="no-referrer"/>
-    <link rel="stylesheet" href="/swiper/swiper.min.css">
-    <script th:src="@{/js/mainPage/mainpage.js}"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+			integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+			crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"
+			integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA=="
+			crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"
+		  integrity="sha512-aOG0c6nPNzGk+5zjwyJaoRUgCdOrfSDhmMID2u4+OIslr0GjpLKo7Xm0Ao3xmpM4T8AmIouRkqwj1nrdVsLKEQ=="
+		  crossorigin="anonymous" referrerpolicy="no-referrer"/>
+	<link rel="stylesheet" href="/swiper/swiper.min.css">
+	<script th:src="@{/js/mainPage/mainpage.js}"></script>
+	<style>
+		.card-img-top {
+			width: 100%;
+			height: 8rem; /* 카드 이미지 높이 설정 */
+			object-fit: cover; /* 이미지가 카드 내부에 적절하게 맞도록 설정 */
+		}
+	</style>
+	<script>
+		document.addEventListener("DOMContentLoaded", function() {
+			const today = new Date();
+			const checkinDate = today.toISOString().split('T')[0];
+			const checkoutDate = new Date(today.setMonth(today.getMonth() + 3)).toISOString().split('T')[0];
+
+			document.querySelectorAll('.travel-card a').forEach(function(link) {
+				const url = new URL(link.href);
+				url.pathname = '/search';
+				url.searchParams.set('checkinDate', checkinDate);
+				url.searchParams.set('checkoutDate', checkoutDate);
+				link.href = url.toString();
+			});
+		});
+	</script>
 </head>
 <title>오늘 어때?</title>
 <meta charset="UTF-8">
 <!-- content -->
 <body>
 <th:block layout:fragment="content">
-    <script type="text/javascript"
-            src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=51mvmkqypm&submodules=geocoder"></script>
-    <script type="text/javascript" src="/js/map/navermap.js"></script>
-    <link href="/css/mainstyles.css" rel="stylesheet"/>
-    <!-- 디자인1 -->
-    <!-- 캐러셀 내용 -->
-    <div class="row justify-content-center">
-        <div class="col-md-8" style="width: 70%; height: 100%;">
-            <div id="carouselExampleCaptions" class="carousel slide">
-                <div class="carousel-inner text-center"><br>
-                    <div class="carousel-item active">
-                        <a href="#">
-                            <img src="/images/sample/sample1.jpg" class="d-block w-100 carousel-img" alt="...">
-                        </a>
-                        <div class="carousel-caption d-none d-md-block">
-                            <h5>첫번째 캐러셀 배너</h5>
-                            <p>어디어디 지역의 어디 할인율 -30%</p>
-                        </div>
-                    </div>
-                    <div class="carousel-item">
-                        <a href="#">
-                            <img src="/images/sample/sample2.jpg" class="d-block w-100 carousel-img" alt="...">
-                        </a>
-                        <div class="carousel-caption d-none d-md-block">
-                            <h5>두번째 캐러셀 배너</h5>
-                            <p>어디어디 지역의 어디 할인율 -20%</p>
-                        </div>
-                    </div>
-                    <div class="carousel-item">
-                        <a href="#">
-                            <img src="/images/sample/sample3.jpg" class="d-block w-100 carousel-img" alt="...">
-                        </a>
-                        <div class="carousel-caption d-none d-md-block">
-                            <h5>세번째 캐러셀 배너</h5>
-                            <p>어디어디 지역의 어디 할인율 -10%</p>
-                        </div>
-                    </div>
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
-                        data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
-                        data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-            </div>
-        </div>
-        <!-- 일별 날씨 5시간 -->
-        <div class="col-md-4 weather-container" style="width: 30%; height: 100%;">
-            <table class="table table-bordered table-hover" id="main-resultTable">
-                <thead>
-                <tr>
-                    <th>하늘 상태</th>
-                    <th>기온</th>
-                    <th>강수 확률</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <!-- 날씨 데이터 출력 -->
-                </tbody>
-            </table>
-        </div>
-        <div style="display: none;">
-            <tr>
-                <td>날짜(baseDate)</td>
-                <td><input width="auto" type="text" id="baseDate"
-                           name="baseDate" th:value="${baseDate}"/></td>
-                <td>시간(baseTime)</td>
-                <td><input width="auto" type="text" id="baseTime"
-                           name="baseTime" th:value="${baseTime}"/></td>
-            </tr>
-            <tr>
-                <td>예보지점 x값</td>
-                <td><input type="text" id="nx" name="nx" th:value="${gridX}"/></td>
-                <td>예보지점 y값</td>
-                <td><input type="text" id="ny" name="ny" th:value="${gridY}"/></td>
-            </tr>
-            <tr>
-                <td>위도(latitude)</td>
-                <td><input width="auto" type="text" id="latitudeNum"
-                           name="latitudeNum" th:value="${latitudeNum}"/></td>
-                <td>경도(longitude)</td>
-                <td><input width="auto" type="text" id="longitudeNum"
-                           name="longitudeNum" th:value="${longitudeNum}"/></td>
-            </tr>
-        </div><!-- 일별 날씨 끝 -->
-        <div id="map" style="width: 0px; height: 0px;"></div>
-    </div><!-- 캐러셀 끝-->
-    <!-- 검색파트 시작 -->
-    <div class="row justify-content-center my-5">
-        <div class="col">
-            <!-- 디자인 1 -->
-            <div class="card">
-                <div class="card-body">
-                    <form id="searchForm">
-                        <div class="row">
-                            <div class="col-10">
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="mb-1">
-                                            <label for="location" class="form-label">지역</label>
-                                            <input type="text" class="form-control" id="location" name="location"
-                                                   placeholder="지역을 입력하세요">
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="mb-1">
-                                            <label for="guests" class="form-label">인원수</label>
-                                            <input type="number" class="form-control" id="guests" name="guests"
-                                                   placeholder="인원수를 입력하세요" min="1">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="mb-1">
-                                            <label for="checkin" class="form-label">체크인 날짜</label>
-                                            <input type="date" class="form-control datepicker" id="checkin"
-                                                   name="checkin" placeholder="체크인 날짜를 선택하세요">
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="mb-1">
-                                            <label for="checkout" class="form-label">체크아웃 날짜</label>
-                                            <input type="date" class="form-control datepicker" id="checkout"
-                                                   name="checkout" placeholder="체크아웃 날짜를 선택하세요">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-2">
-                                <button type="submit" class="btn btn-primary">검색</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div> <!--	디자인 1 끝-->
-
-
-            <!-- 디자인 2-->
-            <div class="card">
-                <div class="card-body">
-                    <form id="searchForm">
-                        <div class="row">
-                            <div class="col-10">
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="mb-1">
-                                            <label for="location" class="form-label">지역</label>
-                                            <input type="text" class="form-control" id="location" name="location"
-                                                   placeholder="지역을 입력하세요">
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="mb-1">
-                                            <label for="checkin" class="form-label">체크인 날짜</label>
-                                            <input type="date" class="form-control datepicker" id="checkin"
-                                                   name="checkin" placeholder="체크인 날짜를 선택하세요">
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="mb-1">
-                                            <label for="checkout" class="form-label">체크아웃 날짜</label>
-                                            <input type="date" class="form-control datepicker" id="checkout"
-                                                   name="checkout" placeholder="체크아웃 날짜를 선택하세요">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-3 text-center">
-                                <button type="submit" class="btn btn-outline-light btn-lg">검색</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div><!-- 디자인 2 끝 -->
-        </div>
-    </div><!-- 검색파트 끝-->
-
-<!-- 검색파트 시작	-->
-	<div class="row justify-content-center my-5">
-		<div class="col">
-<!--			디자인 1 -->
-			<div class="card">
-				<div class="card-body">
-					<form id="searchForm">
-						<div class="row">
-							<div class="col-10">
-								<div class="row">
-									<div class="col">
-										<div class="mb-1">
-											<label for="location" class="form-label">지역</label>
-											<input type="text" class="form-control" id="location" name="location" placeholder="지역을 입력하세요">
-										</div>
-									</div>
-									<div class="col">
-										<div class="mb-1">
-											<label for="guests" class="form-label">인원수</label>
-											<input type="number" class="form-control" id="guests" name="guests" placeholder="인원수를 입력하세요" min="1">
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col">
-										<div class="mb-1">
-											<label for="checkin" class="form-label">체크인 날짜</label>
-											<input type="date" class="form-control datepicker" id="checkin" name="checkin" placeholder="체크인 날짜를 선택하세요">
-										</div>
-									</div>
-									<div class="col">
-										<div class="mb-1">
-											<label for="checkout" class="form-label">체크아웃 날짜</label>
-											<input type="date" class="form-control datepicker" id="checkout" name="checkout" placeholder="체크아웃 날짜를 선택하세요">
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-2 align-self-center">
-								<button type="submit" class="btn btn-primary btn-lg">검색</button>
-							</div>
+	<script type="text/javascript"
+			src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=51mvmkqypm&submodules=geocoder"></script>
+	<script type="text/javascript" src="/js/map/navermap.js"></script>
+	<link href="/css/mainstyles.css" rel="stylesheet"/>
+	<!-- 디자인1 -->
+	<!-- 캐러셀 내용 -->
+	<div class="row justify-content-center my-3">
+		<div class="col-md-8" style="width: 70%; height: 100%;">
+			<div id="carouselExampleCaptions" class="carousel slide">
+				<div class="carousel-inner text-center"><br>
+					<div class="carousel-item active">
+						<a href="#">
+							<img src="/images/sample/sample1.jpg" class="d-block w-100 carousel-img" alt="...">
+						</a>
+						<div class="carousel-caption d-none d-md-block">
+							<h5>첫번째 캐러셀 배너</h5>
+							<p>어디어디 지역의 어디 할인율 -30%</p>
 						</div>
-					</form>
+					</div>
+					<div class="carousel-item">
+						<a href="#">
+							<img src="/images/sample/sample2.jpg" class="d-block w-100 carousel-img" alt="...">
+						</a>
+						<div class="carousel-caption d-none d-md-block">
+							<h5>두번째 캐러셀 배너</h5>
+							<p>어디어디 지역의 어디 할인율 -20%</p>
+						</div>
+					</div>
+					<div class="carousel-item">
+						<a href="#">
+							<img src="/images/sample/sample3.jpg" class="d-block w-100 carousel-img" alt="...">
+						</a>
+						<div class="carousel-caption d-none d-md-block">
+							<h5>세번째 캐러셀 배너</h5>
+							<p>어디어디 지역의 어디 할인율 -10%</p>
+						</div>
+					</div>
 				</div>
+				<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
+						data-bs-slide="prev">
+					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+					<span class="visually-hidden">Previous</span>
+				</button>
+				<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
+						data-bs-slide="next">
+					<span class="carousel-control-next-icon" aria-hidden="true"></span>
+					<span class="visually-hidden">Next</span>
+				</button>
 			</div>
-<!--			디자인 1 끝-->
+		</div>
+		<!-- 일별 날씨 5시간 -->
+		<div class="col-md-4 weather-container" style="width: 30%; height: 100%;">
+			<table class="table table-bordered table-hover" id="main-resultTable">
+				<thead>
+				<tr>
+					<th>하늘 상태</th>
+					<th>기온</th>
+					<th>강수 확률</th>
+					<th></th>
+				</tr>
+				</thead>
+				<tbody>
+				<!-- 날씨 데이터 출력 -->
+				</tbody>
+			</table>
+		</div>
+		<div style="display: none;">
+			<tr>
+				<td>날짜(baseDate)</td>
+				<td><input width="auto" type="text" id="baseDate"
+						   name="baseDate" th:value="${baseDate}"/></td>
+				<td>시간(baseTime)</td>
+				<td><input width="auto" type="text" id="baseTime"
+						   name="baseTime" th:value="${baseTime}"/></td>
+			</tr>
+			<tr>
+				<td>예보지점 x값</td>
+				<td><input type="text" id="nx" name="nx" th:value="${gridX}"/></td>
+				<td>예보지점 y값</td>
+				<td><input type="text" id="ny" name="ny" th:value="${gridY}"/></td>
+			</tr>
+			<tr>
+				<td>위도(latitude)</td>
+				<td><input width="auto" type="text" id="latitudeNum"
+						   name="latitudeNum" th:value="${latitudeNum}"/></td>
+				<td>경도(longitude)</td>
+				<td><input width="auto" type="text" id="longitudeNum"
+						   name="longitudeNum" th:value="${longitudeNum}"/></td>
+			</tr>
+		</div><!-- 일별 날씨 끝 -->
+		<div id="map" style="width: 0px; height: 0px;"></div>
+	</div><!-- 캐러셀 끝-->
 
-<!--여행지	-->
-	<div class="row my-3">
+	<!-- 인기 여행지 -->
+	<div class="row my-5">
 		<div class="col-lg-6 col-sm-12 text-lg-start text-center">
-			<h3>인기 여행지</h3>
+			<h1>인기 여행지</h1>
 		</div>
 		<div class="col-lg-6 col-sm-12 text-lg-end text-center">
 			<a class="icon-link icon-link-hover" href="#">
@@ -263,8 +148,7 @@
 		</div>
 	</div>
 
-
-	<div class="row">
+	<div class="row my-3 travel-card">
 		<div class="col-1 align-self-center">
 			<a class="nav-link text-end" href="#travelfirst">
 				<img src="/button/arrow_left.png" class="w-25 h-25">
@@ -274,82 +158,102 @@
 			<div class="row flex-nowrap overflow-x-hidden">
 				<div class="col-auto" id="travelfirst">
 					<div class="card" style="width: 10rem;">
-						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
-						<div class="card-body">
-							<h5 class="card-title">부산</h5>
-						</div>
+						<a href="/accomSearch?searchKeyword=부산">
+							<img src="/images/mainpage/busan.jpg" class="card-img-top" alt="부산">
+							<div class="card-body">
+								<h5 class="card-title">부산</h5>
+							</div>
+						</a>
 					</div>
 				</div>
 				<div class="col-auto">
 					<div class="card" style="width: 10rem;">
-						<img src="/images/sample/sample2.jpg" class="card-img-top" alt="...">
-						<div class="card-body">
-							<h5 class="card-title">강릉</h5>
-						</div>
+						<a href="/accomSearch?searchKeyword=강릉">
+							<img src="/images/mainpage/Gangneung.jpg" class="card-img-top" alt="강릉">
+							<div class="card-body">
+								<h5 class="card-title">강릉</h5>
+							</div>
+						</a>
 					</div>
 				</div>
 				<div class="col-auto">
 					<div class="card" style="width: 10rem;">
-						<img src="/images/sample/sample3.jpg" class="card-img-top" alt="...">
-						<div class="card-body">
-							<h5 class="card-title">서울</h5>
-						</div>
+						<a href="/accomSearch?searchKeyword=가평">
+							<img src="/images/mainpage/Gapyeong.jpg" class="card-img-top" alt="가평">
+							<div class="card-body">
+								<h5 class="card-title">가평</h5>
+							</div>
+						</a>
 					</div>
 				</div>
 				<div class="col-auto">
 					<div class="card" style="width: 10rem;">
-						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
-						<div class="card-body">
-							<h5 class="card-title">어디?</h5>
-						</div>
+						<a href="/accomSearch?searchKeyword=경주">
+							<img src="/images/mainpage/gyeongju.jpg" class="card-img-top" alt="경주">
+							<div class="card-body">
+								<h5 class="card-title">경주</h5>
+							</div>
+						</a>
 					</div>
 				</div>
 				<div class="col-auto">
 					<div class="card" style="width: 10rem;">
-						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
-						<div class="card-body">
-							<h5 class="card-title">어디?</h5>
-						</div>
+						<a href="/accomSearch?searchKeyword=인천">
+							<img src="/images/mainpage/incheon.jpg" class="card-img-top" alt="인천">
+							<div class="card-body">
+								<h5 class="card-title">인천</h5>
+							</div>
+						</a>
 					</div>
 				</div>
 				<div class="col-auto">
 					<div class="card" style="width: 10rem;">
-						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
-						<div class="card-body">
-							<h5 class="card-title">어디?</h5>
-						</div>
+						<a href="/accomSearch?searchKeyword=제주">
+							<img src="/images/mainpage/jeju.jpg" class="card-img-top" alt="제주">
+							<div class="card-body">
+								<h5 class="card-title">제주</h5>
+							</div>
+						</a>
 					</div>
 				</div>
 				<div class="col-auto">
 					<div class="card" style="width: 10rem;">
-						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
-						<div class="card-body">
-							<h5 class="card-title">어디?</h5>
-						</div>
+						<a href="/accomSearch?searchKeyword=서울">
+							<img src="/images/mainpage/seoul.jpg" class="card-img-top" alt="서울">
+							<div class="card-body">
+								<h5 class="card-title">서울</h5>
+							</div>
+						</a>
 					</div>
 				</div>
 				<div class="col-auto">
 					<div class="card" style="width: 10rem;">
-						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
-						<div class="card-body">
-							<h5 class="card-title">어디?</h5>
-						</div>
+						<a href="/accomSearch?searchKeyword=속초">
+							<img src="/images/mainpage/Sokcho.jpg" class="card-img-top" alt="속초">
+							<div class="card-body">
+								<h5 class="card-title">속초</h5>
+							</div>
+						</a>
 					</div>
 				</div>
 				<div class="col-auto">
 					<div class="card" style="width: 10rem;">
-						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
-						<div class="card-body">
-							<h5 class="card-title">어디?</h5>
-						</div>
+						<a href="/accomSearch?searchKeyword=여수">
+							<img src="/images/mainpage/Yeosu.jpg" class="card-img-top" alt="여수">
+							<div class="card-body">
+								<h5 class="card-title">여수</h5>
+							</div>
+						</a>
 					</div>
 				</div>
 				<div class="col-auto" id="travellast">
 					<div class="card" style="width: 10rem;">
-						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
-						<div class="card-body">
-							<h5 class="card-title">어디?</h5>
-						</div>
+						<a href="/accomSearch?searchKeyword=해운대">
+							<img src="/images/mainpage/Haeundae.jpg" class="card-img-top" alt="해운대">
+							<div class="card-body">
+								<h5 class="card-title">해운대</h5>
+							</div>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -361,21 +265,20 @@
 		</div>
 	</div>
 
-<!--	여행지 끝-->
+	<!-- 여행지 끝 -->
 
-<!--	추천 숙소-->
+	<!-- 추천 숙소 -->
 	<div class="row">
 		<div class="col">
 
 		</div>
 	</div>
-<!--	추천 숙소 끝-->
+	<!-- 추천 숙소 끝 -->
 
-
-        </div>
-    </div><!-- 추천 숙소 끝-->
-    <script src="/js/weather/mainpageweather.js"></script>
-    <script src="/swiper/swiper.min.js"></script>
+	</div>
+	</div><!-- 추천 숙소 끝 -->
+	<script src="/js/weather/mainpageweather.js"></script>
+	<script src="/swiper/swiper.min.js"></script>
 </th:block>
 </body>
 </html>
