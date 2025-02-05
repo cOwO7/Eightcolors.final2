@@ -127,6 +127,20 @@
         </if>
     </select>
 
+
+    <!--예약된 방의 방번호 조회-->
+    <select id="selectReservedRoomNos" resultType="Long">
+        SELECT
+            r.room_no
+        FROM
+            residence_rooms r
+                INNER JOIN
+            reservations res ON r.room_no = res.room_no
+        WHERE
+            res.checkin_date <![CDATA[<=]]> #{checkoutDate}
+          AND res.checkout_date <![CDATA[>=]]> #{checkinDate};
+    </select>
+
     <!-- 예약 수정 -->
     <update id="putReservations" parameterType="Reservations">
         UPDATE reservations

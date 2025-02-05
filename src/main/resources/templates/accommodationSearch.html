@@ -249,7 +249,9 @@
                         </a>
                     </div>
                     <div th:unless="${searchKeyword != null and checkinDate != null and checkoutDate != null}" class="col-lg-12" th:each="residence : ${results}">
-                        <a th:href="@{|/detail/${residence.residNo}?checkinDate=${checkinDate}&checkoutDate=${checkoutDate}|}" class="accommodation-item card" th:data-type="${residence.residType}" th:data-price="${residence.minPrice}">
+                        <a href="javascript:void(0)" class="accommodation-item card"
+                           th:data-resid-no="${residence.residNo}"
+                           onclick="redirectToDetail(this)">
                             <img th:src="@{|/images/files/${residence.thumbnailUrls}|}" alt="숙소 사진" class="card-img-top"/>
                             <div class="card-body">
                                 <h5 class="card-title" th:text="${residence.residName}"></h5>
@@ -492,7 +494,27 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        function redirectToDetail(element) {
+            // 인풋박스에서 값 가져오기
+            var checkinDate = document.getElementById('checkinDate').value;
+            var checkoutDate = document.getElementById('checkoutDate').value;
+            var residNo = element.getAttribute('data-resid-no');
+
+            // checkinDate와 checkoutDate가 없으면 경고 메시지 출력
+            if (!checkinDate || !checkoutDate) {
+                alert('체크인 날짜와 체크아웃 날짜를 모두 입력해주세요.');
+                return;
+            }
+
+            // URL로 리다이렉트
+            window.location.href = '/detail/' + residNo + '?checkinDate=' + checkinDate + '&checkoutDate=' + checkoutDate;
+        }
+
+
+
         document.addEventListener("DOMContentLoaded", function () {
+
+
             const checkboxes = document.querySelectorAll(".form-check-input");
             const priceRange = document.getElementById("priceRange");
             const priceRangeValue = document.getElementById("priceRangeValue");

@@ -31,6 +31,10 @@ public interface ReservationMapper {
 
     //예약하는 사용자 정보 조회
     ReservationUserDTO getReservationUserByUserNo(@Param("userNo") Long userNo);
+    
+    //예약불가능한 방 조회
+    List<Long> selectReservedRoomNos(@Param("checkinDate") LocalDate checkinDate,
+                                    @Param("checkoutDate") LocalDate checkoutDate);
 
     // 예약 정보 조회
     List<Reservations> getReservations(Reservations param);
