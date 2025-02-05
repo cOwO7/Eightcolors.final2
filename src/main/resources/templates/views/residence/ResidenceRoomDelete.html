@@ -9,18 +9,107 @@
 <body>
 <th:block layout:fragment="content">
     <div class="container">
-        <h1>방 삭제</h1>
         <form id="deleteRoomForm" th:action="@{/delete/{residNo}/room(residNo=${residNo})}" method="post">
-            <table>
-                <tr th:each="room : ${rooms}">
-                    <td>
-                        <input type="checkbox" name="roomNos" th:value="${room.roomNo}">
-                        <span th:text="${room.roomName}"></span>
-                    </td>
-                </tr>
-            </table>
-            <button type="submit">선택한 방 삭제</button>
+            <div class="delete-room-container">
+                <h1>방 삭제</h1>
+                <table class="room-list">
+                    <thead>
+                    <tr>
+                        <th>방 선택</th>
+                        <th>방 이름</th>
+                        <th>방 사진</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="room : ${rooms}">
+                        <td class="checkbox-cell">
+                            <input type="checkbox" name="roomNos" th:value="${room.roomNo}">
+                        </td>
+                        <td>
+                            <span th:text="${room.roomName}"></span>
+                        </td>
+                        <td>
+                            <img id="roomImages" th:src="@{|/images/files/${room.roomUrl01}|}" alt="방 사진" class="d-block w-100"/>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="form-actions">
+                    <button type="submit" class="delete-button">선택한 방 삭제</button>
+                </div>
+            </div>
         </form>
+        <style>
+            /* 폼 컨테이너 스타일 */
+            .delete-room-container {
+                width: 80%;
+                margin: 20px auto;
+                padding: 20px;
+                background-color: #f8f9fa;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                text-align: center;
+            }
+
+            .delete-room-container h1 {
+                color: #343a40;
+                margin-bottom: 20px;
+                font-family: 'Arial', sans-serif;
+                font-size: 24px;
+            }
+
+            /* 테이블 스타일 */
+            .room-list {
+                width: 100%;
+                margin-bottom: 20px;
+                border-collapse: collapse;
+            }
+
+            .room-list th, .room-list td {
+                padding: 12px;
+                text-align: center;
+            }
+
+            .room-list th {
+                background-color: #007bff;
+                color: white;
+            }
+
+            .room-list td {
+                border: 1px solid #ddd;
+            }
+
+            .checkbox-cell input {
+                transform: scale(1.5); /* 체크박스를 조금 더 크게 */
+            }
+
+            /* 버튼 스타일 */
+            .delete-button {
+                background-color: #dc3545;
+                color: white;
+                padding: 10px 20px;
+                font-size: 16px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+
+            .delete-button:hover {
+                background-color: #c82333;
+            }
+
+            /* 선택된 항목이 없을 때의 안내 문구 */
+            .form-actions {
+                margin-top: 20px;
+            }
+
+            #roomImages {
+                width: 250px;
+                height: 250px;
+            }
+
+        </style>
     </div>
     <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
 </th:block>

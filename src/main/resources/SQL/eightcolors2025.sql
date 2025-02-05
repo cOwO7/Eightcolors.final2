@@ -12,8 +12,7 @@
 drop database eightcolors2025;
 CREATE DATABASE IF NOT EXISTS eightcolors2025; -- 데이터베이스 생성
 
-use eightcolors2025;
--- 데이터베이스 접속
+use eightcolors2025; -- 데이터베이스 접속
 
 
 -- 1. 관리자 계정 테이블
@@ -43,6 +42,8 @@ CREATE TABLE IF NOT EXISTS host_users (
     regdate DATETIME DEFAULT CURRENT_TIMESTAMP,
     role VARCHAR(50) DEFAULT 'ROLE_HOST'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+select * from host_users;
 
 -- 3. 회원가입 테이블
 CREATE TABLE IF NOT EXISTS users (
@@ -210,14 +211,14 @@ LIMIT 5;
 
 -- 1. 관리자 계정 데이터 삽입
 INSERT INTO admin_users (admin_id, admin_passwd, admin_name, role)
-VALUES ('admin01', 'adminpass123', '관리자1', 'ROLE_ADMIN'),
-       ('admin02', 'adminpass456', '관리자2', 'ROLE_ADMIN');
+VALUES ('admin01', '$2a$10$F4ns56v9RU.QXhoi1qDfjOXki0Qsc5WUaMohfR27dwE3Zvz0YVFyS', '관리자1', 'ROLE_ADMIN'),
+       ('admin02', '$2a$10$F4ns56v9RU.QXhoi1qDfjOXki0Qsc5WUaMohfR27dwE3Zvz0YVFyS', '관리자2', 'ROLE_ADMIN');
 
 -- 2. 숙박업소 회원가입 데이터 삽입
 INSERT INTO host_users (id, passwd, email, phone, name, zipcode, address1, address2, business_license_no, role)
 VALUES
-    ('hostuser01', 'hostpass123', 'hostuser01@email.com', '010-1234-5678', '호스트1', '12345', '서울시 강남구', '역삼동 123', '1234567890', 'ROLE_HOST'),
-    ('hostuser02', 'hostpass456', 'hostuser02@email.com', '010-2345-6789', '호스트2', '54321', '서울시 서초구', '반포동 456', '0987654321', 'ROLE_HOST');
+    ('hostuser01', '$2a$10$F4ns56v9RU.QXhoi1qDfjOXki0Qsc5WUaMohfR27dwE3Zvz0YVFyS', 'hostuser01@email.com', '010-1234-5678', '호스트1', '12345', '서울시 강남구', '역삼동 123', '1234567890', 'ROLE_HOST'),
+    ('hostuser02', '$2a$10$F4ns56v9RU.QXhoi1qDfjOXki0Qsc5WUaMohfR27dwE3Zvz0YVFyS', 'hostuser02@email.com', '010-2345-6789', '호스트2', '54321', '서울시 서초구', '반포동 456', '0987654321', 'ROLE_HOST');
 
 
 -- 4. 숙소 데이터 삽입
@@ -247,10 +248,10 @@ VALUES
     (2, '문의사항', '결제 오류가 발생했습니다.');
 
 -- 9. 답변 데이터 삽입
-INSERT INTO answers (inquiry_no, admin_user_no, content)
+INSERT INTO answers (inquiry_no, admin_name, content)
 VALUES
-    (1, 1, '예약 날짜 변경은 가능합니다. 고객센터로 문의해주세요.'),
-    (2, 2, '결제 오류는 기술팀에서 확인하고 있습니다. 잠시만 기다려주세요.');
+    (1, '관리자', '예약 날짜 변경은 가능합니다. 고객센터로 문의해주세요.'),
+    (2, '관리자', '결제 오류는 기술팀에서 확인하고 있습니다. 잠시만 기다려주세요.');
 
 -- 10. 숙소 사진 데이터 삽입
 INSERT INTO property_photos (resid_no, thumbnailUrls, photo_url01, photo_url02)
