@@ -22,6 +22,8 @@ public class ResidenceDto {
     private Date residDate;  // TIMESTAMP는 String으로 매핑
     private boolean soldOut; // 매진 여부 추가
     private String hostId; // 호스트 이름
+    private String hostUserName;
+    private Long hostUserNo;
 
     // 공실률 관련 데이터
     private Number totalRooms;
@@ -44,9 +46,6 @@ public class ResidenceDto {
     private String regId;
     private String regIdTemp;
 
-    // 업자 No 데이터
-    private Long hostUserNo;
-
     // 사진 데이터
     private PropertyPhotosDto propertyPhotosDto;  // PropertyPhotosDto 객체
     private String photoUrl01;
@@ -67,7 +66,6 @@ public class ResidenceDto {
     private Long roomNo;
     private String roomName;
     private int pricePerNight;
-
 
     private List<ReservationDayDto> reservations; // Reservation 객체의 리스트
     private List<PropertyPhotosDto> propertyPhotos; // residencePhoto 객체 리스트

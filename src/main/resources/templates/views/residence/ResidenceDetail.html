@@ -137,7 +137,7 @@
                 <div class="card" th:each="room : ${rooms}" style="width: 280px; height: 280px;">
                     <p><strong><span th:text="${room.roomName}"></span></strong></p>
                     <p><span th:text="${#numbers.formatInteger(room.pricePerNight, 3, 'COMMA')}"></span>원</p>
-                    <img th:src="@{|/images/files/${room.roomUrl01}|}" alt="방 사진" class="d-block w-100"/>
+                    <img th:src="@{|/images/files/${room.roomUrl01}|}" alt="방 사진" class="d-block w-100" id="roomImage"/>
                     <button class="btn btn-danger">예약하기</button>
                 </div>
             </div>
@@ -175,6 +175,7 @@
     </div> <!-- container END -->
     <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
     <link th:href="@{/css/weather/allW.css}" rel="stylesheet"/>
+    <link th:href="@{/css/residence/residenceFome.css}" rel="stylesheet"/>
     <script th:src="@{/js/map/geolocation.js}"></script>
     <script th:src="@{/js/map/kakaomapN.js}"></script>
     <script th:src="@{/js/weather/allWN2.js}"></script>
