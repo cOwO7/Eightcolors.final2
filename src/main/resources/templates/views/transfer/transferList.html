@@ -11,8 +11,14 @@
 <body>
 <th:block layout:fragment="content">
     <div class="container container-narrow mt-5">
-        <h2 class="text-center mb-4">양도 거래 게시판</h2>
-        <h6 class="text-left mb-4">양도 거래 결재시 자동으로 내역이 변경되며 <br> 예약내역에서 확인 가능합니다.<br> 양도 거래는 결제 취소가 불가능하며, 재 양도 판매 등록을 통해 거래가 가능합니다.</h6>
+        <h2 class="text-center mb-4">양도 거래</h2>
+        <h6 class="text-left mb-4">
+            <ul style="color: red;">
+                <li>양도 거래 결제 시 자동으로 내역이 변경됩니다.</li>
+                <li>양도 거래는 결제 취소가 불가능합니다.</li>
+                <li>결제 이후 재 양도 등록을 통해 거래가 가능합니다.</li>
+            </ul>
+        </h6>
         <table class="table table-striped">
             <thead>
             <tr>
