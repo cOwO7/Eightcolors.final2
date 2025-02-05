@@ -22,9 +22,13 @@
             <!-- 버튼 끝  -->
             <div class="col-9">
                 <h1>예약현황페이지</h1>
+                <hr>
                 <div class="row">
                     <div class="col">
-                        <div class="row row-cols-1 row-cols-md-3 g-4">
+                        <!-- 예약 내역이 없는 경우 -->
+                        <p th:if="${#lists.isEmpty(reservations)}">예약내역이 없습니다.</p>
+                        <!-- 예약 내역이 있는 경우 -->
+                        <div class="row row-cols-1 row-cols-md-3 g-4" th:unless="${#lists.isEmpty(reservations)}">
                             <div class="col" th:each="reservation : ${reservations}">
                                 <div class="card">
                                     <img th:src="${reservation.thumbnailUrls}" class="card-img-top" alt="Thumbnail" style="height: 200px; object-fit: cover;">
@@ -34,7 +38,7 @@
                                         <p class="card-text">
                                             <small class="text-muted" th:text="${reservation.checkinDate}">체크인 날짜</small>
                                         </p>
-                                        <a th:href="@{/myPage/myReservationDetail(id=${reservation.reservationNo})}" class="btn btn-primary">상세보기</a>
+                                        <a th:href="@{/myPage/myReservationDetail/{reservationNo}(reservationNo=${reservation.reservationNo})}" class="btn btn-primary">상세보기</a>
                                     </div>
                                 </div>
                             </div>
