@@ -110,30 +110,31 @@
         VALUES (#{transferTitle}, #{sellerUserNo}, #{buyerUserNo}, #{reservationNo}, #{transferPrice}, #{transferContent}, '양도가능')
     </insert>
 
-    <select id="transferRead" resultType="com.springbootfinal.app.domain.transfer.TransferDto">
-        SELECT
-            t.transfer_no AS transferNo,
-            t.transfer_title AS transferTitle,
-            t.seller_user_no AS sellerUserNo,
-            t.buyer_user_no AS buyerUserNo,
-            t.reservation_no AS reservationNo,
-            t.transfer_price AS transferPrice,
-            t.transfer_content AS transferContent,
-            t.status,
-            t.created_at AS createdAt,
-            s.id AS sellerId,
-            b.id AS buyerId,
-            r.resid_name AS reservationResidName,
-            re.checkin_date AS checkinDate,
-            re.checkout_date AS checkoutDate
-        FROM transfers t
-                 LEFT JOIN users s ON t.seller_user_no = s.user_no
-                 LEFT JOIN users b ON t.buyer_user_no = b.user_no
-                 LEFT JOIN reservations re ON t.reservation_no = re.reservation_no
-                 LEFT JOIN residence_rooms rr ON re.room_no = rr.room_no
-                 LEFT JOIN residence r ON rr.resid_no = r.resid_no
-        WHERE t.transfer_no = #{transferNo}
-    </select>
+   <select id="transferRead" resultType="com.springbootfinal.app.domain.transfer.TransferDto">
+    SELECT
+        t.transfer_no AS transferNo,
+        t.transfer_title AS transferTitle,
+        t.seller_user_no AS sellerUserNo,
+        t.buyer_user_no AS buyerUserNo,
+        t.reservation_no AS reservationNo,
+        t.transfer_price AS transferPrice,
+        t.transfer_content AS transferContent,
+        t.status,
+        t.created_at AS createdAt,
+        s.id AS sellerId,
+        b.id AS buyerId,
+        r.resid_name AS reservationResidName,
+        re.checkin_date AS checkinDate,
+        re.checkout_date AS checkoutDate,
+        rr.room_name AS roomName
+    FROM transfers t
+             LEFT JOIN users s ON t.seller_user_no = s.user_no
+             LEFT JOIN users b ON t.buyer_user_no = b.user_no
+             LEFT JOIN reservations re ON t.reservation_no = re.reservation_no
+             LEFT JOIN residence_rooms rr ON re.room_no = rr.room_no
+             LEFT JOIN residence r ON rr.resid_no = r.resid_no
+    WHERE t.transfer_no = #{transferNo}
+</select>
 
     <update id="putTransfer" parameterType="com.springbootfinal.app.domain.transfer.TransferDto">
         UPDATE transfers
