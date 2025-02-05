@@ -77,6 +77,8 @@ CREATE TABLE IF NOT EXISTS residence (
     ny INT DEFAULT 0,
     latitudeNum VARCHAR(255),
     longitudeNum VARCHAR(255),
+    regId VARCHAR(255),
+    regIdTemp VARCHAR(255),
     UNIQUE (host_user_no),
     FOREIGN KEY (host_user_no) REFERENCES host_users(host_user_no) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -162,17 +164,6 @@ CREATE TABLE IF NOT EXISTS property_photos (
 
 select * from property_photos;
 
--- 11. 공지사항 테이블
-CREATE TABLE IF NOT EXISTS notices (
-    notice_no BIGINT AUTO_INCREMENT PRIMARY KEY,
-    admin_user_no BIGINT,
-    title VARCHAR(255),
-    content TEXT,
-    notice_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    is_active TINYINT(1) DEFAULT 1,
-    FOREIGN KEY (admin_user_no) REFERENCES admin_users(admin_user_no) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
 -- 12. 양도 테이블
 CREATE TABLE IF NOT EXISTS transfers (
     transfer_no BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -219,50 +210,6 @@ INSERT INTO host_users (id, passwd, email, phone, name, zipcode, address1, addre
 VALUES
     ('hostuser01', '$2a$10$F4ns56v9RU.QXhoi1qDfjOXki0Qsc5WUaMohfR27dwE3Zvz0YVFyS', 'hostuser01@email.com', '010-1234-5678', '호스트1', '12345', '서울시 강남구', '역삼동 123', '1234567890', 'ROLE_HOST'),
     ('hostuser02', '$2a$10$F4ns56v9RU.QXhoi1qDfjOXki0Qsc5WUaMohfR27dwE3Zvz0YVFyS', 'hostuser02@email.com', '010-2345-6789', '호스트2', '54321', '서울시 서초구', '반포동 456', '0987654321', 'ROLE_HOST');
-
-
--- 4. 숙소 데이터 삽입
-INSERT INTO residence (resid_name, host_user_no, resid_description, resid_address, resid_type)
-VALUES
-    ('호스텔 서울', 1, '서울에서 편리한 위치의 호스텔입니다.', '서울시 강남구 역삼동', 'resort'),
-    ('호텔 강남', 2, '편안하고 고급스러운 호텔입니다.', '서울시 서초구 반포동', 'hotel');
-
--- 5. 숙소 방 정보 데이터 삽입
-INSERT INTO residence_rooms (resid_no, room_name, price_per_night)
-VALUES
-    (1, '101호', 50000),
-    (1, '102호', 60000),
-    (2, '201호', 150000),
-    (2, '202호', 180000);
-
--- 6. 예약 데이터 삽입
-INSERT INTO reservations (user_no, room_no, checkin_date, checkout_date, total_price, discounted_price, transaction_id, payment_status, reservation_status)
-VALUES
-    (1, 1, '2025-02-01', '2025-02-03', 100000, 95000, 'txn12345', '완료', '예약 완료'),
-    (2, 3, '2025-02-05', '2025-02-07', 300000, 290000, 'txn67890', '완료', '예약 완료');
-
--- 8. 고객센터 문의 데이터 삽입
-INSERT INTO inquiries (user_no, title, content)
-VALUES
-    (1, '예약 변경 요청', '예약 날짜를 변경하고 싶습니다.'),
-    (2, '문의사항', '결제 오류가 발생했습니다.');
-
--- 9. 답변 데이터 삽입
-INSERT INTO answers (inquiry_no, admin_name, content)
-VALUES
-    (1, '관리자', '예약 날짜 변경은 가능합니다. 고객센터로 문의해주세요.'),
-    (2, '관리자', '결제 오류는 기술팀에서 확인하고 있습니다. 잠시만 기다려주세요.');
-
--- 10. 숙소 사진 데이터 삽입
-INSERT INTO property_photos (resid_no, thumbnailUrls, photo_url01, photo_url02)
-VALUES
-    (1, 'thumbnail01.jpg', 'photo01.jpg', 'photo02.jpg'),
-    (2, 'thumbnail02.jpg', 'photo03.jpg', 'photo04.jpg');
-
--- 11. 공지사항 데이터 삽입
-INSERT INTO notices (admin_user_no, title, content)
-VALUES
-    (1, '시스템 점검 안내', '정기적인 시스템 점검이 예정되어 있습니다. 서비스 이용에 불편을 드려 죄송합니다.');
 
 -- 12. 양도 데이터 삽입
 INSERT INTO transfers (seller_user_no, buyer_user_no, reservation_no, transfer_price, status, transfer_title)
