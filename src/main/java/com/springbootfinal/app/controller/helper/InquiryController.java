@@ -99,6 +99,8 @@ public class InquiryController {
         // sessionUserNo가 없으면 관리자 role로 체크
         if (sessionRole.equals("admin") || (sessionUserNo != null && inquiry.getUserNo().equals(sessionUserNo))) {
             inquiryService.deleteInquiry(inquiryNo);
+
+            // 관리자 또는 본인이 작성한 글일 때 삭제 후 목록으로 리다이렉트
             return "redirect:/inquiries";
         }
         // 본인이 작성한 글도 아니고, 관리자도 아니면 삭제 불가
@@ -106,24 +108,6 @@ public class InquiryController {
     }
 
     // 답변 추가
-    /*@PostMapping("/inquiries/{inquiryNo}/answer")
-    public String addAnswer(@PathVariable Long inquiryNo,
-                            @RequestParam String content,
-                            @RequestParam String adminName,
-                            Model model) {
-        // AnswerDto 객체 생성 및 값 설정
-        AnswerDto answer = new AnswerDto();
-        answer.setInquiryNo(inquiryNo);
-        answer.setContent(content);
-        answer.setAdminName(adminName);
-        // 답변 추가 서비스 호출
-        answerService.addAnswer(answer);
-        inquiryService.updateInquiryStatus(inquiryNo, "답변 완료");
-        // 모델에 답변 추가
-        model.addAttribute("answer", answer);
-        // 답변이 등록된 후 원래 문의 상세 페이지로 리디렉션
-        return "redirect:/inquiries/{inquiryNo}";
-    }*/
     @PostMapping("/inquiries/{inquiryNo}/answer")
     public String addAnswer(@PathVariable Long inquiryNo,
                             @RequestParam String content,
@@ -145,8 +129,6 @@ public class InquiryController {
         // 답변이 등록된 후 원래 문의 상세 페이지로 리디렉션
         return "redirect:/inquiries/{inquiryNo}";
     }
-
-
 
 }
 
