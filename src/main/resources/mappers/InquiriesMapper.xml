@@ -9,6 +9,12 @@
 		SELECT * FROM inquiries;
 	</select>
 
+	<select id="selectAllInquiry" resultType="com.springbootfinal.app.domain.helper.InquiryDto">
+		SELECT inquiry_no, user_no, title, content, inquiry_date, status, user_id
+		FROM inquiries;
+	</select>
+
+
 	<!-- 특정 문의 조회 -->
 	<select id="selectInquiryById" resultType="com.springbootfinal.app.domain.helper.InquiryDto">
 		SELECT * FROM inquiries WHERE inquiry_no = #{inquiryNo};

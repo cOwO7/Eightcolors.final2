@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * 문의(고객센터) 관련 컨트롤러
+ */
 @Slf4j
 @Controller
 public class InquiryController {
@@ -24,14 +27,15 @@ public class InquiryController {
     @Autowired
     private UserService userService;
 
-    // 문의 목록 페이지
+    /**
+     * 문의 목록 페이지
+     */
     @GetMapping("/inquiries")
     public String listInquiries(Model model) {
         List<InquiryDto> inquiries = inquiryService.getAllInquiries();
         model.addAttribute("inquiries", inquiries);
         return "views/helper/helper";
     }
-
     // 문의 상세 페이지
     @GetMapping("/inquiries/{inquiryNo}")
     public String viewInquiry(@PathVariable Long inquiryNo,
@@ -44,7 +48,9 @@ public class InquiryController {
         return "views/helper/InquiriesDetail";
     }
 
-    // 문의 작성 폼
+    /**
+     * 문의 작성 폼
+     */
     @GetMapping("/inquiries/create")
     public String createInquiryForm(Model model,
                                     @SessionAttribute("userNo") Long userNo) {
@@ -57,12 +63,16 @@ public class InquiryController {
         return "views/helper/InquiriesWriter";  // 작성 페이지로 이동
     }
 
-    // 문의 등록 처리
+    /**
+     * 문의 등록 처리
+     */
     @PostMapping("/inquiries")
     public String createInquiry(@ModelAttribute InquiryDto inquiry) {
+        // inquiry도 Builder 사용 가능(현재 @ModelAttribute 받기 때문에 필요 시 내부 Builder 구성)
         inquiryService.createInquiry(inquiry);
         return "redirect:/inquiries";
     }
+
 
     // 문의 수정 폼
     @GetMapping("/inquiries/{inquiryNo}/update")
@@ -90,7 +100,9 @@ public class InquiryController {
         return "redirect:/inquiries/{inquiryNo}";
     }
 
-    // 문의 삭제 처리
+    /**
+     * 문의 삭제 처리
+     */
     @PostMapping("/inquiries/{inquiryNo}/delete")
     public String deleteInquiry(@PathVariable Long inquiryNo,
                                 @SessionAttribute(value = "userNo", required = false) Long sessionUserNo,  // userNo가 없을 수도 있음
@@ -129,6 +141,4 @@ public class InquiryController {
         // 답변이 등록된 후 원래 문의 상세 페이지로 리디렉션
         return "redirect:/inquiries/{inquiryNo}";
     }
-
 }
-
