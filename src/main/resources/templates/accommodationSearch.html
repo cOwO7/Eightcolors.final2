@@ -257,49 +257,35 @@
     </div>
     <div class="row">
         <div class="col">
+
             <nav aria-label="Page navigation" th:if="${searchKeyword != null and checkinDate != null and checkoutDate != null}">
                 <ul class="pagination justify-content-center">
-                    <!--/*
-                    현재 페이지 그룹의 시작 페이지가 pageGroup보다 크다는 것은
-                    이전 페이지 그룹이 존재한다는 것으로 현재 페이지 그룹의 시작
-                    페이지에서 1을 빼면 이전 페이지 그룹의 endPage로 이동할 수 있다.
-                    */-->
-                    <li class="page-item" th:if="${ startPage > pageGroup }">
-                        <a class="page-link" th:href="@{|?pageNum=${startPage - 1}&searchKeyword=${searchKeyword}&checkinDate=${checkinDate}&checkoutDate=${checkoutDate}|}">Pre</a>
+                    <!-- 이전 페이지 그룹으로 이동 -->
+                    <li class="page-item" th:if="${startPage > pageGroup}">
+                        <a class="page-link" th:href="@{|?pageNum=${startPage - 1}&searchKeyword=${searchKeyword}&checkinDate=${checkinDate}&checkoutDate=${checkoutDate}&accommodationTypes=${accommodationTypes}&maxPrice=${maxPrice}|}">
+                            Pre
+                        </a>
                     </li>
-                    <!--/*
-                    현재 페이지 그룹의 startPage부터 endPage까지 반복하면서 페이지
-                    번호를 출력하고 링크를 설정한다. 현재 페이지는 링크에서 제외 시킨다.
-                    */-->
-                    <li th:each="num : ${ #numbers.sequence(startPage, endPage) }"
-                        th:classappend="${num == currentPage} ? 'active'"
-                        class="page-item" aria-current="page">
+
+                    <!-- 페이지 번호 출력 -->
+                    <li th:each="num : ${ #numbers.sequence(startPage, endPage) }" th:classappend="${num == currentPage} ? 'active'" class="page-item" aria-current="page">
                         <th:block th:if="${num != currentPage}">
-                            <a
-                                    th:text="${num}"
-                                    th:href="@{|?pageNum=${num}&searchKeyword=${searchKeyword}&checkinDate=${checkinDate}&checkoutDate=${checkoutDate}|}"
-                                    class="page-link"></a>
+                            <a th:text="${num}" th:href="@{|?pageNum=${num}&searchKeyword=${searchKeyword}&checkinDate=${checkinDate}&checkoutDate=${checkoutDate}&accommodationTypes=${accommodationTypes}&maxPrice=${maxPrice}|}" class="page-link"></a>
                         </th:block>
-                        <!--/* 현재 페이지는 링크에서 제외 시킨다.*/-->
                         <th:block th:unless="${num != currentPage}">
                             <span th:text="${num}" class="page-link"></span>
                         </th:block>
                     </li>
-                    <!--/*
-                    현재 페이지 그룹의 마지막 페이지가 전체 페이지 보다 작다는 것은
-                    다음 페이지 그룹이 존재한다는 것으로 현재 페이지 그룹의 시작 페이지에
-                    pageGroup을 더하여 링크를 설정하면 다음 페이지 그룹의 startPage로
-                    이동할 수 있다.
-                    */-->
+
+                    <!-- 다음 페이지 그룹으로 이동 -->
                     <li class="page-item" th:if="${endPage < pageCount}">
-                        <a
-                                class="page-link"
-                                th:href="@{|?pageNum=${startPage
-	+
-	pageGroup}&searchKeyword=${searchKeyword}&checkinDate=${checkinDate}&checkoutDate=${checkoutDate}|}">Next</a>
+                        <a class="page-link" th:href="@{|?pageNum=${startPage + pageGroup}&searchKeyword=${searchKeyword}&checkinDate=${checkinDate}&checkoutDate=${checkoutDate}&accommodationTypes=${accommodationTypes}&maxPrice=${maxPrice}|}">
+                            Next
+                        </a>
                     </li>
                 </ul>
             </nav>
+
             <!-- 검색이 아닐때        -->
             <nav aria-label="Page navigation" th:unless="${searchKeyword != null and checkinDate != null and checkoutDate != null}">
                 <ul class="pagination justify-content-center">
@@ -344,6 +330,8 @@
                     </li>
                 </ul>
             </nav>
+
+
         </div>
     </div>
 
@@ -358,8 +346,8 @@
 
             // URL 파라미터에서 값 가져오기
             const urlParams = new URLSearchParams(window.location.search);
-            const selectedTypes = urlParams.getAll("accommodationType");
-            const maxPriceFromUrl = urlParams.get("maxPrice");  // 최대 금액 파라미터 가져오기
+            const selectedTypes = urlParams.get("accommodationTypes") ? urlParams.get("accommodationTypes").split(",") : [];
+            const maxPriceFromUrl = urlParams.get("maxPrice");
 
             // 체크박스 상태 설정
             checkboxes.forEach(checkbox => {
@@ -368,11 +356,11 @@
                 }
 
                 checkbox.addEventListener("change", function () {
-                    updateUrlWithSelectedTypesAndPrice(true);  // 페이지 새로고침을 위해 true로 설정
+                    updateUrlWithSelectedTypesAndPrice(true);  // 페이지 새로고침
                 });
             });
 
-            // 슬라이더 값 설정 (최대 금액)
+            // 슬라이더 값 설정
             if (maxPriceFromUrl) {
                 priceRange.value = maxPriceFromUrl;
                 priceRangeValue.textContent = maxPriceFromUrl;
@@ -381,43 +369,47 @@
             // 슬라이더 값 변경 시
             priceRange.addEventListener("input", function () {
                 priceRangeValue.textContent = priceRange.value;
-                updateUrlWithSelectedTypesAndPrice(true);  // 페이지 새로고침을 위해 true로 설정
+                updateUrlWithSelectedTypesAndPrice(true);  // 페이지 새로고침
             });
         });
 
         function updateUrlWithSelectedTypesAndPrice(reloadPage = false) {
             let selectedTypes = [];
-            let maxPrice = document.getElementById("priceRange").value; // 슬라이더 값 가져오기
+            let maxPrice = document.getElementById("priceRange").value;
 
             // 체크된 체크박스 값들을 selectedTypes 배열에 담기
             document.querySelectorAll(".form-check-input:checked").forEach(checkbox => {
                 selectedTypes.push(checkbox.value);
             });
 
+            // 쉼표로 구분된 문자열로 변환
+            let accommodationTypes = selectedTypes.join(',');
+
             // 현재 URL을 기반으로 새로운 URL 생성
             let url = new URL(window.location.href);
 
-            // 기존에 있던 accommodationType, maxPrice 파라미터 제거
-            url.searchParams.delete("accommodationType"); // 기존에 있던 accommodationType 파라미터 제거
-            url.searchParams.delete("maxPrice"); // 기존에 있던 maxPrice 파라미터 제거
+            // 기존에 있던 accommodationTypes, maxPrice 파라미터 제거
+            url.searchParams.delete("accommodationTypes");
+            url.searchParams.delete("maxPrice");
 
-            // selectedTypes 배열에 있는 값들을 URL 파라미터로 추가
-            if (selectedTypes.length > 0) {
-                selectedTypes.forEach(type => {
-                    url.searchParams.append("accommodationType", type);
-                });
+            // accommodationTypes를 쉼표로 구분된 문자열로 URL 파라미터에 추가
+            if (accommodationTypes) {
+                let accommodationTypes = selectedTypes.join(',');
+                accommodationTypes = accommodationTypes.replaceAll("\\[|\\]", "");
+                url.searchParams.set("accommodationTypes", accommodationTypes);
             }
 
             // 최대 금액을 URL에 추가 (중복 방지)
             if (maxPrice && maxPrice > 0) {
-                url.searchParams.set("maxPrice", maxPrice);  // 최대 금액을 URL에 추가 (중복 방지)
+                url.searchParams.set("maxPrice", maxPrice);
             }
 
-            // URL을 갱신하되 페이지를 리다이렉트
+            // 페이지 새로 고침
             if (reloadPage) {
-                window.location.href = url.toString();  // 페이지를 새로 고침
+                window.location.href = url.toString();
+                //window.location.href = 'search?searchKeyword='+ key1 + '&checkinDate=' + checkindate;
             } else {
-                window.history.pushState({}, "", url.toString());  // 페이지를 새로 고침하지 않고 URL만 갱신
+                window.history.pushState({}, "", url.toString());
             }
         }
 
