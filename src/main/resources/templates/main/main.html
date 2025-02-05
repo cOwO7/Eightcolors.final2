@@ -14,6 +14,13 @@
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <link rel="stylesheet" href="/swiper/swiper.min.css">
     <script th:src="@{/js/mainPage/mainpage.js}"></script>
+    <style>
+        .card-img-top {
+            width: 100%;
+            height: 8rem; /* 카드 이미지 높이 설정 */
+            object-fit: cover; /* 이미지가 카드 내부에 적절하게 맞도록 설정 */
+        }
+    </style>
 </head>
 <title>오늘 어때?</title>
 <meta charset="UTF-8">
@@ -26,7 +33,7 @@
     <link href="/css/mainstyles.css" rel="stylesheet"/>
     <!-- 디자인1 -->
     <!-- 캐러셀 내용 -->
-    <div class="row justify-content-center">
+    <div class="row justify-content-center my-3">
         <div class="col-md-8" style="width: 70%; height: 100%;">
             <div id="carouselExampleCaptions" class="carousel slide">
                 <div class="carousel-inner text-center"><br>
@@ -112,148 +119,11 @@
         </div><!-- 일별 날씨 끝 -->
         <div id="map" style="width: 0px; height: 0px;"></div>
     </div><!-- 캐러셀 끝-->
-    <!-- 검색파트 시작 -->
-    <div class="row justify-content-center my-5">
-        <div class="col">
-            <!-- 디자인 1 -->
-            <div class="card">
-                <div class="card-body">
-                    <form id="searchForm">
-                        <div class="row">
-                            <div class="col-10">
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="mb-1">
-                                            <label for="location" class="form-label">지역</label>
-                                            <input type="text" class="form-control" id="location" name="location"
-                                                   placeholder="지역을 입력하세요">
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="mb-1">
-                                            <label for="guests" class="form-label">인원수</label>
-                                            <input type="number" class="form-control" id="guests" name="guests"
-                                                   placeholder="인원수를 입력하세요" min="1">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="mb-1">
-                                            <label for="checkin" class="form-label">체크인 날짜</label>
-                                            <input type="date" class="form-control datepicker" id="checkin"
-                                                   name="checkin" placeholder="체크인 날짜를 선택하세요">
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="mb-1">
-                                            <label for="checkout" class="form-label">체크아웃 날짜</label>
-                                            <input type="date" class="form-control datepicker" id="checkout"
-                                                   name="checkout" placeholder="체크아웃 날짜를 선택하세요">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-2">
-                                <button type="submit" class="btn btn-primary">검색</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div> <!--	디자인 1 끝-->
-
-
-            <!-- 디자인 2-->
-            <div class="card">
-                <div class="card-body">
-                    <form id="searchForm">
-                        <div class="row">
-                            <div class="col-10">
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="mb-1">
-                                            <label for="location" class="form-label">지역</label>
-                                            <input type="text" class="form-control" id="location" name="location"
-                                                   placeholder="지역을 입력하세요">
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="mb-1">
-                                            <label for="checkin" class="form-label">체크인 날짜</label>
-                                            <input type="date" class="form-control datepicker" id="checkin"
-                                                   name="checkin" placeholder="체크인 날짜를 선택하세요">
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="mb-1">
-                                            <label for="checkout" class="form-label">체크아웃 날짜</label>
-                                            <input type="date" class="form-control datepicker" id="checkout"
-                                                   name="checkout" placeholder="체크아웃 날짜를 선택하세요">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-3 text-center">
-                                <button type="submit" class="btn btn-outline-light btn-lg">검색</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div><!-- 디자인 2 끝 -->
-        </div>
-    </div><!-- 검색파트 끝-->
-
-<!-- 검색파트 시작	-->
-	<div class="row justify-content-center my-5">
-		<div class="col">
-<!--			디자인 1 -->
-			<div class="card">
-				<div class="card-body">
-					<form id="searchForm">
-						<div class="row">
-							<div class="col-10">
-								<div class="row">
-									<div class="col">
-										<div class="mb-1">
-											<label for="location" class="form-label">지역</label>
-											<input type="text" class="form-control" id="location" name="location" placeholder="지역을 입력하세요">
-										</div>
-									</div>
-									<div class="col">
-										<div class="mb-1">
-											<label for="guests" class="form-label">인원수</label>
-											<input type="number" class="form-control" id="guests" name="guests" placeholder="인원수를 입력하세요" min="1">
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col">
-										<div class="mb-1">
-											<label for="checkin" class="form-label">체크인 날짜</label>
-											<input type="date" class="form-control datepicker" id="checkin" name="checkin" placeholder="체크인 날짜를 선택하세요">
-										</div>
-									</div>
-									<div class="col">
-										<div class="mb-1">
-											<label for="checkout" class="form-label">체크아웃 날짜</label>
-											<input type="date" class="form-control datepicker" id="checkout" name="checkout" placeholder="체크아웃 날짜를 선택하세요">
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-2 align-self-center">
-								<button type="submit" class="btn btn-primary btn-lg">검색</button>
-							</div>
-						</div>
-					</form>
-				</div>
-			</div>
-<!--			디자인 1 끝-->
 
 <!--여행지	-->
-	<div class="row my-3">
+	<div class="row my-5">
 		<div class="col-lg-6 col-sm-12 text-lg-start text-center">
-			<h3>인기 여행지</h3>
+			<h1>인기 여행지</h1>
 		</div>
 		<div class="col-lg-6 col-sm-12 text-lg-end text-center">
 			<a class="icon-link icon-link-hover" href="#">
@@ -264,7 +134,7 @@
 	</div>
 
 
-	<div class="row">
+	<div class="row my-3">
 		<div class="col-1 align-self-center">
 			<a class="nav-link text-end" href="#travelfirst">
 				<img src="/button/arrow_left.png" class="w-25 h-25">
@@ -274,7 +144,7 @@
 			<div class="row flex-nowrap overflow-x-hidden">
 				<div class="col-auto" id="travelfirst">
 					<div class="card" style="width: 10rem;">
-						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
+						<img src="/images/mainpage/busan.jpg" class="card-img-top" alt="...">
 						<div class="card-body">
 							<h5 class="card-title">부산</h5>
 						</div>
@@ -282,7 +152,7 @@
 				</div>
 				<div class="col-auto">
 					<div class="card" style="width: 10rem;">
-						<img src="/images/sample/sample2.jpg" class="card-img-top" alt="...">
+						<img src="/images/mainpage/Gangneung.jpg" class="card-img-top" alt="...">
 						<div class="card-body">
 							<h5 class="card-title">강릉</h5>
 						</div>
@@ -290,7 +160,39 @@
 				</div>
 				<div class="col-auto">
 					<div class="card" style="width: 10rem;">
-						<img src="/images/sample/sample3.jpg" class="card-img-top" alt="...">
+						<img src="/images/mainpage/Gapyeong.jpg" class="card-img-top" alt="...">
+						<div class="card-body">
+							<h5 class="card-title">가평</h5>
+						</div>
+					</div>
+				</div>
+				<div class="col-auto">
+					<div class="card" style="width: 10rem;">
+						<img src="/images/mainpage/gyeongju.jpg" class="card-img-top" alt="...">
+						<div class="card-body">
+							<h5 class="card-title">경주</h5>
+						</div>
+					</div>
+				</div>
+				<div class="col-auto">
+					<div class="card" style="width: 10rem;">
+						<img src="/images/mainpage/incheon.jpg" class="card-img-top" alt="...">
+						<div class="card-body">
+							<h5 class="card-title">인천</h5>
+						</div>
+					</div>
+				</div>
+				<div class="col-auto">
+					<div class="card" style="width: 10rem;">
+						<img src="/images/mainpage/jeju.jpg" class="card-img-top" alt="...">
+						<div class="card-body">
+							<h5 class="card-title">제주</h5>
+						</div>
+					</div>
+				</div>
+				<div class="col-auto">
+					<div class="card" style="width: 10rem;">
+						<img src="/images/mainpage/seoul.jpg" class="card-img-top" alt="...">
 						<div class="card-body">
 							<h5 class="card-title">서울</h5>
 						</div>
@@ -298,57 +200,25 @@
 				</div>
 				<div class="col-auto">
 					<div class="card" style="width: 10rem;">
-						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
+						<img src="/images/mainpage/Sokcho.jpg" class="card-img-top" alt="...">
 						<div class="card-body">
-							<h5 class="card-title">어디?</h5>
+							<h5 class="card-title">속초</h5>
 						</div>
 					</div>
 				</div>
 				<div class="col-auto">
 					<div class="card" style="width: 10rem;">
-						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
+						<img src="/images/mainpage/Yeosu.jpg" class="card-img-top" alt="...">
 						<div class="card-body">
-							<h5 class="card-title">어디?</h5>
-						</div>
-					</div>
-				</div>
-				<div class="col-auto">
-					<div class="card" style="width: 10rem;">
-						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
-						<div class="card-body">
-							<h5 class="card-title">어디?</h5>
-						</div>
-					</div>
-				</div>
-				<div class="col-auto">
-					<div class="card" style="width: 10rem;">
-						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
-						<div class="card-body">
-							<h5 class="card-title">어디?</h5>
-						</div>
-					</div>
-				</div>
-				<div class="col-auto">
-					<div class="card" style="width: 10rem;">
-						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
-						<div class="card-body">
-							<h5 class="card-title">어디?</h5>
-						</div>
-					</div>
-				</div>
-				<div class="col-auto">
-					<div class="card" style="width: 10rem;">
-						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
-						<div class="card-body">
-							<h5 class="card-title">어디?</h5>
+							<h5 class="card-title">여수</h5>
 						</div>
 					</div>
 				</div>
 				<div class="col-auto" id="travellast">
 					<div class="card" style="width: 10rem;">
-						<img src="/images/sample/sample1.jpg" class="card-img-top" alt="...">
+						<img src="/images/mainpage/Haeundae.jpg" class="card-img-top" alt="...">
 						<div class="card-body">
-							<h5 class="card-title">어디?</h5>
+							<h5 class="card-title">해운대</h5>
 						</div>
 					</div>
 				</div>
