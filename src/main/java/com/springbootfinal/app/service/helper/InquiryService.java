@@ -35,5 +35,9 @@ public class InquiryService {
     public void deleteInquiry(Long inquiryNo) {
         inquiryMapper.deleteInquiry(inquiryNo);
     }
+
+    public void updateInquiryStatus(Long inquiryNo, String status) {
+        inquiryMapper.updateStatus(inquiryNo, status);
+    }
 }
 

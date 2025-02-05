@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main_layout}">
+<th:block layout:fragment="content">
+    <div class="container my-5">
+
+        <div class="row">
+            <div class="col-3">
+                <ul class="nav flex-column nav-underline">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" th:href="@{/myPage/info}">내 정보 보기</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active bg-primary p-2 text-dark bg-opacity-10" aria-current="true" th:href="@{/myPage/myReservation}">예약 현황</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-disabled="true" href="#">양도 현황</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- 버튼 끝  -->
+            <div class="col-9">
+                <h1>예약현황페이지</h1>
+                <div class="row">
+                    <div class="col">
+                        <div class="row row-cols-1 row-cols-md-3 g-4">
+                            <div class="col" th:each="reservation : ${reservations}">
+                                <div class="card">
+                                    <img th:src="${reservation.thumbnailUrls}" class="card-img-top" alt="Thumbnail" style="height: 200px; object-fit: cover;">
+                                    <div class="card-body">
+                                        <h5 class="card-title" th:text="${reservation.residName}">건물이름</h5>
+                                        <p class="card-text" th:text="${reservation.residDescription}">주소</p>
+                                        <p class="card-text">
+                                            <small class="text-muted" th:text="${reservation.checkinDate}">체크인 날짜</small>
+                                        </p>
+                                        <a th:href="@{/myPage/myReservationDetail(id=${reservation.reservationNo})}" class="btn btn-primary">상세보기</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 내용 끝 -->
+        </div>
+    </div>
+</th:block>
+</html>

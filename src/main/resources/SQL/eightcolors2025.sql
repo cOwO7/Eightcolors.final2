@@ -25,6 +25,8 @@ CREATE TABLE IF NOT EXISTS admin_users (
     role VARCHAR(50) DEFAULT 'ROLE_ADMIN'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+select * from admin_users;
+
 -- 2. 숙박업소 회원가입 테이블
 CREATE TABLE IF NOT EXISTS host_users (
     host_user_no BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -70,6 +72,10 @@ CREATE TABLE IF NOT EXISTS residence (
     resid_address VARCHAR(255),
     resid_type ENUM('resort', 'hotel', 'pension', 'motel'),
     resid_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    nx INT DEFAULT 0,
+    ny INT DEFAULT 0,
+    latitudeNum VARCHAR(255),
+    longitudeNum VARCHAR(255),
     UNIQUE (host_user_no),
     FOREIGN KEY (host_user_no) REFERENCES host_users(host_user_no) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -85,9 +91,6 @@ CREATE TABLE IF NOT EXISTS residence_rooms (
     room_url01   VARCHAR(255),
     FOREIGN KEY (resid_no) REFERENCES residence (resid_no) ON DELETE CASCADE)
 ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
-
-ALTER TABLE residence_rooms
-    ADD COLUMN room_url01 VARCHAR(255);
 
 select * from residence_rooms;
 
@@ -115,14 +118,13 @@ CREATE TABLE IF NOT EXISTS reservations (
 CREATE TABLE IF NOT EXISTS inquiries (
     inquiry_no BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_no BIGINT,
+    user_id VARCHAR(255),
     title VARCHAR(255),
     content TEXT,
     inquiry_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     status ENUM('대기중', '답변완료') DEFAULT '대기중',
     FOREIGN KEY (user_no) REFERENCES users(user_no) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-ALTER TABLE inquiries
-    ADD COLUMN user_id VARCHAR(255);
 
 select * from inquiries;
 
@@ -130,12 +132,11 @@ select * from inquiries;
 CREATE TABLE IF NOT EXISTS answers (
     answer_no BIGINT AUTO_INCREMENT PRIMARY KEY,
     inquiry_no BIGINT,
+    admin_name VARCHAR(255),
     content VARCHAR(3000),
     answer_date DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (inquiry_no) REFERENCES inquiries(inquiry_no) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-ALTER TABLE answers
-    ADD COLUMN admin_name VARCHAR(255);
 
 select * from answers;
 
@@ -189,19 +190,7 @@ CREATE TABLE IF NOT EXISTS transfers (
     FOREIGN KEY (reservation_no) REFERENCES reservations(reservation_no) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-ALTER TABLE transfers
-    ADD COLUMN transfer_title VARCHAR(255);
 
-ALTER TABLE reservations
-    MODIFY COLUMN discounted_price INT;
-
-ALTER TABLE transfers
-    MODIFY COLUMN transfer_price INT;
-
-ALTER TABLE transfers
-    ADD COLUMN transfer_content VARCHAR(1000);
-
-select * from transfers;
 
 -- 최근 결제기록 5개 읽어오기
 SELECT r.reservation_no,
@@ -216,6 +205,7 @@ FROM reservations r
          JOIN users u ON r.user_no = u.user_no
 ORDER BY r.created_at DESC
 LIMIT 5;
+
 
 
 -- 1. 관리자 계정 데이터 삽입

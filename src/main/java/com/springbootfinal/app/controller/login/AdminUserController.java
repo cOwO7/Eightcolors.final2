@@ -2,10 +2,12 @@ package com.springbootfinal.app.controller.login;
 
 import com.springbootfinal.app.domain.login.AdminUser;
 import com.springbootfinal.app.service.login.AdminUserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +17,10 @@ import java.util.List;
 public class AdminUserController {
     @Autowired
     private AdminUserService adminUserService;
+    @Autowired
+    private HttpSession session;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     /**
      * 새로운 관리자 계정을 생성합니다.
@@ -79,4 +85,22 @@ public class AdminUserController {
         adminUserService.deleteAdminUser(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    /**
+     * 로그인 후 세션에 관리자 이름을 저장합니다.
+     * 성중 추가
+     * @param adminId 로그인할 관리자 계정의 ID
+     * @return 로그인 후 리디렉션할 페이지
+     */
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestParam String adminId, @RequestParam String password) {
+        AdminUser adminUser = (AdminUser) adminUserService.loadUserByUsername(adminId);
+        if (adminUser != null && passwordEncoder.matches(password, adminUser.getAdminPasswd())) {
+            // 세션에 관리자 이름을 설정
+            session.setAttribute("adminName", adminUser.getAdminName());
+            return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("아이디 또는 비밀번호가 잘못되었습니다.", HttpStatus.UNAUTHORIZED);
+    }
+
 }

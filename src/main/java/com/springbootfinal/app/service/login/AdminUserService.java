@@ -2,6 +2,7 @@ package com.springbootfinal.app.service.login;
 
 import com.springbootfinal.app.domain.login.AdminUser;
 import com.springbootfinal.app.mapper.login.AdminUserMapper;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,6 +24,9 @@ public class AdminUserService implements UserDetailsService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private HttpSession session;
 
     /**
      * 관리자 계정을 생성합니다.
@@ -91,6 +95,9 @@ public class AdminUserService implements UserDetailsService {
 
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(adminUser.getRole()));
+
+        // 세션에 관리자 이름을 추가 (이부분 성중 추가)
+        session.setAttribute("adminName", adminUser.getAdminName());
 
         return new org.springframework.security.core.userdetails.User(adminUser.getAdminId(), adminUser.getAdminPasswd(), authorities);
     }

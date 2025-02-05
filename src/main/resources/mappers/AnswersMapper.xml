@@ -6,14 +6,15 @@
 
     <!-- 답변 추가 -->
     <insert id="insertAnswer" useGeneratedKeys="true" keyProperty="answerNo">
-        INSERT INTO answers (inquiry_no, content)
-        VALUES (#{inquiryNo}, #{content});
+        INSERT INTO answers (inquiry_no, content, admin_name)
+        VALUES (#{inquiryNo}, #{content}, #{adminName});
     </insert>
     <!-- 답변 조회 -->
     <select id="allAnswerByInquiryId" parameterType="Long" resultType="AnswerDto">
         SELECT answer_no AS answerNo,
                inquiry_no AS inquiryNo,
                admin_name AS adminName,
+               answer_date AS answerDate,
                content
         FROM answers
         WHERE inquiry_no = #{inquiryId}
