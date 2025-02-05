@@ -190,19 +190,7 @@ CREATE TABLE IF NOT EXISTS transfers (
     FOREIGN KEY (reservation_no) REFERENCES reservations(reservation_no) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-ALTER TABLE transfers
-    ADD COLUMN transfer_title VARCHAR(255);
 
-ALTER TABLE reservations
-    MODIFY COLUMN discounted_price INT;
-
-ALTER TABLE transfers
-    MODIFY COLUMN transfer_price INT;
-
-ALTER TABLE transfers
-    ADD COLUMN transfer_content VARCHAR(1000);
-
-select * from transfers;
 
 -- 최근 결제기록 5개 읽어오기
 SELECT r.reservation_no,
@@ -218,6 +206,12 @@ FROM reservations r
 ORDER BY r.created_at DESC
 LIMIT 5;
 
+
+
+-- 1. 관리자 계정 데이터 삽입
+INSERT INTO admin_users (admin_id, admin_passwd, admin_name, role)
+VALUES ('admin01', 'adminpass123', '관리자1', 'ROLE_ADMIN'),
+       ('admin02', 'adminpass456', '관리자2', 'ROLE_ADMIN');
 
 -- 2. 숙박업소 회원가입 데이터 삽입
 INSERT INTO host_users (id, passwd, email, phone, name, zipcode, address1, address2, business_license_no, role)

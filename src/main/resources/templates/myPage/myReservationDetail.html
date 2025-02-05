@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main_layout}">
+<th:block layout:fragment="content">
+    <div class="container my-5">
+
+        <div class="row">
+            <div class="col-3">
+                <ul class="nav flex-column nav-underline">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" th:href="@{/myPage/info}">내 정보 보기</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active bg-primary p-2 text-dark bg-opacity-10" aria-current="true" th:href="@{/myPage/myReservation}">예약 현황</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-disabled="true" href="#">양도 현황</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 버튼 끝  -->
+
+            <div class="col-9">
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <img th:src="${reservation.thumbnailUrls}" class="img-fluid" alt="Thumbnail">
+                    </div>
+                    <div class="col-md-8">
+                        <h2 th:text="${reservation.residName}">건물이름</h2>
+                        <p th:text="${reservation.residDescription}">주소</p>
+                        <p><strong>예약번호:</strong> <span th:text="${reservation.reservationNo}">예약번호</span></p>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <p><strong>체크인 날짜:</strong> <span th:text="${reservation.checkinDate}">체크인 날짜</span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>체크아웃 날짜:</strong> <span th:text="${reservation.checkoutDate}">체크아웃 날짜</span></p>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <p><strong>결제 금액:</strong> <span th:text="${reservation.totalPrice}">결제 금액</span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>방 이름:</strong> <span th:text="${reservation.roomName}">방 이름</span></p>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <p><strong>할인율:</strong> <span th:text="${reservation.discountRate}">할인율</span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>연락처:</strong> <span th:text="${reservation.hostPhone}">연락처</span></p>
+                    </div>
+                </div>
+<!--                <div class="row">-->
+<!--                    <div class="col-md-6">-->
+<!--                        <div id="map" style="width: 100%; height: 400px;"></div>-->
+<!--                    </div>-->
+<!--                    <form th:action="@{/residence/processAllWeather}" method="post">-->
+<!--                        &lt;!&ndash; 숙소 정보 (hidden 필드로 추가) &ndash;&gt;-->
+<!--                        <input type="hidden" id="nx" th:value="${residence.nx}"/>-->
+<!--                        <input type="hidden" id="ny" th:value="${residence.ny}"/>-->
+<!--                        <input type="hidden" id="regId" th:value="${residence.regId}"/>-->
+<!--                        <input type="hidden" id="regIdTemp" th:value="${residence.regIdTemp}"/>-->
+<!--                        <input type="hidden" id="baseDate" name="baseDate" th:value="${baseDate}"/>-->
+<!--                        <input type="hidden" id="baseTime" name="baseTime" th:value="${baseTime}"/>-->
+<!--                        <input type="hidden" id="latitudeNum" name="latitudeNum" th:value="${residence.latitudeNum}"/>-->
+<!--                        <input type="hidden" id="longitudeNum" name="longitudeNum" th:value="${residence.longitudeNum}"/>-->
+<!--                        <input type="hidden" id="tmFc" name="tmFc" th:value="${tmFc}"/>-->
+<!--                    </form>-->
+<!--                </div>-->
+
+
+
+
+            </div>
+        </div>
+
+            <!-- 내용 끝 -->
+
+    </div>
+</th:block>
+</html>
