@@ -19,40 +19,40 @@
     <h1>예약하기 - [[${residName}]] [[${roomName}]]</h1>
 
     <!-- 예약 폼 -->
-
+    <form id="reservationForm">
       <!-- roomNo와 residNo는 hidden 필드로 전달 -->
       <input type="hidden" name="roomNo" th:value="${roomNo}">
       <input type="hidden" name="residNo" th:value="${residNo}">
 
       <!-- 체크인 날짜 -->
-      <div class="form-group">
-        <label for="checkinDate">체크인 날짜:</label>
-        <input type="date" id="checkinDate" name="checkinDate" class="form-control" th:onchange="calculatePriceWithDiscount()" required>
+      <div class="form-row">
+        <!-- 체크인 날짜 -->
+        <div class="form-group col-md-6">
+          <label for="checkinDate">체크인 날짜:</label>
+          <input type="date" id="checkinDate" name="checkinDate" class="form-control" th:value="${checkinDate}" disabled>
+        </div>
+
+        <!-- 체크아웃 날짜 -->
+        <div class="form-group col-md-6">
+          <label for="checkoutDate">체크아웃 날짜:</label>
+          <input type="date" id="checkoutDate" name="checkoutDate" class="form-control" th:value="${checkoutDate}" disabled>
+        </div>
       </div>
 
-      <!-- 체크아웃 날짜 -->
-      <div class="form-group">
-        <label for="checkoutDate">체크아웃 날짜:</label>
-        <input type="date" id="checkoutDate" name="checkoutDate" class="form-control" th:onchange="calculatePriceWithDiscount()" required>
+      <div class="form-row">
+        <!-- 사용자 이름 -->
+        <div class="form-group col-md-6">
+          <label for="userName">사용자 이름:</label>
+          <input type="text" name="userName" id="userName" class="form-control" th:value="${user.getName() != null ? user.getName() : ''}" disabled>
+        </div>
+
+        <!-- 사용자 이메일 -->
+        <div class="form-group col-md-6">
+          <label for="userEmail">사용자 이메일:</label>
+          <input type="text" name="userEmail" id="userEmail" class="form-control" th:value="${user.getEmail() != null ? user.getEmail() : ''}" disabled>
+        </div>
       </div>
 
-      <!-- 사용자 번호 -->
-      <!--<div class="form-group">
-        <label for="userNo">사용자 번호:</label>
-        <input type="text" name="userNo" id="userNo" class="form-control" th:value="${user.getUserNo() != null ? user.getUserNo() : ''}" required>
-      </div>-->
-
-      <!-- 사용자 이름 -->
-      <div class="form-group">
-        <label for="userName">사용자 이름:</label>
-        <input type="text" name="userName" id="userName" class="form-control" th:value="${user.getName() != null ? user.getName() : ''}" required>
-      </div>
-
-      <!-- 사용자 이메일 -->
-      <div class="form-group">
-        <label for="userEmail">사용자 이메일:</label>
-        <input type="text" name="userEmail" id="userEmail" class="form-control" th:value="${user.getEmail() != null ? user.getEmail() : ''}" required>
-      </div>
 
       <!-- 예약 가격 표시 -->
       <div class="form-group">
@@ -60,90 +60,22 @@
         <p id="totalPrice" class="font-weight-bold"></p>
       </div>
 
+      <!-- 결제하기 버튼 -->
+      <button type="button" class="btn btn-primary" onclick="requestPay()">결제하기</button>
 
-
-    <!-- 결제하기 버튼 -->
-    <button class="btn btn-primary" onclick="requestPay()">결제하기</button>
-
-    <!-- 카카오페이 버튼 -->
-    <button type="button" class="btn" onclick="kakaoPay()">
-      <img src="../images/payment.png" alt="Image Button" class="img-fluid" />
-    </button>
-
-
+      <!-- 카카오페이 버튼 -->
+      <button type="button" class="btn" onclick="kakaoPay()">
+        <img src="../images/payment.png" alt="Image Button" class="img-fluid" />
+      </button>
+    </form>
   </div>
 
-
- <script th:inline="javascript">
-    function validateDates() {
-      const checkinDate = document.getElementById('checkinDate').value;
-      const checkoutDate = document.getElementById('checkoutDate').value;
-
-      if (checkoutDate && checkinDate) {
-        const checkinDateObj = new Date(checkinDate);
-        const checkoutDateObj = new Date(checkoutDate);
-
-        if (checkoutDateObj <= checkinDateObj) {
-          alert("체크아웃 날짜는 체크인 날짜 이후의 날짜여야 합니다.");
-          document.getElementById('checkoutDate').value = '';
-        }
-      }
-    }
-
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1 필요
-    const day = String(today.getDate()).padStart(2, '0');
-    const formattedToday = `${year}-${month}-${day}`; // YYYY-MM-DD 형식
-
-    // 체크인 날짜 입력 필드에 'min' 속성 설정
-    const checkinDateInput = document.getElementById('checkinDate');
-    checkinDateInput.setAttribute('min', formattedToday);
-
-    // 체크인 날짜가 변경될 때마다 validateDates 호출 및 체크아웃 날짜 최소값 설정
-    document.getElementById('checkinDate').addEventListener('change', function () {
-      const checkoutDateInput = document.getElementById('checkoutDate');
-
-      if (this.value) {
-        const checkinDate = new Date(this.value);
-
-        // 체크아웃 날짜의 최소값을 체크인 날짜 다음 날로 설정
-        const nextDay = new Date(checkinDate);
-        nextDay.setDate(nextDay.getDate() + 1);
-        checkoutDateInput.setAttribute('min', nextDay.toISOString().split('T')[0]);
-      } else {
-        checkoutDateInput.removeAttribute('min'); // 체크인 날짜가 없으면 최소값 제거
-      }
-
-      validateDates();
-    });
-
-    // 체크아웃 날짜가 변경될 때마다 validateDates 호출
-    document.getElementById('checkoutDate').addEventListener('change', validateDates);
-
-
-    const alertMessage = [[${alertMessage}]] ;
-    if (alertMessage) {
-      alert(alertMessage);
-    }
-
-
+  <script th:inline="javascript">
     function generateOrderNumber() {
       const timestamp = Date.now(); // 현재 시간의 타임스탬프
       const randomPart = Math.floor(Math.random() * 10000); // 0~9999 사이의 랜덤 숫자
       return `ORD${timestamp}-${randomPart}`;
     }
-
-    let residName = [[${residName}]];
-    let userName=[[${user.getName()}]];
-    let userEmail=[[${user.getEmail()}]];
-    let userAdress1=[[${user.getAddress1()}]];
-    let userZipcode=[[${user.getZipcode()}]];
-    let roomNo=[[${roomNo}]];
-    let residNo=[[${residNo}]];
-
-
-
 
     function getDiscountedAmount() {
       // HTML 요소에서 체크인, 체크아웃 날짜 값을 가져오기
@@ -154,7 +86,6 @@
         alert("체크인 날짜와 체크아웃 날짜를 모두 입력해주세요.");
         return false; // 함수 종료
       }
-
 
       if (checkinDateInput && checkoutDateInput) {
         const checkinDate = new Date(checkinDateInput);
@@ -190,25 +121,28 @@
       }
     }
 
-
-
-
-
     var IMP = window.IMP;
     IMP.init("imp48533410");
 
-    function requestPay() {
+    let residName = [[${residName}]];
+    let userName=[[${user.getName()}]];
+    let userEmail=[[${user.getEmail()}]];
+    let userAdress1=[[${user.getAddress1()}]];
+    let userZipcode=[[${user.getZipcode()}]];
+    let roomNo=[[${roomNo}]];
+    let residNo=[[${residNo}]];
 
+    function requestPay() {
       let price = getDiscountedAmount();
 
-      if(price==null) return false;
+      if (price == null) return false;
       console.log(generateOrderNumber());
       IMP.request_pay({
         pg: "html5_inicis.INIpayTest",
         pay_method: "card",
-        merchant_uid: generateOrderNumber(),   // 주문번호
+        merchant_uid: generateOrderNumber(), // 주문번호
         name: residName,
-        amount: price,                         // 숫자 타입
+        amount: price, // 숫자 타입
         buyer_email: userEmail,
         buyer_name: userName,
         buyer_addr: userAdress1,
@@ -226,8 +160,8 @@
               buyer_name: rsp.buyer_name,
               buyer_email: rsp.buyer_email
             })
-          }).done(function(data) {
-            if(rsp.paid_amount === data.response.amount){
+          }).done(function (data) {
+            if (rsp.paid_amount === data.response.amount) {
               alert("이니시스 결제 성공");
               console.log(data);
             } else {
@@ -241,17 +175,15 @@
     }
 
     function kakaoPay() {
-
-
       let price = getDiscountedAmount();
       console.log(generateOrderNumber());
 
       IMP.request_pay({
         pg: "kakaopay.TC0ONETIME",
         pay_method: "card",
-        merchant_uid: generateOrderNumber(),   // 주문번호
+        merchant_uid: generateOrderNumber(), // 주문번호
         name: residName,
-        amount: price ,                         // 숫자 타입
+        amount: price, // 숫자 타입
         buyer_email: userEmail,
         buyer_name: userName,
         buyer_addr: userAdress1,
@@ -268,13 +200,13 @@
               paid_amount: rsp.paid_amount,
               buyer_name: rsp.buyer_name,
               buyer_email: rsp.buyer_email,
-              roomNo: roomNo,              // 추가적인 데이터
-              residNo: residNo,            // 추가적인 데이터
-              checkinDate: $('#checkinDate').val(),  // 체크인 날짜 추가
+              roomNo: roomNo, // 추가적인 데이터
+              residNo: residNo, // 추가적인 데이터
+              checkinDate: $('#checkinDate').val(), // 체크인 날짜 추가
               checkoutDate: $('#checkoutDate').val(), // 체크아웃 날짜 추가
               userNo: $('#userNo').val()
             })
-          }).done(function(response) {
+          }).done(function (response) {
             window.location.href = response;
           });
         } else {
@@ -283,9 +215,6 @@
       });
     }
 
-
-
-    // 서버에서 전달된 roomPrice 값 (JSP에서 JSON으로 안전하게 전달)
     function calculatePriceWithDiscount() {
       const checkinDate = document.getElementById('checkinDate').value;
       const checkoutDate = document.getElementById('checkoutDate').value;
@@ -326,9 +255,10 @@
       }
     }
 
+    // 페이지 로드 시 가격 계산
+    window.onload = calculatePriceWithDiscount;
   </script>
 
 </th:block>
-<!--브랜치 생성-->
 </body>
 </html>

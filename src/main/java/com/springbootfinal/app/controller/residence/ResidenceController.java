@@ -14,6 +14,7 @@ import com.springbootfinal.app.service.weather.AllWeatherService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.time.LocalDate;
 import java.util.*;
 
 //@RequestMapping("/residence")
@@ -75,6 +77,9 @@ public class ResidenceController {
     // 숙소 상세정보
     @GetMapping("/detail/{residNo}")
     public String viewResidence(@PathVariable Long residNo,
+                                @RequestParam(value="searchKeyword",required = false) String searchKeyword,
+                                @RequestParam(name = "checkinDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate checkinDate,
+                                @RequestParam(name = "checkoutDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate checkoutDate,
                                 Model model) {
         // 숙소 정보를 가져옴
         var residence = residenceService.getResidenceById(residNo);
@@ -83,6 +88,9 @@ public class ResidenceController {
         // 모델에 데이터를 추가
         model.addAttribute("residence", residence);
         model.addAttribute("rooms",rooms);
+        model.addAttribute("checkinDate", checkinDate);
+        model.addAttribute("checkoutDate", checkoutDate);
+        model.addAttribute("searchKeyword", searchKeyword);
         // 상세 보기 페이지 반환
         return "views/residence/ResidenceDetail"; // 뷰 파일로 이동
     }

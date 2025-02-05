@@ -8,11 +8,13 @@ import com.springbootfinal.app.service.room.ReservationService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Map;
 
@@ -30,6 +32,9 @@ public class ReservationController {
     // 예약 폼 페이지
     @GetMapping("/reservation")
     public String reservationForm(
+            @RequestParam(value = "searchKeyword",required = false) String searchKeyword,
+            @RequestParam(name = "checkinDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate checkinDate,
+            @RequestParam(name = "checkoutDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate checkoutDate,
             @RequestParam(value = "residNo", required = false) Long residNo,
             @RequestParam(value = "roomNo", required = false) Long roomNo,
             Model model, HttpSession httpSession) {
@@ -39,6 +44,8 @@ public class ReservationController {
 
        Long userNo = (Long) httpSession.getAttribute("userNo");
 
+
+
         ReservationUserDTO user = reservationService.getReservationUser(userNo);
         model.addAttribute("roomNo", roomNo);
         model.addAttribute("residNo", residNo);
@@ -46,10 +53,13 @@ public class ReservationController {
         model.addAttribute("roomName", residenceAndRoomMap.get("roomName"));
         model.addAttribute("roomPrice", roomPrice);
          model.addAttribute("user", user);
+        model.addAttribute("checkinDate", checkinDate);
+        model.addAttribute("checkoutDate", checkoutDate);
+        model.addAttribute("searchKeyword", searchKeyword);
 
         return "reservation"; // 뷰 이름
     }
-    
+
 	/*
 	 * @ModelAttribute("roomPrice") public int getRoomPrice(@RequestParam int
 	 * roomNo) { return reservationMapper.getRoomPrice(roomNo); // roomNo에 해당하는 가격
