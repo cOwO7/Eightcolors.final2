@@ -14,14 +14,19 @@ public class AnswerService {
     @Autowired
     private AnswersMapper answerMapper;
 
-    public void addAnswer(Long id, String content) {
-        answerMapper.insertAnswer(id, content);
+    public void addAnswer1(Long id, String content) {
+        answerMapper.insertAnswer1(id, content);
+    }
+
+    public void addAnswer(AnswerDto answer) {
+        answerMapper.insertAnswer(answer);
     }
 
     // 답변 조회
     public List<AnswerDto> getAnswersByInquiryId(Long inquiryId) {
         return answerMapper.allAnswerByInquiryId(inquiryId);
     }
+
     public List<AnswerDto> getAnswersByInquiryIds(Long inquiryId) {
         return answerMapper.allAnswerByInquiryIds(inquiryId);
     }
@@ -34,4 +39,3 @@ public class AnswerService {
         answerMapper.updateStatus(inquiryNo, status);
     }
 }
-

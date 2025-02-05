@@ -276,7 +276,7 @@ public class AdminController {
                                @RequestParam("content") String content,
                                 Model model) {
 
-        answerService.addAnswer(inquiryNo, content);
+        answerService.addAnswer1(inquiryNo, content);
         List<AnswerDto> answers = answerService.getAnswersByInquiryIds(inquiryNo);
         InquiryDto inquiry = inquiryService.getInquiryById(inquiryNo);
 

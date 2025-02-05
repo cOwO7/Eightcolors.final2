@@ -10,8 +10,11 @@ import java.util.List;
 @Mapper
 public interface AnswersMapper {
 
-    // 답변 추가
-    int insertAnswer(@Param("inquiryNo") Long inquiryNo, @Param("content") String content);
+    // 답변 추가 관리자페이지
+    int insertAnswer1(@Param("inquiryNo") Long inquiryNo, @Param("content") String content);
+
+    // 일반 페이지
+    void insertAnswer(AnswerDto answer);
 
     // 답변 조회
     List<AnswerDto> allAnswerByInquiryId(Long inquiryId);

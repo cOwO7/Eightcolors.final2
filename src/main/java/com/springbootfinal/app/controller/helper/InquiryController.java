@@ -36,6 +36,7 @@ public class InquiryController {
         model.addAttribute("inquiries", inquiries);
         return "views/helper/helper";
     }
+
     // 문의 상세 페이지
     @GetMapping("/inquiries/{inquiryNo}")
     public String viewInquiry(@PathVariable Long inquiryNo,
@@ -47,6 +48,7 @@ public class InquiryController {
         model.addAttribute("answers", answers);
         return "views/helper/InquiriesDetail";
     }
+
 
     /**
      * 문의 작성 폼
@@ -132,6 +134,7 @@ public class InquiryController {
         answer.setAdminName(adminName);  // 세션에서 가져온 관리자 이름 설정
 
         // 답변 추가 서비스 호출
+        //answerService.addAnswer(answer);
         answerService.addAnswer(answer);
         inquiryService.updateInquiryStatus(inquiryNo, "답변 완료");
 
