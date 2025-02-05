@@ -24,7 +24,7 @@ public class AccommodationSearchController {
 
     @GetMapping("/accomSearch")
     public String accomSearch(Model model, @RequestParam(value="pageNum", required=false, defaultValue="1") int pageNum,
-    		@RequestParam(name = "accommodationType", required = false) List<String> accommodationTypes, // 체크된 타입 리스트 받기
+    		@RequestParam(name = "accommodationTypes", required = false) List<String> accommodationTypes, // 체크된 타입 리스트 받기
             @RequestParam(name = "maxPrice", required = false) Integer maxPrice
     		) {
         // "modelMap"이 없으면 기본적으로 모든 숙소를 가져옴
@@ -33,6 +33,12 @@ public class AccommodationSearchController {
         if (modelMap == null) {
             modelMap = accommodationSearchService.getAllResidences(pageNum,accommodationTypes,maxPrice);
         }
+
+        model.addAttribute("maxPrice", maxPrice); // maxPrice를 모델에 추가
+
+        if (accommodationTypes != null) {
+            System.out.println("accommodationTypes: " + String.join(",", accommodationTypes));
+            model.addAttribute("accommodationTypes", String.join(",", accommodationTypes)); }
 
         model.addAllAttributes(modelMap); // 모델에 데이터 추가
         return "accommodationSearch"; // 숙소 검색 페이지로 반환
