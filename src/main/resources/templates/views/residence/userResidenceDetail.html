@@ -165,29 +165,25 @@
                     <!-- 예약된 방 번호에 포함되지 않으면 예약 버튼 표시 -->
                     <th:block th:unless="${#lists.contains(selectReservedRoomNos, room.roomNo)}">
                         <th:block th:if="${searchKeyword != null}">
-                            <button class="btn btn-danger"
+                            <button class="btn btn-danger" id="reservationButton"
+                                    th:data-userno="${userNo}"
                                     th:data-searchkeyword="${searchKeyword}"
                                     th:data-checkindate="${checkinDate}"
                                     th:data-checkoutdate="${checkoutDate}"
                                     th:data-residno="${residence.residNo}"
                                     th:data-roomno="${room.roomNo}"
-                                    onclick="window.location.href='/reservation?searchKeyword=' + this.dataset.searchkeyword + '&checkinDate='
-                + this.dataset.checkindate+'&checkoutDate='
-                + this.dataset.checkoutdate + '&residNo='
-                + this.dataset.residno+'&roomNo=' + this.dataset.roomno;">
+                                    onclick="checkUserNoAndRedirect(event)">
                                 예약하기
                             </button>
                         </th:block>
                         <th:block th:if="${searchKeyword == null}">
                             <button class="btn btn-danger"
+                                    th:data-userno="${userNo}"
                                     th:data-checkindate="${checkinDate}"
                                     th:data-checkoutdate="${checkoutDate}"
                                     th:data-residno="${residence.residNo}"
                                     th:data-roomno="${room.roomNo}"
-                                    onclick="window.location.href='/reservation?' + 'checkinDate='
-                + this.dataset.checkindate+'&checkoutDate='
-                + this.dataset.checkoutdate + '&residNo='
-                + this.dataset.residno+'&roomNo=' + this.dataset.roomno;">
+                                    onclick="checkUserNoAndnokeyword(event)">
                                 예약하기
                             </button>
                         </th:block>
@@ -261,6 +257,42 @@
     <script th:src="@{/js/map/geolocation.js}"></script>
     <script th:src="@{/js/map/kakaomapN.js}"></script>
     <script th:src="@{/js/weather/allWN2.js}"></script>
+    <script>
+        function checkUserNoAndRedirect(event) {
+            var userNo = event.target.getAttribute('data-userno');
+            console.log(userNo);
+
+            if (!userNo) {
+                alert("로그인한 사용자만 예약이 가능합니다.");
+                window.location.href = '/login';
+                event.preventDefault();
+            } else {
+                var searchkeyword = event.target.dataset.checkindate;
+                var checkinDate = event.target.dataset.checkindate;
+                var checkoutDate = event.target.dataset.checkoutdate;
+                var residNo = event.target.dataset.residno;
+                var roomNo = event.target.dataset.roomno;
+                window.location.href = `/reservation?searchKeyword=${searchkeyword}&checkinDate=${checkinDate}&checkoutDate=${checkoutDate}&residNo=${residNo}&roomNo=${roomNo}`;
+            }
+        }
+        function checkUserNoAndnokeyword(event) {
+            var userNo = event.target.getAttribute('data-userno');
+            console.log(userNo);
+
+            if (!userNo) {
+                alert("로그인한 사용자만 예약이 가능합니다.");
+                window.location.href = '/login';
+                event.preventDefault();
+            } else {
+                var checkinDate = event.target.dataset.checkindate;
+                var checkoutDate = event.target.dataset.checkoutdate;
+                var residNo = event.target.dataset.residno;
+                var roomNo = event.target.dataset.roomno;
+                window.location.href = `/reservation?checkinDate=${checkinDate}&checkoutDate=${checkoutDate}&residNo=${residNo}&roomNo=${roomNo}`;
+            }
+        }
+
+    </script>
 </th:block>
 </body>
 </html>
