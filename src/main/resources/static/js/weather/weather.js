@@ -319,7 +319,7 @@ $(function() {
 									row.append(`<td><img src="${weatherImg}" alt="weather icon" style="width: 50px; height: 50px; text-align: center;"/><br>${skyLabel}</td>`);
 									row.append(`<td>${weather.temp}℃</td>`);
 									row.append(`<td>${weather.pty}%</td>`);
-									row.append(`<td>${weather.pcp}<br><br>${weather.sno}</td>`);
+									row.append(`<td>🌧️${weather.pcp}<br><br>❄️${weather.sno}</td>`);
 									row.append(`<td>${weather.humidity}</td>`);
 									let windImgData = getWindDirectionImage(weather.vec);
 									row.append(

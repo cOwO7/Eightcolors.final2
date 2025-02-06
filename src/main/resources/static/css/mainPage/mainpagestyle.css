@@ -36,24 +36,10 @@
     object-fit: cover;
 }
 
-/* Sunflower 폰트 설정 */
-.sunflower-light {
-    font-family: "Sunflower", serif;
-    font-weight: 300;
-    font-style: normal;
-}
-
-/* 전체 페이지에 폰트 적용 */
-body, h1, h2, h3, h4, h5, h6, p, a, li, div {
-    font-family: "Sunflower", serif;
-    font-size: 18px; /* 기본 글자 크기 설정 */
-}
-
 /* 날씨 파트 스타일 */
 .weather-container {
     width: 100%;
     padding: 20px;
-    background-color: #f8f9fa;
     border-radius: 8px;
 }
 
@@ -62,4 +48,21 @@ body, h1, h2, h3, h4, h5, h6, p, a, li, div {
 .travel-card-container {
     width: 100%;
     max-width: 100%; /* 부모 컨테이너의 최대 너비를 넘지 않도록 설정 */
+}
+
+.header, #header {
+    border-bottom: solid 1px #1396E5FF;
+    color: #1396E5FF;
+}
+/* 전체 페이지에 폰트 적용 */
+@font-face {
+    font-family: 'NanumBarunGothic-YetHangul';
+    src: url('/css/font/NanumBarunGothic-YetHangul.ttf') format('truetype'),
+    url('/css/font/NanumBarunGothic-YetHangul.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: "NanumBarunGothic-YetHangul";
 }

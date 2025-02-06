@@ -3,6 +3,17 @@
 	justify-content: center;
 
 }
+.card {
+	background: white;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	border-radius: 10px;
+	border-bottom: 50px;
+	padding: 20px;
+	margin: 20px;
+	text-align: center;
+	transition: transform 0.3s ease-in-out;
+}
+
 #row1 {
 	height: 200px;
 	width: 100%;
