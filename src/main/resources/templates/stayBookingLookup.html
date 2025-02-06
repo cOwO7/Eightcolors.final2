@@ -83,8 +83,11 @@
         <div>
             <!-- 예약 내역 및 전체 예약 목록을 같은 줄에 놓기 위한 row 클래스 추가 -->
             <div class="row mb-3">
-                <div class="col-6">
+                <div class="col-9">
                     <h3 class="mb-3">예약 내역</h3>
+                </div>
+                <div class="col-3">
+                    <button onclick="history.back()" class="btn btn-secondary btn-sm shadow-sm">내 숙소로 돌아가기</button>
                 </div>
                 <th:block th:if="${searchOption}">
                     <div class="col-6 text-end">
