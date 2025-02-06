@@ -10,10 +10,12 @@ import com.springbootfinal.app.mapper.residence.ResidenceRoomMapper;
 import com.springbootfinal.app.service.residence.PropertyPhotosService;
 import com.springbootfinal.app.service.residence.ResidenceRoomService;
 import com.springbootfinal.app.service.residence.ResidenceService;
+import com.springbootfinal.app.service.room.ReservationService;
 import com.springbootfinal.app.service.weather.AllWeatherService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.time.LocalDate;
 import java.util.*;
 
 //@RequestMapping("/residence")
@@ -37,6 +40,9 @@ public class ResidenceController {
     private final PropertyPhotoMapper propertyPhotosMapper;
     private final ResidenceRoomMapper residenceRoomMapper;
     private final ResidenceRoomService residenceRoomService;
+    private final ReservationService reservationService;
+
+
 
     @Autowired
     public ResidenceController(
@@ -45,13 +51,15 @@ public class ResidenceController {
             PropertyPhotosService propertyPhotosService,
             PropertyPhotoMapper propertyPhotosMapper,
             ResidenceRoomMapper residenceRoomMapper,
-            ResidenceRoomService residenceRoomService) {
+            ResidenceRoomService residenceRoomService,
+            ReservationService reservationService) {
         this.allWeatherService = allWeatherService;
         this.residenceService = residenceService;
         this.propertyPhotosService = propertyPhotosService;
         this.propertyPhotosMapper = propertyPhotosMapper;
         this.residenceRoomMapper = residenceRoomMapper;
         this.residenceRoomService = residenceRoomService;
+        this.reservationService=reservationService;
     }
 
     // 숙소 목록 조회
@@ -68,6 +76,11 @@ public class ResidenceController {
         System.out.println("Received hostUserNo: " + hostUserNo);
         List<ResidenceDto> residences = residenceService.findPostsByHostUserNo(hostUserNo);
         model.addAttribute("residences", residences);
+        if (!residences.isEmpty()) {
+            model.addAttribute("residNo",  residences.get(0).getResidNo());
+            // 추가 로직
+        }
+
         return "views/residence/Residence1";
     }
 
@@ -75,14 +88,24 @@ public class ResidenceController {
     // 숙소 상세정보
     @GetMapping("/detail/{residNo}")
     public String viewResidence(@PathVariable Long residNo,
+                                @RequestParam(value="searchKeyword",required = false) String searchKeyword,
+                                @RequestParam(name = "checkinDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate checkinDate,
+                                @RequestParam(name = "checkoutDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate checkoutDate,
                                 Model model) {
         // 숙소 정보를 가져옴
         var residence = residenceService.getResidenceById(residNo);
         List<ResidenceRoom> rooms = residenceService.getRoomsByResidenceId(residNo);
+        
+        //예약된 방 리스트 번호 조회
+        List<Long> selectReservedRoomNos = reservationService.selectReservedRoomNos(checkinDate, checkoutDate);
 
         // 모델에 데이터를 추가
         model.addAttribute("residence", residence);
         model.addAttribute("rooms",rooms);
+        model.addAttribute("checkinDate", checkinDate);
+        model.addAttribute("checkoutDate", checkoutDate);
+        model.addAttribute("searchKeyword", searchKeyword);
+        model.addAttribute("selectReservedRoomNos",selectReservedRoomNos);
         // 상세 보기 페이지 반환
         return "views/residence/ResidenceDetail"; // 뷰 파일로 이동
     }
