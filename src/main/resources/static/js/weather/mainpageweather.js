@@ -253,13 +253,21 @@ function getWeatherData() {
                             row.append(`<td><img src="${weatherImg}" alt="weather icon" style="width: 50px; height: 50px; text-align: center;"/><br>${skyLabel}</td>`);
                             row.append(`<td><br>🌡️${weather.temp}℃</td>`);
                             row.append(`<td><br>🌧️${weather.pty}%</td>`);
-                            if (weather.pcp === "강수없음" || weather.sno === "적설없음") {
-                                // 강수량 대신 습도를 표시
+                            if (weather.pcp === "강수없음" && weather.sno !== "적설없음") {
+                                // 강수 없음 & 적설량이 있는 경우 => 적설량 표시
+                                row.append(`<td><br>❄️${weather.sno}</td>`);
+                            } else if (weather.pcp !== "강수없음" && weather.sno === "적설없음") {
+                                // 강수량이 있는 경우 => 강수량 표시
+                                row.append(`<td><br>🌧️${weather.pcp}</td>`);
+                            } else if (weather.pcp !== "강수없음" && weather.sno !== "적설없음") {
+                                // 눈비(강수량과 적설량이 동시에 있는 경우) => 눈과 비 모두 표시
+                                row.append(`<td><span style="display: block; margin: 8px 0;">🌧️${weather.pcp}</span>
+                                    <span style="display: block; margin: 6px 0;">❄️${weather.sno}</span></td>`);
+                            } else if (weather.pcp === "강수없음" && weather.sno === "적설없음") {
+                                // 강수 없음 & 적설 없음 => 습도 표시
                                 row.append(`<td><br>💧${weather.humidity}</td>`);
-                            } else {
-                                // 기존 강수량과 적설량 표시
-                                row.append(`<td><br>🌧️${weather.pcp}<br>🌨️${weather.sno}</td>`);
                             }
+
                             resultTable.append(row);
                             count++;
                         }

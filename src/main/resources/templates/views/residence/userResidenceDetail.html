@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/main_layout}">
+<head>
+    <link href="/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=36a75517ce82693ff837cc79c740e197&libraries=services,clusterer"></script>
+    <meta charset="UTF-8">
+    <title>숙소 상세보기</title>
+</head>
+<body>
+<th:block layout:fragment="content">
+    <style>
+        .card {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+
+        .card:hover {
+            border: 1px solid #fad0d0;
+            background-color: #f1cece;
+        }
+
+        .card h3 {
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .card p {
+            margin-bottom: 10px;
+        }
+
+        .card p strong {
+            font-weight: 600;
+        }
+    </style>
+    <div class="container">
+        <h1 th:text="${residence.residName}">숙소 제목</h1>
+        <!-- 숙소 사진들 -->
+        <h3>숙소 사진</h3>
+        <div class="row" style="display: flex; align-items: center;">
+            <!-- 좌측: 카로셀 -->
+            <div class="col-md-6">
+                <div id="photoCarousel" class="carousel slide" style="width: 600px; height: 400px;"
+                     data-bs-ride="carousel">
+                    <!-- 카로셀 내용 -->
+                    <div class="carousel-inner" style="width: 630px; height: 400px;">
+                        <th:block th:each="photo, iterStat : ${residence.propertyPhotos}">
+                            <th:block th:if="${photo.photoUrl01 != null}">
+                                <div class="carousel-item" th:classappend="${iterStat.index == 0 ? ' active' : ''}">
+                                    <img th:src="@{|/images/files/${photo.photoUrl01}|}" alt="숙소 사진" class="d-block w-100"/>
+                                </div>
+                            </th:block>
+                            <th:block th:if="${photo.photoUrl02 != null}">
+                                <div class="carousel-item" th:classappend="${iterStat.index == 1 ? ' active' : ''}">
+                                    <img th:src="@{|/images/files/${photo.photoUrl02}|}" alt="숙소 사진" class="d-block w-100"/>
+                                </div>
+                            </th:block>
+                            <th:block th:if="${photo.photoUrl03 != null}">
+                                <div class="carousel-item" th:classappend="${iterStat.index == 2 ? ' active' : ''}">
+                                    <img th:src="@{|/images/files/${photo.photoUrl03}|}" alt="숙소 사진" class="d-block w-100"/>
+                                </div>
+                            </th:block>
+                            <th:block th:if="${photo.photoUrl04 != null}">
+                                <div class="carousel-item" th:classappend="${iterStat.index == 3 ? ' active' : ''}">
+                                    <img th:src="@{|/images/files/${photo.photoUrl04}|}" alt="숙소 사진" class="d-block w-100"/>
+                                </div>
+                            </th:block>
+                            <th:block th:if="${photo.photoUrl05 != null}">
+                                <div class="carousel-item" th:classappend="${iterStat.index == 4 ? ' active' : ''}">
+                                    <img th:src="@{|/images/files/${photo.photoUrl05}|}" alt="숙소 사진" class="d-block w-100"/>
+                                </div>
+                            </th:block>
+                            <th:block th:if="${photo.photoUrl06 != null}">
+                                <div class="carousel-item" th:classappend="${iterStat.index == 5 ? ' active' : ''}">
+                                    <img th:src="@{|/images/files/${photo.photoUrl06}|}" alt="숙소 사진" class="d-block w-100"/>
+                                </div>
+                            </th:block>
+                            <th:block th:if="${photo.photoUrl07 != null}">
+                                <div class="carousel-item" th:classappend="${iterStat.index == 6 ? ' active' : ''}">
+                                    <img th:src="@{|/images/files/${photo.photoUrl07}|}" alt="숙소 사진" class="d-block w-100"/>
+                                </div>
+                            </th:block>
+                            <th:block th:if="${photo.photoUrl08 != null}">
+                                <div class="carousel-item" th:classappend="${iterStat.index == 7 ? ' active' : ''}">
+                                    <img th:src="@{|/images/files/${photo.photoUrl08}|}" alt="숙소 사진" class="d-block w-100"/>
+                                </div>
+                            </th:block>
+                            <th:block th:if="${photo.photoUrl09 != null}">
+                                <div class="carousel-item" th:classappend="${iterStat.index == 8 ? ' active' : ''}">
+                                    <img th:src="@{|/images/files/${photo.photoUrl09}|}" alt="숙소 사진" class="d-block w-100"/>
+                                </div>
+                            </th:block>
+                            <th:block th:if="${photo.photoUrl10 != null}">
+                                <div class="carousel-item" th:classappend="${iterStat.index == 9 ? ' active' : ''}">
+                                    <img th:src="@{|/images/files/${photo.photoUrl10}|}" alt="숙소 사진" class="d-block w-100"/>
+                                </div>
+                            </th:block>
+                        </th:block>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#photoCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#photoCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- 우측: 지도 -->
+            <div class="col-md-6">
+                <div id="map" style="width: 100%; height: 400px;"></div>
+            </div>
+        </div>
+        <form th:action="@{/residence/processAllWeather}" method="post">
+            <!-- 숙소 정보 (hidden 필드로 추가) -->
+            <input type="hidden" id="nx" th:value="${residence.nx}"/>
+            <input type="hidden" id="ny" th:value="${residence.ny}"/>
+            <input type="hidden" id="regId" th:value="${residence.regId}"/>
+            <input type="hidden" id="regIdTemp" th:value="${residence.regIdTemp}"/>
+            <input type="hidden" id="baseDate" name="baseDate" th:value="${baseDate}"/>
+            <input type="hidden" id="baseTime" name="baseTime" th:value="${baseTime}"/>
+            <input type="hidden" id="latitudeNum" name="latitudeNum" th:value="${residence.latitudeNum}"/>
+            <input type="hidden" id="longitudeNum" name="longitudeNum" th:value="${residence.longitudeNum}"/>
+            <input type="hidden" id="tmFc" name="tmFc" th:value="${tmFc}"/>
+        </form>
+
+        <div class="row">
+            <!-- 추가는 여기에서 Start-->
+            <div class="col-md-9 card-container" style="display: flex; flex-wrap: wrap; gap: 1px;">
+                <div class="card" th:each="room : ${rooms}" style="width: 280px; height: 280px;">
+
+                    <p><strong><span th:text="${room.roomName}"></span></strong></p>
+                    <p><span th:text="${#numbers.formatInteger(room.pricePerNight, 3, 'COMMA')}"></span>원</p>
+                    <img th:src="@{|/images/files/${room.roomUrl01}|}" alt="방 사진" class="d-block w-100"/>
+<!--                    <button class="btn btn-danger"-->
+<!--                            th:onclick="|window.location.href='/reservation?searchKeyword=${searchKeyword}&checkinDate=${checkinDate}
+                                    &checkoutDate=${checkoutDate}}&residNo=${residence.residNo}&roomNo=${room.roomNo}'|">                         -->
+<!--                        예약하기-->
+<!--                    </button>-->
+
+<!--                    <button class="btn btn-danger"-->
+<!--                            th:data-searchkeyword="${searchKeyword}"-->
+<!--                            th:data-checkindate="${checkinDate}"-->
+<!--                            th:data-checkoutdate="${checkoutDate}"-->
+<!--                            th:data-residno="${residence.residNo}"-->
+<!--                            th:data-roomno="${room.roomNo}"-->
+<!--                            onclick="window.location.href='/reservation?searchKeyword=' + this.dataset.searchkeyword + '&checkinDate='-->
+<!--                            + this.dataset.checkindate+'&checkoutDate='-->
+<!--                            + this.dataset.checkoutdate + '&residNo='-->
+<!--                            + this.dataset.residno+'&roomNo=' + this.dataset.roomno;">-->
+                    <!--예약하기-->
+                    <!--</button>-->
+
+                    <th:block th:if="${#lists.contains(selectReservedRoomNos, room.roomNo)}">
+                        <p class="text-danger">품절</p>
+                    </th:block>
+
+                    <!-- 예약된 방 번호에 포함되지 않으면 예약 버튼 표시 -->
+                    <th:block th:unless="${#lists.contains(selectReservedRoomNos, room.roomNo)}">
+                        <th:block th:if="${searchKeyword != null}">
+                            <button class="btn btn-danger"
+                                    th:data-searchkeyword="${searchKeyword}"
+                                    th:data-checkindate="${checkinDate}"
+                                    th:data-checkoutdate="${checkoutDate}"
+                                    th:data-residno="${residence.residNo}"
+                                    th:data-roomno="${room.roomNo}"
+                                    onclick="window.location.href='/reservation?searchKeyword=' + this.dataset.searchkeyword + '&checkinDate='
+                + this.dataset.checkindate+'&checkoutDate='
+                + this.dataset.checkoutdate + '&residNo='
+                + this.dataset.residno+'&roomNo=' + this.dataset.roomno;">
+                                예약하기
+                            </button>
+                        </th:block>
+                        <th:block th:if="${searchKeyword == null}">
+                            <button class="btn btn-danger"
+                                    th:data-checkindate="${checkinDate}"
+                                    th:data-checkoutdate="${checkoutDate}"
+                                    th:data-residno="${residence.residNo}"
+                                    th:data-roomno="${room.roomNo}"
+                                    onclick="window.location.href='/reservation?' + 'checkinDate='
+                + this.dataset.checkindate+'&checkoutDate='
+                + this.dataset.checkoutdate + '&residNo='
+                + this.dataset.residno+'&roomNo=' + this.dataset.roomno;">
+                                예약하기
+                            </button>
+                        </th:block>
+
+                    </th:block>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <!-- 광고 이미지 슬라이드 -->
+                <div id="advertisementCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner" style="width: 280px; height: 280px;">
+                        <p><strong>광고 문의 - 고객센터</strong></p>
+                        <div class="carousel-item active">
+                            <a href="#"><img src="/images/광고/광고1.jpeg" class="d-block w-100" alt="광고 1"></a>
+                        </div>
+                        <div class="carousel-item">
+                            <a href="#"><img src="/images/광고/광고2.png" class="d-block w-100" alt="광고 2"></a>
+                        </div>
+                        <div class="carousel-item">
+                            <a href="#"><img src="/images/광고/광고3.jpg" class="d-block w-100" alt="광고 3"></a>
+                        </div>
+                    </div>
+                    <!-- 이전 버튼 -->
+                    <button class="carousel-control-prev" type="button" data-bs-target="#advertisementCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <!-- 다음 버튼 -->
+                    <button class="carousel-control-next" type="button" data-bs-target="#advertisementCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- 여기까지 추가 END -->
+        <div class="row">
+            <div class="col-md-12">
+                <!-- 날씨 데이터 표시 -->
+                <table>
+                    <tbody id="combinedWeatherTableBody"></tbody>
+                    <div id="weatherContainer" class="weather-container">
+                        <div id="row1" class="row1"></div>
+                    </div>
+                    <div class="weather-scroll-container">
+                        <button class="scroll-btn left" onclick="scrollToLeft()">&#10094;</button>
+                        <div id="row2" class="weather-row"></div>
+                        <button class="scroll-btn right" onclick="scrollToRight()">&#10095;</button>
+                    </div>
+                </table>
+            </div>
+        </div>
+        <!-- 본문 -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card shadow-sm p-4 bg-light">
+                    <p class="text-muted" th:text="${residence.residDescription}" style="line-height: 1.6; font-size: 1.1rem;">
+                        숙소 설명</p>
+                </div>
+            </div>
+        </div>
+        <!-- 목록으로 돌아가기 -->
+        <div>
+            <button type="button" class="btn btn-secondary mt-3 text-decoration-none text-center" onclick="history.back();">목록으로 돌아가기</button>
+
+        </div>
+    </div> <!-- container END -->
+    <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+    <link th:href="@{/css/weather/allW.css}" rel="stylesheet"/>
+    <link th:href="@{/css/residence/residenceFome.css}" rel="stylesheet"/>
+    <script th:src="@{/js/map/geolocation.js}"></script>
+    <script th:src="@{/js/map/kakaomapN.js}"></script>
+    <script th:src="@{/js/weather/allWN2.js}"></script>
+</th:block>
+</body>
+</html>
