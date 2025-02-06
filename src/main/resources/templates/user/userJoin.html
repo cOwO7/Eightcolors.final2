@@ -2,6 +2,26 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/main_layout}">
+<head>
+  <meta charset = "UTF-8">
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const selectDomain = document.getElementById("selectDomain");
+      const emailDomain = document.getElementById("emailDomain");
+
+      selectDomain.addEventListener("change", function () {
+        if (this.value === "직접입력") {
+          emailDomain.value = "";
+          emailDomain.readOnly = false; // 직접 입력 가능
+        } else {
+          emailDomain.value = this.value;
+          emailDomain.readOnly = true; // 선택된 도메인은 수정 불가
+        }
+      });
+    });
+  </script>
+
+</head>
 
 <th:block layout:fragment="content">
   <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
