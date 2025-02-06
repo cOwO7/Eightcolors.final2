@@ -17,10 +17,6 @@
 					<li class="nav-item" th:if="${session['role'] == 'admin'}">
 						<a class="nav-link" href="/admin/admin">관리자 페이지로 가기</a>
 					</li>
-					<!-- 로그인한 사용자가 호스트일 때만 "호스트 페이지로 가기" 링크를 표시 -->
-					<div th:if="${session['role'] == 'host'}">
-						<a href="/host">호스트 페이지로 가기</a>
-					</div>
 					<li class="nav-item">
 						<th:block th:if="${session.isLogin}">
 							<div th:if="${session['role'] == 'user'}">

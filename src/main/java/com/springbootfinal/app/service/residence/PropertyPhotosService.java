@@ -40,29 +40,48 @@ public class PropertyPhotosService {
 
     // 저장
     public String savePhoto(MultipartFile photo, String fileName, Long residNo) throws IOException {
-        /*if (photo.isEmpty()) {
-            throw new IllegalArgumentException("사진이 비어 있습니다.");
-        }*/
+        // 파일이 없으면 기존 파일을 반환
+        if (photo == null || photo.isEmpty()) {
+            log.info("파일이 없으므로 기존 파일을 사용합니다.");
+            return fileName;  // 기존 파일명 그대로 반환
+        }
+
+        // 파일 유효성 검사
         validatePhoto(photo);
+
         String originalFileName = photo.getOriginalFilename();
+
+        // 확장자 추출 (확장자가 없는 경우 처리)
+        if (originalFileName == null || originalFileName.lastIndexOf(".") == -1) {
+            throw new IllegalArgumentException("파일에 확장자가 없습니다.");
+        }
         String fileExtension = originalFileName.substring(originalFileName.lastIndexOf(".")).toLowerCase();
 
+        // 확장자가 유효한지 검사
         if (!isValidExtension(fileExtension)) {
             throw new IllegalArgumentException("허용되지 않은 파일 확장자입니다.");
         }
 
+        // 파일 이름 끝에 확장자가 포함되어 있으면 제거
         if (fileName.toLowerCase().endsWith(fileExtension)) {
-            fileName = fileName.substring(0, fileName.lastIndexOf("."));
+            // 확장자를 제거할 때 확장자의 위치가 정확한지 확인
+            int extensionIndex = fileName.lastIndexOf(".");
+            if (extensionIndex > 0) {
+                fileName = fileName.substring(0, extensionIndex);
+            }
         }
 
+        // 최종 파일 이름 생성
         String fullFileName = fileName + fileExtension;
         Path filePath = getFilePath(fullFileName);
 
+        // 파일 디렉터리가 없으면 생성
         File directory = new File(UPLOAD_DIR);
         if (!directory.exists()) {
             directory.mkdirs();
         }
 
+        // 파일을 지정한 경로에 복사
         Files.copy(photo.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
         log.info("저장된 사진: {}", fullFileName);
         return fullFileName;
@@ -80,6 +99,9 @@ public class PropertyPhotosService {
     }
     // 확장자 검사
     public void validatePhoto(MultipartFile photo) {
+        if (photo == null || photo.isEmpty()) {
+            return; // 파일이 없으면 검사를 하지 않음
+        }
         long maxSize = 5 * 1024 * 1024;
         String[] allowedExtensions = {"jpg", "jpeg", "png", "gif"};
         if (photo.getSize() > maxSize) {

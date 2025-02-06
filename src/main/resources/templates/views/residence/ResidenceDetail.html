@@ -140,7 +140,7 @@
                     <p><span th:text="${#numbers.formatInteger(room.pricePerNight, 3, 'COMMA')}"></span>원</p>
                     <img th:src="@{|/images/files/${room.roomUrl01}|}" alt="방 사진" class="d-block w-100"/>
                     <button class="btn btn-danger">
-                                예약하기
+                        예약하기
                     </button>
                 </div>
             </div>
@@ -200,8 +200,8 @@
         </div>
         <!-- 목록으로 돌아가기 -->
         <div>
-            <button type="button" class="btn btn-secondary mt-3 text-decoration-none text-center" onclick="history.back();">목록으로 돌아가기</button>
-
+            <button type="button" class="btn btn-secondary mt-3 text-decoration-none text-center"
+                    onclick="history.back();">목록으로 돌아가기</button>
         </div>
     </div> <!-- container END -->
     <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
