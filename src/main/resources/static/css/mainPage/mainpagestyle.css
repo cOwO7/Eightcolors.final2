@@ -50,6 +50,16 @@
     max-width: 100%; /* 부모 컨테이너의 최대 너비를 넘지 않도록 설정 */
 }
 
+/* 캐러셀 아이템 스타일 */
+.carousel-item {
+    display: none;
+    position: relative;
+    transition: transform 0.6s ease-in-out;
+}
+
+.carousel-item.active {
+    display: block;
+
 .header, #header {
     border-bottom: solid 1px #1396E5FF;
     color: #1396E5FF;
@@ -65,4 +75,3 @@
 
 body {
     font-family: "NanumBarunGothic-YetHangul";
-}
