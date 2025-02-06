@@ -42,7 +42,6 @@ public class TransferController {
     @Autowired
     private ReservationMapper resvMapper;
 
-
     @PostMapping("/delete")
     public String deleteTransfer(RedirectAttributes reAttrs,
                                  HttpServletResponse response, PrintWriter out,
@@ -81,43 +80,42 @@ public class TransferController {
     }
 
     // 양도 생성 폼 요청 처리 메서드
-  // TransferController.java
-@GetMapping("/transferWrite")
-public String createTransferForm(Model model, HttpServletRequest request) {
-    Logger logger = LoggerFactory.getLogger(TransferController.class);
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    @GetMapping("/transferWrite")
+    public String createTransferForm(Model model, HttpServletRequest request) {
+        Logger logger = LoggerFactory.getLogger(TransferController.class);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-    // 세션에서 userNo 가져오기
-    Object userNoObj = request.getSession().getAttribute("userNo");
-    String userNo = userNoObj != null ? userNoObj.toString() : null;
+        // 세션에서 userNo 가져오기
+        Object userNoObj = request.getSession().getAttribute("userNo");
+        String userNo = userNoObj != null ? userNoObj.toString() : null;
 
-    logger.info("사용자 로그인 : 회원번호={}, role={}", userNo, authentication.getAuthorities());
-    logger.info("검증된 회원번호: {}", userNo);
+        logger.info("사용자 로그인 : 회원번호={}, role={}", userNo, authentication.getAuthorities());
+        logger.info("검증된 회원번호: {}", userNo);
 
-    int reservationCount = reservationMapper.countReservationsByUserNo(userNo);
-    logger.info("회원번호의 예약 수 {}: {}", userNo, reservationCount);
+        int reservationCount = reservationMapper.countReservationsByUserNo(userNo);
+        logger.info("회원번호의 예약 수 {}: {}", userNo, reservationCount);
 
-    if (reservationCount > 0) {
-        // 예약 내역 가져오기
-        Long userNoLong = Long.parseLong(userNo);
-        Reservations reservation = transferService.getReservationByUserNo(userNoLong);
-        logger.info("예약 상태: {}", reservation); // 예약 정보 로그 추가
+        if (reservationCount > 0) {
+            // 예약 내역 가져오기
+            Long userNoLong = Long.parseLong(userNo);
+            Reservations reservation = transferService.getReservationByUserNo(userNoLong);
+            logger.info("예약 상태: {}", reservation); // 예약 정보 로그 추가
 
-        // 예약 번호로 이미 작성된 양도 게시글이 있는지 확인
-        if (transferService.isTransferExistsByReservationNo(reservation.getReservationNo())) {
-            String errorMessage = "해당 예약으로 이미 양도 게시글이 작성되었습니다.";
+            // 예약 번호로 이미 작성된 양도 게시글이 있는지 확인
+            if (transferService.isTransferExistsByReservationNo(reservation.getReservationNo())) {
+                String errorMessage = "해당 예약으로 이미 양도 게시글이 작성되었습니다.";
+                model.addAttribute("script", "<script>alert('" + errorMessage + "'); history.back();</script>");
+                return TRANSFER_BASE_PATH + "errorPage"; // errorPage.jsp 또는 템플릿 파일로 연결
+            }
+
+            model.addAttribute("reservation", reservation);
+            return TRANSFER_BASE_PATH + "transferWrite";
+        } else {
+            String errorMessage = "예약 내역이 있는 회원만 글쓰기가 가능합니다.";
             model.addAttribute("script", "<script>alert('" + errorMessage + "'); history.back();</script>");
             return TRANSFER_BASE_PATH + "errorPage"; // errorPage.jsp 또는 템플릿 파일로 연결
         }
-
-        model.addAttribute("reservation", reservation);
-        return TRANSFER_BASE_PATH + "transferWrite";
-    } else {
-        String errorMessage = "예약 내역이 있는 회원만 글쓰기가 가능합니다.";
-        model.addAttribute("script", "<script>alert('" + errorMessage + "'); history.back();</script>");
-        return TRANSFER_BASE_PATH + "errorPage"; // errorPage.jsp 또는 템플릿 파일로 연결
     }
-}
 
     // 게시글 쓰기 요청 처리 메서드
     @PostMapping("/transferAdd")
@@ -178,7 +176,6 @@ public String createTransferForm(Model model, HttpServletRequest request) {
 
         return TRANSFER_BASE_PATH + "transferDetail";
     }
-
 
     // 게시글 목록 요청 처리 메서드
     @GetMapping("/transfers")
