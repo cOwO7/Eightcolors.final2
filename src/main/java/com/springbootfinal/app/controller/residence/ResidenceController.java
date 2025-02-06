@@ -76,7 +76,11 @@ public class ResidenceController {
         System.out.println("Received hostUserNo: " + hostUserNo);
         List<ResidenceDto> residences = residenceService.findPostsByHostUserNo(hostUserNo);
         model.addAttribute("residences", residences);
-        model.addAttribute("residNo",  residences.get(0).getResidNo());
+        if (!residences.isEmpty()) {
+            model.addAttribute("residNo",  residences.get(0).getResidNo());
+            // 추가 로직
+        }
+
         return "views/residence/Residence1";
     }
 
