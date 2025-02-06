@@ -84,10 +84,9 @@ public class ResidenceController {
         return "views/residence/Residence1";
     }
 
-
-    // 숙소 상세정보
-    @GetMapping("/detail/{residNo}")
-    public String viewResidence(@PathVariable Long residNo,
+    // 사용자숙소 상세정보
+    @GetMapping("/detail1/{residNo}")
+    public String viewResidence1(@PathVariable Long residNo,
                                 @RequestParam(value="searchKeyword",required = false) String searchKeyword,
                                 @RequestParam(name = "checkinDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate checkinDate,
                                 @RequestParam(name = "checkoutDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate checkoutDate,
@@ -95,7 +94,7 @@ public class ResidenceController {
         // 숙소 정보를 가져옴
         var residence = residenceService.getResidenceById(residNo);
         List<ResidenceRoom> rooms = residenceService.getRoomsByResidenceId(residNo);
-        
+
         //예약된 방 리스트 번호 조회
         List<Long> selectReservedRoomNos = reservationService.selectReservedRoomNos(checkinDate, checkoutDate);
 
@@ -106,6 +105,23 @@ public class ResidenceController {
         model.addAttribute("checkoutDate", checkoutDate);
         model.addAttribute("searchKeyword", searchKeyword);
         model.addAttribute("selectReservedRoomNos",selectReservedRoomNos);
+        // 상세 보기 페이지 반환
+        return "views/residence/userResidenceDetail"; // 뷰 파일로 이동
+    }
+
+
+
+    // 숙소 상세정보
+    @GetMapping("/detail/{residNo}")
+    public String viewResidence(@PathVariable Long residNo,
+                                Model model) {
+        // 숙소 정보를 가져옴
+        var residence = residenceService.getResidenceById(residNo);
+        List<ResidenceRoom> rooms = residenceService.getRoomsByResidenceId(residNo);
+        // 모델에 데이터를 추가
+        model.addAttribute("residence", residence);
+        model.addAttribute("rooms",rooms);
+
         // 상세 보기 페이지 반환
         return "views/residence/ResidenceDetail"; // 뷰 파일로 이동
     }

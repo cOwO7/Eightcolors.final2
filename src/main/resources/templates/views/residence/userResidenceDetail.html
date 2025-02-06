@@ -139,9 +139,60 @@
                     <p><strong><span th:text="${room.roomName}"></span></strong></p>
                     <p><span th:text="${#numbers.formatInteger(room.pricePerNight, 3, 'COMMA')}"></span>원</p>
                     <img th:src="@{|/images/files/${room.roomUrl01}|}" alt="방 사진" class="d-block w-100"/>
-                    <button class="btn btn-danger">
+<!--                    <button class="btn btn-danger"-->
+<!--                            th:onclick="|window.location.href='/reservation?searchKeyword=${searchKeyword}&checkinDate=${checkinDate}
+                                    &checkoutDate=${checkoutDate}}&residNo=${residence.residNo}&roomNo=${room.roomNo}'|">                         -->
+<!--                        예약하기-->
+<!--                    </button>-->
+
+<!--                    <button class="btn btn-danger"-->
+<!--                            th:data-searchkeyword="${searchKeyword}"-->
+<!--                            th:data-checkindate="${checkinDate}"-->
+<!--                            th:data-checkoutdate="${checkoutDate}"-->
+<!--                            th:data-residno="${residence.residNo}"-->
+<!--                            th:data-roomno="${room.roomNo}"-->
+<!--                            onclick="window.location.href='/reservation?searchKeyword=' + this.dataset.searchkeyword + '&checkinDate='-->
+<!--                            + this.dataset.checkindate+'&checkoutDate='-->
+<!--                            + this.dataset.checkoutdate + '&residNo='-->
+<!--                            + this.dataset.residno+'&roomNo=' + this.dataset.roomno;">-->
+                    <!--예약하기-->
+                    <!--</button>-->
+
+                    <th:block th:if="${#lists.contains(selectReservedRoomNos, room.roomNo)}">
+                        <p class="text-danger">품절</p>
+                    </th:block>
+
+                    <!-- 예약된 방 번호에 포함되지 않으면 예약 버튼 표시 -->
+                    <th:block th:unless="${#lists.contains(selectReservedRoomNos, room.roomNo)}">
+                        <th:block th:if="${searchKeyword != null}">
+                            <button class="btn btn-danger"
+                                    th:data-searchkeyword="${searchKeyword}"
+                                    th:data-checkindate="${checkinDate}"
+                                    th:data-checkoutdate="${checkoutDate}"
+                                    th:data-residno="${residence.residNo}"
+                                    th:data-roomno="${room.roomNo}"
+                                    onclick="window.location.href='/reservation?searchKeyword=' + this.dataset.searchkeyword + '&checkinDate='
+                + this.dataset.checkindate+'&checkoutDate='
+                + this.dataset.checkoutdate + '&residNo='
+                + this.dataset.residno+'&roomNo=' + this.dataset.roomno;">
                                 예약하기
-                    </button>
+                            </button>
+                        </th:block>
+                        <th:block th:if="${searchKeyword == null}">
+                            <button class="btn btn-danger"
+                                    th:data-checkindate="${checkinDate}"
+                                    th:data-checkoutdate="${checkoutDate}"
+                                    th:data-residno="${residence.residNo}"
+                                    th:data-roomno="${room.roomNo}"
+                                    onclick="window.location.href='/reservation?' + 'checkinDate='
+                + this.dataset.checkindate+'&checkoutDate='
+                + this.dataset.checkoutdate + '&residNo='
+                + this.dataset.residno+'&roomNo=' + this.dataset.roomno;">
+                                예약하기
+                            </button>
+                        </th:block>
+
+                    </th:block>
                 </div>
             </div>
             <div class="col-md-3">
