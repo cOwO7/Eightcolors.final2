@@ -76,6 +76,7 @@ public class ResidenceController {
         System.out.println("Received hostUserNo: " + hostUserNo);
         List<ResidenceDto> residences = residenceService.findPostsByHostUserNo(hostUserNo);
         model.addAttribute("residences", residences);
+        model.addAttribute("residNo",  residences.get(0).getResidNo());
         return "views/residence/Residence1";
     }
 

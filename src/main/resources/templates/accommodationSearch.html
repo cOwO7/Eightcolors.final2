@@ -281,7 +281,7 @@
 
                     <!-- 페이지 번호 출력 -->
                     <li th:each="num : ${ #numbers.sequence(startPage, endPage) }" th:classappend="${num == currentPage} ? 'active'" class="page-item" aria-current="page">
-                        <th:block th:if="${num != currentPage}">
+                        <th:block th:if="${num != currentPage and pageNum > 0}">
                             <a th:text="${num}" th:href="@{|?pageNum=${num}&searchKeyword=${searchKeyword}&checkinDate=${checkinDate}&checkoutDate=${checkoutDate}&accommodationTypes=${accommodationTypes}&maxPrice=${maxPrice}|}" class="page-link"></a>
                         </th:block>
                         <th:block th:unless="${num != currentPage}">
@@ -309,7 +309,7 @@
 
                     <!-- 페이지 번호 출력 -->
                     <li th:each="num : ${ #numbers.sequence(startPage, endPage) }" th:classappend="${num == currentPage} ? 'active'" class="page-item" aria-current="page">
-                        <th:block th:if="${num != currentPage}">
+                        <th:block th:if="${num != currentPage and pageNum > 0}">
                             <a th:text="${num}" th:href="@{|?pageNum=${num}&searchKeyword=${searchKeyword}&checkinDate=${checkinDate}&checkoutDate=${checkoutDate}|}" class="page-link"></a>
                         </th:block>
                         <th:block th:unless="${num != currentPage}">
@@ -337,7 +337,7 @@
 
                     <!-- 페이지 번호 출력 -->
                     <li th:each="num : ${ #numbers.sequence(startPage, endPage) }" th:classappend="${num == currentPage} ? 'active'" class="page-item" aria-current="page">
-                        <th:block th:if="${num != currentPage}">
+                        <th:block th:if="${num != currentPage and pageNum > 0}">
                             <a th:text="${num}" th:href="@{|?pageNum=${num}&searchKeyword=${searchKeyword}&checkinDate=${checkinDate}&checkoutDate=${checkoutDate}&maxPrice=${maxPrice}|}" class="page-link"></a>
                         </th:block>
                         <th:block th:unless="${num != currentPage}">
@@ -361,7 +361,7 @@
                     이전 페이지 그룹이 존재한다는 것으로 현재 페이지 그룹의 시작
                     페이지에서 1을 빼면 이전 페이지 그룹의 endPage로 이동할 수 있다.
                     */-->
-                    <li class="page-item" th:if="${ startPage > pageGroup }">
+                    <li class="page-item" th:if="${ startPage > pageGroup and pageNum > 0 }">
                         <a class="page-link" th:href="@{|?pageNum=${startPage - 1}|}">Pre</a>
                     </li>
                     <!--/*
@@ -371,7 +371,7 @@
                     <li th:each="num : ${ #numbers.sequence(startPage, endPage) }"
                         th:classappend="${num == currentPage} ? 'active'"
                         class="page-item" aria-current="page">
-                        <th:block th:if="${num != currentPage}">
+                        <th:block th:if="${num != currentPage and pageNum > 0}">
                             <a
                                     th:text="${num}"
                                     th:href="@{|?pageNum=${num}|}"
@@ -415,7 +415,7 @@
                     <li th:each="num : ${ #numbers.sequence(startPage, endPage) }"
                         th:classappend="${num == currentPage} ? 'active'"
                         class="page-item" aria-current="page">
-                        <th:block th:if="${num != currentPage}">
+                        <th:block th:if="${num != currentPage and pageNum > 0}">
                             <a
                                     th:text="${num}"
                                     th:href="@{|?pageNum=${num}&maxPrice=${maxPrice}|}"
@@ -459,7 +459,7 @@
                     <li th:each="num : ${ #numbers.sequence(startPage, endPage) }"
                         th:classappend="${num == currentPage} ? 'active'"
                         class="page-item" aria-current="page">
-                        <th:block th:if="${num != currentPage}">
+                        <th:block th:if="${num != currentPage and pageNum > 0}">
                             <a
                                     th:text="${num}"
                                     th:href="@{|?pageNum=${num}&accommodationTypes=${accommodationTypes}&maxPrice=${maxPrice}|}"

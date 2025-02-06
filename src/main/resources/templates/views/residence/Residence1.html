@@ -23,7 +23,10 @@
         <h1 class="my-4 text-center">숙소 사장님 페이지 ^_^</h1>
         <!-- 숙소 등록 버튼 -->
         <div class="mb-3 text-end">
+            <a th:href="@{/availableAndBookedRooms(residNo=${residNo})}" class="btn btn-warning btn-lg shadow-sm">투숙체크</a>
+            <a th:href="@{/room(residNo=${residNo})}" class="btn btn-primary btn-lg shadow-sm">예약검색</a>
             <a th:href="@{/new}" class="btn btn-success btn-lg shadow-sm">숙소 등록</a>
+
         </div>
 
         <!-- 숙소 목록 테이블 -->
