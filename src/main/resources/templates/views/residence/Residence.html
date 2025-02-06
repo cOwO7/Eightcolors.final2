@@ -19,30 +19,11 @@
 <body>
 <th:block layout:fragment="content">
     <div class="container">
-        <h1 class="my-4 text-center">숙소 사장님 페이지 ^_^</h1>
-        <!-- 검색 폼 -->
-        <form action="#" th:action="@{/list}" method="get" class="row mb-3">
-            <div class="col-md-3">
-                <select name="type" class="form-control">
-                    <option value="">숙소 유형 선택</option>
-                    <option value="resort">리조트</option>
-                    <option value="hotel">호텔</option>
-                    <option value="pension">펜션</option>
-                    <option value="motel">모텔</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <input type="text" name="keyword" class="form-control" placeholder="검색어를 입력하세요"/>
-            </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary">검색</button>
-            </div>
-        </form>
+        <h1 class="my-4 text-center">관리자 숙소 페이지 ^_^</h1>
         <!-- 숙소 등록 버튼 -->
         <div class="mb-3 text-end">
             <a th:href="@{/new}" class="btn btn-success btn-lg shadow-sm">숙소 등록</a>
         </div>
-
         <!-- 숙소 목록 테이블 -->
         <table class="table table-bordered table-hover table-responsive">
             <thead class="table-dark">

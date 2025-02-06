@@ -30,16 +30,19 @@ public class AccommodationSearchController {
                               @RequestParam(name = "checkoutDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate checkoutDate
     ) {
         // 검색 키워드가 있으면 해당 키워드로 검색 실행
-        Map<String, Object> modelMap = accommodationSearchService.getAllResidences(pageNum, accommodationTypes, maxPrice);
+        Map<String, Object> modelMap = accommodationSearchService.getAllResidences( pageNum, accommodationTypes, maxPrice);
 
         model.addAttribute("maxPrice", maxPrice); // maxPrice를 모델에 추가
-
         model.addAttribute("checkinDate", checkinDate); // checkinDate를 모델에 추가
         model.addAttribute("checkoutDate", checkoutDate); // checkoutDate를 모델에 추가
 
         if (accommodationTypes != null) {
             System.out.println("accommodationTypes: " + String.join(",", accommodationTypes));
             model.addAttribute("accommodationTypes", String.join(",", accommodationTypes));
+        }
+
+        for (String key : modelMap.keySet()) {
+            System.out.println("Key: " + key + ", Value: " + modelMap.get(key));
         }
 
         model.addAllAttributes(modelMap); // 모델에 데이터 추가
@@ -72,6 +75,10 @@ public class AccommodationSearchController {
         if (accommodationTypes != null) {
             System.out.println("accommodationTypes: " + String.join(",", accommodationTypes));
             model.addAttribute("accommodationTypes", String.join(",", accommodationTypes));
+        }
+
+        for (String key : modelMap.keySet()) {
+            System.out.println("Key: " + key + ", Value: " + modelMap.get(key));
         }
 
         // 모델에 파라미터 추가

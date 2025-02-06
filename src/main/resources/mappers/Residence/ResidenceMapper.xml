@@ -87,7 +87,6 @@
     <update id="updateResidence" parameterType="com.springbootfinal.app.domain.residence.ResidenceDto">
         UPDATE residence
         SET resid_name        = #{residName},
-            host_user_no      = #{hostUserNo},
             resid_description = #{residDescription},
             resid_address     = #{residAddress},
             resid_type        = #{residType},
@@ -138,7 +137,6 @@
         WHERE r.resid_no = #{residNo}
     </select>
 
-
     <resultMap id="residenceResultMap" type="com.springbootfinal.app.domain.residence.ResidenceDto">
         <id property="residNo" column="residNo"/>
         <result property="residName" column="residName"/>
@@ -166,7 +164,6 @@
             <result property="checkinDate" column="checkinDate"/>
             <result property="checkoutDate" column="checkoutDate"/>
         </collection>
-
         <!-- 사진 목록 매핑 -->
         <collection property="propertyPhotos" ofType="com.springbootfinal.app.domain.residence.PropertyPhotosDto">
             <result property="thumbnailUrls" column="thumbnailUrls"/>
@@ -181,7 +178,6 @@
             <result property="photoUrl09" column="photoUrl09"/>
             <result property="photoUrl10" column="photoUrl10"/>
         </collection>
-
         <!-- 방 목록 매핑 -->
         <collection property="rooms" ofType="com.springbootfinal.app.domain.residence.ResidenceRoom">
             <id property="roomNo" column="roomNo"/>
@@ -189,5 +185,4 @@
             <result property="pricePerNight" column="pricePerNight"/>
         </collection>
     </resultMap>
-
 </mapper>
