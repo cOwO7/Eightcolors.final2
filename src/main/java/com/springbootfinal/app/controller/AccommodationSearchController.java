@@ -26,7 +26,6 @@ public class AccommodationSearchController {
                               @RequestParam(value="pageNum", required=false, defaultValue="1") int pageNum,
                               @RequestParam(name = "accommodationTypes", required = false) List<String> accommodationTypes, // 체크된 타입 리스트 받기
                               @RequestParam(name = "maxPrice", required = false) Integer maxPrice,
-                              @RequestParam(name = "searchKeyword", required = false) String searchKeyword, // 검색 키워드 받기
                               @RequestParam(name = "checkinDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate checkinDate,
                               @RequestParam(name = "checkoutDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate checkoutDate
     ) {
@@ -34,7 +33,6 @@ public class AccommodationSearchController {
         Map<String, Object> modelMap = accommodationSearchService.getAllResidences( pageNum, accommodationTypes, maxPrice);
 
         model.addAttribute("maxPrice", maxPrice); // maxPrice를 모델에 추가
-        model.addAttribute("searchKeyword", searchKeyword); // searchKeyword를 모델에 추가
         model.addAttribute("checkinDate", checkinDate); // checkinDate를 모델에 추가
         model.addAttribute("checkoutDate", checkoutDate); // checkoutDate를 모델에 추가
 
