@@ -90,17 +90,23 @@ public class ResidenceController {
                                 @RequestParam(value="searchKeyword",required = false) String searchKeyword,
                                 @RequestParam(name = "checkinDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate checkinDate,
                                 @RequestParam(name = "checkoutDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate checkoutDate,
-                                Model model) {
+                                Model model,HttpSession session) {
         // 숙소 정보를 가져옴
         var residence = residenceService.getResidenceById(residNo);
         List<ResidenceRoom> rooms = residenceService.getRoomsByResidenceId(residNo);
 
         //예약된 방 리스트 번호 조회
         List<Long> selectReservedRoomNos = reservationService.selectReservedRoomNos(checkinDate, checkoutDate);
+        Long userNo = (Long) session.getAttribute("userNo");
+        if(userNo!=null){
+            model.addAttribute("userNo",userNo);
+        }
+
 
         // 모델에 데이터를 추가
         model.addAttribute("residence", residence);
         model.addAttribute("rooms",rooms);
+
         model.addAttribute("checkinDate", checkinDate);
         model.addAttribute("checkoutDate", checkoutDate);
         model.addAttribute("searchKeyword", searchKeyword);
