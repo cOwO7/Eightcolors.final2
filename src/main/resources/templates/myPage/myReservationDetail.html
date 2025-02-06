@@ -2,6 +2,34 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/main_layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>예약 완료</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+
+        .alert-success {
+            background-color: #007bff; /* 배경을 파란색으로 변경 */
+            border-color: #007bff;
+        }
+
+        .alert-success h3 {
+            color: white; /* 텍스트 색상 변경 */
+        }
+
+        .btn-primary {
+            background-color: #0056b3; /* 버튼 색상 파랑으로 변경 */
+            border-color: #0056b3;
+        }
+
+        .btn-primary:hover {
+            background-color: #004085; /* 버튼 hover 색상 */
+            border-color: #004085;
+        }
+    </style>
+</head>
+<body>
 <th:block layout:fragment="content">
     <div class="container my-5">
 
@@ -21,71 +49,37 @@
             </div>
 
             <!-- 버튼 끝  -->
-
+            <!--예약내역 상세 영억-->
             <div class="col-9">
-                <div class="row mt-4">
-                    <div class="col-md-4">
-                        <img th:src="${reservation.thumbnailUrls}" class="img-fluid" alt="Thumbnail">
-                    </div>
-                    <div class="col-md-8">
-                        <h2 th:text="${reservation.residName}">건물이름</h2>
-                        <p th:text="${reservation.residDescription}">주소</p>
-                        <p><strong>예약번호:</strong> <span th:text="${reservation.reservationNo}">예약번호</span></p>
-                    </div>
-                </div>
-
-                <div class="row mt-4">
-                    <div class="col-md-6">
-                        <p><strong>체크인 날짜:</strong> <span th:text="${reservation.checkinDate}">체크인 날짜</span></p>
-                    </div>
-                    <div class="col-md-6">
-                        <p><strong>체크아웃 날짜:</strong> <span th:text="${reservation.checkoutDate}">체크아웃 날짜</span></p>
-                    </div>
-                </div>
-
-                <div class="row mt-4">
-                    <div class="col-md-6">
-                        <p><strong>결제 금액:</strong> <span th:text="${reservation.totalPrice}">결제 금액</span></p>
-                    </div>
-                    <div class="col-md-6">
-                        <p><strong>방 이름:</strong> <span th:text="${reservation.roomName}">방 이름</span></p>
+                <div class="row">
+                    <div class="col">
+                        <div class="alert alert-info">
+                            <ul class="list-group">
+                                <li class="list-group-item"><img th:src="${reservation.thumbnailUrls}" class="img-fluid" alt="Thumbnail"></li>
+                                <li class="list-group-item">예약 번호: <strong>[[${reservation.roomNo}]]</strong></li>
+                                <li class="list-group-item">주소 : <Strong th:text="${reservation.residDescription}"></Strong></li>
+                                <li class="list-group-item">숙소 이름: <strong th:text="${reservation.residName}"></strong></li>
+                                <li class="list-group-item">방 이름: <strong th:text="${reservation.roomName}"></strong></li>
+                                <li class="list-group-item">체크인 날짜: <strong>[[${reservation.checkinDate}]]</strong></li>
+                                <li class="list-group-item">체크아웃 날짜: <strong>[[${reservation.checkoutDate}]]</strong></li>
+                                <li class="list-group-item">총 금액: <strong th:text="${reservation.totalPrice}"></strong></li>
+                                <li class="list-group-item">할인율: <strong>[[${reservation.discountRate}]]%</strong></li>
+                                <li class="list-group-item">할인된 금액: <strong>[[${reservation.discountedPrice}]]원</strong></li>
+                                <li class="list-group-item">결제 상태: <strong>[[${reservation.paymentStatus}]]</strong></li>
+                            </ul>
+                        </div>
+                        <div class="text-center mt-4">
+                            <a href="/myPage/myReservation" class="btn btn-primary">확 인</a>
+                        </div>
                     </div>
                 </div>
-
-                <div class="row mt-4">
-                    <div class="col-md-6">
-                        <p><strong>할인율:</strong> <span th:text="${reservation.discountRate}">할인율</span></p>
-                    </div>
-                    <div class="col-md-6">
-                        <p><strong>연락처:</strong> <span th:text="${reservation.hostPhone}">연락처</span></p>
-                    </div>
-                </div>
-<!--                <div class="row">-->
-<!--                    <div class="col-md-6">-->
-<!--                        <div id="map" style="width: 100%; height: 400px;"></div>-->
-<!--                    </div>-->
-<!--                    <form th:action="@{/residence/processAllWeather}" method="post">-->
-<!--                        &lt;!&ndash; 숙소 정보 (hidden 필드로 추가) &ndash;&gt;-->
-<!--                        <input type="hidden" id="nx" th:value="${residence.nx}"/>-->
-<!--                        <input type="hidden" id="ny" th:value="${residence.ny}"/>-->
-<!--                        <input type="hidden" id="regId" th:value="${residence.regId}"/>-->
-<!--                        <input type="hidden" id="regIdTemp" th:value="${residence.regIdTemp}"/>-->
-<!--                        <input type="hidden" id="baseDate" name="baseDate" th:value="${baseDate}"/>-->
-<!--                        <input type="hidden" id="baseTime" name="baseTime" th:value="${baseTime}"/>-->
-<!--                        <input type="hidden" id="latitudeNum" name="latitudeNum" th:value="${residence.latitudeNum}"/>-->
-<!--                        <input type="hidden" id="longitudeNum" name="longitudeNum" th:value="${residence.longitudeNum}"/>-->
-<!--                        <input type="hidden" id="tmFc" name="tmFc" th:value="${tmFc}"/>-->
-<!--                    </form>-->
-<!--                </div>-->
-
-
-
-
             </div>
         </div>
 
-            <!-- 내용 끝 -->
+        <!--예약내역상세 영역 끝-->
+        <!-- 내용 끝 -->
 
     </div>
 </th:block>
+</body>
 </html>
