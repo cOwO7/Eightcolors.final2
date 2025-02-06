@@ -82,9 +82,6 @@
                                                 <input class="form-control" type="text" placeholder="정보를 수정해 주세요"
                                                        disabled th:value="${user.address1 != null and user.address2 != null ? user.address1 + ' ' + user.address2 : ''}">
                                             </div>
-                                            <div th:if="${user.address1 == null || user.address2 == null}">
-                                                정보를 수정해 주세요.
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
