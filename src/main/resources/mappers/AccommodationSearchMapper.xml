@@ -41,8 +41,8 @@
     </select> -->
     
     <select id="findAvailableResidences" parameterType="map" resultType="ResidenceSearch">
-        SELECT DISTINCT r.resid_no, r.resid_name, r.resid_address, r.resid_type, MIN(rr.price_per_night) AS min_price, 
-       MIN(pp.thumbnailUrls) AS thumbnailUrl
+        SELECT DISTINCT r.resid_no, r.resid_name, r.resid_address, r.resid_type, MIN(rr.price_per_night) AS min_price,
+        pp.thumbnailUrls  AS thumbnailUrls
         FROM residence r LEFT JOIN residence_rooms rr ON r.resid_no = rr.resid_no LEFT JOIN reservations res
         ON rr.room_no = res.room_no LEFT JOIN property_photos pp ON r.resid_no = pp.resid_no
         WHERE rr.resid_no = r.resid_no AND r.resid_no IN (( SELECT DISTINCT r.resid_no
@@ -70,7 +70,7 @@
         <if test="maxPrice != null">
              and rr.price_per_night <![CDATA[<=]]> #{maxPrice}
         </if>
-        GROUP BY r.resid_no, r.resid_name, r.resid_address, r.resid_type
+        GROUP BY r.resid_no, r.resid_name, r.resid_address, r.resid_type,thumbnailUrls
         LIMIT #{startRow}, #{pageSize};
         </select>
 
