@@ -1,4 +1,4 @@
-package com.springbootfinal.app.service;
+package com.springbootfinal.app.service.search;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -8,8 +8,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.springbootfinal.app.domain.ResidenceSearch;
-import com.springbootfinal.app.mapper.AccommodationSearchMapper;
+import com.springbootfinal.app.domain.search.ResidenceSearch;
+import com.springbootfinal.app.mapper.search.AccommodationSearchMapper;
 
 @Service
 public class AccommodationSearchService {

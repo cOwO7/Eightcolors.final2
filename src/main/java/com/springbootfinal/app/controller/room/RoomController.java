@@ -43,7 +43,7 @@ public class RoomController {
 	        List<RoomDTO> rooms = roomService.getAvailableRoomsByHostAndDate(residNo);
 	        model.addAttribute("rooms", rooms);
 	        model.addAttribute("bookedRooms", bookedRooms);
-	        return "availableAndBookedRooms"; // 예약된 방을 보여줄 뷰
+	        return "views/room/availableAndBookedRooms"; // 예약된 방을 보여줄 뷰
 	    }
 	    
 	    @GetMapping("/room")
@@ -54,7 +54,7 @@ public class RoomController {
 
 			model.addAttribute("hotelId",residNo);
 			model.addAllAttributes(modelMap);
-	    	return "stayBookingLookup";
+	    	return "views/room/stayBookingLookup";
 	    }
 	    
 }

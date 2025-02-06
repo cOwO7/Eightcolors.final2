@@ -14,7 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Map;
 
@@ -57,7 +56,7 @@ public class ReservationController {
         model.addAttribute("checkoutDate", checkoutDate);
         model.addAttribute("searchKeyword", searchKeyword);
 
-        return "reservation"; // 뷰 이름
+        return "views/room/reservation"; // 뷰 이름
     }
 
 	/*
@@ -192,11 +191,11 @@ public class ReservationController {
         model.addAttribute("reservation", reservationDetails);
         model.addAttribute("residName", residenceAndRoomMap.get("residName"));
         model.addAttribute("roomName", residenceAndRoomMap.get("roomName"));
-        return "reservationSuccess";
+        return "views/room/reservationSuccess";
     }
 
     @GetMapping("/reservationSuccess")
     public String test(){
-        return "reservationSuccess";
+        return "views/room/reservationSuccess";
     }
 }

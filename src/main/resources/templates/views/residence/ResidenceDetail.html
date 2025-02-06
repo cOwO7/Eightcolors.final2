@@ -178,7 +178,7 @@
                                 예약하기
                             </button>
                         </th:block>
-                        <th:block th:ulness="${searchKeyword != null}">
+                        <th:block th:if="${searchKeyword == null}">
                             <button class="btn btn-danger"
                                     th:data-checkindate="${checkinDate}"
                                     th:data-checkoutdate="${checkoutDate}"

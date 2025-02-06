@@ -1,4 +1,4 @@
-package com.springbootfinal.app.domain;
+package com.springbootfinal.app.domain.search;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

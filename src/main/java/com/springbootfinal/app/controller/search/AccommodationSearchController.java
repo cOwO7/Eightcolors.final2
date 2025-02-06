@@ -1,10 +1,9 @@
-package com.springbootfinal.app.controller;
+package com.springbootfinal.app.controller.search;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -13,8 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.springbootfinal.app.domain.ResidenceSearch;
-import com.springbootfinal.app.service.AccommodationSearchService;
+import com.springbootfinal.app.service.search.AccommodationSearchService;
 
 @Controller
 public class AccommodationSearchController {
@@ -41,7 +39,7 @@ public class AccommodationSearchController {
             model.addAttribute("accommodationTypes", String.join(",", accommodationTypes)); }
 
         model.addAllAttributes(modelMap); // 모델에 데이터 추가
-        return "accommodationSearch"; // 숙소 검색 페이지로 반환
+        return "views/search/accommodationSearch"; // 숙소 검색 페이지로 반환
     }
 
 
@@ -86,7 +84,7 @@ public class AccommodationSearchController {
 
             model.addAttribute("maxPrice", maxPrice); // maxPrice를 모델에 추가
 
-            return "accommodationSearch"; // 숙소 검색 페이지로 반환
+            return "views/search/accommodationSearch"; // 숙소 검색 페이지로 반환
         }
 
 

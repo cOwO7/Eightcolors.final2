@@ -1,13 +1,12 @@
-package com.springbootfinal.app.mapper;
+package com.springbootfinal.app.mapper.search;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.springbootfinal.app.domain.ResidenceSearch;
+import com.springbootfinal.app.domain.search.ResidenceSearch;
 
 @Mapper
 public interface AccommodationSearchMapper {
