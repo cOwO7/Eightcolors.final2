@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springbootfinal.app.mapper.mainpage.MainPageMapper">
+
+    <select id="getRandomProperties" resultType="com.springbootfinal.app.domain.mainpage.MainPage">
+        SELECT r.resid_no AS id, r.resid_name AS name, p.photo_url01 AS photoUrl01
+        FROM residence r
+                 JOIN property_photos p ON r.resid_no = p.resid_no
+        ORDER BY RAND() LIMIT 3
+    </select>
+
+</mapper>

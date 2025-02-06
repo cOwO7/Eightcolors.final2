@@ -63,3 +63,14 @@ body, h1, h2, h3, h4, h5, h6, p, a, li, div {
     width: 100%;
     max-width: 100%; /* 부모 컨테이너의 최대 너비를 넘지 않도록 설정 */
 }
+
+/* 캐러셀 아이템 스타일 */
+.carousel-item {
+    display: none;
+    position: relative;
+    transition: transform 0.6s ease-in-out;
+}
+
+.carousel-item.active {
+    display: block;
+}

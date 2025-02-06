@@ -9,7 +9,7 @@
 -- # flush privileges;
 -- # exit
 
-drop database eightcolors2025;
+-- drop database eightcolors2025;
 CREATE DATABASE IF NOT EXISTS eightcolors2025; -- 데이터베이스 생성
 
 use eightcolors2025; -- 데이터베이스 접속
@@ -241,6 +241,17 @@ VALUES
 INSERT INTO transfers (seller_user_no, buyer_user_no, reservation_no, transfer_price, status, transfer_title)
 VALUES
     (2, 2, 2, 90000, '양도가능', '양도합니다.');
+
+
+SELECT r.resid_no AS id, r.resid_name AS name, p.thumbnailUrls AS thumbnailUrl
+FROM residence r
+         JOIN property_photos p ON r.resid_no = p.resid_no
+ORDER BY RAND() LIMIT 3;
+
+SELECT r.resid_no AS id, r.resid_name AS name, p.photo_url01 AS photoUrl01
+FROM residence r
+         JOIN property_photos p ON r.resid_no = p.resid_no
+ORDER BY RAND() LIMIT 3;
 
 -- -----------------------------------------------------------------------------------------------------------------------------
 
