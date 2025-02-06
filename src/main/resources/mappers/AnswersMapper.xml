@@ -9,6 +9,12 @@
         INSERT INTO answers (inquiry_no, content, admin_name)
         VALUES (#{inquiryNo}, #{content}, #{adminName});
     </insert>
+    <!-- 관리자 페이지 원격 답변 추가 -->
+    <insert id="insertAnswer1" parameterType="map">
+        INSERT INTO answers (inquiry_no, content)
+        VALUES (#{inquiryNo}, #{content});
+    </insert>
+
     <!-- 답변 조회 -->
     <select id="allAnswerByInquiryId" parameterType="Long" resultType="AnswerDto">
         SELECT answer_no AS answerNo,
@@ -20,4 +26,20 @@
         WHERE inquiry_no = #{inquiryId}
     </select>
 
+    <select id="allAnswerByInquiryIds" parameterType="Long" resultType="AnswerDto">
+        SELECT answer_no AS answerNo,
+               inquiry_no AS inquiryNo,
+               content
+        FROM answers
+        WHERE inquiry_no = #{inquiryId}
+    </select>
+
+    <delete id="deleteAnswer">
+        DELETE FROM answers WHERE answer_no = #{answerNo}
+    </delete>
+    <update id="updateStatus" parameterType="map">
+        UPDATE inquiries
+        SET status = #{status}
+        WHERE inquiry_no = #{inquiryNo}
+    </update>
 </mapper>

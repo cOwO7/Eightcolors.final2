@@ -14,6 +14,10 @@ public class AnswerService {
     @Autowired
     private AnswersMapper answerMapper;
 
+    public void addAnswer1(Long id, String content) {
+        answerMapper.insertAnswer1(id, content);
+    }
+
     public void addAnswer(AnswerDto answer) {
         answerMapper.insertAnswer(answer);
     }
@@ -22,5 +26,16 @@ public class AnswerService {
     public List<AnswerDto> getAnswersByInquiryId(Long inquiryId) {
         return answerMapper.allAnswerByInquiryId(inquiryId);
     }
-}
 
+    public List<AnswerDto> getAnswersByInquiryIds(Long inquiryId) {
+        return answerMapper.allAnswerByInquiryIds(inquiryId);
+    }
+
+    public void deleteAnswer(Long answerNo) {
+        answerMapper.deleteAnswer(answerNo);
+    }
+
+    public void updateStatus(Long inquiryNo, String status) {
+        answerMapper.updateStatus(inquiryNo, status);
+    }
+}

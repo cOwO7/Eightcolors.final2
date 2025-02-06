@@ -2,31 +2,31 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <!-- header -->
 <div th:fragment="header" class="row border-bottom border-primary">
-<style>
-	#menu {
-		text-align: center;
-		width: 80%;
-		margin: auto;
-		justify-content: flex-start !important;
-	}
-</style>
+	<style>
+		#menu {
+			text-align: center;
+			width: 100%;
+			margin: auto;
+			justify-content: flex-start !important;
+		}
+	</style>
 	<!-- 헤더 이미지 로고 -->
 	<div class="col-2">
 		<a href="/main"><img src="/images/mainLogo.png" style="width: 100%; height: auto; max-width: 200px;"></a>
 	</div>
 	<div class="col">
-		<div class="row-12">
+		<div class="row">
 			<div class="col-12">
 				<ul class="col-12 nav justify-content-end">
-					<a class="nav-link" th:href="@{/user-info}">임시 내정보 확인(로그인 여부 확인겸)</a>
+					<!--<a class="nav-link" th:href="@{/user-info}">임시 내정보 확인(로그인 여부 확인겸)</a>-->
 					<!-- 로그인한 사용자가 관리자일 때만 "관리자 페이지로 가기" 링크를 표시 -->
 					<li class="nav-item" th:if="${session['role'] == 'admin'}">
 						<a class="nav-link" href="/admin/admin">관리자 페이지로 가기</a>
 					</li>
 					<!-- 일반유저용 테스트 -->
-					<div th:if="${session['role'] == 'user'}">
+					<!--<div th:if="${session['role'] == 'user'}">
 						<a href="/user-info">일반유저용(테스트)</a>
-					</div>
+					</div>-->
 					<!-- 로그인한 사용자가 호스트일 때만 "호스트 페이지로 가기" 링크를 표시 -->
 					<div th:if="${session['role'] == 'host'}">
 						<a href="/host">호스트 페이지로 가기</a>
@@ -57,7 +57,7 @@
 		<!-- 로그인한 사용자가 유저 or Null일 때 유저용 버튼 표시 -->
 		<div th:if="${session['role'] == 'user' or session['role'] == null}">
 			<div class="row">
-				<div class="col-11">
+				<div class="col-10">
 					<nav id="menu" class="btn-group text-center" role="group"
 						 aria-label="Basic outlined example">
 						<a href="/weather" class="btn btn-outline-primary">날씨</a>
@@ -72,7 +72,7 @@
 		<!-- 로그인한 사용자가 호스트일 때 호스트용 버튼 표시 -->
 		<div th:if="${session['role'] == 'host'}">
 			<div class="row">
-				<div class="col-11">
+				<div class="col-10">
 					<nav id="menu" class="btn-group text-center" role="group"
 						 aria-label="Basic outlined example">
 						<a href="/weather" class="btn btn-outline-primary">날씨</a>
@@ -88,7 +88,7 @@
 		<!-- 로그인한 사용자가 관리자일 때 관리자용 버튼 표시 -->
 		<div th:if="${session['role'] == 'admin'}">
 			<div class="row">
-				<div class="col-11">
+				<div class="col-10">
 					<nav id="menu" class="btn-group text-center" role="group" aria-label="Basic outlined example">
 						<a href="/weather" class="btn btn-outline-primary">날씨</a>
 						<a href="/weatherResult" class="btn btn-outline-primary">통합날씨</a>

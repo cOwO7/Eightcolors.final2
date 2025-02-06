@@ -104,8 +104,7 @@ public class KakaopayService {
                     "https://open-api.kakaopay.com/online/v1/payment/approve",
                     entityMap,
                     String.class);
-//            결제 승인 후 양도 상태를 "양도 완료"로 업데이트
-//            updateTransferStatus(approveRequest.getPartnerOrderId(), "양도 완료");
+
             return response.getBody();
         } catch (Exception e) {
             throw new RuntimeException("API 호출 실패: " + e.getMessage(), e);

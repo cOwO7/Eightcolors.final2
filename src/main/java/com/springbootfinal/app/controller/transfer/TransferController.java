@@ -42,7 +42,6 @@ public class TransferController {
     @Autowired
     private ReservationMapper resvMapper;
 
-
     @PostMapping("/delete")
     public String deleteTransfer(RedirectAttributes reAttrs,
                                  HttpServletResponse response, PrintWriter out,
@@ -81,43 +80,42 @@ public class TransferController {
     }
 
     // 양도 생성 폼 요청 처리 메서드
-  // TransferController.java
-@GetMapping("/transferWrite")
-public String createTransferForm(Model model, HttpServletRequest request) {
-    Logger logger = LoggerFactory.getLogger(TransferController.class);
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    @GetMapping("/transferWrite")
+    public String createTransferForm(Model model, HttpServletRequest request) {
+        Logger logger = LoggerFactory.getLogger(TransferController.class);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-    // 세션에서 userNo 가져오기
-    Object userNoObj = request.getSession().getAttribute("userNo");
-    String userNo = userNoObj != null ? userNoObj.toString() : null;
+        // 세션에서 userNo 가져오기
+        Object userNoObj = request.getSession().getAttribute("userNo");
+        String userNo = userNoObj != null ? userNoObj.toString() : null;
 
-    logger.info("사용자 로그인 : 회원번호={}, role={}", userNo, authentication.getAuthorities());
-    logger.info("검증된 회원번호: {}", userNo);
+        logger.info("사용자 로그인 : 회원번호={}, role={}", userNo, authentication.getAuthorities());
+        logger.info("검증된 회원번호: {}", userNo);
 
-    int reservationCount = reservationMapper.countReservationsByUserNo(userNo);
-    logger.info("회원번호의 예약 수 {}: {}", userNo, reservationCount);
+        int reservationCount = reservationMapper.countReservationsByUserNo(userNo);
+        logger.info("회원번호의 예약 수 {}: {}", userNo, reservationCount);
 
-    if (reservationCount > 0) {
-        // 예약 내역 가져오기
-        Long userNoLong = Long.parseLong(userNo);
-        Reservations reservation = transferService.getReservationByUserNo(userNoLong);
-        logger.info("예약 상태: {}", reservation); // 예약 정보 로그 추가
+        if (reservationCount > 0) {
+            // 예약 내역 가져오기
+            Long userNoLong = Long.parseLong(userNo);
+            Reservations reservation = transferService.getReservationByUserNo(userNoLong);
+            logger.info("예약 상태: {}", reservation); // 예약 정보 로그 추가
 
-        // 예약 번호로 이미 작성된 양도 게시글이 있는지 확인
-        if (transferService.isTransferExistsByReservationNo(reservation.getReservationNo())) {
-            String errorMessage = "해당 예약으로 이미 양도 게시글이 작성되었습니다.";
+            // 예약 번호로 이미 작성된 양도 게시글이 있는지 확인
+            if (transferService.isTransferExistsByReservationNo(reservation.getReservationNo())) {
+                String errorMessage = "해당 예약으로 이미 양도 게시글이 작성되었습니다.";
+                model.addAttribute("script", "<script>alert('" + errorMessage + "'); history.back();</script>");
+                return TRANSFER_BASE_PATH + "errorPage"; // errorPage.jsp 또는 템플릿 파일로 연결
+            }
+
+            model.addAttribute("reservation", reservation);
+            return TRANSFER_BASE_PATH + "transferWrite";
+        } else {
+            String errorMessage = "예약 내역이 있는 회원만 글쓰기가 가능합니다.";
             model.addAttribute("script", "<script>alert('" + errorMessage + "'); history.back();</script>");
             return TRANSFER_BASE_PATH + "errorPage"; // errorPage.jsp 또는 템플릿 파일로 연결
         }
-
-        model.addAttribute("reservation", reservation);
-        return TRANSFER_BASE_PATH + "transferWrite";
-    } else {
-        String errorMessage = "예약 내역이 있는 회원만 글쓰기가 가능합니다.";
-        model.addAttribute("script", "<script>alert('" + errorMessage + "'); history.back();</script>");
-        return TRANSFER_BASE_PATH + "errorPage"; // errorPage.jsp 또는 템플릿 파일로 연결
     }
-}
 
     // 게시글 쓰기 요청 처리 메서드
     @PostMapping("/transferAdd")
@@ -145,19 +143,28 @@ public String createTransferForm(Model model, HttpServletRequest request) {
                                     @RequestParam(value = "pageCount", defaultValue = "1") int pageCount,
                                     @RequestParam(value = "type", defaultValue = "") String type,
                                     @RequestParam(value = "keyword", defaultValue = "") String keyword,
-                                    HttpSession session
-    ) {
+                                    HttpSession session) {
         boolean searchOption = !(type.isEmpty() || keyword.isEmpty());
-        TransferDto transfer = transferService.getTransfer(transferNo,true);
-        log.warn(session.getAttribute("userNo").toString());
+        TransferDto transfer = transferService.getTransfer(transferNo, true);
+
+        // userNo와 hostUserNo 로그 추가 (디버깅 용도)
+        log.warn("userNo: " + session.getAttribute("userNo"));
+        log.warn("hostUserNo: " + session.getAttribute("hostUserNo"));
+        log.warn("adminUserNo: " + session.getAttribute("adminUserNo"));
+
         Reservations resvParam = new Reservations();
         resvParam.setReservationNo(transfer.getReservationNo());
         List<Reservations> resvRs = resvMapper.getReservations(resvParam);
+
         log.warn("resvNo : " + transfer.getReservationNo());
-        log.warn("resvations : " + resvRs.get(0).toString());
+        log.warn("reservations : " + resvRs.get(0).toString());
+
         transfer.setRoomNo(resvRs.get(0).getRoomNo().toString());
 
+        // 모델에 userNo와 hostUserNo 추가
         model.addAttribute("userNo", session.getAttribute("userNo"));
+        model.addAttribute("hostUserNo", session.getAttribute("hostUserNo"));
+        model.addAttribute("adminUserNo", session.getAttribute("adminUserNo"));
         model.addAttribute("transfer", transfer);
         model.addAttribute("pageCount", pageCount);
         model.addAttribute("searchOption", searchOption);

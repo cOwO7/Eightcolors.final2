@@ -26,20 +26,27 @@
                 <div class="row">
                     <div class="col">
                         <div my-3><h2>내 정보 관리</h2></div>
-                        <div class="row  my-3">
+                        <div class="row my-3">
                             <div class="col">
                                 <div>회원 정보</div>
-                                <div>내 정보 조회 및 수정 병합은 여기서 가능해요</div>
+                                <div th:if="${user.id == null || user.phone == null || user.address1 == null || user.address2 == null}">
+                                    <span th:if="${user.id == null}">닉네임</span><span th:if="${user.id == null && (user.phone == null || user.address1 == null || user.address2 == null)}">, </span>
+                                    <span th:if="${user.phone == null}">전화번호</span><span th:if="${user.phone == null && (user.address1 == null || user.address2 == null)}">, </span>
+                                    <span th:if="${user.address1 == null || user.address2 == null}">주소</span>
+                                    <span>가 비어 있습니다. 추가 정보를 입력해 주세요.</span>
+                                </div>
+                                <div th:unless="${user.id == null || user.phone == null || user.address1 == null || user.address2 == null}">
+                                    내 정보 조회 및 수정은 여기서 가능해요
+                                </div>
                             </div>
                         </div>
+                        <hr>
                         <div>
-                            <div class="row  my-3">
+                            <div class="row my-3">
                                 <div class="col">
                                     <div class="row">
-                                        <div class="col-6  my-3">
-                                            <div>
-                                                닉네임
-                                            </div>
+                                        <div class="col-6 my-3">
+                                            <div>닉네임</div>
                                             <div>
                                                 <input class="form-control" type="text" placeholder="정보를 수정해 주세요"
                                                        aria-label="Disabled input example" disabled
@@ -47,9 +54,7 @@
                                             </div>
                                         </div>
                                         <div class="col-6 my-3">
-                                            <div>
-                                                이름
-                                            </div>
+                                            <div>이름</div>
                                             <div>
                                                 <input class="form-control" type="text" placeholder="정보를 수정해 주세요"
                                                        aria-label="Disabled input example" disabled
@@ -58,19 +63,15 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-6  my-3">
-                                            <div>
-                                                전화번호
-                                            </div>
+                                        <div class="col-6 my-3">
+                                            <div>전화번호</div>
                                             <div>
                                                 <input class="form-control" type="text" placeholder="정보를 수정해 주세요"
                                                        disabled th:value="${user.phone}">
                                             </div>
                                         </div>
-                                        <div class="col-6  my-3">
-                                            <div>
-                                                이메일
-                                            </div>
+                                        <div class="col-6 my-3">
+                                            <div>이메일</div>
                                             <div>
                                                 <input class="form-control" type="text" placeholder="정보를 수정해 주세요"
                                                        aria-label="Disabled input example" disabled
@@ -78,15 +79,15 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row  my-3">
+                                    <div class="row my-3">
                                         <div class="col">
-                                            <div>
-                                                주소
-                                            </div>
+                                            <div>주소</div>
                                             <div>
                                                 <input class="form-control" type="text" placeholder="정보를 수정해 주세요"
-                                                       disabled
-                                                       th:value="${user.address1 != null ? user.address1 : ''} + ' ' + ${user.address2 != null ? user.address2 : ''}">
+                                                       disabled th:value="${user.address1 != null and user.address2 != null ? user.address1 + ' ' + user.address2 : ''}">
+                                            </div>
+                                            <div th:if="${user.address1 == null || user.address2 == null}">
+                                                정보를 수정해 주세요.
                                             </div>
                                         </div>
                                     </div>
@@ -97,7 +98,6 @@
                 </div>
                 <div class="text-end">
                     <a class="btn btn-primary" th:href="@{/myPage/edit}">정보 수정</a>
-                    <a class="btn btn-secondary" th:href="@{/myPage/merge}">계정 병합</a>
                 </div>
             </div>
         </div>

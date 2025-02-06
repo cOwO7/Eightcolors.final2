@@ -1,10 +1,15 @@
 package com.springbootfinal.app.controller.admin;
 
+import com.springbootfinal.app.domain.helper.AnswerDto;
+import com.springbootfinal.app.domain.helper.InquiryDto;
 import com.springbootfinal.app.domain.login.HostUser;
 import com.springbootfinal.app.domain.login.Users;
 import com.springbootfinal.app.domain.residence.ResidenceDto;
 import com.springbootfinal.app.domain.transfer.TransferDto;
 import com.springbootfinal.app.mapper.admin.AdminMapper;
+import com.springbootfinal.app.service.helper.AnswerService;
+import com.springbootfinal.app.service.helper.InquiryService;
+import com.springbootfinal.app.service.transfer.TransferService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +32,8 @@ import com.springbootfinal.app.domain.admin.RecentOrderDto;
 public class AdminController {
 
     private final AdminService adminService;
-    private final AdminMapper adminMapper;
+    private final InquiryService inquiryService;
+    private final AnswerService answerService;
 
 
     @GetMapping("/admin")
@@ -227,6 +233,73 @@ public class AdminController {
         log.info("residNo: {}", residNo);
         adminService.deleteRoomByResidNo(residNo);
         return "redirect:/admin/roomcheck";
+    }
+
+    @GetMapping("/inquire")
+    public String inquire(Model model) {
+        List<InquiryDto> inquiries = inquiryService.getAllInquiries();
+        model.addAttribute("inquiries", inquiries);
+        return "/admin/inquire";
+    }
+    @GetMapping("/inquire/{inquiryNo}")
+    public String viewInquiry(@PathVariable Long inquiryNo,
+                              Model model) {
+
+        InquiryDto inquiry = inquiryService.getInquiryById(inquiryNo);
+        List<AnswerDto> answers = answerService.getAnswersByInquiryIds(inquiryNo);
+
+        model.addAttribute("inquiry", inquiry);
+        model.addAttribute("answers", answers);
+        return "/admin/inquiredetail";
+    }
+
+    /**
+     * 관리자 답변 삭제
+     */
+    @PostMapping("/inquire/answer/{answerId}/delete")
+    public String deleteAnswer(@PathVariable Long answerId,
+                               @RequestParam("inquiryNo") Long inquiryNo, Model model) {
+        answerService.deleteAnswer(answerId);
+        InquiryDto inquiry = inquiryService.getInquiryById(inquiryNo);
+        List<AnswerDto> answers = answerService.getAnswersByInquiryIds(inquiryNo);
+        model.addAttribute("answers", answers);
+        model.addAttribute("inquiry", inquiry);
+
+        return "/admin/inquiredetail";
+    }
+
+    /**
+     * 관리자 답변 추가
+     */
+    @PostMapping("/inquire/{inquiryNo}/answer")
+    public String addAnswer(@PathVariable("inquiryNo") Long inquiryNo,
+                               @RequestParam("content") String content,
+                                Model model) {
+
+        answerService.addAnswer1(inquiryNo, content);
+        List<AnswerDto> answers = answerService.getAnswersByInquiryIds(inquiryNo);
+        InquiryDto inquiry = inquiryService.getInquiryById(inquiryNo);
+
+        model.addAttribute("inquiry", inquiry);
+        model.addAttribute("answers", answers);
+
+        return "/admin/inquiredetail";
+    }
+
+    @PostMapping("/inquire/{inquiryNo}/status")
+    public String updateInquiryStatus(@PathVariable("inquiryNo") Long inquiryNo,
+                                      @RequestParam("status") String status,
+                                      Model model) {
+        answerService.updateStatus(inquiryNo, status);
+
+        // 업데이트 후 최신 문의 정보와 답변 목록 조회
+        InquiryDto inquiry = inquiryService.getInquiryById(inquiryNo);
+        List<AnswerDto> answers = answerService.getAnswersByInquiryIds(inquiryNo);
+        model.addAttribute("inquiry", inquiry);
+        model.addAttribute("answers", answers);
+
+        // 전체 문의 상세보기 페이지를 반환
+        return "/admin/inquiredetail";
     }
 
 }

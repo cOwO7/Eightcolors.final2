@@ -6,6 +6,35 @@
     <link href="bootstrap/bootstrap.min.css" rel="stylesheet">
     <meta charset="UTF-8">
     <title>고객센터</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: #333;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f0f0f0;
+        }
+
+        .clickable-row {
+            cursor: pointer;
+        }
+
+        .btn {
+            transition: all 0.3s ease;
+            border-radius: 50px;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .container {
+            max-width: 90%;
+            margin: 0 auto;
+        }
+    </style>
+</head>
 <body>
 <th:block layout:fragment="content">
     <div class="container">
@@ -61,55 +90,34 @@
                 </div>
             </div>
         </div>
+
         <div class="mb-5">
             <h3 class="mb-3">문의하기</h3>
-            <!--<form id="searchForm" class="mb-3">
-                <div class="input-group row g-2 align-content-center">
-                    <div class="col-md-3">
-                        <select id="searchType" class="form-select flex-grow-2" aria-label="검색 옵션">
-                            <option value="all" selected>제목 & 내용</option>
-                            <option value="author">작성자</option>
-                            <option value="answered">답변여부</option>
-                        </select>
-                    </div>
-                    <div class="col-md-8">
-                        <input type="text" id="searchKeyword" class="form-control flex-grow-8" placeholder="검색어를 입력하세요">
-                    </div>
-                    <div class="col-md-1 text-end">
-                        <button class="btn btn-primary" type="button" id="searchBtn">검색</button>
-                    </div>
-                </div>
-            </form>-->
-            <a href="/inquiries/create" class="btn btn-primary align-content-end">문의 작성</a>
-            <!-- 여기는 inpuiryBoardList -->
-            <table class="table">
+            <table class="table table-hover">
                 <thead>
-                <tr class="text-center">
-                    <th class="col-1">No</th>
-                    <th class="col-1">상태</th>
-                    <th class="col-6">제목</th>
-                    <th class="col-2">작성자</th>
-                    <th class="col-2">작성일</th>
+                <tr>
+                    <th>No</th>
+                    <th>제목</th>
+                    <th>상태</th>
+                    <th>작성자</th>
+                    <th>작성일</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr class="text-center" th:each="inquiry : ${inquiries}">
+                <tr th:each="inquiry : ${inquiries}"
+                    class="clickable-row"
+                    th:attr="onclick=|location.href='@{/admin/inquire/{inquiryNo}(inquiryNo=${inquiry.inquiryNo})}'|">
                     <td th:text="${inquiry.inquiryNo}"></td>
-                    <td th:text="${inquiry.status}"
-                        th:classappend="${inquiry.status == '답변완료' ? 'text-success' : 'text-danger'}"></td>
-                    <td class="fw-bold">
-                        <a class="text-decoration-none text-black"
-                           th:href="@{/inquiries/{inquiryNo}(inquiryNo=${inquiry.inquiryNo})}"
-                           th:text="${inquiry.title}"></a>
-                    </td>
+                    <td th:text="${inquiry.title}"></td>
+                    <td th:text="${inquiry.status}"></td>
                     <td th:text="${inquiry.userId}"></td>
-                    <td th:text="${#temporals.format(inquiry.inquiryDate, 'yyyy-MM-dd HH:mm')}"></td>
+                    <td th:text="${inquiry.inquiryDate}"></td>
                 </tr>
                 </tbody>
             </table>
         </div>
     </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </th:block>
 </body>
 </html>
