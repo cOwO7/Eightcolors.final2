@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{/layouts/main_layout}">
+      layout:decorate="~{layouts/main_layout}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -66,13 +66,18 @@
       <!-- 카카오페이 버튼 -->
       <button type="button" class="btn" onclick="kakaoPay()">
         <img src="../images/payment.png" alt="Image Button" class="img-fluid" />
+
+      </button>
+      <button type="button" class="btn btn-secondary mt-3 mb-3 text-decoration-none text-center" onclick="history.back();">
+        상세로 돌아가기
       </button>
 
+
     </form>
-    <div>
+    <!--<div>
       <button type="button" class="btn btn-secondary mt-3 text-decoration-none text-center" onclick="history.back();">상세로 돌아가기</button>
 
-    </div>
+    </div>-->
   </div>
 
   <script th:inline="javascript">
