@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{/layouts/main_layout}">
+      layout:decorate="~{layouts/main_layout}">
 
 <head>
     <meta charset="UTF-8">
@@ -285,9 +285,9 @@
                  th:if="${searchKeyword != null and checkinDate != null and checkoutDate != null and accommodationTypes != null and maxPrice != null}">
                 <ul class="pagination justify-content-center">
                     <!-- 이전 페이지 그룹으로 이동 -->
-                    <li class="page-item" th:if="${startPage > pageGroup}">
+                    <li class="page-item" th:if="${(currentPage - 1) > 0}">
                         <a class="page-link"
-                           th:href="@{|?pageNum=${startPage - 1}&searchKeyword=${searchKeyword}&checkinDate=${checkinDate}&checkoutDate=${checkoutDate}&accommodationTypes=${accommodationTypes}&maxPrice=${maxPrice}|}">
+                           th:href="@{|?pageNum=${currentPage - 1}&searchKeyword=${searchKeyword}&checkinDate=${checkinDate}&checkoutDate=${checkoutDate}&accommodationTypes=${accommodationTypes}&maxPrice=${maxPrice}|}">
                             Pre
                         </a>
                     </li>
@@ -316,9 +316,9 @@
                  th:if="${searchKeyword != null and checkinDate != null and checkoutDate != null and maxPrice == null}">
                 <ul class="pagination justify-content-center">
                     <!-- 이전 페이지 그룹으로 이동 -->
-                    <li class="page-item" th:if="${startPage > pageGroup}">
+                    <li class="page-item" th:if="${(currentPage - 1) > 0}">
                         <a class="page-link"
-                           th:href="@{|?pageNum=${startPage - 1}&searchKeyword=${searchKeyword}&checkinDate=${checkinDate}&checkoutDate=${checkoutDate}|}">
+                           th:href="@{|?pageNum=${currentPage - 1}&searchKeyword=${searchKeyword}&checkinDate=${checkinDate}&checkoutDate=${checkoutDate}|}">
                             Pre
                         </a>
                     </li>
@@ -349,9 +349,9 @@
                  th:if="${searchKeyword != null and checkinDate != null and checkoutDate != null and checkoutDate != null and accommodationTypes == null and maxPrice != null}">
                 <ul class="pagination justify-content-center">
                     <!-- 이전 페이지 그룹으로 이동 -->
-                    <li class="page-item" th:if="${startPage > pageGroup}">
+                    <li class="page-item" th:if="${(currentPage - 1) > 0}">
                         <a class="page-link"
-                           th:href="@{|?pageNum=${startPage - 1}&searchKeyword=${searchKeyword}&checkinDate=${checkinDate}&checkoutDate=${checkoutDate}&maxPrice=${maxPrice}|}">
+                           th:href="@{|?pageNum=${currentPage - 1}&searchKeyword=${searchKeyword}&checkinDate=${checkinDate}&checkoutDate=${checkoutDate}&maxPrice=${maxPrice}|}">
                             Pre
                         </a>
                     </li>
@@ -386,8 +386,8 @@
                     이전 페이지 그룹이 존재한다는 것으로 현재 페이지 그룹의 시작
                     페이지에서 1을 빼면 이전 페이지 그룹의 endPage로 이동할 수 있다.
                     */-->
-                    <li class="page-item" th:if="${ startPage > pageGroup and pageNum > 0 }">
-                        <a class="page-link" th:href="@{|?pageNum=${startPage - 1}|}">Pre</a>
+                    <li class="page-item" th:if="${(currentPage - 1) > 0 }">
+                        <a class="page-link" th:href="@{|?pageNum=${currentPage - 1}|}">Pre</a>
                     </li>
                     <!--/*
                     현재 페이지 그룹의 startPage부터 endPage까지 반복하면서 페이지
@@ -425,8 +425,8 @@
                     이전 페이지 그룹이 존재한다는 것으로 현재 페이지 그룹의 시작
                     페이지에서 1을 빼면 이전 페이지 그룹의 endPage로 이동할 수 있다.
                     */-->
-                    <li class="page-item" th:if="${ startPage > pageGroup }">
-                        <a class="page-link" th:href="@{|?pageNum=${startPage - 1}&maxPrice=${maxPrice}|}">Pre</a>
+                    <li class="page-item" th:if="${ (currentPage - 1) > 0 }">
+                        <a class="page-link" th:href="@{|?pageNum=${currentPage - 1}&maxPrice=${maxPrice}|}">Pre</a>
                     </li>
                     <!--/*
                     현재 페이지 그룹의 startPage부터 endPage까지 반복하면서 페이지
@@ -464,9 +464,9 @@
                     이전 페이지 그룹이 존재한다는 것으로 현재 페이지 그룹의 시작
                     페이지에서 1을 빼면 이전 페이지 그룹의 endPage로 이동할 수 있다.
                     */-->
-                    <li class="page-item" th:if="${ startPage > pageGroup }">
+                    <li class="page-item" th:if="${ (currentPage - 1) > 0 }">
                         <a class="page-link"
-                           th:href="@{|?pageNum=${startPage - 1}&accommodationTypes=${accommodationTypes}&maxPrice=${maxPrice}|}">
+                           th:href="@{|?pageNum=${currentPage - 1}&accommodationTypes=${accommodationTypes}&maxPrice=${maxPrice}|}">
                             Pre</a>
                     </li>
                     <!--/*
