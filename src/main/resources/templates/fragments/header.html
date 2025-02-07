@@ -63,6 +63,7 @@
 							 aria-label="Basic outlined example">
 							<a href="/weather" class="btn btn-outline-primary" style="width: 125px;">오늘의 날씨</a>
 							<a href="/weatherResult" class="btn btn-outline-primary" style="width: 125px;">주간 날씨</a>
+						<a th:href="@{/accomSearch}" class="btn btn-outline-primary" style="width: 125px;">숙　소</a>
 							<a th:href="@{/list/{hostUserNo}(hostUserNo=${session.hostUserNo})}"
 							   class="btn btn-primary" style="width: 125px;">내 숙소</a>
 							<a th:href="@{/transfers}" class="btn btn-outline-primary" style="width: 125px;">양　도</a>
@@ -78,6 +79,7 @@
 						<nav id="menu" class="btn-group text-center" role="group" aria-label="Basic outlined example">
 							<a href="/weather" class="btn btn-outline-primary" style="width: 125px;">오늘의 날씨</a>
 							<a href="/weatherResult" class="btn btn-outline-primary" style="width: 125px;">주간 날씨</a>
+							<a th:href="@{/accomSearch}" class="btn btn-outline-primary" style="width: 125px;">숙　소</a>
 							<a th:href="@{/list}" class="btn btn-outline-primary" style="width: 125px;">숙소(관리자)</a>
 							<a th:href="@{/transfers}" class="btn btn-outline-primary" style="width: 125px;">양　도</a>
 							<a th:href="@{/inquiries}" class="btn btn-outline-primary" style="width: 125px;">고객센터</a>
