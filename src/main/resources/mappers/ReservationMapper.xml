@@ -212,5 +212,10 @@
         WHERE r.user_no = #{userNo}
     </select>
 
+    <delete id="reservationDelete" >
+        delete from reservations
+        where reservation_no=#{reservationNo}
+    </delete>
+
 
 </mapper>
