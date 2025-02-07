@@ -183,31 +183,6 @@ CREATE TABLE IF NOT EXISTS transfers (
     FOREIGN KEY (reservation_no) REFERENCES reservations(reservation_no) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-SELECT
-    r.reservation_no AS reservationNo, -- 예약번호
-    r.user_no AS userNo, -- 유저번호
-    r.room_no AS roomNo, -- 방 번호
-    r.checkin_date AS checkinDate, -- 체크인 날짜
-    r.checkout_date AS checkoutDate, -- 체크아웃 날짜
-    r.total_price AS totalPrice, -- 총 가격
-    r.discount_rate AS discountRate, -- 할인율
-    r.discounted_price AS discountedPrice, -- 할인된 가격
-    r.payment_status AS paymentStatus, -- 결제 상태
-    r.reservation_status AS reservationStatus, -- 예약상태
-    rr.room_name AS roomName, -- 방 이름
-    pp.thumbnailUrls AS thumbnailUrls, -- 썸네일 사진
-    pp.photo_url01 AS photoUrl01, -- 숙소 사진
-    res.resid_name AS residName, -- 건물 이름
-    res.resid_description AS residDescription, -- 주소
-    hu.name AS hostName, -- 호스트 이름
-    hu.phone AS hostPhone, -- 호스트 전화번호
-    rr.room_url01
-FROM reservations r
-         JOIN residence_rooms rr ON r.room_no = rr.room_no
-         LEFT JOIN property_photos pp ON rr.room_no = pp.room_no
-         LEFT JOIN residence res ON rr.resid_no = res.resid_no
-         LEFT JOIN host_users hu ON res.host_user_no = hu.host_user_no;
-
 -- 최근 결제기록 5개 읽어오기
 SELECT r.reservation_no,
        u.name AS user_name,
