@@ -60,7 +60,7 @@
 				const url = new URL(link.href);
 				const propertyId = link.getAttribute("data-property-id");
 				const propertyName = link.getAttribute("data-property-name");
-				url.pathname = `/detail/${propertyId}`;
+				url.pathname = `/detail1/${propertyId}`;
 				url.searchParams.set('searchKeyword', propertyName);
 				url.searchParams.set('checkinDate', checkinDate);
 				url.searchParams.set('checkoutDate', checkoutDate);

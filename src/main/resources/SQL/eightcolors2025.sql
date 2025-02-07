@@ -115,7 +115,7 @@ CREATE TABLE IF NOT EXISTS reservations (
     FOREIGN KEY (room_no) REFERENCES residence_rooms(room_no) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-
+select * from reservations;
 
 -- 8. 고객센터 테이블
 CREATE TABLE IF NOT EXISTS inquiries (
@@ -181,8 +181,6 @@ CREATE TABLE IF NOT EXISTS transfers (
     FOREIGN KEY (buyer_user_no) REFERENCES users(user_no) ON DELETE SET NULL,
     FOREIGN KEY (reservation_no) REFERENCES reservations(reservation_no) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-
 
 -- 최근 결제기록 5개 읽어오기
 SELECT r.reservation_no,
