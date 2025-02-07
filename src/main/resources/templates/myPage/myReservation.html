@@ -28,7 +28,7 @@
                         <div class="row row-cols-1 row-cols-md-3 g-4" th:unless="${#lists.isEmpty(reservations)}">
                             <div class="col" th:each="reservation : ${reservations}">
                                 <div class="card">
-                                    <img th:src="${reservation.thumbnailUrls}" class="card-img-top" alt="Thumbnail" style="height: 200px; object-fit: cover;">
+                                    <img th:src="${reservation.fullRoomUrl01}" class="card-img-top text-center" alt="Thumbnail" style="height: 200px; object-fit: cover;">
                                     <div class="card-body">
                                         <h5 class="card-title" th:text="${reservation.residName}">건물이름</h5>
                                         <p class="card-text" th:text="${reservation.residDescription}">주소</p>

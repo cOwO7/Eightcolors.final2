@@ -22,7 +22,8 @@
             res.resid_name AS residName, -- 건물 이름
             res.resid_description AS residDescription, -- 주소
             hu.name AS hostName, -- 호스트 이름
-            hu.phone AS hostPhone -- 호스트 전화번호
+            hu.phone AS hostPhone, -- 호스트 전화번호
+            rr.room_url01 as roomUrl01
         FROM reservations r
                  JOIN residence_rooms rr ON r.room_no = rr.room_no
                  LEFT JOIN property_photos pp ON rr.room_no = pp.room_no
@@ -50,7 +51,8 @@
             res.resid_name AS residName, -- 건물 이름
             res.resid_description AS residDescription, -- 주소
             hu.name AS hostName, -- 호스트 이름
-            hu.phone AS hostPhone -- 호스트 전화번호
+            hu.phone AS hostPhone, -- 호스트 전화번호
+            rr.room_url01 as roomUrl01
         FROM reservations r
                  JOIN residence_rooms rr ON r.room_no = rr.room_no
                  LEFT JOIN property_photos pp ON rr.room_no = pp.room_no
