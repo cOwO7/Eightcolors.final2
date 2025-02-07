@@ -114,7 +114,8 @@ public class SecurityConfig {
                         .requestMatchers("/", "user/**", "/userJoin", "/login", "/oauth2/**", "/register", "/oauth2.0/*", "/overlapIdCheck").permitAll()
                         .requestMatchers("/static/**", "/bootstrap/**", "/css/**", "/js/**", "/images/**", "/joinResult", "/h2-console/**", "/userInfo").permitAll()
                         .requestMatchers("/hostJoinResult", "/hostUserJoin").permitAll()
-                        .requestMatchers("/main", "/weather", "/weatherResult", "/accomSearch", "/search", "/detail1/**", "/transfers", "/inquiries").permitAll()
+                        .requestMatchers("/main", "/weather", "/weatherResult", "/accomSearch", "/search", "/detail1/**", "/transfers", "/inquiries",
+                                "/residence/processAllWeather", "/processAllWeather").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/host/**").hasAnyRole("HOST", "ADMIN")
                         .anyRequest().authenticated()
