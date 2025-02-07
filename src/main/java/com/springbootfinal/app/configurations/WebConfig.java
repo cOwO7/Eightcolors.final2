@@ -3,6 +3,7 @@ package com.springbootfinal.app.configurations;
 import com.springbootfinal.app.interceptor.LoginCheckInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.CacheControl;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.*;
 
@@ -29,6 +30,9 @@ public class WebConfig implements WebMvcConfigurer{
 				.addResourceLocations("classpath:/static/bootstrap/");
 		registry.addResourceHandler("/detail/*/js/**")
 				.addResourceLocations("classpath:/static/js/");
+		registry.addResourceHandler("/images/**")  // 클라이언트가 접근할 URL 패턴
+				.addResourceLocations("file:///D:/images/") // 실제 파일이 저장된 폴더
+				.setCacheControl(CacheControl.noCache());  // 캐시 없이 항상 최신 파일 로드
 	}
 	
 	@Bean
