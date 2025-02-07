@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -43,9 +44,9 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "user/**", "/userJoin", "/login", "/oauth2/**", "/register", "/oauth2.0/*", "/overlapIdCheck").permitAll()
-                        .requestMatchers("/static/**", "/bootstrap/**", "/css/**", "/js/**", "/images/**", "/joinResult", "/h2-console/**", "/userInfo", "/hostUserJoin").permitAll()
-                        .requestMatchers("/hostJoinResult").permitAll()
-                        .requestMatchers("/list", "**").permitAll()
+                        .requestMatchers("/static/**", "/bootstrap/**", "/css/**", "/js/**", "/images/**", "/joinResult", "/h2-console/**", "/userInfo").permitAll()
+                        .requestMatchers("/hostJoinResult", "/hostUserJoin").permitAll()
+                        .requestMatchers("/main", "/weather", "/weatherResult", "/accomSearch", "/search", "/detail1/**", "/transfers", "/inquiries").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/host/**").hasAnyRole("HOST", "ADMIN")
                         .anyRequest().authenticated()
@@ -53,35 +54,21 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/login")
                         .successHandler(customAuthenticationSuccessHandler)
-                        .failureHandler((request, response, exception) -> {
-                            log.info("로그인 실패: " + exception.getMessage());
-                            String errorMessage = "로그인에 실패했습니다. 다시 시도해주세요.";
-                            if (exception.getMessage().contains("Bad credentials")) {
-                                errorMessage = "아이디 또는 비밀번호가 잘못되었습니다.";
-                            }
-                            request.getSession().setAttribute("loginError", errorMessage);
-                            response.sendRedirect("/login?error=true");
-                        })
+                        .failureHandler(authenticationFailureHandler())
                         .permitAll()
                 )
                 .oauth2Login(oauth -> oauth
                         .loginPage("/login")
                         .successHandler(customAuthenticationSuccessHandler)
-                        .failureHandler((request, response, exception) -> {
-                            log.info("소셜 로그인 실패: " + exception.getMessage());
-                            String errorMessage = "소셜 로그인 중 오류가 발생했습니다. securityConfig";
-                            if (exception.getMessage().contains("email_exists")) {
-                                errorMessage = "동일한 이메일로 가입된 로컬 계정이 존재합니다. securityConfig";
-                            } else if (exception.getMessage().contains("provider_mismatch")) {
-                                errorMessage = "동일한 이메일로 다른 소셜 로그인 제공자가 존재합니다. securityConfig";
-                            }
-                            request.getSession().setAttribute("socialLoginError", errorMessage);
-                            log.info("세션에 설정된 socialLoginError: " + request.getSession().getAttribute("socialLoginError"));
-                            response.sendRedirect("/login?error=true");
-                        })
+                        .failureHandler(authenticationFailureHandler())
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)
                         )
+                )
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.sendRedirect("/login?error=unauthenticated");
+                        })
                 )
                 .sessionManagement(session -> session
                         .sessionFixation().none()
@@ -111,5 +98,18 @@ public class SecurityConfig {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
                 .authenticationProvider(customAuthenticationProvider)
                 .build();
+    }
+
+    @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+        return (request, response, exception) -> {
+            log.info("로그인 실패: " + exception.getMessage());
+            String errorMessage = "로그인에 실패했습니다. 다시 시도해주세요.";
+            if (exception.getMessage().contains("Bad credentials")) {
+                errorMessage = "아이디 또는 비밀번호가 잘못되었습니다.";
+            }
+            request.getSession().setAttribute("loginError", errorMessage);
+            response.sendRedirect("/login?error=true");
+        };
     }
 }

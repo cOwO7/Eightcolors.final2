@@ -2,6 +2,15 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/main_layout}" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
 <th:block layout:fragment="content">
     <style>
         #loginViews {
@@ -23,18 +32,6 @@
         </div>
         <div sec:authorize="!isAuthenticated()">
             <!-- 일반 로그인 폼 -->
-            <!--<form th:action="@{/login}" method="post" class="mb-3" id="loginForm">
-                <div class="mb-3">
-                    <label for="username" class="form-label">ID:</label>
-                    <input type="text" id="username" name="username" class="form-control" required>
-                </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password:</label>
-                    <input type="password" id="password" name="password" class="form-control" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Login</button>
-            </form>-->
-
             <form th:action="@{/login}" method="post" class="p-4 shadow rounded bg-light" id="loginForm" style="max-width: 400px; margin: auto;">
                 <h3 class="text-center mb-4 text-primary fw-bold">로그인</h3>
 
@@ -75,7 +72,6 @@
                         <a th:href="@{/oauth2/authorization/kakao}"><img src="/images/kakaoLogin.png"></a>
                     </div>
                 </div>
-
             </form>
 
             <!-- 에러 메시지 -->
@@ -84,30 +80,42 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
 
-
-            <!-- 원본 코드 -->
-            <!-- 회원가입 링크 -->
-            <!--<div class="text-center mb-3">
-                <a href="/userJoin" class="btn btn-link">일반 회원가입</a>
-            </div>-->
-
-            <!-- 호스트 회원가입 링크 추가 -->
-            <!--<div class="text-center mb-3">
-                <a href="/hostUserJoin" class="btn btn-link">호스트 회원가입</a>
-            </div>-->
-
-            <!-- 소셜 로그인 -->
-            <!--<h2 class="text-center mb-3">소셜로그인</h2>
-            <div class="text-center mb-3">
-                <a th:href="@{/oauth2/authorization/google}" class="btn btn-outline-primary">Google Login</a>
+            <!-- 로그인 시 이용 가능합니다 모달 -->
+            <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="loginModalLabel">알림</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            로그인 시 이용 가능합니다.
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="text-center mb-3">
-                <a th:href="@{/oauth2/authorization/kakao}" class="btn btn-outline-warning">Kakao Login</a>
-            </div>
-            <div class="text-center mb-3">
-                <a th:href="@{/oauth2/authorization/naver}" class="btn btn-outline-info">Naver Login</a>
-            </div>-->
+
+            <script>
+                $(document).ready(function() {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    if (urlParams.has('error')) {
+                        if (urlParams.get('error') === 'true') {
+                            $('#loginModal .modal-body').text('로그인에 실패했습니다. 다시 시도해주세요.');
+                            $('#loginModal').modal('show');
+                        } else if (urlParams.get('error') === 'unauthenticated') {
+                            $('#loginModal .modal-body').text('로그인 시 이용 가능합니다.');
+                            $('#loginModal').modal('show');
+                        }
+                    }
+                });
+            </script>
         </div>
     </div>
 </th:block>
+</body>
 </html>
