@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{/layouts/main_layout}">
+	layout:decorate="~{layouts/main_layout}">
 <!-- <meta charset="utf-8">
 <meta name="viewport"
 	content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
@@ -15,7 +15,7 @@
 					<h5 class="card-header text-center">이번주 날씨</h5>
 					<div class="card-body">
 						<div>
-							<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+							<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 							<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=36a75517ce82693ff837cc79c740e197&libraries=services,clusterer"></script>
 						</div>
 						<div class="col-md-12 text-center">
@@ -297,13 +297,13 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/proj4"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<link href="bootstrap/bootstrap.min.css" rel="stylesheet">
+<link href="/bootstrap/bootstrap.min.css" rel="stylesheet">
 <link href="/css/weather/longWeatherstyles.css" rel="stylesheet" />
-<script th:src="@{js/jquery-3.7.1.min.js}"></script>
-<script th:src="@{js/weather/weather.js}"></script>
-<script th:src="@{js/map/geolocation.js}"></script>
-<script th:src="@{js/weather/longchoice.js}"></script>
-<script th:src="@{js/map/kakaomap.js}"></script>
+<script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+<script th:src="@{/js/weather/weather.js}"></script>
+<script th:src="@{/js/map/geolocation.js}"></script>
+<script th:src="@{/js/weather/longchoice.js}"></script>
+<script th:src="@{/js/map/kakaomap.js}"></script>
 <!-- Luxon 라이브러리 추가 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/3.0.4/luxon.min.js"></script>
 

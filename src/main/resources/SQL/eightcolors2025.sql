@@ -9,7 +9,7 @@
 -- # flush privileges;
 -- # exit
 
--- drop database eightcolors2025;
+drop database eightcolors2025;
 CREATE DATABASE IF NOT EXISTS eightcolors2025; -- 데이터베이스 생성
 
 use eightcolors2025; -- 데이터베이스 접속
@@ -79,7 +79,6 @@ CREATE TABLE IF NOT EXISTS residence (
     longitudeNum VARCHAR(255),
     regId VARCHAR(255),
     regIdTemp VARCHAR(255),
-    UNIQUE (host_user_no),
     FOREIGN KEY (host_user_no) REFERENCES host_users(host_user_no) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 

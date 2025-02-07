@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  layout:decorate="~{/layouts/main_layout}">
+	  layout:decorate="~{layouts/main_layout}">
 <head>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
 			integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
@@ -74,83 +74,85 @@
 <!-- content -->
 <body>
 <th:block layout:fragment="content">
-	<script type="text/javascript"
-			src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=51mvmkqypm&submodules=geocoder"></script>
-	<script type="text/javascript" src="/js/map/navermap.js"></script>
-	<!-- 디자인1 -->
-	<!-- 캐러셀 내용 -->
-	<div class="row justify-content-center my-3">
-		<div class="col-md-8" style="width: 70%; height: 100%;">
-			<div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
-				<div class="carousel-inner text-center"><br>
-					<th:block th:each="property, iterStat : ${randomProperties}">
-						<div class="carousel-item" th:classappend="${iterStat.index == 0} ? ' active' : ''">
-							<a th:href="@{'/detail/' + ${property.id}}"
-							   th:data-property-id="${property.id}"
-							   th:data-property-name="${property.name}">
-								<img th:src="@{${property.fullPhotoUrl01}}" class="d-block w-100 carousel-img" alt="...">
-							</a>
-							<div class="carousel-caption d-none d-md-block">
-								<h5 th:text="${property.name}">Property Name</h5>
-							</div>
-						</div>
-					</th:block>
-				</div>
-				<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
-						data-bs-slide="prev">
-					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-					<span class="visually-hidden">Previous</span>
-				</button>
-				<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
-						data-bs-slide="next">
-					<span class="carousel-control-next-icon" aria-hidden="true"></span>
-					<span class="visually-hidden">Next</span>
-				</button>
-			</div>
-		</div>
-
-		<!-- 일별 날씨 5시간 -->
-		<div class="col-md-8 weather-container" style="width: 30%; height: 100%;">
-			<table class="table table-bordered table-hover" id="main-resultTable">
-				<thead>
-				<tr>
-					<th>하늘 상태</th>
-					<th>기온</th>
-					<th>강수 확률</th>
-					<th></th>
-				</tr>
-				</thead>
-				<tbody>
-				<!-- 날씨 데이터 출력 -->
-				</tbody>
-			</table>
-		</div>
-		<div style="display: none;">
-			<tr>
-				<td>날짜(baseDate)</td>
-				<td><input width="auto" type="text" id="baseDate"
-						   name="baseDate" th:value="${baseDate}"/></td>
-				<td>시간(baseTime)</td>
-				<td><input width="auto" type="text" id="baseTime"
-						   name="baseTime" th:value="${baseTime}"/></td>
-			</tr>
-			<tr>
-				<td>예보지점 x값</td>
-				<td><input type="text" id="nx" name="nx" th:value="${gridX}"/></td>
-				<td>예보지점 y값</td>
-				<td><input type="text" id="ny" name="ny" th:value="${gridY}"/></td>
-			</tr>
-			<tr>
-				<td>위도(latitude)</td>
-				<td><input width="auto" type="text" id="latitudeNum"
-						   name="latitudeNum" th:value="${latitudeNum}"/></td>
-				<td>경도(longitude)</td>
-				<td><input width="auto" type="text" id="longitudeNum"
-						   name="longitudeNum" th:value="${longitudeNum}"/></td>
-			</tr>
-		</div><!-- 일별 날씨 끝 -->
-		<div id="map" style="width: 0px; height: 0px;"></div>
-	</div><!-- 캐러셀 끝-->
+    <script type="text/javascript"
+            src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=51mvmkqypm&submodules=geocoder"></script>
+    <script type="text/javascript" src="/js/map/navermap.js"></script>
+    <link href="/css/mainstyles.css" rel="stylesheet"/>
+    <!-- 디자인1 -->
+    <!-- 캐러셀 내용 -->
+    <div class="container mx-auto" style="width: 80%; text-align: center; justify-content: center;">
+        <div class="row justify-content-center my-3">
+            <div class="col-md-8" style="width: 70%; height: 100%;">
+                <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner text-center"><br>
+                        <th:block th:each="property, iterStat : ${randomProperties}">
+                            <div class="carousel-item" th:classappend="${iterStat.index == 0} ? ' active' : ''">
+                                <a th:href="@{'/detail/' + ${property.id}}"
+                                   th:data-property-id="${property.id}"
+                                   th:data-property-name="${property.name}">
+                                    <img th:src="@{${property.fullPhotoUrl01}}" class="d-block w-100 carousel-img"
+                                         alt="...">
+                                </a>
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5 th:text="${property.name}">Property Name</h5>
+                                </div>
+                            </div>
+                        </th:block>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
+                            data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
+                            data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+            <!-- 일별 날씨 5시간 -->
+            <div class="col-md-4 weather-container" style="width: 30%; height: 100%;">
+                <table class="table table-bordered table-hover" id="main-resultTable">
+                    <thead>
+                    <tr>
+                        <th>하늘 상태</th>
+                        <th>기온</th>
+                        <th>강수 확률</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- 날씨 데이터 출력 -->
+                    </tbody>
+                </table>
+            </div>
+            <div style="display: none;">
+                <tr>
+                    <td>날짜(baseDate)</td>
+                    <td><input width="auto" type="text" id="baseDate"
+                               name="baseDate" th:value="${baseDate}"/></td>
+                    <td>시간(baseTime)</td>
+                    <td><input width="auto" type="text" id="baseTime"
+                               name="baseTime" th:value="${baseTime}"/></td>
+                </tr>
+                <tr>
+                    <td>예보지점 x값</td>
+                    <td><input type="text" id="nx" name="nx" th:value="${gridX}"/></td>
+                    <td>예보지점 y값</td>
+                    <td><input type="text" id="ny" name="ny" th:value="${gridY}"/></td>
+                </tr>
+                <tr>
+                    <td>위도(latitude)</td>
+                    <td><input width="auto" type="text" id="latitudeNum"
+                               name="latitudeNum" th:value="${latitudeNum}"/></td>
+                    <td>경도(longitude)</td>
+                    <td><input width="auto" type="text" id="longitudeNum"
+                               name="longitudeNum" th:value="${longitudeNum}"/></td>
+                </tr>
+            </div><!-- 일별 날씨 끝 -->
+            <div id="map" style="width: 0px; height: 0px;"></div>
+        </div><!-- 캐러셀 끝-->
 
 	<!-- 인기 여행지 -->
 	<div class="row my-5">
@@ -279,6 +281,7 @@
 	<!-- 여행지 끝 -->
 
 	<script src="/js/weather/mainpageweather.js"></script>
+    </div>
 </th:block>
 </body>
 </html>

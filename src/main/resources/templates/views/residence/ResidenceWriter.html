@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{/layouts/main_layout}">
+      layout:decorate="~{layouts/main_layout}">
 <head>
-    <link href="bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="/bootstrap/bootstrap.min.css" rel="stylesheet">
     <meta charset="UTF-8">
     <title>숙소 등록</title>
 <body>
@@ -13,7 +13,7 @@
     </style>
     <div class="container">
         <div>
-            <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+            <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
             <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=36a75517ce82693ff837cc79c740e197&libraries=services,clusterer"></script>
             <script th:src="@{/js/residence/residenceImages.js}"></script>
             <link href="/css/residence/residenceFome.css" rel="stylesheet">

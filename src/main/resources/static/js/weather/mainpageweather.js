@@ -107,11 +107,11 @@ function getWeatherData() {
     //console.log("API 호출 URL:", apiUrl);
 
     // 일출/일몰 정보 API 호출 (위도, 경도를 이용)
-    let sunriseSunsetApiUrl = `http://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getLCRiseSetInfo?longitude=${longitudeNum}&latitude=${latitudeNum}&locdate=${baseDate}&dnYn=N&ServiceKey=${serviceKey}`;
+    //let sunriseSunsetApiUrl = `http://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getLCRiseSetInfo?longitude=${longitudeNum}&latitude=${latitudeNum}&locdate=${baseDate}&dnYn=N&ServiceKey=${serviceKey}`;
     //console.log("일출/일몰 정보 API 호출 URL:", sunriseSunsetApiUrl);
 
     // 일출/일몰 API 호출
-    $.ajax({
+    /*$.ajax({
         url: sunriseSunsetApiUrl,
         type: "GET",
         dataType: "json",
@@ -139,7 +139,7 @@ function getWeatherData() {
 
             // 일출과 일몰 시간 표시
             $('#sunrise').text(formattedSunrise.time ? `일출: ${formattedSunrise.time}` : "일출 정보 없음");
-            $('#sunset').text(formattedSunset.time ? `일몰: ${formattedSunset.time}` : "일몰 정보 없음");
+            $('#sunset').text(formattedSunset.time ? `일몰: ${formattedSunset.time}` : "일몰 정보 없음");*/
 
             // 날씨 데이터 호출
             $.ajax({
@@ -283,13 +283,8 @@ function getWeatherData() {
                     $("#loader").hide();
                 },
             });
-        },
-        error: function (error) {
-            console.error("일출/일몰 API 호출 오류:", error);
-            alert("일출/일몰 API 호출 중 오류가 발생했습니다.");
-            $("#loader").hide(); // 로딩 스피너 숨기기
-        },
-    });
+        //},
+    //});
 }
 
 // 날씨 상태에 따른 이미지 반환

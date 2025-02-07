@@ -168,12 +168,13 @@ $(function() {
 			let latitudeNum = Math.floor(parseFloat($("#latitudeNum").val()));   // 위도
 
 			// 기상청 API URL 동적 생성
-			//let apiUrl = `https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${serviceKey}&pageNo=${pageNo}&numOfRows=${numOfRows}&dataType=${dataType}&base_date=${baseDate}&base_time=${baseTime}&nx=${nx}&ny=${ny}`;
-			let apiUrl = `http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${serviceKey}&pageNo=${pageNo}&numOfRows=${numOfRows}&dataType=${dataType}&base_date=${baseDate}&base_time=${baseTime}&nx=${nx}&ny=${ny}`;
+			//let apiUrl = `http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${serviceKey}&pageNo=${pageNo}&numOfRows=${numOfRows}&dataType=${dataType}&base_date=${baseDate}&base_time=${baseTime}&nx=${nx}&ny=${ny}`;
+			let apiUrl = `https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${serviceKey}&pageNo=${pageNo}&numOfRows=${numOfRows}&dataType=${dataType}&base_date=${baseDate}&base_time=${baseTime}&nx=${nx}&ny=${ny}`;
 			//console.log("API 호출 URL:", apiUrl);
 
 			// 일출/일몰 정보 API 호출 (위도, 경도를 이용)
-			let sunriseSunsetApiUrl = `http://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getLCRiseSetInfo?longitude=${longitudeNum}&latitude=${latitudeNum}&locdate=${baseDate}&dnYn=N&ServiceKey=${serviceKey}`;
+			//let sunriseSunsetApiUrl = `http://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getLCRiseSetInfo?longitude=${longitudeNum}&latitude=${latitudeNum}&locdate=${baseDate}&dnYn=N&ServiceKey=${serviceKey}`;
+			let sunriseSunsetApiUrl = `https://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getLCRiseSetInfo?longitude=${longitudeNum}&latitude=${latitudeNum}&locdate=${baseDate}&dnYn=N&ServiceKey=${serviceKey}`;
 			//console.log("일출/일몰 정보 API 호출 URL:", sunriseSunsetApiUrl);
 
 			// 일출/일몰 API 호출

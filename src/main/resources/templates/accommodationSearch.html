@@ -251,7 +251,11 @@
                             <div class="card-body">
                                 <h5 class="card-title" th:text="${residence.residName}"></h5>
                                 <p class="address" th:text="${residence.residAddress}"></p>
-                                <div class="price">가격: <span th:text="'₩' + ${residence.minPrice}" data-price="${residence.minPrice}"></span>/1박</div>
+                                <!--<div class="price">가격: <span th:text="'₩' + ${residence.minPrice}" data-price="${residence.minPrice}"></span>/1박</div>-->
+                                <div class="price">가격: <span
+                                        th:text="'₩' + ${#numbers.formatInteger(residence.minPrice, 3, 'COMMA')}"
+                                        data-price="${residence.minPrice}"></span>/1박
+                                </div>
                             </div>
                         </a>
                     </div>
