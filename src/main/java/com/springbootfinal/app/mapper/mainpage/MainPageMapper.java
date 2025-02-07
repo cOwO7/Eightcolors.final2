@@ -1,7 +1,8 @@
 package com.springbootfinal.app.mapper.mainpage;
 
-import org.apache.ibatis.annotations.Mapper;
 import com.springbootfinal.app.domain.mainpage.MainPage;
+import org.apache.ibatis.annotations.Mapper;
+
 import java.util.List;
 
 @Mapper

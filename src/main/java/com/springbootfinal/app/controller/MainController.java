@@ -1,7 +1,6 @@
 package com.springbootfinal.app.controller;
 
-import com.springbootfinal.app.service.MainService;
-import com.springbootfinal.app.service.MainPageService;
+import com.springbootfinal.app.service.mainpage.MainPageService;
 import com.springbootfinal.app.domain.mainpage.MainPage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
-
 @Slf4j
 @Controller
 public class MainController {
-
-	@Autowired
-	private MainService mainService;
 
 	@Autowired
 	private MainPageService mainPageService;
@@ -36,7 +31,7 @@ public class MainController {
 	public String helper() {
 		return "views/helper";
 	}
-	
+
 	@GetMapping("/mypage")
 	public String mypage() {
 		return "views/mypage";
@@ -56,6 +51,7 @@ public class MainController {
 		while (randomProperties.size() < 3) {
 			MainPage placeholder = new MainPage();
 			placeholder.setId(0L);
+			placeholder.setName("Sample Property");
 			placeholder.setPhotoUrl01("sample/sample1.jpg");
 			randomProperties.add(placeholder);
 		}
