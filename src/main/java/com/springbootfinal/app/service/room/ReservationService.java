@@ -22,6 +22,11 @@ public class ReservationService {
     public boolean isRoomAvailable(Long roomNo, LocalDate checkinDate, LocalDate checkoutDate) {
         return reservationMapper.checkRoomAvailability(roomNo, checkinDate, checkoutDate) == 0;
     }
+    //방 예약 취소
+    public void reservationDelete(Long reservationNo){
+        reservationMapper.reservationDelete(reservationNo);
+    }
+
 
 
     public Map<String, String> getResidenceAndRoomById(Long residNo, Long roomNo) {

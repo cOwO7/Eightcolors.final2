@@ -67,12 +67,21 @@
                         </div>
                         <div class="text-center mt-4">
                             <a href="/myPage/myReservation" class="btn btn-primary">확 인</a>
+                            <a href="javascript:void(0);" id="reservationdelete" class="btn btn-danger" th:data-reservation-no="${reservationNo}"
+                               onclick="if (confirm('정말 예약을 취소하시겠습니까?')) {
+              window.location.href='/reservationDelete?reservationNo=' + this.getAttribute('data-reservation-no');
+           }">예약 취소</a>
+
+
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <script>
 
+        </script>
         <!--예약내역상세 영역 끝-->
         <!-- 내용 끝 -->
 

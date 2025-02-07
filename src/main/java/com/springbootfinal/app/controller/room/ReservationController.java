@@ -199,4 +199,20 @@ public class ReservationController {
     public String test(){
         return "reservationSuccess";
     }
+
+    @GetMapping("/reservationDelete")
+    public String reservationDelete(@RequestParam("reservationNo") Long reservationNo) {
+       /* Long reservationNo = null;
+
+        try {
+            reservationNo = Long.parseLong(reservationNoStr);
+        } catch (NumberFormatException e) {
+            // 숫자 형식이 아니면 예외 처리
+            return "redirect:/errorPage";
+        }*/
+
+        reservationService.reservationDelete(reservationNo);
+        return "redirect:myPage/myReservation";
+
+    }
 }

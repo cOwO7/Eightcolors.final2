@@ -117,7 +117,7 @@ public class MyPageController {
             log.info("No reservation found with ID: {}", reservationNo);
             return "redirect:/myPage/myReservation";
         }
-
+        model.addAttribute("reservationNo",reservationNo);
         model.addAttribute("reservation", reservation);
         return "myPage/myReservationDetail";
     }

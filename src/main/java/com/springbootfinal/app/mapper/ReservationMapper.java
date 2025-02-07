@@ -36,6 +36,9 @@ public interface ReservationMapper {
     List<Long> selectReservedRoomNos(@Param("checkinDate") LocalDate checkinDate,
                                     @Param("checkoutDate") LocalDate checkoutDate);
 
+    //예약 취소
+    void reservationDelete(@Param("reservationNo") Long reservationNo);
+
     // 예약 정보 조회
     List<Reservations> getReservations(Reservations param);
     void newReservations(Reservations param);
