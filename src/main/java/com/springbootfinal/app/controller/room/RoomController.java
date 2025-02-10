@@ -52,7 +52,7 @@ public class RoomController {
 							@RequestParam(value = "keyword", required = false, defaultValue = "null") String keyword) {
 			Map<String, Object> modelMap = roomService.getReservationsByResidence(residNo,type,keyword);
 
-			model.addAttribute("hotelId",residNo);
+			model.addAttribute("residNo",residNo);
 			model.addAllAttributes(modelMap);
 	    	return "stayBookingLookup";
 	    }
