@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/main_layout}">
+      layout:decorate="~{/layouts/main_layout}">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -132,6 +132,10 @@
                             </thead>
                             <tbody>
                             </tbody>
+                            <!-- 초단기 실황 -->
+                            <!--<div>
+                                <p th:text="weather.ultraSrtNcstData"></p>
+                            </div>-->
                         </table>
                     </div>
                 </div>
@@ -147,7 +151,7 @@
     <script th:src="@{/js/weather/weather.js}"></script>
     <script th:src="@{/js/map/geolocation.js}"></script>
     <script th:src="@{/js/weather/choice.js}"></script>
-    <script th:src="@{/js/map/kakaomap2.js}"></script>
+    <script th:src="@{/js/map/kakaomapN.js}"></script>
     <!-- Luxon 라이브러리 추가 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/3.0.4/luxon.min.js"></script>
 </th:block>

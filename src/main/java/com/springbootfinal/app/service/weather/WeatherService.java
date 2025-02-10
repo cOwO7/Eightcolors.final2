@@ -135,16 +135,12 @@ public class WeatherService {
 		// HttpHeaders 설정
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", "application/json");
-
 		// HttpEntity 설정
 		HttpEntity<String> requestEntity = new HttpEntity<>(headers);
-
 		// API 호출 및 응답 받기
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
-
 		// 응답 내용 로깅
 		//log.info("API 응답: {}", response.getBody());
-
 		// 응답 내용 반환
 		return response.getBody();
 	}
