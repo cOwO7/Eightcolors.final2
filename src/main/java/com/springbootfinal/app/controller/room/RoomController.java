@@ -47,12 +47,12 @@ public class RoomController {
 	    }
 	    
 	    @GetMapping("/room")
-	    public String rooms(Model model,@RequestParam("hotelId") Long residNo,
+	    public String rooms(Model model,@RequestParam("residNo") Long residNo,
 							@RequestParam(value = "type", required = false, defaultValue = "null") String type,
 							@RequestParam(value = "keyword", required = false, defaultValue = "null") String keyword) {
 			Map<String, Object> modelMap = roomService.getReservationsByResidence(residNo,type,keyword);
 
-			model.addAttribute("hotelId",residNo);
+			model.addAttribute("residNo",residNo);
 			model.addAllAttributes(modelMap);
 	    	return "stayBookingLookup";
 	    }

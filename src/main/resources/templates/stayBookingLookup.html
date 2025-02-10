@@ -59,7 +59,7 @@
         <!-- 검색 폼 -->
         <form name="searchForm" id="searchForm" action="/room" method="get" class="row justify-content-center my-3" onsubmit="return validateDate()">
             <!-- 검색 조건 선택 -->
-            <input type="hidden" name="hotelId" th:value="${hotelId}">
+            <input type="hidden" name="residNo" th:value="${residNo}">
             <div class="col-auto">
                 <select id="searchType" name="type" class="form-select" onchange="changeInputType()">
                     <option value="roomName">방 이름</option>
